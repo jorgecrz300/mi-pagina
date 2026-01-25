@@ -3,69 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IA Personal v2.0</title>
+    <title>Nexus IA - Sistema Avanzado</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        header { background: #1f1f1f; padding: 15px; text-align: center; border-bottom: 2px solid #3498db; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        #chat { flex: 1; overflow-y: auto; padding: 20px; }
-        .msg { margin: 10px 0; padding: 12px; border-radius: 10px; max-width: 80%; line-height: 1.4; }
-        .bot { background: #2c2c2c; align-self: flex-start; border-left: 4px solid #3498db; }
-        .user { background: #005cbf; color: white; margin-left: auto; }
-        .input-box { display: flex; padding: 20px; background: #1f1f1f; gap: 10px; }
-        input { flex: 1; padding: 12px; border-radius: 5px; border: none; background: #333; color: white; }
-        button { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        :root { --neon: #00f2ff; --bg: #0a0a0c; --panel: #161b22; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        
+        /* Cabecera */
+        header { background: var(--panel); padding: 15px; text-align: center; border-bottom: 2px solid var(--neon); box-shadow: 0 0 15px rgba(0,242,255,0.2); }
+        h1 { margin: 0; font-size: 1.2rem; letter-spacing: 2px; color: var(--neon); }
+
+        /* Area de Chat */
+        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .msg { padding: 12px 18px; border-radius: 15px; max-width: 80%; line-height: 1.5; font-size: 15px; animation: fadeIn 0.3s ease; }
+        .bot { background: var(--panel); border: 1px solid #30363d; align-self: flex-start; border-left: 4px solid var(--neon); }
+        .user { background: var(--neon); color: #000; align-self: flex-end; font-weight: 500; box-shadow: 0 4px 10px rgba(0,242,255,0.3); }
+
+        /* Entrada de texto */
+        .input-area { padding: 20px; background: #010409; display: flex; gap: 10px; border-top: 1px solid #30363d; }
+        input { flex: 1; background: #0d1117; border: 1px solid #30363d; color: white; padding: 12px; border-radius: 8px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--neon); box-shadow: 0 0 5px var(--neon); }
+        button { background: var(--neon); border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; color: #000; }
+        button:hover { opacity: 0.8; transform: scale(1.02); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <header>
-    <strong>SISTEMA IA v2.0</strong>
+    <h1>NEXUS CORE v3.0</h1>
 </header>
 
-<div id="chat">
-    <div class="msg bot">Sistema iniciado. Hola Jorge, ¿qué comando o consulta deseas procesar hoy?</div>
+<div id="chat-container">
+    <div class="msg bot">Sistema Nexus en línea. Hola Jorge, estoy conectado a la red de Google. ¿En qué puedo ayudarte hoy?</div>
 </div>
 
-<div class="input-box">
-    <input type="text" id="userInput" placeholder="Escribe un comando o cálculo (ej. 5*5)...">
-    <button onclick="procesar()">Enviar</button>
+<div class="input-area">
+    <input type="text" id="userInput" placeholder="Escribe un mensaje o pregunta..." onkeypress="if(event.key==='Enter') enviarConsulta()">
+    <button onclick="enviarConsulta()">ENVIAR</button>
 </div>
 
 <script>
-    function procesar() {
+    // Tu API Key integrada
+    const KEY = "AIzaSyAlFVOazYOA1QXXtVGadyayZ8Z_HTojsYs";
+
+    async function enviarConsulta() {
         const input = document.getElementById('userInput');
-        const chat = document.getElementById('chat');
-        const valor = input.value.trim();
-        
-        if(!valor) return;
+        const container = document.getElementById('chat-container');
+        const prompt = input.value.trim();
+
+        if (!prompt) return;
 
         // Mostrar mensaje del usuario
-        chat.innerHTML += `<div class="msg user">${valor}</div>`;
+        container.innerHTML += `<div class="msg user">${prompt}</div>`;
         input.value = "";
+        container.scrollTop = container.scrollHeight;
 
-        setTimeout(() => {
-            let respuesta = "Comando no reconocido. Prueba con un cálculo matemático o saluda.";
-            let texto = valor.toLowerCase();
+        // Indicador de carga
+        const loading = document.createElement("div");
+        loading.className = "msg bot";
+        loading.innerText = "Procesando...";
+        container.appendChild(loading);
 
-            // Lógica de utilidad: Cálculos
-            try {
-                if (/[0-9]/.test(texto) && /[\+\-\*\/]/.test(texto)) {
-                    respuesta = "El resultado es: " + eval(texto);
-                } else if (texto.includes("hola")) {
-                    respuesta = "Hola de nuevo. Estoy listo para ayudarte.";
-                } else if (texto.includes("quien soy")) {
-                    respuesta = "Eres Jorge, el administrador de este servidor.";
-                } else if (texto.includes("limpiar")) {
-                    chat.innerHTML = "";
-                    respuesta = "Chat reiniciado.";
-                }
-            } catch(e) {
-                respuesta = "Error en el proceso de datos.";
-            }
+        try {
+            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }]
+                })
+            });
 
-            chat.innerHTML += `<div class="msg bot">${respuesta}</div>`;
-            chat.scrollTop = chat.scrollHeight;
-        }, 500);
+            const data = await resp.json();
+            const respuestaIA = data.candidates[0].content.parts[0].text;
+
+            loading.innerText = respuestaIA;
+        } catch (error) {
+            loading.innerText = "Error: No pude conectar con el núcleo. Revisa tu conexión.";
+            console.error(error);
+        }
+        
+        container.scrollTop = container.scrollHeight;
     }
 </script>
 
