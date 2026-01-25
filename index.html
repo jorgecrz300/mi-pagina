@@ -2,38 +2,49 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mi Página Personal</title>
+    <title>Mi Mundo Digital</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-            color: #333;
-            background-color: #f4f4f4;
-        }
-        .contenedor {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        p {
-            margin-bottom: 20px;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 20px; background-color: #e9ecef; color: #333; }
+        .tarjeta { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #2980b9; margin-top: 30px; }
+        .seccion { margin-bottom: 30px; }
+        ul { background: #f8f9fa; padding: 20px 40px; border-radius: 10px; }
+        li { margin-bottom: 10px; }
+        .footer { text-align: center; font-size: 0.9em; color: #7f8c8d; margin-top: 40px; }
     </style>
 </head>
 <body>
-    <div class="contenedor">
-        <h1>Bienvenido a mi sitio</h1>
-        <p>Esta es una página web normal creada desde mi Chromebook.</p>
-        <p>Aquí puedo escribir lo que yo quiera sin que nadie me interrumpa.</p>
+
+    <div class="tarjeta">
+        <h1>Bienvenido a mi espacio personal</h1>
+        
+        <div class="seccion">
+            <h2>Sobre mí</h2>
+            <p>Hola, soy Jorge. Empecé esta página porque estaba aburrido y terminé aprendiendo a usar GitHub. Aquí es donde guardo mis ideas y proyectos.</p>
+        </div>
+
+        <div class="seccion">
+            <h2>Cosas que me interesan</h2>
+            <ul>
+                <li><strong>Tecnología:</strong> Desde hackear satélites (de broma) hasta crear sitios web.</li>
+                <li><strong>Videojuegos:</strong> Me gusta pasar el tiempo descubriendo mundos nuevos.</li>
+                <li><strong>Música:</strong> Lo que sea que suene bien mientras programo.</li>
+            </ul>
+        </div>
+
+        <div class="seccion">
+            <h2>Mis metas actuales</h2>
+            <p>1. Terminar de diseñar esta página.<br>
+               2. Aprender a ponerle cosas que se muevan.<br>
+               3. No aburrirme tanto en las tardes.</p>
+        </div>
+
         <hr>
-        <p style="font-size: 0.8em; color: #777;">Creado por Jorge</p>
+        <div class="footer">
+            <p>© 2026 - Creado por Jorge desde una Chromebook</p>
+        </div>
     </div>
+
 </body>
 </html>
