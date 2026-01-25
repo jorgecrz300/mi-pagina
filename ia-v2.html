@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA Personal v2.0</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        header { background: #1f1f1f; padding: 15px; text-align: center; border-bottom: 2px solid #3498db; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        #chat { flex: 1; overflow-y: auto; padding: 20px; }
+        .msg { margin: 10px 0; padding: 12px; border-radius: 10px; max-width: 80%; line-height: 1.4; }
+        .bot { background: #2c2c2c; align-self: flex-start; border-left: 4px solid #3498db; }
+        .user { background: #005cbf; color: white; margin-left: auto; }
+        .input-box { display: flex; padding: 20px; background: #1f1f1f; gap: 10px; }
+        input { flex: 1; padding: 12px; border-radius: 5px; border: none; background: #333; color: white; }
+        button { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<header>
+    <strong>SISTEMA IA v2.0</strong>
+</header>
+
+<div id="chat">
+    <div class="msg bot">Sistema iniciado. Hola Jorge, ¿qué comando o consulta deseas procesar hoy?</div>
+</div>
+
+<div class="input-box">
+    <input type="text" id="userInput" placeholder="Escribe un comando o cálculo (ej. 5*5)...">
+    <button onclick="procesar()">Enviar</button>
+</div>
+
+<script>
+    function procesar() {
+        const input = document.getElementById('userInput');
+        const chat = document.getElementById('chat');
+        const valor = input.value.trim();
+        
+        if(!valor) return;
+
+        // Mostrar mensaje del usuario
+        chat.innerHTML += `<div class="msg user">${valor}</div>`;
+        input.value = "";
+
+        setTimeout(() => {
+            let respuesta = "Comando no reconocido. Prueba con un cálculo matemático o saluda.";
+            let texto = valor.toLowerCase();
+
+            // Lógica de utilidad: Cálculos
+            try {
+                if (/[0-9]/.test(texto) && /[\+\-\*\/]/.test(texto)) {
+                    respuesta = "El resultado es: " + eval(texto);
+                } else if (texto.includes("hola")) {
+                    respuesta = "Hola de nuevo. Estoy listo para ayudarte.";
+                } else if (texto.includes("quien soy")) {
+                    respuesta = "Eres Jorge, el administrador de este servidor.";
+                } else if (texto.includes("limpiar")) {
+                    chat.innerHTML = "";
+                    respuesta = "Chat reiniciado.";
+                }
+            } catch(e) {
+                respuesta = "Error en el proceso de datos.";
+            }
+
+            chat.innerHTML += `<div class="msg bot">${respuesta}</div>`;
+            chat.scrollTop = chat.scrollHeight;
+        }, 500);
+    }
+</script>
+
+</body>
+</html>
