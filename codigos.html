@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base de Datos: Códigos Secretos</title>
+    <style>
+        body {
+            background-color: #050505;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            border: 1px solid #00ff41;
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+            background: rgba(0, 255, 65, 0.05);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            border-radius: 10px;
+        }
+        h1 { font-size: 1.5rem; text-align: center; border-bottom: 2px solid #00ff41; padding-bottom: 10px; }
+        .code-entry {
+            margin: 20px 0;
+            padding: 10px;
+            border-left: 3px solid #ff00ff;
+            background: rgba(255, 0, 255, 0.05);
+        }
+        .code-name { font-weight: bold; color: #ff00ff; display: block; }
+        .code-value { background: #222; padding: 5px; color: #fff; border-radius: 3px; display: inline-block; margin: 5px 0; }
+        .description { font-size: 0.9rem; color: #aaa; }
+        .back-btn {
+            margin-top: 20px;
+            color: #00ff41;
+            text-decoration: none;
+            border: 1px solid #00ff41;
+            padding: 10px 20px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { background: #00ff41; color: black; }
+        .blink { animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1><span class="blink"> > </span> ARCHIVOS CLASIFICADOS</h1>
+        <p style="text-align:center; font-size: 0.8rem;">ACCESO RESTRINGIDO - SOLO NIVEL ADMIN</p>
+
+        <div class="code-entry">
+            <span class="code-name">COMANDO DE CRÉDITO</span>
+            <span class="code-value">JORGE_GOD</span>
+            <p class="description">Inyecta inmediatamente 1,000,000 BTC al balance actual. Uso limitado para pruebas de sistema.</p>
+        </div>
+
+        <div class="code-entry">
+            <span class="code-name">BYPASS DE CASINO</span>
+            <span class="code-value">SUERTE_MAX</span>
+            <p class="description">Hackea el algoritmo de la ruleta. Probabilidad de éxito ajustada al 100% permanentemente.</p>
+        </div>
+
+        <div class="code-entry">
+            <span class="code-name">LIMPIEZA DE HUELLAS</span>
+            <span class="code-value">REBOOT</span>
+            <p class="description">Borra todos los registros (LocalStorage). Reinicia el juego al estado de fábrica.</p>
+        </div>
+
+        <div class="code-entry" style="border-left-color: #00ccff;">
+            <span class="code-name" style="color: #00ccff;">SOPORTE TÉCNICO</span>
+            <span class="code-value">BIT_BOOST</span>
+            <p class="description">Próximamente: Código para duplicar la velocidad de los bots AFK.</p>
+        </div>
+    </div>
+
+    <a href="juego.html" class="back-btn">VOLVER AL SISTEMA</a>
+
+</body>
+</html>
