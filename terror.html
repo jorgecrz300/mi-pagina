@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Horror Escape</title>
+    <style>
+        body { margin: 0; background: black; overflow: hidden; color: white; font-family: 'Courier New', monospace; }
+        canvas { display: block; }
+        #ui { position: absolute; top: 10px; left: 10px; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div id="ui">BATERÍA LINTERNA: <span id="battery">100</span>%</div>
+    <canvas id="gameCanvas"></canvas>
+
+<script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let player = { x: 100, y: 100, size: 20, speed: 3 };
+    let monster = { x: 500, y: 500, size: 25, speed: 1.5, active: false };
+    let battery = 100;
+    let keys = {};
+
+    // Partículas de "miedo"
+    let particles = [];
+
+    function update() {
+        // Movimiento
+        if (keys["ArrowUp"] || keys["KeyW"]) player.y -= player.speed;
+        if (keys["ArrowDown"] || keys["KeyS"]) player.y += player.speed;
+        if (keys["ArrowLeft"] || keys["KeyA"]) player.x -= player.speed;
+        if (keys["ArrowRight"] || keys["KeyD"]) player.x += player.speed;
+
+        // El monstruo te persigue solo si estás lejos de la luz (opcional)
+        let dx = player.x - monster.x;
+        let dy = player.y - monster.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        
+        if (dist < 300) monster.active = true;
+
+        if (monster.active) {
+            monster.x += (dx / dist) * monster.speed;
+            monster.y += (dy / dist) * monster.speed;
+        }
+
+        // Batería baja si te mueves mucho
+        if (battery > 0) battery -= 0.01;
+        document.getElementById("battery").innerText = Math.floor(battery);
+
+        draw();
+        requestAnimationFrame(update);
+    }
+
+    function draw() {
+        ctx.fillStyle = "#050505"; // Fondo casi negro
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // --- EFECTO DE LINTERNA ---
+        ctx.save();
+        ctx.beginPath();
+        // Creamos un círculo de "luz" alrededor del jugador
+        let lightRadius = battery > 0 ? 150 : 40; 
+        ctx.arc(player.x, player.y, lightRadius, 0, Math.PI * 2);
+        ctx.clip(); // Todo lo que se dibuje después solo se verá dentro del círculo
+
+        // Dibujar suelo con textura o puntos para notar movimiento
+        ctx.fillStyle = "#111";
+        for(let i=0; i<canvas.width; i+=50) {
+            for(let j=0; j<canvas.height; j+=50) {
+                ctx.fillRect(i, j, 2, 2);
+            }
+        }
+
+        // Dibujar al Jugador
+        ctx.fillStyle = "blue";
+        ctx.fillRect(player.x - 10, player.y - 10, player.size, player.size);
+
+        // Dibujar al Monstruo (solo se ve si entra en tu luz)
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(monster.x, monster.y, monster.size, 0, Math.PI*2);
+        ctx.fill();
+
+        ctx.restore();
+        // --- FIN LINTERNA ---
+
+        // Oscuridad total fuera de la linterna
+        ctx.fillStyle = "rgba(0,0,0,0.8)";
+        if (battery <= 0) ctx.fillRect(0,0, canvas.width, canvas.height);
+    }
+
+    window.addEventListener("keydown", e => keys[e.code] = true);
+    window.addEventListener("keyup", e => keys[e.code] = false);
+
+    update();
+</script>
+</body>
+</html>
