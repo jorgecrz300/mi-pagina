@@ -3,98 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Clicker: Multi-User System</title>
+    <title>Cyber Clicker: Final Fix</title>
     <style>
         :root { --main-color: #00ff41; --bg-color: #050505; }
         body { background: var(--bg-color); color: var(--main-color); font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; user-select: none; }
         
-        /* Pantalla de Login */
-        #login-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000; z-index: 100; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center;
-        }
+        /* Login */
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; display: flex; align-items: center; justify-content: center; }
         .login-box { border: 2px solid var(--main-color); padding: 30px; text-align: center; border-radius: 10px; background: #0a0a0a; }
         input { background: #111; color: var(--main-color); border: 1px solid var(--main-color); padding: 10px; margin: 10px; text-align: center; outline: none; }
 
-        /* Interfaz del Juego */
-        .header { text-align: center; border: 1px solid var(--main-color); padding: 10px; border-radius: 10px; width: 100%; max-width: 400px; margin-bottom: 10px; }
-        #user-display { font-size: 14px; color: #ff00ff; margin-bottom: 5px; }
-        #stats { font-size: 30px; font-weight: bold; }
+        /* Juego */
+        .header { text-align: center; border: 1px solid var(--main-color); padding: 10px; border-radius: 10px; width: 100%; max-width: 400px; }
+        #stats { font-size: 30px; font-weight: bold; margin: 10px 0; }
         
+        /* EL BOTÓN DE LA PC (El que faltaba) */
+        #pc-target { width: 120px; cursor: pointer; transition: transform 0.1s; margin: 20px 0; filter: drop-shadow(0 0 10px var(--main-color)); }
+        #pc-target:active { transform: scale(0.9); }
+
         .grid-tienda { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 450px; }
         .item { border: 1px solid var(--main-color); padding: 10px; border-radius: 8px; text-align: center; background: rgba(255,255,255,0.03); }
+        
         button { background: var(--main-color); color: black; border: none; padding: 8px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 5px; }
         button:disabled { background: #222; color: #444; }
-        .logout-btn { background: #ff3333; color: white; width: auto; padding: 5px 15px; margin-top: 10px; font-size: 10px; }
+        
+        /* BOTÓN DE CÓDIGOS INVISIBLE */
+        #adminBtn { position: fixed; bottom: 0; right: 0; width: 40px; height: 40px; opacity: 0; cursor: default; z-index: 999; }
+        
+        .logout-btn { background: #ff3333; color: white; width: auto; padding: 4px 10px; font-size: 10px; margin-top: 5px; }
     </style>
 </head>
 <body>
 
     <div id="login-overlay">
         <div class="login-box">
-            <h2 style="color: #00ff41;">TERMINAL DE ACCESO</h2>
-            <p>INGRESE SU NOMBRE DE HACKER:</p>
+            <h2>TERMINAL DE ACCESO</h2>
             <input type="text" id="username-input" placeholder="Nickname..." maxlength="12">
             <button onclick="login()">CONECTAR</button>
         </div>
     </div>
 
     <div class="header">
-        <div id="user-display">USUARIO: <span id="current-user">---</span></div>
+        <div style="font-size: 12px; color: #ff00ff;">HACKER: <span id="current-user">---</span></div>
         <div id="stats">💰 <span id="puntos">0</span> BTC</div>
-        <button class="logout-btn" onclick="logout()">DESCONECTAR</button>
+        <button class="logout-btn" onclick="logout()">SALIR</button>
     </div>
 
-    <div id="log" style="font-size: 12px; margin: 10px;">ESPERANDO COMANDOS...</div>
+    <img id="pc-target" src="https://cdn-icons-png.flaticon.com/512/689/689304.png" onclick="clickPc()">
+
+    <div id="log" style="font-size: 12px; height: 20px; margin-bottom: 10px;">ESPERANDO COMANDOS...</div>
 
     <div class="grid-tienda">
         <div class="item" style="grid-column: span 2; border-color: #ff00ff;">
             <span style="color: #ff00ff;">🎰 GAMBLING ZONE</span>
-            <button style="background: #ff00ff; color: white;" onclick="apostar(50, 200)">Hackeo (50% de ganar 200)</button>
+            <button style="background: #ff00ff; color: white;" onclick="apostar(50, 200)">HACKEAR (Cuesta 100)</button>
         </div>
-        <div class="item">
-            <span>PC (+2 clic)</span>
-            <button id="btnUp" onclick="comprarUp()">50 BTC</button>
-        </div>
-        <div class="item">
-            <span>BOT (+1/s)</span>
-            <button id="btnAuto" onclick="comprarAuto()">150 BTC</button>
-        </div>
+        <div class="item"><span>PC (+2 clic)</span><button id="btnUp" onclick="comprarUp()">50 BTC</button></div>
+        <div class="item"><span>BOT (+1/s)</span><button id="btnAuto" onclick="comprarAuto()">150 BTC</button></div>
     </div>
+
+    <div id="adminBtn" onclick="abrirAdmin()"></div>
 
     <script>
         let currentUser = "";
         let data = { puntos: 0, poder: 2, autos: 0 };
+        let modoDios = false;
 
         function login() {
             const name = document.getElementById('username-input').value.trim().toUpperCase();
-            if (name === "") return alert("Ingrese un nombre");
-            
+            if (!name) return;
             currentUser = name;
             document.getElementById('current-user').innerText = currentUser;
             document.getElementById('login-overlay').style.display = 'none';
-
-            // Cargar datos específicos del usuario
-            const savedData = localStorage.getItem('user_' + currentUser);
-            if (savedData) {
-                data = JSON.parse(savedData);
-            } else {
-                data = { puntos: 0, poder: 2, autos: 0 };
-            }
+            const saved = localStorage.getItem('user_' + currentUser);
+            if (saved) data = JSON.parse(saved);
             actualizar();
         }
 
-        function logout() {
-            guardar();
-            location.reload();
-        }
-
-        function guardar() {
-            if (currentUser) {
-                localStorage.setItem('user_' + currentUser, JSON.stringify(data));
-            }
-        }
+        function logout() { guardar(); location.reload(); }
+        function guardar() { if(currentUser) localStorage.setItem('user_' + currentUser, JSON.stringify(data)); }
 
         function actualizar() {
             document.getElementById('puntos').innerText = Math.floor(data.puntos);
@@ -102,9 +89,10 @@
             document.getElementById('btnAuto').disabled = data.puntos < 150;
         }
 
-        // Acciones del juego
-        function clickPc() { data.puntos += data.poder; actualizar(); } // Por simplicidad, agregué el click al fondo o puedes re-agregar la imagen
-        window.onclick = function(e) { if(e.target.tagName == "BODY") data.puntos += data.poder; actualizar(); }
+        function clickPc() { 
+            data.puntos += data.poder; 
+            actualizar(); 
+        }
 
         function comprarUp() { if(data.puntos >= 50){ data.puntos -= 50; data.poder += 2; actualizar(); guardar(); } }
         function comprarAuto() { if(data.puntos >= 150){ data.puntos -= 150; data.autos++; actualizar(); guardar(); } }
@@ -112,20 +100,28 @@
         function apostar(prob, premio) {
             if(data.puntos < 100) return;
             data.puntos -= 100;
-            if(Math.random() * 100 <= prob) {
+            const exito = modoDios ? true : (Math.random() * 100 <= prob);
+            if(exito) {
                 data.puntos += premio;
-                document.getElementById('log').innerText = "¡EXITOSO!";
+                document.getElementById('log').innerText = "¡HACK EXITOSO!";
+                document.getElementById('log').style.color = "#00ff41";
             } else {
-                document.getElementById('log').innerText = "FALLIDO";
+                document.getElementById('log').innerText = "DETECTADO POR FIREWALL";
+                document.getElementById('log').style.color = "#ff3333";
             }
-            actualizar();
-            guardar();
+            actualizar(); guardar();
         }
 
-        // Ciclos
-        setInterval(() => { if(data.autos > 0){ data.puntos += data.autos; actualizar(); } }, 1000);
-        setInterval(guardar, 5000); // Auto-guardado cada 5s
+        function abrirAdmin() {
+            const code = prompt("CÓDIGO DE ACCESO:");
+            if(code === "JORGE_GOD") data.puntos += 1000000;
+            if(code === "SUERTE_MAX") { modoDios = true; alert("MODO DIOS ACTIVO"); }
+            if(code === "REBOOT") { localStorage.clear(); location.reload(); }
+            actualizar(); guardar();
+        }
 
+        setInterval(() => { if(data.autos > 0){ data.puntos += data.autos; actualizar(); } }, 1000);
+        setInterval(guardar, 4000);
     </script>
 </body>
 </html>
