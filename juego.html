@@ -3,136 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Clicker: Admin Edition</title>
+    <title>Cyber Clicker: Rebirth Edition</title>
     <style>
         :root { --main-color: #00ff41; --bg-color: #050505; }
         body { background: var(--bg-color); color: var(--main-color); font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; user-select: none; }
-        #stats { font-size: 32px; margin: 10px 0; font-weight: bold; text-shadow: 0 0 15px var(--main-color); cursor: help; }
         
-        /* Botón Invisible de Admin (Esquina inferior derecha) */
-        #adminBtn { position: fixed; bottom: 0; right: 0; width: 30px; height: 30px; opacity: 0.1; cursor: default; }
+        /* Dashboard Superior */
+        .header { text-align: center; border: 1px solid var(--main-color); padding: 15px; border-radius: 10px; margin-bottom: 20px; width: 100%; max-width: 400px; }
+        #stats { font-size: 28px; font-weight: bold; text-shadow: 0 0 10px var(--main-color); }
+        .rebirth-count { color: #00ccff; font-size: 14px; margin-top: 5px; }
 
-        .roulette-container { width: 250px; height: 60px; border: 2px solid #ff00ff; margin: 20px 0; position: relative; overflow: hidden; background: #111; border-radius: 5px; }
+        .roulette-container { width: 250px; height: 50px; border: 2px solid #ff00ff; margin: 15px 0; position: relative; overflow: hidden; background: #111; }
         .roulette-rail { display: flex; position: absolute; left: 0; transition: left 3s cubic-bezier(0.1, 0.7, 1.0, 0.1); }
-        .slot { min-width: 80px; height: 60px; display: flex; align-items: center; justify-content: center; font-weight: bold; border-right: 1px solid #222; }
-        .pointer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 4px; height: 100%; background: white; z-index: 10; box-shadow: 0 0 10px white; }
-
+        .slot { min-width: 80px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 12px; border-right: 1px solid #222; }
+        
         .grid-tienda { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 450px; }
         .item { border: 1px solid var(--main-color); padding: 10px; border-radius: 8px; text-align: center; background: rgba(255,255,255,0.03); }
+        
+        /* Botón de Renacer */
+        .rebirth-zone { grid-column: span 2; border: 2px solid #00ccff; background: rgba(0, 204, 255, 0.05); padding: 15px; margin-top: 10px; }
+        .btn-rebirth { background: #00ccff; color: black; }
+        
         button { background: var(--main-color); color: black; border: none; padding: 8px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 5px; }
-        button:disabled { background: #222; color: #444; cursor: not-allowed; }
-        .btn-gamble { background: #ff00ff; color: white; font-size: 11px; margin-top: 10px;}
-        .log { height: 40px; margin: 10px 0; font-weight: bold; text-align: center; }
+        button:disabled { background: #222; color: #444; }
+        .btn-gamble { background: #ff00ff; color: white; font-size: 10px; margin-top: 5px;}
+        #adminBtn { position: fixed; bottom: 0; right: 0; width: 30px; height: 30px; opacity: 0; }
     </style>
 </head>
 <body>
 
-    <div id="stats" onclick="clickPc()">💰 <span id="puntos">0</span> BTC</div>
-    <div id="log">SISTEMA ADMIN ACTIVO</div>
+    <div class="header">
+        <div id="stats" onclick="clickPc()">💰 <span id="puntos">0</span> BTC</div>
+        <div class="rebirth-count">NIVEL DE RENACIMIENTO: <span id="n-rebirth">0</span></div>
+        <div id="multi-info" style="font-size: 10px;">Multiplicador actual: x1.0</div>
+    </div>
+
+    <div id="log" style="height:30px; font-size:12px;">CONEXIÓN ESTABLE</div>
 
     <div class="roulette-container">
-        <div class="pointer"></div>
+        <div style="position:absolute; top:0; left:50%; width:2px; height:100%; background:white; z-index:5;"></div>
         <div class="roulette-rail" id="rail"></div>
     </div>
 
     <div class="grid-tienda">
-        <div class="item" style="grid-column: span 2; border-color: #ff00ff;">
-            <span style="color: #ff00ff;">🎰 HACKEO DE PROBABILIDAD</span>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
-                <button class="btn-gamble" onclick="jugar(70, 10)">Gana 10 (70%)</button>
-                <button class="btn-gamble" onclick="jugar(20, 50)">Gana 50 (20%)</button>
-                <button class="btn-gamble" onclick="jugar(10, 100)">Gana 100 (10%)</button>
-                <button class="btn-gamble" onclick="jugar(0.1, 1000)">EL GORDO (0.1%)</button>
-            </div>
+        <div class="item rebirth-zone">
+            <span style="color: #00ccff; font-weight: bold;">⚡ NÚCLEO DE RENACIMIENTO ⚡</span>
+            <p style="font-size: 10px; margin: 5px 0;">Cuesta 50,000 BTC. Reinicia todo pero sube el Multiplicador.</p>
+            <button id="btnRebirth" class="btn-rebirth" onclick="hacerRebirth()">RENACER (COSTO 50k)</button>
         </div>
-        <div class="item"><span>PC UP (+2)</span><button id="btnUp" onclick="comprarUp()">50 BTC</button></div>
-        <div class="item"><span>BOT AFK (+1/s)</span><button id="btnAuto" onclick="comprarAuto()">150 BTC</button></div>
+
+        <div class="item" style="grid-column: span 2; border-color: #ff00ff;">
+            <button class="btn-gamble" onclick="jugar(10, 500)">APUESTA RIESGO (10% de ganar 500)</button>
+        </div>
+
+        <div class="item"><span>PC (+2 base)</span><button id="btnUp" onclick="comprarUp()">50 BTC</button></div>
+        <div class="item"><span>BOT (+1/s base)</span><button id="btnAuto" onclick="comprarAuto()">150 BTC</button></div>
     </div>
 
     <div id="adminBtn" onclick="abrirAdmin()"></div>
 
     <script>
         let puntos = parseInt(localStorage.getItem('puntos_save')) || 0;
-        let poder = parseInt(localStorage.getItem('poder_save')) || 1;
+        let poder = parseInt(localStorage.getItem('poder_save')) || 2;
         let autos = parseInt(localStorage.getItem('auto_save')) || 0;
-        let modoDios = false;
+        let rebirths = parseInt(localStorage.getItem('rebirth_save')) || 0;
         let girando = false;
+
+        function getMulti() { return 1 + (rebirths * 0.5); } // Cada renacer da +50% de bonus
 
         function actualizar() {
             document.getElementById('puntos').innerText = Math.floor(puntos);
+            document.getElementById('n-rebirth').innerText = rebirths;
+            document.getElementById('multi-info').innerText = "Multiplicador actual: x" + getMulti().toFixed(1);
             document.getElementById('btnUp').disabled = puntos < 50;
             document.getElementById('btnAuto').disabled = puntos < 150;
+            document.getElementById('btnRebirth').disabled = puntos < 50000;
         }
 
-        function clickPc() { puntos += poder; actualizar(); }
+        function clickPc() { 
+            puntos += (poder * getMulti()); 
+            actualizar(); 
+        }
+
+        function hacerRebirth() {
+            if(puntos >= 50000) {
+                rebirths++;
+                puntos = 0;
+                poder = 2;
+                autos = 0;
+                alert("¡HAS RENACIDO! Ahora eres más fuerte.");
+                actualizar();
+            }
+        }
 
         function jugar(prob, premio) {
             if (girando || puntos < 100) return;
-            puntos -= 100;
-            girando = true;
-            actualizar();
-
+            puntos -= 100; girando = true; actualizar();
             const rail = document.getElementById('rail');
-            rail.style.transition = "none";
-            rail.style.left = "0px";
-            rail.innerHTML = '';
-            for(let i=0; i<40; i++) {
-                const s = document.createElement('div');
-                s.className = 'slot';
-                s.style.color = Math.random() > 0.5 ? "#ff00ff" : "#00ff41";
-                s.innerText = "HACKING";
-                rail.appendChild(s);
+            rail.style.transition = "none"; rail.style.left = "0px"; rail.innerHTML = '';
+            for(let i=0; i<30; i++) {
+                const s = document.createElement('div'); s.className = 'slot';
+                s.innerText = "HACKING"; rail.appendChild(s);
             }
-
-            // Lógica de éxito (Si modoDios está activo, siempre ganas)
-            const exito = modoDios ? true : (Math.random() * 100 <= prob);
-            
-            setTimeout(() => {
-                rail.style.transition = "left 3s cubic-bezier(0.1, 0.7, 0.1, 1)";
-                rail.style.left = "-2500px"; 
-            }, 50);
-
+            const exito = Math.random() * 100 <= prob;
+            setTimeout(() => { rail.style.transition = "left 2s ease-out"; rail.style.left = "-2000px"; }, 50);
             setTimeout(() => {
                 girando = false;
-                if(exito) {
-                    puntos += premio;
-                    document.getElementById('log').innerText = "¡HACK EXITOSO! +" + premio;
-                    document.getElementById('log').style.color = "#00ff41";
-                } else {
-                    document.getElementById('log').innerText = "ACCESO DENEGADO";
-                    document.getElementById('log').style.color = "#ff3333";
-                }
+                if(exito) { puntos += (premio * getMulti()); document.getElementById('log').innerText = "GANASTE"; }
+                else { document.getElementById('log').innerText = "PERDISTE"; }
                 actualizar();
-            }, 3050);
-        }
-
-        // SISTEMA DE CÓDIGOS SECRETOS
-        function abrirAdmin() {
-            const code = prompt("INGRESE CÓDIGO DE ACCESO:");
-            if (code === "JORGE_GOD") {
-                puntos += 1000000;
-                alert("NIVEL DE ACCESO: DIOS. +1M BTC añadidos.");
-            } else if (code === "SUERTE_MAX") {
-                modoDios = true;
-                alert("MODO CASINO ACTIVO: La ruleta nunca falla.");
-            } else if (code === "REBOOT") {
-                localStorage.clear();
-                location.reload();
-            } else {
-                alert("CÓDIGO INVÁLIDO. IP RASTREADA...");
-            }
-            actualizar();
+            }, 2050);
         }
 
         function comprarUp() { if(puntos>=50){ puntos-=50; poder+=2; actualizar(); } }
         function comprarAuto() { if(puntos>=150){ puntos-=150; autos++; actualizar(); } }
 
-        setInterval(() => { if(autos>0){ puntos+=autos; actualizar(); } }, 1000);
+        setInterval(() => { if(autos>0){ puntos += (autos * getMulti()); actualizar(); } }, 1000);
+        
         setInterval(() => {
             localStorage.setItem('puntos_save', puntos);
             localStorage.setItem('auto_save', autos);
             localStorage.setItem('poder_save', poder);
+            localStorage.setItem('rebirth_save', rebirths);
         }, 2000);
+
+        function abrirAdmin() {
+            const code = prompt("CÓDIGO:");
+            if(code === "JORGE_GOD") puntos += 1000000;
+            actualizar();
+        }
 
         actualizar();
     </script>
