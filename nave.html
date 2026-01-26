@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Starship Dodge 3D</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Courier New', monospace; }
+        #ui {
+            position: absolute; top: 20px; width: 100%; text-align: center;
+            color: #00ff41; pointer-events: none; text-shadow: 0 0 10px #00ff41;
+        }
+        #distancia { font-size: 30px; font-weight: bold; }
+        #gameOver {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9); border: 2px solid #ff3333; padding: 40px; text-align: center; color: #ff3333;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui">
+        <div id="distancia">KM: 0</div>
+        <div style="font-size: 12px;">FLECHAS O A/D PARA MOVERTE</div>
+    </div>
+
+    <div id="gameOver">
+        <h1>MISIÓN FALLIDA</h1>
+        <p>LA NAVE HA SIDO DESTRUIDA</p>
+        <button onclick="location.reload()" style="background:#ff3333; color:white; border:none; padding:10px 20px; cursor:pointer;">REINTENTAR</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        let escena, camara, render, nave;
+        let meteoros = [];
+        let distancia = 0;
+        let vivo = true;
+        let teclas = {};
+
+        function init() {
+            escena = new THREE.Scene();
+            camara = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            render = new THREE.WebGLRenderer({ antialias: true });
+            render.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(render.domElement);
+
+            // NAVE (Un triángulo futurista)
+            const naveGeo = new THREE.ConeGeometry(0.5, 2, 3);
+            const naveMat = new THREE.MeshPhongMaterial({ color: 0x00ff41, wireframe: false });
+            nave = new THREE.Mesh(naveGeo, naveMat);
+            nave.rotation.x = Math.PI / 2;
+            nave.position.y = -1;
+            escena.add(nave);
+
+            // LUCES
+            const luz = new THREE.PointLight(0xffffff, 1, 100);
+            luz.position.set(0, 5, 5);
+            escena.add(luz);
+            escena.add(new THREE.AmbientLight(0x202020));
+
+            camara.position.z = 5;
+            camara.position.y = 1;
+
+            crearEstrellas();
+            animar();
+        }
+
+        function crearEstrellas() {
+            for(let i=0; i<200; i++) {
+                const geo = new THREE.SphereGeometry(0.05, 8, 8);
+                const mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                const estrella = new THREE.Mesh(geo, mat);
+                estrella.position.set(Math.random()*40-20, Math.random()*40-20, Math.random()*-100);
+                escena.add(estrella);
+            }
+        }
+
+        function lanzarMeteoro() {
+            if(!vivo) return;
+            const geo = new THREE.DodecahedronGeometry(Math.random() + 0.5, 0);
+            const mat = new THREE.MeshPhongMaterial({ color: 0x555555 });
+            const m = new THREE.Mesh(geo, mat);
+            m.position.set(Math.random()*10-5, -1, -50);
+            escena.add(m);
+            meteoros.push(m);
+        }
+
+        setInterval(lanzarMeteoro, 600);
+
+        window.onkeydown = (e) => teclas[e.key] = true;
+        window.onkeyup = (e) => teclas[e.key] = false;
+
+        function animar() {
+            if(!vivo) return;
+            requestAnimationFrame(animar);
+
+            // Movimiento
+            if((teclas['ArrowLeft'] || teclas['a']) && nave.position.x > -5) nave.position.x -= 0.15;
+            if((teclas['ArrowRight'] || teclas['d']) && nave.position.x < 5) nave.position.x += 0.15;
+
+            distancia += 1;
+            document.getElementById('distancia').innerText = "KM: " + distancia;
+
+            // Mover meteoros
+            meteoros.forEach((m, index) => {
+                m.position.z += 0.5 + (distancia/2000); // Aumenta velocidad
+                m.rotation.x += 0.02;
+
+                // Colisión simple
+                if(m.position.z > 4 && m.position.z < 6) {
+                    let dx = m.position.x - nave.position.x;
+                    if(Math.abs(dx) < 1) {
+                        vivo = false;
+                        document.getElementById('gameOver').style.display = 'block';
+                    }
+                }
+
+                if(m.position.z > 10) {
+                    escena.remove(m);
+                    meteoros.splice(index, 1);
+                }
+            });
+
+            render.render(escena, camara);
+        }
+
+        init();
+    </script>
+</body>
+</html>
