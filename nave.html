@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CRZ Star-Hacker 3D</title>
+    <title>CRZ Star-Hacker 3D | RSI Interceptor</title>
     <style>
         body { margin: 0; overflow: hidden; background: #000; font-family: 'Courier New', monospace; }
         #ui {
@@ -27,12 +27,12 @@
     <div id="ui">
         <div style="font-size: 14px; letter-spacing: 3px;">CRZ STAR-HACKER 3D</div>
         <div id="distancia">KM: 0</div>
-        <div style="font-size: 10px; color: #00ccff;">SISTEMA: ONLINE | NAVE: ADVANCED RAPTOR</div>
+        <div style="font-size: 10px; color: #00ffff;">NAVE: RSI INTERCEPTOR | STATUS: READY</div>
     </div>
 
     <div id="gameOver">
         <h1>CONEXIÓN PERDIDA</h1>
-        <p>LA NAVE CRZ HA SIDO DESTRUIDA POR UN METEORO</p>
+        <p>EL INTERCEPTOR HA SIDO DESTRUIDO</p>
         <div id="finalScore" style="margin: 10px 0; font-size: 20px;"></div>
         <button onclick="location.reload()">RECONECTAR</button>
     </div>
@@ -47,50 +47,70 @@
         let teclas = {};
 
         function init() {
-            // 1. ESCENA Y CÁMARA
             escena = new THREE.Scene();
             camara = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             render = new THREE.WebGLRenderer({ antialias: true });
             render.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(render.domElement);
 
-            // 2. CREAR LA NAVE (SKIN: ADVANCED RAPTOR)
+            // --- CREAR NAVE (NUEVA SKIN: INTERCEPTOR RSI) ---
             nave = new THREE.Group();
+            const matCuerpo = new THREE.MeshStandardMaterial({ color: 0x333333, metalness: 0.9, roughness: 0.1 });
+            const matDetalle = new THREE.MeshStandardMaterial({ color: 0x555555, metalness: 1, roughness: 0.2 });
+            const matNeon = new THREE.MeshBasicMaterial({ color: 0x00ffff });
 
-            // Cuerpo Central
-            const cuerpoGeo = new THREE.ConeGeometry(0.4, 2, 4);
-            const cuerpoMat = new THREE.MeshPhongMaterial({ color: 0x00ff41 });
-            const cuerpo = new THREE.Mesh(cuerpoGeo, cuerpoMat);
+            // 1. Fuselaje
+            const cuerpoGeo = new THREE.ConeGeometry(0.5, 3, 4);
+            const cuerpo = new THREE.Mesh(cuerpoGeo, matCuerpo);
+            cuerpo.scale.set(1, 1, 0.5); 
             nave.add(cuerpo);
 
-            // Alas de Neón
-            const alaGeo = new THREE.BoxGeometry(1.4, 0.05, 0.6);
-            const alaMat = new THREE.MeshPhongMaterial({ color: 0x00ccff, emissive: 0x00ccff, emissiveIntensity: 0.5 });
-            
-            const alaDer = new THREE.Mesh(alaGeo, alaMat);
-            alaDer.position.set(0.6, -0.4, 0);
-            nave.add(alaDer);
+            // 2. Cabina
+            const cabinaGeo = new THREE.BoxGeometry(0.4, 0.8, 0.3);
+            const cabinaMat = new THREE.MeshPhongMaterial({ color: 0x111111, transparent: true, opacity: 0.8 });
+            const cabina = new THREE.Mesh(cabinaGeo, cabinaMat);
+            cabina.position.set(0, 0.4, 0.2);
+            nave.add(cabina);
 
-            const alaIzq = new THREE.Mesh(alaGeo, alaMat);
-            alaIzq.position.set(-0.6, -0.4, 0);
-            nave.add(alaIzq);
+            // 3. Alas Angulares
+            const crearAla = (x, rotZ) => {
+                const alaG = new THREE.Group();
+                const parte1 = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.8, 0.1), matCuerpo);
+                parte1.position.set(x * 0.9, -0.5, 0);
+                parte1.rotation.z = rotZ;
+                alaG.add(parte1);
+                const borde = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.05, 0.12), matNeon);
+                borde.position.set(x * 0.9, -0.2, 0.05);
+                borde.rotation.z = rotZ;
+                alaG.add(borde);
+                return alaG;
+            };
+            nave.add(crearAla(1, -Math.PI / 4));
+            nave.add(crearAla(-1, Math.PI / 4));
 
-            // Propulsor
-            const motorGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.3, 8);
-            const motorMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });
-            const motor = new THREE.Mesh(motorGeo, motorMat);
-            motor.position.y = -1;
-            nave.add(motor);
+            // 4. Motores Dobles
+            const crearMotor = (x) => {
+                const mG = new THREE.Group();
+                const motor = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.6, 8), matDetalle);
+                mG.add(motor);
+                const luz = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.1, 8), matNeon);
+                luz.position.y = -0.35;
+                mG.add(luz);
+                mG.position.set(x, -1.2, 0);
+                return mG;
+            };
+            nave.add(crearMotor(0.35));
+            nave.add(crearMotor(-0.35));
 
-            nave.rotation.x = Math.PI / 2;
+            nave.rotation.x = Math.PI / 2.2;
             nave.position.y = -1;
             escena.add(nave);
 
-            // 3. LUCES
-            const luzPunto = new THREE.PointLight(0xffffff, 1.2, 100);
+            // Luces
+            const luzPunto = new THREE.PointLight(0xffffff, 1.5, 100);
             luzPunto.position.set(0, 5, 5);
             escena.add(luzPunto);
-            escena.add(new THREE.AmbientLight(0x333333));
+            escena.add(new THREE.AmbientLight(0x444444));
 
             camara.position.set(0, 1.5, 5);
             camara.lookAt(0, 0, 0);
@@ -101,9 +121,7 @@
 
         function crearEstrellas() {
             for(let i=0; i<300; i++) {
-                const geo = new THREE.SphereGeometry(0.04, 4, 4);
-                const mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-                const estrella = new THREE.Mesh(geo, mat);
+                const estrella = new THREE.Mesh(new THREE.SphereGeometry(0.04, 4, 4), new THREE.MeshBasicMaterial({ color: 0xffffff }));
                 estrella.position.set(Math.random()*60-30, Math.random()*60-30, Math.random()*-150);
                 escena.add(estrella);
             }
@@ -112,16 +130,13 @@
         function lanzarMeteoro() {
             if(!vivo) return;
             const size = Math.random() * 0.8 + 0.4;
-            const geo = new THREE.IcosahedronGeometry(size, 0);
-            const mat = new THREE.MeshPhongMaterial({ color: 0x666666, flatShading: true });
-            const m = new THREE.Mesh(geo, mat);
-            
+            const m = new THREE.Mesh(new THREE.IcosahedronGeometry(size, 0), new THREE.MeshPhongMaterial({ color: 0x555555, flatShading: true }));
             m.position.set(Math.random()*12-6, -1, -60);
             escena.add(m);
             meteoros.push(m);
         }
 
-        setInterval(lanzarMeteoro, 500);
+        setInterval(lanzarMeteoro, 450); // Un poco más rápido
 
         window.onkeydown = (e) => teclas[e.key] = true;
         window.onkeyup = (e) => teclas[e.key] = false;
@@ -130,29 +145,26 @@
             if(!vivo) return;
             requestAnimationFrame(animar);
 
-            // MOVIMIENTO E INCLINACIÓN
             if((teclas['ArrowLeft'] || teclas['a']) && nave.position.x > -6) {
-                nave.position.x -= 0.18;
-                nave.rotation.z = 0.4; // Inclinar
+                nave.position.x -= 0.2;
+                nave.rotation.z = 0.5;
             } else if((teclas['ArrowRight'] || teclas['d']) && nave.position.x < 6) {
-                nave.position.x += 0.18;
-                nave.rotation.z = -0.4; // Inclinar
+                nave.position.x += 0.2;
+                nave.rotation.z = -0.5;
             } else {
-                nave.rotation.z = 0; // Recto
+                nave.rotation.z = 0;
             }
 
             distancia += 2;
             document.getElementById('distancia').innerText = "KM: " + distancia;
 
-            // METEOROS
             meteoros.forEach((m, index) => {
-                m.position.z += 0.6 + (distancia/5000); 
-                m.rotation.y += 0.03;
+                m.position.z += 0.7 + (distancia/4000); 
+                m.rotation.y += 0.02;
 
-                // COLISIÓN (Nave está en Z ~4-5)
-                if(m.position.z > 3.5 && m.position.z < 5.5) {
+                if(m.position.z > 3.8 && m.position.z < 5.2) {
                     let dx = Math.abs(m.position.x - nave.position.x);
-                    if(dx < 1.2) { // Rango de colisión ajustado a las alas
+                    if(dx < 1.6) { // Colisión ajustada a las alas anchas
                         vivo = false;
                         document.getElementById('finalScore').innerText = "DISTANCIA: " + distancia + " KM";
                         document.getElementById('gameOver').style.display = 'block';
@@ -170,7 +182,6 @@
 
         init();
 
-        // Ajuste de ventana
         window.addEventListener('resize', () => {
             camara.aspect = window.innerWidth / window.innerHeight;
             camara.updateProjectionMatrix();
