@@ -1,130 +1,120 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>CRZ Spike 2D</title>
+    <meta charset="UTF-8">
+    <title>Spike Cross Clone</title>
     <style>
-        body { margin: 0; background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: sans-serif; }
-        canvas { background: #222; border-bottom: 10px solid #555; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        #instrucciones { position: absolute; top: 10px; color: white; text-align: center; pointer-events: none; }
+        body { background: #1a1a1a; color: white; display: flex; flex-direction: column; align-items: center; font-family: 'Courier New', Courier, monospace; }
+        canvas { border: 4px solid #fff; background: #333; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .ui { margin-top: 10px; }
     </style>
 </head>
 <body>
-    <div id="instrucciones">
-        <h2>CRZ SPIKE 2D</h2>
-        <p>FLECHAS: Mover | Z: Recibir | X: Saltar/Rematar</p>
-    </div>
-    <canvas id="gameCanvas"></canvas>
+    <h2>SPIKE CLONE TEST</h2>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <div class="ui">Flechas: Mover | Espacio: Salto y Remate</div>
 
 <script>
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-canvas.width = 800;
-canvas.height = 400;
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-const gravedad = 0.5;
+    // Configuración
+    let player = { x: 150, y: 300, w: 30, h: 60, dy: 0, speed: 7, jumping: false };
+    let ball = { x: 400, y: 100, vx: 3, vy: 0, radius: 12, trail: [] };
+    const net = { x: 400, y: 250, w: 10, h: 150 };
+    const gravity = 0.6;
 
-// JUGADOR
-const player = {
-    x: 150, y: 300, w: 30, h: 50,
-    vx: 0, vy: 0,
-    enSuelo: false,
-    color: "#00ffff"
-};
+    function update() {
+        // Movimiento Jugador
+        player.dy += gravity;
+        player.y += player.dy;
+        if (player.y > 290) { player.y = 290; player.jumping = false; player.dy = 0; }
 
-// BALÓN
-const ball = {
-    x: 400, y: 100, radio: 10,
-    vx: 2, vy: 0,
-    color: "#ff0"
-};
+        // Física Balón
+        ball.vy += gravity * 0.7;
+        ball.x += ball.vx;
+        ball.y += ball.vy;
 
-const teclas = {};
-window.onkeydown = (e) => teclas[e.key.toLowerCase()] = true;
-window.onkeyup = (e) => teclas[e.key.toLowerCase()] = false;
+        // Guardar posiciones para la estela (Trail)
+        ball.trail.push({x: ball.x, y: ball.y});
+        if (ball.trail.length > 10) ball.trail.shift();
 
-function update() {
-    // MOVIMIENTO JUGADOR
-    if (teclas['arrowleft']) player.vx = -5;
-    else if (teclas['arrowright']) player.vx = 5;
-    else player.vx = 0;
+        // Rebote Suelo y Paredes
+        if (ball.y > 338) { ball.vy *= -0.8; ball.y = 338; }
+        if (ball.x > 788 || ball.x < 12) ball.vx *= -1;
 
-    // SALTO (Tecla X)
-    if (teclas['x'] && player.enSuelo) {
-        player.vy = -12;
-        player.enSuelo = false;
-    }
-
-    player.vy += gravedad;
-    player.x += player.vx;
-    player.y += player.vy;
-
-    // LÍMITES SUELO JUGADOR
-    if (player.y + player.h > canvas.height) {
-        player.y = canvas.height - player.h;
-        player.vy = 0;
-        player.enSuelo = true;
-    }
-
-    // FÍSICA BALÓN
-    ball.vy += gravedad * 0.5;
-    ball.x += ball.vx;
-    ball.y += ball.vy;
-
-    // REBOTE BALÓN SUELO
-    if (ball.y + ball.radio > canvas.height) {
-        ball.y = canvas.height - ball.radio;
-        ball.vy *= -0.8; 
-    }
-    // REBOTE PAREDES
-    if (ball.x < 0 || ball.x > canvas.width) ball.vx *= -1;
-
-    // COLISIÓN JUGADOR - BALÓN (REMATAR)
-    let dx = ball.x - (player.x + player.w/2);
-    let dy = ball.y - (player.y + player.h/2);
-    let distancia = Math.sqrt(dx*dx + dy*dy);
-
-    if (distancia < 40) {
-        if (teclas['x']) { // REMATE FUERTE
-            ball.vx = 10;
-            ball.vy = -5;
-            ball.color = "#f00"; // Cambia a rojo al golpear fuerte
-        } else if (teclas['z']) { // RECEPCIÓN
-            ball.vy = -15;
-            ball.vx = 2;
-            ball.color = "#ff0";
+        // Colisión con la Red
+        if (ball.x + ball.radius > net.x && ball.x - ball.radius < net.x + net.w && ball.y > net.y) {
+            ball.vx *= -1;
         }
-    }
-}
 
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // REMATE (Spike)
+        if (checkCollision(player, ball) && player.jumping) {
+            ball.vy = 15; // Golpe hacia abajo
+            ball.vx = 12; // Velocidad hacia adelante
+            // Efecto visual rápido
+            canvas.style.borderColor = "yellow";
+            setTimeout(() => canvas.style.borderColor = "white", 100);
+        }
 
-    // DIBUJAR RED
-    ctx.fillStyle = "white";
-    ctx.fillRect(canvas.width/2 - 5, canvas.height - 100, 10, 100);
-
-    // DIBUJAR JUGADOR (Anime Style Block)
-    ctx.fillStyle = player.color;
-    ctx.fillRect(player.x, player.y, player.w, player.h);
-    
-    // Ojo del personaje
-    ctx.fillStyle = "white";
-    ctx.fillRect(player.x + 20, player.y + 10, 5, 5);
-
-    // DIBUJAR BALÓN
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, ball.radio, 0, Math.PI*2);
-    ctx.fillStyle = ball.color;
-    ctx.fill();
-    ctx.closePath();
-
-    requestAnimationFrame(() => {
-        update();
         draw();
-    });
-}
+        requestAnimationFrame(update);
+    }
 
-draw();
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Dibujar Suelo
+        ctx.fillStyle = "#555";
+        ctx.fillRect(0, 350, 800, 50);
+
+        // Dibujar Red
+        ctx.fillStyle = "white";
+        ctx.fillRect(net.x, net.y, net.w, net.h);
+
+        // Dibujar Estela del Balón
+        ball.trail.forEach((p, i) => {
+            ctx.fillStyle = `rgba(255, 255, 0, ${i / 10})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, ball.radius * (i / 10), 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // Dibujar Jugador (con color de salto)
+        ctx.fillStyle = player.jumping ? "#ff4444" : "#44ccff";
+        ctx.fillRect(player.x, player.y, player.w, player.h);
+
+        // Dibujar Balón
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "yellow";
+        ctx.fill();
+        ctx.strokeStyle = "black";
+        ctx.stroke();
+    }
+
+    function checkCollision(p, b) {
+        return b.x > p.x - 20 && b.x < p.x + p.w + 20 && b.y > p.y && b.y < p.y + p.h;
+    }
+
+    // Controles
+    const keys = {};
+    window.addEventListener("keydown", e => {
+        keys[e.code] = true;
+        if (e.code === "Space" && !player.jumping) {
+            player.dy = -15;
+            player.jumping = true;
+        }
+    });
+    window.addEventListener("keyup", e => keys[e.code] = false);
+
+    // Bucle de movimiento lateral
+    setInterval(() => {
+        if (keys["ArrowRight"] && player.x < net.x - player.w) player.x += player.speed;
+        if (keys["ArrowLeft"] && player.x > 0) player.x -= player.speed;
+    }, 20);
+
+    update();
 </script>
 </body>
 </html>
