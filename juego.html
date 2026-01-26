@@ -3,215 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Clicker: Edición Pro</title>
+    <title>Cyber Clicker: Roulette Edition</title>
     <style>
         :root { --main-color: #00ff41; --bg-color: #050505; }
-        body { 
-            background: var(--bg-color); 
-            color: var(--main-color); 
-            font-family: 'Courier New', monospace; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            transition: 0.5s; 
-            margin: 0; 
-            padding: 20px;
-            user-select: none;
-        }
-        #stats { font-size: 32px; margin: 20px 0; font-weight: bold; text-shadow: 0 0 15px var(--main-color); }
+        body { background: var(--bg-color); color: var(--main-color); font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; user-select: none; }
         
-        /* Efecto de la PC */
-        #pc { 
-            width: 130px; 
-            cursor: pointer; 
-            transition: 0.1s; 
-            filter: drop-shadow(0 0 10px var(--main-color));
-            margin-bottom: 10px;
-        }
-        #pc:active { transform: scale(0.85); }
-
-        .grid-tienda { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
-            width: 100%; 
-            max-width: 450px; 
-        }
-        .item { 
-            border: 1px solid var(--main-color); 
-            padding: 12px; 
-            border-radius: 8px; 
-            text-align: center; 
-            background: rgba(255,255,255,0.03);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+        #stats { font-size: 32px; margin: 10px 0; font-weight: bold; text-shadow: 0 0 15px var(--main-color); }
         
-        button { 
-            background: var(--main-color); 
-            color: black; 
-            border: none; 
-            padding: 10px; 
-            width: 100%; 
-            cursor: pointer; 
-            font-weight: bold; 
-            border-radius: 4px; 
-            margin-top: 8px;
-            transition: 0.3s;
-        }
-        button:disabled { background: #222; color: #444; cursor: not-allowed; border: 1px solid #333; }
-        
-        .log { height: 40px; margin: 15px 0; font-size: 14px; text-align: center; font-weight: bold; }
-        
-        /* Estilo de Apuestas */
-        .apuesta-box {
-            grid-column: span 2;
-            border: 2px dashed #ff00ff;
-            padding: 15px;
-            background: rgba(255, 0, 255, 0.05);
-        }
-        input {
-            width: 60%;
+        /* Contenedor Ruleta */
+        .roulette-container {
+            width: 250px;
+            height: 60px;
+            border: 2px solid #ff00ff;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
             background: #111;
-            color: white;
-            border: 1px solid #ff00ff;
-            padding: 8px;
-            border-radius: 4px;
-            text-align: center;
+            border-radius: 5px;
         }
+        .roulette-rail {
+            display: flex;
+            position: absolute;
+            left: 0;
+            transition: left 3s cubic-bezier(0.1, 0.7, 1.0, 0.1);
+        }
+        .slot {
+            min-width: 80px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-right: 1px solid #222;
+        }
+        .pointer {
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 4px; height: 100%;
+            background: white;
+            z-index: 10;
+            box-shadow: 0 0 10px white;
+        }
+
+        .grid-tienda { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 450px; }
+        .item { border: 1px solid var(--main-color); padding: 10px; border-radius: 8px; text-align: center; background: rgba(255,255,255,0.03); }
+        
+        button { background: var(--main-color); color: black; border: none; padding: 8px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 5px; }
+        button:disabled { background: #222; color: #444; cursor: not-allowed; }
+        
+        .btn-gamble { background: #ff00ff; color: white; font-size: 11px; margin-top: 10px;}
+        .log { height: 40px; margin: 10px 0; font-weight: bold; text-align: center; }
     </style>
 </head>
 <body>
 
     <div id="stats">💰 <span id="puntos">0</span> BTC</div>
     
-    <div onclick="clickPc()" id="pc">
-        <img src="https://cdn-icons-png.flaticon.com/512/689/689304.png" width="100%" style="filter: hue-rotate(90deg);">
+    <div id="log">SISTEMA LISTO</div>
+
+    <div class="roulette-container">
+        <div class="pointer"></div>
+        <div class="roulette-rail" id="rail">
+            </div>
     </div>
 
-    <div class="log" id="log">SISTEMA INICIADO...</div>
-
     <div class="grid-tienda">
-        <div class="item">
-            <span>CPU v2 (+2 clic)</span>
-            <button id="btnUpgrade" onclick="comprarUpgrade()">50 BTC</button>
-        </div>
-        <div class="item">
-            <span>Bot AFK (+1/seg)</span>
-            <button id="btnAuto" onclick="comprarAuto()">150 BTC</button>
-        </div>
-
-        <div class="item apuesta-box">
-            <span style="color: #ff00ff; font-weight: bold;">🎰 DOBLE O NADA 🎰</span>
-            <div style="margin-top:10px; display:flex; gap:10px;">
-                <input type="number" id="cantidadApuesta" placeholder="¿Cuánto arriesgas?">
-                <button onclick="apostar()" style="background:#ff00ff; margin:0;">HACKEAR</button>
+        <div class="item" style="grid-column: span 2; border-color: #ff00ff;">
+            <span style="color: #ff00ff;">🎰 TERMINAL DE APUESTAS (Costo: 100)</span>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                <button class="btn-gamble" onclick="jugar(70, 10)">Gana 10 (70%)</button>
+                <button class="btn-gamble" onclick="jugar(20, 50)">Gana 50 (20%)</button>
+                <button class="btn-gamble" onclick="jugar(10, 100)">Gana 100 (10%)</button>
+                <button class="btn-gamble" onclick="jugar(0.1, 1000)">EL GORDO (0.1%)</button>
             </div>
         </div>
 
         <div class="item">
-            <span>Skin: Alerta Roja</span>
-            <button id="btnSkinRed" onclick="cambiarSkin('red', 1000)">1,000 BTC</button>
+            <span>PC HACKER (+2)</span>
+            <button id="btnUp" onclick="comprarUp()">50 BTC</button>
         </div>
         <div class="item">
-            <span>Skin: Hacker Gold</span>
-            <button id="btnSkinGold" onclick="cambiarSkin('gold', 5000)">5,000 BTC</button>
+            <span>BOT AFK (+1/s)</span>
+            <button id="btnAuto" onclick="comprarAuto()">150 BTC</button>
         </div>
     </div>
 
-    <p style="font-size: 10px; color: #444; margin-top: 20px;">El progreso se guarda automáticamente.</p>
-
     <script>
-        // VARIABLES DE ESTADO
         let puntos = parseInt(localStorage.getItem('puntos_save')) || 0;
-        let poderClick = parseInt(localStorage.getItem('poder_save')) || 1;
-        let autoClickers = parseInt(localStorage.getItem('auto_save')) || 0;
+        let poder = parseInt(localStorage.getItem('poder_save')) || 1;
+        let autos = parseInt(localStorage.getItem('auto_save')) || 0;
+        let girando = false;
 
-        function actualizarInterfaz() {
+        function actualizar() {
             document.getElementById('puntos').innerText = Math.floor(puntos);
-            document.getElementById('btnUpgrade').disabled = (puntos < 50);
-            document.getElementById('btnAuto').disabled = (puntos < 150);
-            document.getElementById('btnSkinRed').disabled = (puntos < 1000);
-            document.getElementById('btnSkinGold').disabled = (puntos < 5000);
+            document.getElementById('btnUp').disabled = puntos < 50;
+            document.getElementById('btnAuto').disabled = puntos < 150;
         }
 
-        function clickPc() {
-            puntos += poderClick;
-            actualizarInterfaz();
-        }
+        function jugar(prob, premio) {
+            if (girando || puntos < 100) return;
+            puntos -= 100;
+            girando = true;
+            actualizar();
 
-        function comprarUpgrade() {
-            if(puntos >= 50) {
-                puntos -= 50;
-                poderClick += 2;
-                document.getElementById('log').innerText = "¡Hardware mejorado!";
-                actualizarInterfaz();
-            }
-        }
-
-        function comprarAuto() {
-            if(puntos >= 150) {
-                puntos -= 150;
-                autoClickers++;
-                document.getElementById('log').innerText = "Bot instalado y minando...";
-                actualizarInterfaz();
-            }
-        }
-
-        function apostar() {
-            const input = document.getElementById('cantidadApuesta');
-            const cantidad = parseInt(input.value);
-            if (isNaN(cantidad) || cantidad <= 0 || cantidad > puntos) {
-                alert("Cantidad inválida o insuficiente.");
-                return;
+            const rail = document.getElementById('rail');
+            const log = document.getElementById('log');
+            rail.style.transition = "none";
+            rail.style.left = "0px";
+            
+            // Generar slots aleatorios para la animación
+            rail.innerHTML = '';
+            for(let i=0; i<40; i++) {
+                const s = document.createElement('div');
+                s.className = 'slot';
+                s.style.color = Math.random() > 0.5 ? "#ff00ff" : "#00ff41";
+                s.innerText = "HACK";
+                rail.appendChild(s);
             }
 
-            puntos -= cantidad;
-            document.getElementById('log').innerText = "Bypassing firewall...";
-            document.getElementById('log').style.color = "#ff00ff";
+            // Decidir resultado
+            const exito = (Math.random() * 100) <= prob;
+            
+            setTimeout(() => {
+                rail.style.transition = "left 3s cubic-bezier(0.1, 0.7, 0.1, 1)";
+                // Mover a una posición que visualmente parezca azarosa
+                rail.style.left = "-2500px"; 
+            }, 50);
 
             setTimeout(() => {
-                if (Math.random() > 0.5) { // 50% probabilidad
-                    puntos += cantidad * 2;
-                    document.getElementById('log').innerText = "¡HACK EXITOSO! Ganaste " + (cantidad * 2) + " BTC";
-                    document.getElementById('log').style.color = "#00ff41";
+                girando = false;
+                if(exito) {
+                    puntos += premio;
+                    log.innerText = "¡EXITOSO! +" + premio;
+                    log.style.color = "#00ff41";
                 } else {
-                    document.getElementById('log').innerText = "¡SISTEMA BLOQUEADO! Perdiste " + cantidad + " BTC";
-                    document.getElementById('log').style.color = "#ff3333";
+                    log.innerText = "HACKEO FALLIDO";
+                    log.style.color = "#ff3333";
                 }
-                actualizarInterfaz();
-            }, 800);
+                actualizar();
+            }, 3050);
         }
 
-        function cambiarSkin(tipo, costo) {
-            if(puntos >= costo) {
-                puntos -= costo;
-                const root = document.documentElement;
-                if(tipo === 'red') root.style.setProperty('--main-color', '#ff3333');
-                if(tipo === 'gold') root.style.setProperty('--main-color', '#ffcc00');
-                document.getElementById('log').innerText = "¡Skin desbloqueada!";
-                actualizarInterfaz();
-            }
-        }
+        // Funciones básicas
+        function comprarUp() { if(puntos>=50){ puntos-=50; poder+=2; actualizar(); } }
+        function comprarAuto() { if(puntos>=150){ puntos-=150; autos++; actualizar(); } }
 
-        // CICLO DE AUTOCLICKER (AFK)
-        setInterval(() => {
-            if(autoClickers > 0) {
-                puntos += autoClickers;
-                actualizarInterfaz();
-            }
-        }, 1000);
-
-        // AUTOGUARDADO
+        setInterval(() => { if(autos>0){ puntos+=autos; actualizar(); } }, 1000);
         setInterval(() => {
             localStorage.setItem('puntos_save', puntos);
-            localStorage.setItem('auto_save', autoClickers);
-            localStorage.setItem('poder_save', poderClick);
+            localStorage.setItem('auto_save', autos);
+            localStorage.setItem('poder_save', poder);
         }, 2000);
 
-        // Carga inicial
-        actualizarInterfaz();
+        actualizar();
     </script>
 </body>
 </html>
