@@ -3,89 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus IA - Sistema Avanzado</title>
+    <title>Nexus AI - Sistema Seguro</title>
     <style>
-        :root { --neon: #00f2ff; --bg: #0a0a0c; --panel: #161b22; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        
-        /* Cabecera */
-        header { background: var(--panel); padding: 15px; text-align: center; border-bottom: 2px solid var(--neon); box-shadow: 0 0 15px rgba(0,242,255,0.2); }
-        h1 { margin: 0; font-size: 1.2rem; letter-spacing: 2px; color: var(--neon); }
-
-        /* Area de Chat */
-        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .msg { padding: 12px 18px; border-radius: 15px; max-width: 80%; line-height: 1.5; font-size: 15px; animation: fadeIn 0.3s ease; }
-        .bot { background: var(--panel); border: 1px solid #30363d; align-self: flex-start; border-left: 4px solid var(--neon); }
-        .user { background: var(--neon); color: #000; align-self: flex-end; font-weight: 500; box-shadow: 0 4px 10px rgba(0,242,255,0.3); }
-
-        /* Entrada de texto */
-        .input-area { padding: 20px; background: #010409; display: flex; gap: 10px; border-top: 1px solid #30363d; }
-        input { flex: 1; background: #0d1117; border: 1px solid #30363d; color: white; padding: 12px; border-radius: 8px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--neon); box-shadow: 0 0 5px var(--neon); }
-        button { background: var(--neon); border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; color: #000; }
-        button:hover { opacity: 0.8; transform: scale(1.02); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        body { font-family: 'Inter', sans-serif; background: #050505; color: #fff; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        #chat { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .msg { padding: 12px 18px; border-radius: 15px; max-width: 80%; line-height: 1.5; }
+        .bot { background: #1a1a1a; border: 1px solid #333; align-self: flex-start; border-left: 4px solid #00f2ff; }
+        .user { background: #00f2ff; color: #000; align-self: flex-end; font-weight: 500; }
+        .input-box { padding: 20px; background: #111; display: flex; gap: 10px; }
+        input { flex: 1; background: #222; border: 1px solid #444; color: white; padding: 12px; border-radius: 8px; outline: none; }
+        button { background: #00f2ff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>NEXUS CORE v3.0</h1>
-</header>
-
-<div id="chat-container">
-    <div class="msg bot">Sistema Nexus en línea. Hola Jorge, estoy conectado a la red de Google. ¿En qué puedo ayudarte hoy?</div>
+<div id="chat">
+    <div class="msg bot">SISTEMA SEGURO: Por seguridad, la llave no está guardada en el código. <br><br><b>Por favor, pega tu API Key para comenzar a chatear.</b></div>
 </div>
 
-<div class="input-area">
-    <input type="text" id="userInput" placeholder="Escribe un mensaje o pregunta..." onkeypress="if(event.key==='Enter') enviarConsulta()">
-    <button onclick="enviarConsulta()">ENVIAR</button>
+<div class="input-area" id="setup-box" style="padding: 20px; background: #1a1a1a; text-align: center;">
+    <input type="password" id="keyInput" placeholder="Pega aquí tu API Key (...jsYs)">
+    <button onclick="guardarKey()">Conectar Núcleo</button>
+</div>
+
+<div class="input-box" id="chat-box" style="display: none;">
+    <input type="text" id="userInput" placeholder="Pregúntame lo que sea...">
+    <button onclick="llamarIA()">Consultar</button>
 </div>
 
 <script>
-    // Tu API Key integrada
-    const KEY = "AIzaSyAlFVOazYOA1QXXtVGadyayZ8Z_HTojsYs";
+    let MI_LLAVE = "";
 
-    async function enviarConsulta() {
+    function guardarKey() {
+        const key = document.getElementById('keyInput').value.trim();
+        if (key.length < 10) {
+            alert("Esa no parece una llave válida.");
+            return;
+        }
+        MI_LLAVE = key;
+        document.getElementById('setup-box').style.display = 'none';
+        document.getElementById('chat-box').style.display = 'flex';
+        document.getElementById('chat').innerHTML += `<div class="msg bot">¡Llave aceptada! Ya puedes hablar conmigo.</div>`;
+    }
+
+    async function llamarIA() {
         const input = document.getElementById('userInput');
-        const container = document.getElementById('chat-container');
-        const prompt = input.value.trim();
+        const chat = document.getElementById('chat');
+        const userText = input.value.trim();
+        if(!userText) return;
 
-        if (!prompt) return;
-
-        // Mostrar mensaje del usuario
-        container.innerHTML += `<div class="msg user">${prompt}</div>`;
+        chat.innerHTML += `<div class="msg user">${userText}</div>`;
         input.value = "";
-        container.scrollTop = container.scrollHeight;
-
-        // Indicador de carga
-        const loading = document.createElement("div");
-        loading.className = "msg bot";
-        loading.innerText = "Procesando...";
-        container.appendChild(loading);
-
+        
         try {
-            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }]
-                })
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${MI_LLAVE}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: userText }] }] })
             });
 
-            const data = await resp.json();
-            const respuestaIA = data.candidates[0].content.parts[0].text;
-
-            loading.innerText = respuestaIA;
+            const data = await response.json();
+            const aiResponse = data.candidates[0].content.parts[0].text;
+            chat.innerHTML += `<div class="msg bot">${aiResponse}</div>`;
         } catch (error) {
-            loading.innerText = "Error: No pude conectar con el núcleo. Revisa tu conexión.";
-            console.error(error);
+            chat.innerHTML += `<div class="msg bot" style="color: red;">Error: Verifica que tu llave sea correcta o que tengas internet.</div>`;
         }
-        
-        container.scrollTop = container.scrollHeight;
+        chat.scrollTop = chat.scrollHeight;
     }
 </script>
-
 </body>
 </html>
