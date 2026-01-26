@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Clicker: The Ultimate Hack</title>
+    <title>Cyber Clicker: Cloud Transfer Edition</title>
     <style>
         :root { --main-color: #00ff41; --bg-color: #050505; --accent: #ff00ff; }
         body { background: var(--bg-color); color: var(--main-color); font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; user-select: none; overflow-x: hidden; }
         
-        /* Login Overlay */
+        /* Login */
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
         .login-box { border: 2px solid var(--main-color); padding: 30px; text-align: center; border-radius: 10px; background: #0a0a0a; box-shadow: 0 0 20px var(--main-color); }
         input { background: #111; color: var(--main-color); border: 1px solid var(--main-color); padding: 10px; margin: 10px; text-align: center; outline: none; }
@@ -16,31 +16,29 @@
         /* Dashboard */
         .header { text-align: center; border: 1px solid var(--main-color); padding: 15px; border-radius: 10px; width: 100%; max-width: 450px; background: rgba(0,255,65,0.02); }
         #stats { font-size: 32px; font-weight: bold; margin: 5px 0; text-shadow: 0 0 10px var(--main-color); }
-        .user-tag { font-size: 12px; color: var(--accent); letter-spacing: 2px; }
+        
+        /* Botones de Transferencia */
+        .transfer-btns { display: flex; gap: 5px; justify-content: center; margin-top: 10px; }
+        .btn-transfer { background: #444; color: white; font-size: 9px; width: auto; padding: 5px 8px; }
 
-        /* Ruleta Animada */
+        /* Ruleta */
         .roulette-container { width: 300px; height: 60px; border: 2px solid var(--accent); margin: 15px 0; position: relative; overflow: hidden; background: #111; border-radius: 8px; }
         .roulette-rail { display: flex; position: absolute; left: 0; transition: left 3s cubic-bezier(0.1, 0.7, 0.1, 1); }
         .slot { min-width: 100px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; border-right: 1px solid #222; }
-        .pointer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 4px; height: 100%; background: white; z-index: 10; box-shadow: 0 0 10px white; }
+        .pointer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 4px; height: 100%; background: white; z-index: 10; }
 
-        /* PC Clicker */
         #pc-target { width: 110px; cursor: pointer; transition: 0.1s; margin: 15px 0; filter: drop-shadow(0 0 10px var(--main-color)); }
         #pc-target:active { transform: scale(0.85); }
 
-        /* Tienda Grid */
         .grid-tienda { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 480px; }
         .item { border: 1px solid var(--main-color); padding: 12px; border-radius: 8px; text-align: center; background: rgba(255,255,255,0.03); }
-        .rebirth-item { grid-column: span 2; border-color: #00ccff; background: rgba(0, 204, 255, 0.05); }
         
         button { background: var(--main-color); color: black; border: none; padding: 10px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 5px; }
-        button:disabled { background: #222; color: #444; cursor: not-allowed; }
+        button:disabled { background: #222; color: #444; }
         .btn-gamble { background: var(--accent); color: white; font-size: 11px; }
 
-        /* Admin & UI */
-        #adminBtn { position: fixed; bottom: 0; right: 0; width: 40px; height: 40px; opacity: 0; cursor: default; }
+        #adminBtn { position: fixed; bottom: 0; right: 0; width: 40px; height: 40px; opacity: 0; z-index: 999; }
         .logout-btn { background: #ff3333; color: white; width: auto; padding: 4px 10px; font-size: 10px; margin-top: 10px; }
-        .log { font-size: 12px; height: 20px; margin: 10px 0; color: var(--main-color); opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -54,9 +52,14 @@
     </div>
 
     <div class="header">
-        <div class="user-tag">ID: <span id="current-user">---</span> | REVIVE: <span id="rebirth-val">0</span></div>
+        <div style="font-size: 12px; color: var(--accent);">HACKER: <span id="current-user">---</span> | REVIVE: <span id="rebirth-val">0</span></div>
         <div id="stats">💰 <span id="puntos">0</span> BTC</div>
-        <div id="multi-info" style="font-size: 10px; color: #00ccff;">Boost: x1.0</div>
+        
+        <div class="transfer-btns">
+            <button class="btn-transfer" onclick="exportarDatos()">📤 BACKUP CODE</button>
+            <button class="btn-transfer" onclick="importarDatos()">📥 IMPORT CODE</button>
+        </div>
+
         <button class="logout-btn" onclick="logout()">TERMINATE SESSION</button>
     </div>
 
@@ -65,28 +68,22 @@
         <div class="roulette-rail" id="rail"></div>
     </div>
 
-    <div class="log" id="log">SYSTEM ONLINE</div>
+    <div id="log" style="font-size: 12px; margin: 10px;">SYSTEM ONLINE</div>
 
     <img id="pc-target" src="https://cdn-icons-png.flaticon.com/512/689/689304.png" onclick="clickPc()">
 
     <div class="grid-tienda">
-        <div class="item rebirth-item">
-            <span style="color: #00ccff;">CORE RESET (Prestigio)</span>
+        <div class="item" style="grid-column: span 2; border-color: #00ccff; background: rgba(0, 204, 255, 0.05);">
+            <span style="color: #00ccff;">CORE RESET</span>
             <button id="btnRebirth" onclick="hacerRebirth()" style="background:#00ccff;">REBIRTH (50k BTC)</button>
         </div>
 
         <div class="item" style="grid-column: span 2; border-color: var(--accent);">
-            <span style="color: var(--accent);">PROBABILITY HACK</span>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top:5px;">
-                <button class="btn-gamble" onclick="jugar(70, 20)">Gana 20 (70%)</button>
-                <button class="btn-gamble" onclick="jugar(20, 100)">Gana 100 (20%)</button>
-                <button class="btn-gamble" onclick="jugar(10, 500)">Gana 500 (10%)</button>
-                <button class="btn-gamble" onclick="jugar(0.1, 5000)">EL GORDO (0.1%)</button>
-            </div>
+            <button class="btn-gamble" onclick="jugar(20, 500)">RIESGO TOTAL: 20% Gana 500 BTC</button>
         </div>
 
-        <div class="item"><span>CPU UP (+2)</span><button id="btnUp" onclick="comprarUp()">50 BTC</button></div>
-        <div class="item"><span>BOT AFK (+1/s)</span><button id="btnAuto" onclick="comprarAuto()">150 BTC</button></div>
+        <div class="item"><span>CPU (+2)</span><button id="btnUp" onclick="comprarUp()">50 BTC</button></div>
+        <div class="item"><span>BOT (+1/s)</span><button id="btnAuto" onclick="comprarAuto()">150 BTC</button></div>
     </div>
 
     <div id="adminBtn" onclick="abrirAdmin()"></div>
@@ -113,7 +110,6 @@
         function actualizar() {
             document.getElementById('puntos').innerText = Math.floor(data.pts);
             document.getElementById('rebirth-val').innerText = data.rb;
-            document.getElementById('multi-info').innerText = "Boost: x" + getMulti().toFixed(1);
             document.getElementById('btnUp').disabled = data.pts < 50;
             document.getElementById('btnAuto').disabled = data.pts < 150;
             document.getElementById('btnRebirth').disabled = data.pts < 50000;
@@ -121,64 +117,61 @@
 
         function clickPc() { data.pts += (data.pwr * getMulti()); actualizar(); }
 
+        // --- FUNCIONES DE TRANSFERENCIA (LA NUEVA MAGIA) ---
+        function exportarDatos() {
+            const rawData = btoa(JSON.stringify(data)); // Convierte los datos en un código secreto
+            prompt("COPIA ESTE CÓDIGO Y PÉGALO EN TU OTRO DISPOSITIVO:", rawData);
+        }
+
+        function importarDatos() {
+            const code = prompt("PEGA AQUÍ TU CÓDIGO DE TRANSFERENCIA:");
+            if (code) {
+                try {
+                    const decodedData = JSON.parse(atob(code));
+                    data = decodedData;
+                    actualizar();
+                    guardar();
+                    alert("¡DATOS SINCRONIZADOS EXITOSAMENTE!");
+                } catch(e) {
+                    alert("CÓDIGO INVÁLIDO O CORRUPTO.");
+                }
+            }
+        }
+
         function jugar(prob, premio) {
             if (girando || data.pts < 100) return;
             data.pts -= 100; girando = true; actualizar();
-            
             const rail = document.getElementById('rail');
             rail.style.transition = "none"; rail.style.left = "0px"; rail.innerHTML = '';
-            for(let i=0; i<40; i++) {
+            for(let i=0; i<30; i++) {
                 const s = document.createElement('div'); s.className = 'slot';
-                s.style.color = Math.random() > 0.5 ? "var(--accent)" : "var(--main-color)";
                 s.innerText = "HACKING"; rail.appendChild(s);
             }
-
             const exito = modoDios ? true : (Math.random() * 100 <= prob);
-            
-            setTimeout(() => {
-                rail.style.transition = "left 3s cubic-bezier(0.1, 0.7, 0.1, 1)";
-                rail.style.left = "-3000px"; 
-            }, 50);
-
+            setTimeout(() => { rail.style.transition = "left 2.5s ease-out"; rail.style.left = "-2000px"; }, 50);
             setTimeout(() => {
                 girando = false;
-                if(exito) {
-                    const totalPremio = premio * getMulti();
-                    data.pts += totalPremio;
-                    msg("HACK EXITOSO: +" + Math.floor(totalPremio), "var(--main-color)");
-                } else {
-                    msg("FIREWALL BLOQUEADO", "#ff3333");
-                }
+                if(exito) { data.pts += (premio * getMulti()); document.getElementById('log').innerText = "GANASTE"; }
+                else { document.getElementById('log').innerText = "PERDISTE"; }
                 actualizar(); guardar();
-            }, 3050);
+            }, 2550);
         }
 
-        function hacerRebirth() {
-            if(data.pts >= 50000) {
-                data.rb++; data.pts = 0; data.pwr = 2; data.bots = 0;
-                alert("NÚCLEO REINICIADO. Tu multiplicador ha subido.");
-                actualizar(); guardar();
-            }
-        }
-
+        function hacerRebirth() { if(data.pts >= 50000){ data.rb++; data.pts=0; data.pwr=2; data.bots=0; actualizar(); guardar(); } }
         function comprarUp() { if(data.pts >= 50){ data.pts -= 50; data.pwr += 2; actualizar(); guardar(); } }
         function comprarAuto() { if(data.pts >= 150){ data.pts -= 150; data.bots++; actualizar(); guardar(); } }
 
         function abrirAdmin() {
-            const code = prompt("INPUT ACCESS CODE:");
+            const code = prompt("ADMIN ACCESS:");
             if(code === "JORGE_GOD") data.pts += 1000000;
-            if(code === "SUERTE_MAX") { modoDios = true; alert("MODO DIOS: Ruleta 100%"); }
-            if(code === "REBOOT") { localStorage.clear(); location.reload(); }
+            if(code === "SUERTE_MAX") modoDios = true;
             actualizar(); guardar();
         }
 
-        function msg(t, c) { const l = document.getElementById('log'); l.innerText = t; l.style.color = c; }
         function logout() { guardar(); location.reload(); }
         function guardar() { if(user) localStorage.setItem('cybUser_' + user, JSON.stringify(data)); }
-
         setInterval(() => { if(data.bots > 0){ data.pts += (data.bots * getMulti()); actualizar(); } }, 1000);
         setInterval(guardar, 5000);
-        actualizar();
     </script>
 </body>
 </html>
