@@ -46,12 +46,46 @@
             document.body.appendChild(render.domElement);
 
             // NAVE (Un triángulo futurista)
-            const naveGeo = new THREE.ConeGeometry(0.5, 2, 3);
-            const naveMat = new THREE.MeshPhongMaterial({ color: 0x00ff41, wireframe: false });
-            nave = new THREE.Mesh(naveGeo, naveMat);
+            function crearNave() {
+            // Grupo principal para unir todas las piezas de la "Skin"
+            nave = new THREE.Group();
+
+            // Cuerpo Central (Cuerpo de la nave)
+            const cuerpoGeo = new THREE.ConeGeometry(0.4, 2, 4);
+            const cuerpoMat = new THREE.MeshPhongMaterial({ color: 0x00ff41 });
+            const cuerpo = new THREE.Mesh(cuerpoGeo, cuerpoMat);
+            nave.add(cuerpo);
+
+            // Alas Izquierda y Derecha (Skin de Neón)
+            const alaGeo = new THREE.BoxGeometry(1.5, 0.1, 0.5);
+            const alaMat = new THREE.MeshPhongMaterial({ 
+                color: 0x00ccff, 
+                emissive: 0x00ccff, 
+                emissiveIntensity: 0.5 
+            });
+            
+            const alaDer = new THREE.Mesh(alaGeo, alaMat);
+            alaDer.position.x = 0.6;
+            alaDer.position.y = -0.5;
+            nave.add(alaDer);
+
+            const alaIzq = new THREE.Mesh(alaGeo, alaMat);
+            alaIzq.position.x = -0.6;
+            alaIzq.position.y = -0.5;
+            nave.add(alaIzq);
+
+            // Propulsor Trasero (Brillo de energía)
+            const motorGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.2, 8);
+            const motorMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });
+            const motor = new THREE.Mesh(motorGeo, motorMat);
+            motor.position.y = -1;
+            nave.add(motor);
+
+            // Orientación y posición inicial
             nave.rotation.x = Math.PI / 2;
             nave.position.y = -1;
             escena.add(nave);
+        }
 
             // LUCES
             const luz = new THREE.PointLight(0xffffff, 1, 100);
