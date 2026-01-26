@@ -2,31 +2,39 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Starship Dodge 3D</title>
+    <title>CRZ Star-Hacker 3D</title>
     <style>
         body { margin: 0; overflow: hidden; background: #000; font-family: 'Courier New', monospace; }
         #ui {
             position: absolute; top: 20px; width: 100%; text-align: center;
             color: #00ff41; pointer-events: none; text-shadow: 0 0 10px #00ff41;
+            z-index: 10;
         }
-        #distancia { font-size: 30px; font-weight: bold; }
+        #distancia { font-size: 35px; font-weight: bold; }
         #gameOver {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.9); border: 2px solid #ff3333; padding: 40px; text-align: center; color: #ff3333;
+            background: rgba(0,0,0,0.95); border: 2px solid #ff3333; padding: 40px; 
+            text-align: center; color: #ff3333; z-index: 100; box-shadow: 0 0 20px #ff3333;
+        }
+        button {
+            background: #ff3333; color: white; border: none; padding: 15px 30px; 
+            cursor: pointer; font-family: 'Courier New'; font-weight: bold; margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
     <div id="ui">
+        <div style="font-size: 14px; letter-spacing: 3px;">CRZ STAR-HACKER 3D</div>
         <div id="distancia">KM: 0</div>
-        <div style="font-size: 12px;">FLECHAS O A/D PARA MOVERTE</div>
+        <div style="font-size: 10px; color: #00ccff;">SISTEMA: ONLINE | NAVE: ADVANCED RAPTOR</div>
     </div>
 
     <div id="gameOver">
-        <h1>MISIÓN FALLIDA</h1>
-        <p>LA NAVE HA SIDO DESTRUIDA</p>
-        <button onclick="location.reload()" style="background:#ff3333; color:white; border:none; padding:10px 20px; cursor:pointer;">REINTENTAR</button>
+        <h1>CONEXIÓN PERDIDA</h1>
+        <p>LA NAVE CRZ HA SIDO DESTRUIDA POR UN METEORO</p>
+        <div id="finalScore" style="margin: 10px 0; font-size: 20px;"></div>
+        <button onclick="location.reload()">RECONECTAR</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -39,88 +47,81 @@
         let teclas = {};
 
         function init() {
+            // 1. ESCENA Y CÁMARA
             escena = new THREE.Scene();
             camara = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             render = new THREE.WebGLRenderer({ antialias: true });
             render.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(render.domElement);
 
-            // NAVE (Un triángulo futurista)
-            function crearNave() {
-            // Grupo principal para unir todas las piezas de la "Skin"
+            // 2. CREAR LA NAVE (SKIN: ADVANCED RAPTOR)
             nave = new THREE.Group();
 
-            // Cuerpo Central (Cuerpo de la nave)
+            // Cuerpo Central
             const cuerpoGeo = new THREE.ConeGeometry(0.4, 2, 4);
             const cuerpoMat = new THREE.MeshPhongMaterial({ color: 0x00ff41 });
             const cuerpo = new THREE.Mesh(cuerpoGeo, cuerpoMat);
             nave.add(cuerpo);
 
-            // Alas Izquierda y Derecha (Skin de Neón)
-            const alaGeo = new THREE.BoxGeometry(1.5, 0.1, 0.5);
-            const alaMat = new THREE.MeshPhongMaterial({ 
-                color: 0x00ccff, 
-                emissive: 0x00ccff, 
-                emissiveIntensity: 0.5 
-            });
+            // Alas de Neón
+            const alaGeo = new THREE.BoxGeometry(1.4, 0.05, 0.6);
+            const alaMat = new THREE.MeshPhongMaterial({ color: 0x00ccff, emissive: 0x00ccff, emissiveIntensity: 0.5 });
             
             const alaDer = new THREE.Mesh(alaGeo, alaMat);
-            alaDer.position.x = 0.6;
-            alaDer.position.y = -0.5;
+            alaDer.position.set(0.6, -0.4, 0);
             nave.add(alaDer);
 
             const alaIzq = new THREE.Mesh(alaGeo, alaMat);
-            alaIzq.position.x = -0.6;
-            alaIzq.position.y = -0.5;
+            alaIzq.position.set(-0.6, -0.4, 0);
             nave.add(alaIzq);
 
-            // Propulsor Trasero (Brillo de energía)
-            const motorGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.2, 8);
+            // Propulsor
+            const motorGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.3, 8);
             const motorMat = new THREE.MeshBasicMaterial({ color: 0xff00ff });
             const motor = new THREE.Mesh(motorGeo, motorMat);
             motor.position.y = -1;
             nave.add(motor);
 
-            // Orientación y posición inicial
             nave.rotation.x = Math.PI / 2;
             nave.position.y = -1;
             escena.add(nave);
-        }
 
-            // LUCES
-            const luz = new THREE.PointLight(0xffffff, 1, 100);
-            luz.position.set(0, 5, 5);
-            escena.add(luz);
-            escena.add(new THREE.AmbientLight(0x202020));
+            // 3. LUCES
+            const luzPunto = new THREE.PointLight(0xffffff, 1.2, 100);
+            luzPunto.position.set(0, 5, 5);
+            escena.add(luzPunto);
+            escena.add(new THREE.AmbientLight(0x333333));
 
-            camara.position.z = 5;
-            camara.position.y = 1;
+            camara.position.set(0, 1.5, 5);
+            camara.lookAt(0, 0, 0);
 
             crearEstrellas();
             animar();
         }
 
         function crearEstrellas() {
-            for(let i=0; i<200; i++) {
-                const geo = new THREE.SphereGeometry(0.05, 8, 8);
+            for(let i=0; i<300; i++) {
+                const geo = new THREE.SphereGeometry(0.04, 4, 4);
                 const mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
                 const estrella = new THREE.Mesh(geo, mat);
-                estrella.position.set(Math.random()*40-20, Math.random()*40-20, Math.random()*-100);
+                estrella.position.set(Math.random()*60-30, Math.random()*60-30, Math.random()*-150);
                 escena.add(estrella);
             }
         }
 
         function lanzarMeteoro() {
             if(!vivo) return;
-            const geo = new THREE.DodecahedronGeometry(Math.random() + 0.5, 0);
-            const mat = new THREE.MeshPhongMaterial({ color: 0x555555 });
+            const size = Math.random() * 0.8 + 0.4;
+            const geo = new THREE.IcosahedronGeometry(size, 0);
+            const mat = new THREE.MeshPhongMaterial({ color: 0x666666, flatShading: true });
             const m = new THREE.Mesh(geo, mat);
-            m.position.set(Math.random()*10-5, -1, -50);
+            
+            m.position.set(Math.random()*12-6, -1, -60);
             escena.add(m);
             meteoros.push(m);
         }
 
-        setInterval(lanzarMeteoro, 600);
+        setInterval(lanzarMeteoro, 500);
 
         window.onkeydown = (e) => teclas[e.key] = true;
         window.onkeyup = (e) => teclas[e.key] = false;
@@ -129,23 +130,31 @@
             if(!vivo) return;
             requestAnimationFrame(animar);
 
-            // Movimiento
-            if((teclas['ArrowLeft'] || teclas['a']) && nave.position.x > -5) nave.position.x -= 0.15;
-            if((teclas['ArrowRight'] || teclas['d']) && nave.position.x < 5) nave.position.x += 0.15;
+            // MOVIMIENTO E INCLINACIÓN
+            if((teclas['ArrowLeft'] || teclas['a']) && nave.position.x > -6) {
+                nave.position.x -= 0.18;
+                nave.rotation.z = 0.4; // Inclinar
+            } else if((teclas['ArrowRight'] || teclas['d']) && nave.position.x < 6) {
+                nave.position.x += 0.18;
+                nave.rotation.z = -0.4; // Inclinar
+            } else {
+                nave.rotation.z = 0; // Recto
+            }
 
-            distancia += 1;
+            distancia += 2;
             document.getElementById('distancia').innerText = "KM: " + distancia;
 
-            // Mover meteoros
+            // METEOROS
             meteoros.forEach((m, index) => {
-                m.position.z += 0.5 + (distancia/2000); // Aumenta velocidad
-                m.rotation.x += 0.02;
+                m.position.z += 0.6 + (distancia/5000); 
+                m.rotation.y += 0.03;
 
-                // Colisión simple
-                if(m.position.z > 4 && m.position.z < 6) {
-                    let dx = m.position.x - nave.position.x;
-                    if(Math.abs(dx) < 1) {
+                // COLISIÓN (Nave está en Z ~4-5)
+                if(m.position.z > 3.5 && m.position.z < 5.5) {
+                    let dx = Math.abs(m.position.x - nave.position.x);
+                    if(dx < 1.2) { // Rango de colisión ajustado a las alas
                         vivo = false;
+                        document.getElementById('finalScore').innerText = "DISTANCIA: " + distancia + " KM";
                         document.getElementById('gameOver').style.display = 'block';
                     }
                 }
@@ -160,6 +169,13 @@
         }
 
         init();
+
+        // Ajuste de ventana
+        window.addEventListener('resize', () => {
+            camara.aspect = window.innerWidth / window.innerHeight;
+            camara.updateProjectionMatrix();
+            render.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
 </body>
 </html>
