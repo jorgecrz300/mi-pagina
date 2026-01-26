@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CRZ Spike 2D</title>
+    <style>
+        body { margin: 0; background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: sans-serif; }
+        canvas { background: #222; border-bottom: 10px solid #555; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        #instrucciones { position: absolute; top: 10px; color: white; text-align: center; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div id="instrucciones">
+        <h2>CRZ SPIKE 2D</h2>
+        <p>FLECHAS: Mover | Z: Recibir | X: Saltar/Rematar</p>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = 800;
+canvas.height = 400;
+
+const gravedad = 0.5;
+
+// JUGADOR
+const player = {
+    x: 150, y: 300, w: 30, h: 50,
+    vx: 0, vy: 0,
+    enSuelo: false,
+    color: "#00ffff"
+};
+
+// BALÓN
+const ball = {
+    x: 400, y: 100, radio: 10,
+    vx: 2, vy: 0,
+    color: "#ff0"
+};
+
+const teclas = {};
+window.onkeydown = (e) => teclas[e.key.toLowerCase()] = true;
+window.onkeyup = (e) => teclas[e.key.toLowerCase()] = false;
+
+function update() {
+    // MOVIMIENTO JUGADOR
+    if (teclas['arrowleft']) player.vx = -5;
+    else if (teclas['arrowright']) player.vx = 5;
+    else player.vx = 0;
+
+    // SALTO (Tecla X)
+    if (teclas['x'] && player.enSuelo) {
+        player.vy = -12;
+        player.enSuelo = false;
+    }
+
+    player.vy += gravedad;
+    player.x += player.vx;
+    player.y += player.vy;
+
+    // LÍMITES SUELO JUGADOR
+    if (player.y + player.h > canvas.height) {
+        player.y = canvas.height - player.h;
+        player.vy = 0;
+        player.enSuelo = true;
+    }
+
+    // FÍSICA BALÓN
+    ball.vy += gravedad * 0.5;
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+
+    // REBOTE BALÓN SUELO
+    if (ball.y + ball.radio > canvas.height) {
+        ball.y = canvas.height - ball.radio;
+        ball.vy *= -0.8; 
+    }
+    // REBOTE PAREDES
+    if (ball.x < 0 || ball.x > canvas.width) ball.vx *= -1;
+
+    // COLISIÓN JUGADOR - BALÓN (REMATAR)
+    let dx = ball.x - (player.x + player.w/2);
+    let dy = ball.y - (player.y + player.h/2);
+    let distancia = Math.sqrt(dx*dx + dy*dy);
+
+    if (distancia < 40) {
+        if (teclas['x']) { // REMATE FUERTE
+            ball.vx = 10;
+            ball.vy = -5;
+            ball.color = "#f00"; // Cambia a rojo al golpear fuerte
+        } else if (teclas['z']) { // RECEPCIÓN
+            ball.vy = -15;
+            ball.vx = 2;
+            ball.color = "#ff0";
+        }
+    }
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // DIBUJAR RED
+    ctx.fillStyle = "white";
+    ctx.fillRect(canvas.width/2 - 5, canvas.height - 100, 10, 100);
+
+    // DIBUJAR JUGADOR (Anime Style Block)
+    ctx.fillStyle = player.color;
+    ctx.fillRect(player.x, player.y, player.w, player.h);
+    
+    // Ojo del personaje
+    ctx.fillStyle = "white";
+    ctx.fillRect(player.x + 20, player.y + 10, 5, 5);
+
+    // DIBUJAR BALÓN
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.radio, 0, Math.PI*2);
+    ctx.fillStyle = ball.color;
+    ctx.fill();
+    ctx.closePath();
+
+    requestAnimationFrame(() => {
+        update();
+        draw();
+    });
+}
+
+draw();
+</script>
+</body>
+</html>
