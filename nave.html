@@ -2,18 +2,18 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CRZ Star-Hacker 3D | RSI Interceptor</title>
+    <title>CRZ Star-Hacker 3D | High-Visibility Edition</title>
     <style>
         body { margin: 0; overflow: hidden; background: #000; font-family: 'Courier New', monospace; }
         #ui {
             position: absolute; top: 20px; width: 100%; text-align: center;
-            color: #00ff41; pointer-events: none; text-shadow: 0 0 10px #00ff41;
+            color: #00ffff; pointer-events: none; text-shadow: 0 0 10px #00ffff;
             z-index: 10;
         }
         #distancia { font-size: 35px; font-weight: bold; }
         #gameOver {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.95); border: 2px solid #ff3333; padding: 40px; 
+            background: rgba(0,0,0,0.9); border: 2px solid #ff3333; padding: 40px; 
             text-align: center; color: #ff3333; z-index: 100; box-shadow: 0 0 20px #ff3333;
         }
         button {
@@ -27,7 +27,7 @@
     <div id="ui">
         <div style="font-size: 14px; letter-spacing: 3px;">CRZ STAR-HACKER 3D</div>
         <div id="distancia">KM: 0</div>
-        <div style="font-size: 10px; color: #00ffff;">NAVE: RSI INTERCEPTOR | STATUS: READY</div>
+        <div style="font-size: 10px; color: #ffffff;">SISTEMA DE VISIÓN: MEJORADO</div>
     </div>
 
     <div id="gameOver">
@@ -48,31 +48,39 @@
 
         function init() {
             escena = new THREE.Scene();
+            // 1. FONDO AZUL OSCURO (Para contraste)
+            escena.background = new THREE.Color(0x050510); 
+
             camara = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             render = new THREE.WebGLRenderer({ antialias: true });
             render.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(render.domElement);
 
-            // --- CREAR NAVE (NUEVA SKIN: INTERCEPTOR RSI) ---
-            nave = new THREE.Group();
-            const matCuerpo = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.9, roughness: 0.1 });
-            const matDetalle = new THREE.MeshStandardMaterial({ color: 0x555555, metalness: 1, roughness: 0.2 });
+            // 2. MATERIALES DE ALTA VISIBILIDAD
+            const matCuerpo = new THREE.MeshStandardMaterial({ 
+                color: 0xaaaaaa, // Gris claro plateado
+                metalness: 0.9, 
+                roughness: 0.1,
+                emissive: 0x111111 
+            });
             const matNeon = new THREE.MeshBasicMaterial({ color: 0x00ffff });
 
-            // 1. Fuselaje
+            // 3. CONSTRUCCIÓN DE LA NAVE
+            nave = new THREE.Group();
+            
+            // Fuselaje
             const cuerpoGeo = new THREE.ConeGeometry(0.5, 3, 4);
             const cuerpo = new THREE.Mesh(cuerpoGeo, matCuerpo);
             cuerpo.scale.set(1, 1, 0.5); 
             nave.add(cuerpo);
 
-            // 2. Cabina
+            // Cabina
             const cabinaGeo = new THREE.BoxGeometry(0.4, 0.8, 0.3);
-            const cabinaMat = new THREE.MeshPhongMaterial({ color: 0x111111, transparent: true, opacity: 0.8 });
-            const cabina = new THREE.Mesh(cabinaGeo, cabinaMat);
+            const cabina = new THREE.Mesh(cabinaGeo, new THREE.MeshPhongMaterial({color: 0x222222}));
             cabina.position.set(0, 0.4, 0.2);
             nave.add(cabina);
 
-            // 3. Alas Angulares
+            // Alas
             const crearAla = (x, rotZ) => {
                 const alaG = new THREE.Group();
                 const parte1 = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.8, 0.1), matCuerpo);
@@ -88,13 +96,13 @@
             nave.add(crearAla(1, -Math.PI / 4));
             nave.add(crearAla(-1, Math.PI / 4));
 
-            // 4. Motores Dobles
+            // Motores
             const crearMotor = (x) => {
                 const mG = new THREE.Group();
-                const motor = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.6, 8), matDetalle);
-                mG.add(motor);
+                const motor = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.6, 8), matCuerpo);
                 const luz = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.1, 8), matNeon);
                 luz.position.y = -0.35;
+                mG.add(motor);
                 mG.add(luz);
                 mG.position.set(x, -1.2, 0);
                 return mG;
@@ -106,11 +114,13 @@
             nave.position.y = -1;
             escena.add(nave);
 
-            // Luces
-            const luzPunto = new THREE.PointLight(0xffffff, 1.5, 100);
-            luzPunto.position.set(0, 5, 5);
-            escena.add(luzPunto);
-            escena.add(new THREE.AmbientLight(0x444444));
+            // 4. LUCES MEJORADAS
+            const luzFrontal = new THREE.DirectionalLight(0xffffff, 1.8);
+            luzFrontal.position.set(0, 5, 10);
+            escena.add(luzFrontal);
+
+            const luzAmbiente = new THREE.AmbientLight(0xffffff, 0.7); 
+            escena.add(luzAmbiente);
 
             camara.position.set(0, 1.5, 5);
             camara.lookAt(0, 0, 0);
@@ -130,13 +140,13 @@
         function lanzarMeteoro() {
             if(!vivo) return;
             const size = Math.random() * 0.8 + 0.4;
-            const m = new THREE.Mesh(new THREE.IcosahedronGeometry(size, 0), new THREE.MeshPhongMaterial({ color: 0x555555, flatShading: true }));
+            const m = new THREE.Mesh(new THREE.IcosahedronGeometry(size, 0), new THREE.MeshPhongMaterial({ color: 0x888888, flatShading: true }));
             m.position.set(Math.random()*12-6, -1, -60);
             escena.add(m);
             meteoros.push(m);
         }
 
-        setInterval(lanzarMeteoro, 450); // Un poco más rápido
+        setInterval(lanzarMeteoro, 450);
 
         window.onkeydown = (e) => teclas[e.key] = true;
         window.onkeyup = (e) => teclas[e.key] = false;
@@ -146,10 +156,10 @@
             requestAnimationFrame(animar);
 
             if((teclas['ArrowLeft'] || teclas['a']) && nave.position.x > -6) {
-                nave.position.x -= 0.2;
+                nave.position.x -= 0.22;
                 nave.rotation.z = 0.5;
             } else if((teclas['ArrowRight'] || teclas['d']) && nave.position.x < 6) {
-                nave.position.x += 0.2;
+                nave.position.x += 0.22;
                 nave.rotation.z = -0.5;
             } else {
                 nave.rotation.z = 0;
@@ -159,12 +169,12 @@
             document.getElementById('distancia').innerText = "KM: " + distancia;
 
             meteoros.forEach((m, index) => {
-                m.position.z += 0.7 + (distancia/4000); 
+                m.position.z += 0.7 + (distancia/5000); 
                 m.rotation.y += 0.02;
 
                 if(m.position.z > 3.8 && m.position.z < 5.2) {
                     let dx = Math.abs(m.position.x - nave.position.x);
-                    if(dx < 1.6) { // Colisión ajustada a las alas anchas
+                    if(dx < 1.7) { 
                         vivo = false;
                         document.getElementById('finalScore').innerText = "DISTANCIA: " + distancia + " KM";
                         document.getElementById('gameOver').style.display = 'block';
