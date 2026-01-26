@@ -15,6 +15,55 @@
     <div class="ui">Flechas: Mover | Espacio: Salto y Remate</div>
 
 <script>
+// 1. Agrega estas variables al inicio con las otras configuraciones
+let enemy = { x: 600, y: 290, w: 30, h: 60, dy: 0, speed: 4, jumping: false };
+
+// 2. Modifica la función update() para incluir la IA del enemigo
+function updateEnemy() {
+    // IA básica: Seguir la posición X del balón
+    // El bot solo se mueve si el balón está de su lado de la red
+    if (ball.x > net.x) {
+        if (enemy.x + enemy.w / 2 < ball.x - 5) {
+            enemy.x += enemy.speed;
+        } else if (enemy.x + enemy.w / 2 > ball.x + 5) {
+            enemy.x -= enemy.speed;
+        }
+    }
+
+    // Lógica de Salto del Bot
+    // Si el balón está cerca y a media altura, el bot salta
+    if (ball.x > enemy.x - 20 && ball.x < enemy.x + enemy.w + 20 && ball.y < 250 && !enemy.jumping) {
+        enemy.dy = -13;
+        enemy.jumping = true;
+    }
+
+    // Gravedad del enemigo
+    enemy.dy += gravity;
+    enemy.y += enemy.dy;
+    
+    if (enemy.y > 290) {
+        enemy.y = 290;
+        enemy.jumping = false;
+        enemy.dy = 0;
+    }
+
+    // Colisión Bot con el Balón (Devolución)
+    if (checkCollision(enemy, ball)) {
+        ball.vy = -10; // La lanza hacia arriba
+        ball.vx = -8;  // La manda hacia tu lado
+    }
+
+    // Limitar que el bot no atraviese la red
+    if (enemy.x < net.x + net.w) enemy.x = net.x + net.w;
+    if (enemy.x > 770) enemy.x = 770;
+}
+
+// 3. No olvides llamar a updateEnemy() dentro de tu función principal update()
+// Y en la función draw(), dibuja al enemigo:
+/*
+    ctx.fillStyle = "#ffbb00"; // Color naranja para el bot
+    ctx.fillRect(enemy.x, enemy.y, enemy.w, enemy.h);
+*/
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
