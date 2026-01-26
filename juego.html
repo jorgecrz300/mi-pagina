@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Clicker</title>
+    <style>
+        body { background: #050505; color: #00ff41; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        #stats { font-size: 24px; margin-bottom: 20px; text-shadow: 0 0 10px #00ff41; }
+        #pc { width: 150px; cursor: pointer; transition: 0.1s; }
+        #pc:active { transform: scale(0.9); }
+        .tienda { margin-top: 30px; border-top: 1px solid #333; padding-top: 20px; display: flex; gap: 10px; }
+        button { background: transparent; border: 1px solid #00ff41; color: #00ff41; padding: 10px; cursor: pointer; border-radius: 5px; }
+        button:disabled { border-color: #333; color: #333; cursor: not-allowed; }
+        .log { font-size: 12px; margin-top: 20px; color: #008822; }
+    </style>
+</head>
+<body>
+
+    <div id="stats">Bitcoins: <span id="puntos">0</span></div>
+    
+    <div onclick="clickPc()" id="pc">
+        <img src="https://cdn-icons-png.flaticon.com/512/689/689304.png" width="150" style="filter: hue-rotate(90deg);">
+    </div>
+
+    <div class="tienda">
+        <button id="btnUpgrade" onclick="comprarUpgrade()">Mejorar CPU (Cuesta 50)</button>
+        <button id="btnAuto" onclick="comprarAuto()">Comprar Bot (Cuesta 100)</button>
+    </div>
+
+    <div class="log" id="log">Esperando conexión...</div>
+
+    <script>
+        let puntos = 0;
+        let poderClick = 1;
+        let autoClickers = 0;
+
+        function clickPc() {
+            puntos += poderClick;
+            actualizarInterfaz();
+            document.getElementById('log').innerText = "Paquete enviado...";
+        }
+
+        function actualizarInterfaz() {
+            document.getElementById('puntos').innerText = puntos;
+            document.getElementById('btnUpgrade').disabled = (puntos < 50);
+            document.getElementById('btnAuto').disabled = (puntos < 100);
+        }
+
+        function comprarUpgrade() {
+            if(puntos >= 50) {
+                puntos -= 50;
+                poderClick += 2;
+                document.getElementById('log').innerText = "CPU Mejorada: +2 por click";
+                actualizarInterfaz();
+            }
+        }
+
+        function comprarAuto() {
+            if(puntos >= 100) {
+                puntos -= 100;
+                autoClickers++;
+                document.getElementById('log').innerText = "Bot instalado!";
+                actualizarInterfaz();
+            }
+        }
+
+        // Bucle para el AutoClicker
+        setInterval(() => {
+            if(autoClickers > 0) {
+                puntos += autoClickers;
+                actualizarInterfaz();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
