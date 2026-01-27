@@ -1,0 +1,98 @@
+<div id="ruleta-container" style="text-align:center; margin-top:20px;">
+    <h2>SISTEMA DE MINADO PASIVO: <span id="pasivo-display">0</span> BTC/s</h2>
+    <div id="canvas-wrapper" style="position:relative; display:inline-block;">
+        <canvas id="wheelCanvas" width="400" height="400"></canvas>
+        <div style="position:absolute; top:-10px; left:190px; width:0; height:0; border-left:10px solid transparent; border-right:10px solid transparent; border-top:20px solid red;"></div>
+    </div>
+    <br>
+    <button onclick="spinWheel()" id="spin-btn" style="padding:15px 30px; font-size:20px; background:#fbff00; cursor:pointer;">¡GIRAR RULETA (1,000 BTC)!</button>
+</div>
+
+<script>
+    // --- LÓGICA PASIVA ---
+    let btc = 10000; // Tu saldo actual
+    let btcPorSegundo = 5; // Lo que ganas sin hacer nada
+    
+    setInterval(() => {
+        btc += btcPorSegundo;
+        document.getElementById('money').innerText = Math.floor(btc); // Actualiza tu contador principal
+    }, 1000);
+
+    // --- LÓGICA DE LA RULETA ---
+    const canvas = document.getElementById("wheelCanvas");
+    const ctx = canvas.getContext("2d");
+    const options = [
+        { label: "NADA", color: "#333", prob: 0.4, prize: 0 },
+        { label: "x2", color: "#0f0", prob: 0.3, prize: 2 },
+        { label: "x5", color: "#00f", prob: 0.2, prize: 5 },
+        { label: "JACKPOT", color: "#f0f", prob: 0.1, prize: 50 }
+    ];
+
+    let startAngle = 0;
+    let arc = Math.PI / (options.length / 2);
+    let spinTimeout = null;
+    let spinAngleStart = 10;
+    let spinTime = 0;
+    let spinTimeTotal = 0;
+
+    function drawRouletteWheel() {
+        ctx.clearRect(0,0,400,400);
+        for(let i = 0; i < options.length; i++) {
+            let angle = startAngle + i * arc;
+            ctx.fillStyle = options[i].color;
+            ctx.beginPath();
+            ctx.arc(200, 200, 180, angle, angle + arc, false);
+            ctx.lineTo(200, 200);
+            ctx.fill();
+            
+            // Texto
+            ctx.save();
+            ctx.fillStyle = "white";
+            ctx.translate(200 + Math.cos(angle + arc/2) * 120, 200 + Math.sin(angle + arc/2) * 120);
+            ctx.rotate(angle + arc/2 + Math.PI/2);
+            ctx.fillText(options[i].label, -ctx.measureText(options[i].label).width/2, 0);
+            ctx.restore();
+        }
+    }
+
+    function spinWheel() {
+        if (btc < 1000) return alert("Pobre... necesitas 1,000 BTC");
+        btc -= 1000;
+        spinAngleStart = Math.random() * 10 + 10;
+        spinTime = 0;
+        spinTimeTotal = Math.random() * 3 + 4 * 1000;
+        rotateWheel();
+    }
+
+    function rotateWheel() {
+        spinTime += 30;
+        if(spinTime >= spinTimeTotal) {
+            stopRotateWheel();
+            return;
+        }
+        let spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+        startAngle += (spinAngle * Math.PI / 180);
+        drawRouletteWheel();
+        spinTimeout = setTimeout(rotateWheel, 30);
+    }
+
+    function stopRotateWheel() {
+        clearTimeout(spinTimeout);
+        let degrees = startAngle * 180 / Math.PI + 90;
+        let arcd = arc * 180 / Math.PI;
+        let index = Math.floor((360 - degrees % 360) / arcd);
+        let result = options[index];
+        
+        let premio = 1000 * result.prize;
+        btc += premio;
+        alert("Cayó en: " + result.label + ". Ganaste: " + premio + " BTC");
+    }
+
+    function easeOut(t, b, c, d) {
+        let ts = (t /= d) * t;
+        let tc = ts * t;
+        return b + c * (tc + -3 * ts + 3 * t);
+    }
+
+    drawRouletteWheel();
+</script>
