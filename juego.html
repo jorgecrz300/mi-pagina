@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Clicker: Cloud Transfer Edition</title>
+    <title>Cyber Clicker: Maestro Edition</title>
     <style>
         :root { --main-color: #00ff41; --bg-color: #050505; --accent: #ff00ff; }
         body { background: var(--bg-color); color: var(--main-color); font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; user-select: none; overflow-x: hidden; }
@@ -33,12 +33,13 @@
         .grid-tienda { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 480px; }
         .item { border: 1px solid var(--main-color); padding: 12px; border-radius: 8px; text-align: center; background: rgba(255,255,255,0.03); }
         
-        button { background: var(--main-color); color: black; border: none; padding: 10px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 5px; }
+        button { background: var(--main-color); color: black; border: none; padding: 10px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 5px; font-size: 12px; }
         button:disabled { background: #222; color: #444; }
-        .btn-gamble { background: var(--accent); color: white; font-size: 11px; }
+        .btn-gamble { background: var(--accent); color: white; font-size: 10px; padding: 8px 2px; }
 
         #adminBtn { position: fixed; bottom: 0; right: 0; width: 40px; height: 40px; opacity: 0; z-index: 999; }
         .logout-btn { background: #ff3333; color: white; width: auto; padding: 4px 10px; font-size: 10px; margin-top: 10px; }
+        .rename-btn { background: #555; color: white; width: auto; padding: 2px 8px; font-size: 9px; margin-left: 10px; vertical-align: middle; }
     </style>
 </head>
 <body>
@@ -52,7 +53,11 @@
     </div>
 
     <div class="header">
-        <div style="font-size: 12px; color: var(--accent);">HACKER: <span id="current-user">---</span> | REVIVE: <span id="rebirth-val">0</span></div>
+        <div style="font-size: 12px; color: var(--accent);">
+            HACKER: <span id="current-user">---</span> 
+            <button class="rename-btn" onclick="cambiarNombre()">RENAME</button>
+            | REVIVE: <span id="rebirth-val">0</span>
+        </div>
         <div id="stats">💰 <span id="puntos">0</span> BTC</div>
         
         <div class="transfer-btns">
@@ -68,7 +73,7 @@
         <div class="roulette-rail" id="rail"></div>
     </div>
 
-    <div id="log" style="font-size: 12px; margin: 10px;">SYSTEM ONLINE</div>
+    <div id="log" style="font-size: 14px; margin: 10px; font-weight: bold; color: yellow;">SYSTEM ONLINE</div>
 
     <img id="pc-target" src="https://cdn-icons-png.flaticon.com/512/689/689304.png" onclick="clickPc()">
 
@@ -78,8 +83,11 @@
             <button id="btnRebirth" onclick="hacerRebirth()" style="background:#00ccff;">REBIRTH (50k BTC)</button>
         </div>
 
-        <div class="item" style="grid-column: span 2; border-color: var(--accent);">
-            <button class="btn-gamble" onclick="jugar(20, 500)">RIESGO TOTAL: 20% Gana 500 BTC</button>
+        <div class="item" style="grid-column: span 2; border-color: var(--accent); display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+            <button class="btn-gamble" onclick="jugar(75, 100, 1)">NOVATO (75% gana 100)</button>
+            <button class="btn-gamble" onclick="jugar(45, 10000, 500)">MEDIO (45% gana 10k)</button>
+            <button class="btn-gamble" onclick="jugar(30, 50000, 1000)">MEJOR (30% gana 50k)</button>
+            <button class="btn-gamble" onclick="jugar(0.1, 50000000000, 20000000)">MAESTRO (0.1% gana 50B)</button>
         </div>
 
         <div class="item"><span>CPU (+2)</span><button id="btnUp" onclick="comprarUp()">50 BTC</button></div>
@@ -107,8 +115,20 @@
             actualizar();
         }
 
+        // --- FUNCIÓN RENAME ---
+        function cambiarNombre() {
+            let nuevoNombre = prompt("IDENTIDAD NUEVA (ALIAS):", user);
+            if (nuevoNombre && nuevoNombre.trim() !== "") {
+                localStorage.removeItem('cybUser_' + user);
+                user = nuevoNombre.trim().toUpperCase();
+                document.getElementById('current-user').innerText = user;
+                guardar();
+                alert("IDENTIDAD HACKER ACTUALIZADA.");
+            }
+        }
+
         function actualizar() {
-            document.getElementById('puntos').innerText = Math.floor(data.pts);
+            document.getElementById('puntos').innerText = Math.floor(data.pts).toLocaleString();
             document.getElementById('rebirth-val').innerText = data.rb;
             document.getElementById('btnUp').disabled = data.pts < 50;
             document.getElementById('btnAuto').disabled = data.pts < 150;
@@ -117,47 +137,74 @@
 
         function clickPc() { data.pts += (data.pwr * getMulti()); actualizar(); }
 
-        // --- FUNCIONES DE TRANSFERENCIA (LA NUEVA MAGIA) ---
         function exportarDatos() {
-            const rawData = btoa(JSON.stringify(data)); // Convierte los datos en un código secreto
-            prompt("COPIA ESTE CÓDIGO Y PÉGALO EN TU OTRO DISPOSITIVO:", rawData);
+            const rawData = btoa(JSON.stringify(data));
+            prompt("BACKUP CODE (COPIA Y GUARDA):", rawData);
         }
 
         function importarDatos() {
-            const code = prompt("PEGA AQUÍ TU CÓDIGO DE TRANSFERENCIA:");
+            const code = prompt("PEGA TU CÓDIGO DE TRANSFERENCIA:");
             if (code) {
                 try {
                     const decodedData = JSON.parse(atob(code));
                     data = decodedData;
                     actualizar();
                     guardar();
-                    alert("¡DATOS SINCRONIZADOS EXITOSAMENTE!");
+                    alert("¡SINCRO EXITOSA!");
                 } catch(e) {
-                    alert("CÓDIGO INVÁLIDO O CORRUPTO.");
+                    alert("CÓDIGO INVÁLIDO.");
                 }
             }
         }
 
-        function jugar(prob, premio) {
-            if (girando || data.pts < 100) return;
-            data.pts -= 100; girando = true; actualizar();
-            const rail = document.getElementById('rail');
-            rail.style.transition = "none"; rail.style.left = "0px"; rail.innerHTML = '';
-            for(let i=0; i<30; i++) {
-                const s = document.createElement('div'); s.className = 'slot';
-                s.innerText = "HACKING"; rail.appendChild(s);
+        // --- LÓGICA DE GAMBLING CON NIVELES ---
+        function jugar(prob, premio, costo) {
+            if (girando) return;
+            if (data.pts < costo) {
+                alert("FALTAN FONDOS. Necesitas " + costo + " BTC");
+                return;
             }
+            
+            data.pts -= costo; 
+            girando = true; 
+            actualizar();
+            
+            const rail = document.getElementById('rail');
+            rail.style.transition = "none"; 
+            rail.style.left = "0px"; 
+            rail.innerHTML = '';
+            
+            for(let i=0; i<30; i++) {
+                const s = document.createElement('div'); 
+                s.className = 'slot';
+                s.innerText = "HACKING..."; 
+                rail.appendChild(s);
+            }
+            
             const exito = modoDios ? true : (Math.random() * 100 <= prob);
-            setTimeout(() => { rail.style.transition = "left 2.5s ease-out"; rail.style.left = "-2000px"; }, 50);
+            
+            setTimeout(() => { 
+                rail.style.transition = "left 2.5s ease-out"; 
+                rail.style.left = "-2000px"; 
+            }, 50);
+            
             setTimeout(() => {
                 girando = false;
-                if(exito) { data.pts += (premio * getMulti()); document.getElementById('log').innerText = "GANASTE"; }
-                else { document.getElementById('log').innerText = "PERDISTE"; }
-                actualizar(); guardar();
+                if(exito) { 
+                    data.pts += premio; 
+                    document.getElementById('log').innerText = "¡SISTEMA VULNERADO! +" + premio.toLocaleString() + " BTC";
+                    document.getElementById('log').style.color = "#00ff41";
+                }
+                else { 
+                    document.getElementById('log').innerText = "CONEXIÓN PERDIDA (FALLO)"; 
+                    document.getElementById('log').style.color = "red";
+                }
+                actualizar(); 
+                guardar();
             }, 2550);
         }
 
-        function hacerRebirth() { if(data.pts >= 50000){ data.rb++; data.pts=0; data.pwr=2; data.bots=0; actualizar(); guardar(); } }
+        function hacerRebirth() { if(data.pts >= 50000){ data.rb++; data.pts=0; data.pwr=2; data.bots=0; actualizar(); guardar(); alert("REBIRTH COMPLETADO: +50% Multiplicador"); } }
         function comprarUp() { if(data.pts >= 50){ data.pts -= 50; data.pwr += 2; actualizar(); guardar(); } }
         function comprarAuto() { if(data.pts >= 150){ data.pts -= 150; data.bots++; actualizar(); guardar(); } }
 
@@ -170,6 +217,7 @@
 
         function logout() { guardar(); location.reload(); }
         function guardar() { if(user) localStorage.setItem('cybUser_' + user, JSON.stringify(data)); }
+        
         setInterval(() => { if(data.bots > 0){ data.pts += (data.bots * getMulti()); actualizar(); } }, 1000);
         setInterval(guardar, 5000);
     </script>
