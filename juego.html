@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Clicker: Maestro Edition</title>
+    <title>Cyber Clicker: AFK Master Edition</title>
     <style>
         :root { --main-color: #00ff41; --bg-color: #050505; --accent: #ff00ff; }
         body { background: var(--bg-color); color: var(--main-color); font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; user-select: none; overflow-x: hidden; }
@@ -17,7 +17,6 @@
         .header { text-align: center; border: 1px solid var(--main-color); padding: 15px; border-radius: 10px; width: 100%; max-width: 450px; background: rgba(0,255,65,0.02); }
         #stats { font-size: 32px; font-weight: bold; margin: 5px 0; text-shadow: 0 0 10px var(--main-color); }
         
-        /* Botones de Transferencia */
         .transfer-btns { display: flex; gap: 5px; justify-content: center; margin-top: 10px; }
         .btn-transfer { background: #444; color: white; font-size: 9px; width: auto; padding: 5px 8px; }
 
@@ -33,9 +32,12 @@
         .grid-tienda { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 480px; }
         .item { border: 1px solid var(--main-color); padding: 12px; border-radius: 8px; text-align: center; background: rgba(255,255,255,0.03); }
         
-        button { background: var(--main-color); color: black; border: none; padding: 10px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 5px; font-size: 12px; }
+        button { background: var(--main-color); color: black; border: none; padding: 10px; width: 100%; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 5px; font-size: 11px; }
         button:disabled { background: #222; color: #444; }
         .btn-gamble { background: var(--accent); color: white; font-size: 10px; padding: 8px 2px; }
+
+        /* Mostrador de Bots */
+        .count-badge { color: #fbff00; font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px; }
 
         #adminBtn { position: fixed; bottom: 0; right: 0; width: 40px; height: 40px; opacity: 0; z-index: 999; }
         .logout-btn { background: #ff3333; color: white; width: auto; padding: 4px 10px; font-size: 10px; margin-top: 10px; }
@@ -90,8 +92,16 @@
             <button class="btn-gamble" onclick="jugar(0.1, 50000000000, 20000000)">MAESTRO (0.1% gana 50B)</button>
         </div>
 
-        <div class="item"><span>CPU (+2)</span><button id="btnUp" onclick="comprarUp()">50 BTC</button></div>
-        <div class="item"><span>BOT (+1/s)</span><button id="btnAuto" onclick="comprarAuto()">150 BTC</button></div>
+        <div class="item">
+            <span>CPU (+2)</span>
+            <button id="btnUp" onclick="comprarUp()">50 BTC</button>
+        </div>
+
+        <div class="item">
+            <span class="count-badge">BOTS ACTIVOS: <span id="bot-count">0</span></span>
+            <span>BOT (+1/s)</span>
+            <button id="btnAuto" onclick="comprarAuto()">150 BTC</button>
+        </div>
     </div>
 
     <div id="adminBtn" onclick="abrirAdmin()"></div>
@@ -115,7 +125,6 @@
             actualizar();
         }
 
-        // --- FUNCIÓN RENAME ---
         function cambiarNombre() {
             let nuevoNombre = prompt("IDENTIDAD NUEVA (ALIAS):", user);
             if (nuevoNombre && nuevoNombre.trim() !== "") {
@@ -130,6 +139,7 @@
         function actualizar() {
             document.getElementById('puntos').innerText = Math.floor(data.pts).toLocaleString();
             document.getElementById('rebirth-val').innerText = data.rb;
+            document.getElementById('bot-count').innerText = data.bots; // Actualiza el mostrador de bots
             document.getElementById('btnUp').disabled = data.pts < 50;
             document.getElementById('btnAuto').disabled = data.pts < 150;
             document.getElementById('btnRebirth').disabled = data.pts < 50000;
@@ -157,54 +167,34 @@
             }
         }
 
-        // --- LÓGICA DE GAMBLING CON NIVELES ---
         function jugar(prob, premio, costo) {
             if (girando) return;
-            if (data.pts < costo) {
-                alert("FALTAN FONDOS. Necesitas " + costo + " BTC");
-                return;
-            }
-            
-            data.pts -= costo; 
-            girando = true; 
-            actualizar();
-            
+            if (data.pts < costo) { alert("FALTAN FONDOS."); return; }
+            data.pts -= costo; girando = true; actualizar();
             const rail = document.getElementById('rail');
-            rail.style.transition = "none"; 
-            rail.style.left = "0px"; 
-            rail.innerHTML = '';
-            
+            rail.style.transition = "none"; rail.style.left = "0px"; rail.innerHTML = '';
             for(let i=0; i<30; i++) {
-                const s = document.createElement('div'); 
-                s.className = 'slot';
-                s.innerText = "HACKING..."; 
-                rail.appendChild(s);
+                const s = document.createElement('div'); s.className = 'slot';
+                s.innerText = "HACKING..."; rail.appendChild(s);
             }
-            
             const exito = modoDios ? true : (Math.random() * 100 <= prob);
-            
-            setTimeout(() => { 
-                rail.style.transition = "left 2.5s ease-out"; 
-                rail.style.left = "-2000px"; 
-            }, 50);
-            
+            setTimeout(() => { rail.style.transition = "left 2.5s ease-out"; rail.style.left = "-2000px"; }, 50);
             setTimeout(() => {
                 girando = false;
                 if(exito) { 
                     data.pts += premio; 
-                    document.getElementById('log').innerText = "¡SISTEMA VULNERADO! +" + premio.toLocaleString() + " BTC";
+                    document.getElementById('log').innerText = "¡EXITO! +" + premio.toLocaleString();
                     document.getElementById('log').style.color = "#00ff41";
                 }
                 else { 
-                    document.getElementById('log').innerText = "CONEXIÓN PERDIDA (FALLO)"; 
+                    document.getElementById('log').innerText = "FALLO DE RED"; 
                     document.getElementById('log').style.color = "red";
                 }
-                actualizar(); 
-                guardar();
+                actualizar(); guardar();
             }, 2550);
         }
 
-        function hacerRebirth() { if(data.pts >= 50000){ data.rb++; data.pts=0; data.pwr=2; data.bots=0; actualizar(); guardar(); alert("REBIRTH COMPLETADO: +50% Multiplicador"); } }
+        function hacerRebirth() { if(data.pts >= 50000){ data.rb++; data.pts=0; data.pwr=2; data.bots=0; actualizar(); guardar(); } }
         function comprarUp() { if(data.pts >= 50){ data.pts -= 50; data.pwr += 2; actualizar(); guardar(); } }
         function comprarAuto() { if(data.pts >= 150){ data.pts -= 150; data.bots++; actualizar(); guardar(); } }
 
