@@ -3,43 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancionero de Mamá</title>
+    <title>Cancionero de Mamá - Listado</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        :root { --naranja: #d35400; --verde: #27ae60; --crema: #fdfaf6; }
-        body { font-family: 'Georgia', serif; background: var(--crema); margin: 0; padding: 15px; color: #333; }
+        :root { --naranja: #d35400; --verde: #27ae60; --fondo: #f4f1ea; }
+        body { font-family: 'Georgia', serif; background: var(--fondo); margin: 0; padding: 20px; }
         
-        .header { text-align: center; border-bottom: 2px solid var(--naranja); margin-bottom: 20px; padding-bottom: 10px; }
-        #buscador { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; margin-bottom: 20px; box-sizing: border-box; }
+        .header { text-align: center; border-bottom: 3px solid var(--naranja); margin-bottom: 25px; background: white; padding: 15px; border-radius: 15px; }
+        #buscador { width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #ddd; font-size: 18px; box-sizing: border-box; }
 
-        .lista-cantos { display: flex; flex-direction: column; gap: 15px; }
+        .lista-cantos { display: flex; flex-direction: column; gap: 12px; }
         
-        /* Fila de cada canción */
         .fila-canto { 
-            background: white; padding: 15px; border-radius: 10px; 
+            background: white; padding: 20px; border-radius: 12px; 
             display: flex; justify-content: space-between; align-items: center;
-            border-left: 5px solid var(--naranja); box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
         
-        .info-canto { flex: 1; cursor: pointer; }
-        .titulo-lista { font-size: 18px; font-weight: bold; color: #2c3e50; }
+        .titulo-lista { font-size: 18px; font-weight: bold; color: #333; text-transform: uppercase; }
         
         .btn-descargar { 
             background: var(--verde); color: white; border: none; 
-            padding: 8px 12px; border-radius: 5px; font-size: 12px; 
-            font-weight: bold; cursor: pointer; margin-left: 10px;
+            padding: 12px 18px; border-radius: 8px; font-size: 14px; 
+            font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px;
         }
 
-        /* Estilo para el PDF (Oculto en la web) */
+        /* Área de renderizado del PDF (se mantiene oculta) */
         #molde-pdf { display: none; }
-        .hoja-pdf { padding: 50px; text-align: center; background: white; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1 style="color: var(--naranja);">📖 MIS CANTOS</h1>
-    <input type="search" id="buscador" placeholder="🔎 Buscar nombre de canción..." oninput="filtrar()">
+    <h1 style="color: var(--naranja); margin: 0 0 10px 0;">📔 MI CANCIONERO</h1>
+    <input type="search" id="buscador" placeholder="🔎 Buscar por nombre..." oninput="filtrar()">
 </div>
 
 <div class="lista-cantos" id="contenedor">
@@ -48,19 +45,13 @@
 <div id="molde-pdf"></div>
 
 <script>
-    // Transcripción fiel de las fotos enviadas
+    // He incluido una muestra de los cantos de tus fotos. 
+    // Puedes copiar y pegar más bloques de {t: "", l: ""} aquí.
     const misCantos = [
         { t: "TE ALABO OH PADRE", l: "Te alabo oh Padre por tu gran amor,\nporque eres eterno, porque eres el Señor.\n\nTu amor es eterno, tu amor es verdad,\ngracias te damos por tu bondad.\n\nGracias por la vida, gracias por el sol,\ngracias te damos por tu amor Señor." },
-        { t: "ESTE ES MI HIJO", l: "Este es mi hijo muy amado,\nen quien tengo mi complacencia.\n\nEscuchadlo, escuchadlo,\nes el enviado de Dios,\nes el camino, es la verdad." },
         { t: "VASO NUEVO", l: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." },
-        { t: "OH QUÉ DULCE", l: "Oh qué dulce Jesús mío,\nqué delicia es estar junto a ti.\nEn la Eucaristía te encuentro,\ny mi alma se llena de paz." },
-        { t: "GRACIAS SEÑOR", l: "Gracias Señor, porque eres como eres,\ngracias porque me quieres\naunque soy pecador.\n\nGracias por este nuevo día,\ngracias por tu compañía\ny por tu gran amor." },
-        { t: "UNA MIRADA DE FE", l: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador." },
-        { t: "HOMBRES DE VALOR", l: "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\n¿Quién dirá que la vida es hermosa?\n¿Quién dirá que vale la pena vivir?\n\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor." },
-        { t: "RENUÉVAME", l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.\n\nPorque todo lo que hay dentro de mí,\nnecesita ser cambiado Señor.\nPorque todo lo que hay dentro de mi corazón,\nnecesita más de ti." },
-        { t: "TAN CERCA DE MÍ", l: "Tan cerca de mí, tan cerca de mí,\nque hasta lo puedo tocar,\nJesús está aquí.\n\nMíralo a tu lado por la calle,\ncaminando entre la multitud.\nMuchos no lo ven porque ciegos van,\nocupados sin mirar a Dios." },
-        { t: "ESTO QUE TE DOY", l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar." }
-        // Se pueden añadir los demás aquí...
+        { t: "ESTO QUE TE DOY", l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar.\n\nToma mi vida, ponla en tu corazón,\ndame tu mano y llévame,\npastor de amor, Señor." },
+        { t: "HOMBRES DE VALOR", l: "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\n¿Quién dirá que la vida es hermosa?\n¿Quién dirá que vale la pena vivir?\n\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor." }
     ];
 
     function cargarLista() {
@@ -69,10 +60,10 @@
         misCantos.forEach((c, i) => {
             div.innerHTML += `
                 <div class="fila-canto">
-                    <div class="info-canto">
-                        <span class="titulo-lista">${c.t}</span>
-                    </div>
-                    <button class="btn-descargar" onclick="bajarHoja(${i})">PDF 📥</button>
+                    <span class="titulo-lista">${c.t}</span>
+                    <button class="btn-descargar" onclick="bajarHoja(${i})">
+                        GUARDAR PDF 📥
+                    </button>
                 </div>
             `;
         });
@@ -92,20 +83,21 @@
         
         molde.style.display = 'block';
         molde.innerHTML = `
-            <div class="hoja-pdf">
-                <h1 style="color: #d35400; font-size: 32px; border-bottom: 2px solid #ddd; padding-bottom: 10px;">${canto.t}</h1>
-                <p style="font-size: 24px; line-height: 1.8; white-space: pre-line; margin-top: 40px;">${canto.l}</p>
+            <div style="padding: 1in; text-align: center; background: white; height: 100%;">
+                <h1 style="color: #d35400; font-size: 30pt; margin-bottom: 40pt; border-bottom: 2px solid #333; padding-bottom: 10px;">${canto.t}</h1>
+                <p style="font-size: 22pt; line-height: 1.8; white-space: pre-line; color: #000;">${canto.l}</p>
             </div>
         `;
 
         const opciones = {
             margin: 0,
-            filename: `${canto.t}.pdf`,
+            filename: canto.t + '.pdf',
             image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 3 },
+            html2canvas: { scale: 2, logging: false, useCORS: true },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
 
+        // Ejecutar descarga
         html2pdf().set(opciones).from(molde).save().then(() => {
             molde.style.display = 'none';
         });
