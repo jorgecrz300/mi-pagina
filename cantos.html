@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letra del Canto</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body { font-family: serif; background: white; margin: 0; padding: 20px; text-align: center; }
+        .botonera { margin-bottom: 20px; display: flex; justify-content: space-between; }
+        .btn { padding: 10px 20px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-volver { background: #555; color: white; }
+        .btn-pdf { background: #27ae60; color: white; }
+        #hoja { border: 1px solid #eee; padding: 40px; min-height: 80vh; }
+        h1 { color: #d35400; font-size: 30pt; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        p { font-size: 22pt; line-height: 1.7; white-space: pre-line; color: black; }
+    </style>
+</head>
+<body>
+
+    <div class="botonera no-print">
+        <button class="btn btn-volver" onclick="location.href='index.html'">⬅ VOLVER AL MENÚ</button>
+        <button class="btn btn-pdf" onclick="descargar()">DESCARGAR PDF 📥</button>
+    </div>
+
+    <div id="hoja">
+        <h1 id="titulo">Cargando...</h1>
+        <p id="contenido"></p>
+    </div>
+
+    <script>
+        // Aquí puedes meter todas las 46 letras. No se borrarán porque esta página solo carga una.
+        const biblioteca = {
+            "YO SOY EL PAN DE VIDA": "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed...",
+            "ESTO QUE TE DOY": "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo...",
+            "VASO NUEVO": "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor..."
+            // Agrega aquí todas las demás...
+        };
+
+        // Leer qué canción quiere mamá
+        const parametros = new URLSearchParams(window.location.search);
+        const nombreCanto = parametros.get('canto');
+
+        if (nombreCanto && biblioteca[nombreCanto]) {
+            document.getElementById('titulo').innerText = nombreCanto;
+            document.getElementById('contenido').innerText = biblioteca[nombreCanto];
+        }
+
+        function descargar() {
+            const elemento = document.getElementById('hoja');
+            const opt = {
+                margin: 0.5,
+                filename: nombreCanto + '.pdf',
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(elemento).save();
+        }
+    </script>
+</body>
+</html>
