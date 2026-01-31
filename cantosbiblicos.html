@@ -3,189 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Cancionero de Mamá</title>
+    <title>Menu de Cantos</title>
     <style>
-        :root {
-            --naranja: #d35400;
-            --crema: #fdfaf6;
-            --texto: #2c3e50;
-        }
-
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--crema);
-            color: var(--texto);
-            margin: 0;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            padding: 20px 0;
-            border-bottom: 3px solid var(--naranja);
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 24px;
-            color: var(--naranja);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .buscador-contenedor {
-            margin-bottom: 25px;
-        }
-
-        #buscador {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 25px;
-            font-size: 16px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        #buscador:focus {
-            border-color: var(--naranja);
-        }
-
-        .grid-cantos {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-
-        .tarjeta-canto {
-            background: white;
-            padding: 18px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border-left: 5px solid var(--naranja);
-            transition: transform 0.2s;
-        }
-
-        .tarjeta-canto:active {
-            transform: scale(0.98);
-        }
-
-        .info h2 {
-            margin: 0;
-            font-size: 15px;
-            text-transform: uppercase;
-            color: #333;
-        }
-
-        .btn-abrir {
-            background-color: var(--naranja);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-size: 12px;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 12px;
-            color: #888;
+        body { font-family: sans-serif; background: #fdfaf6; padding: 20px; }
+        h1 { color: #d35400; text-align: center; border-bottom: 2px solid #d35400; padding-bottom: 10px; }
+        .lista { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .boton-canto { 
+            background: white; padding: 20px; border-radius: 10px; 
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-decoration: none; color: #333;
+            font-weight: bold; border-left: 5px solid #d35400;
         }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>📖 Mi Cancionero</h1>
-</header>
+    <h1>📖 MI CANCIONERO</h1>
 
-<div class="buscador-contenedor">
-    <input type="text" id="buscador" placeholder="🔎 Buscar canto..." oninput="filtrar()">
-</div>
-
-<div class="grid-cantos" id="contenedor">
+    <div class="lista">
+        <a href="canto.html?id=pan" class="boton-canto">YO SOY EL PAN DE VIDA <span>▶</span></a>
+        <a href="canto.html?id=vaso" class="boton-canto">VASO NUEVO <span>▶</span></a>
+        <a href="canto.html?id=padre" class="boton-canto">TE ALABO OH PADRE <span>▶</span></a>
+        <a href="canto.html?id=pescador" class="boton-canto">PESCADOR DE HOMBRES <span>▶</span></a>
+        <a href="canto.html?id=esto" class="boton-canto">ESTO QUE TE DOY <span>▶</span></a>
     </div>
-
-<footer>
-    Hecho con amor para Mamá ❤️
-</footer>
-
-<script>
-    // Lista de nombres de los cantos (El Tronco)
-    // Cuando agregues más en canto.html, pon el nombre aquí también
-    const cantos = [
-        "YO SOY EL PAN DE VIDA",
-        "VASO NUEVO",
-        "TE ALABO OH PADRE",
-        "PESCADOR DE HOMBRES",
-        "UNA MIRADA DE FE",
-        "ESTO QUE TE DOY",
-        "CANTEMOS AL AMOR",
-        "ALTÍSIMO SEÑOR",
-        "CAMINARÉ EN PRESENCIA",
-        "ID Y ENSEÑAD",
-        "DEMOS GRACIAS AL SEÑOR",
-        "HOY PERDÓNAME",
-        "HOMBRES DE VALOR",
-        "RENUÉVAME",
-        "SANTO ES EL SEÑOR",
-        "CORDERO DE DIOS",
-        "ENTRE TUS MANOS",
-        "ALMA DE CRISTO",
-        "JUNTO A TI MARÍA",
-        "AMAR ES ENTREGARSE",
-        "DIOS ESTÁ AQUÍ"
-    ];
-
-    function cargarMenu() {
-        const contenedor = document.getElementById('contenedor');
-        contenedor.innerHTML = '';
-        
-        // Ordenar alfabéticamente
-        cantos.sort().forEach(nombre => {
-            const card = document.createElement('div');
-            card.className = 'tarjeta-canto';
-            card.innerHTML = `
-                <div class="info">
-                    <h2>${nombre}</h2>
-                </div>
-                <button class="btn-abrir" onclick="irACanto('${nombre}')">Abrir 👁️</button>
-            `;
-            contenedor.appendChild(card);
-        });
-    }
-
-    function irACanto(nombre) {
-        // Esta es la parte mágica: envía el nombre a la otra página
-        window.location.href = `canto.html?canto=${encodeURIComponent(nombre)}`;
-    }
-
-    function filtrar() {
-        const busqueda = document.getElementById('buscador').value.toLowerCase();
-        const tarjetas = document.querySelectorAll('.tarjeta-canto');
-        
-        tarjetas.forEach(tarjeta => {
-            const titulo = tarjeta.querySelector('h2').innerText.toLowerCase();
-            if (titulo.includes(busqueda)) {
-                tarjeta.style.display = 'flex';
-            } else {
-                tarjeta.style.display = 'none';
-            }
-        });
-    }
-
-    // Iniciar el menú
-    cargarMenu();
-</script>
 
 </body>
 </html>
