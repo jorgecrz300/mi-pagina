@@ -3,105 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>El Gran Cancionero de Mamá</title>
+    <title>Cancionero de Mamá</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        :root { --color-iglesia: #d35400; --fondo: #fdfaf6; }
-        body { font-family: 'Georgia', serif; background: var(--fondo); margin: 0; padding: 15px; }
-        .header { text-align: center; background: white; padding: 20px; border-radius: 15px; border: 2px solid var(--color-iglesia); margin-bottom: 20px; }
-        .search-box { display: flex; gap: 8px; }
-        #buscador { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid #ddd; font-size: 16px; outline: none; }
-        .btn-buscar { background: var(--color-iglesia); color: white; border: none; padding: 0 20px; border-radius: 12px; font-size: 20px; }
-        .canto-card { background: white; padding: 35px 20px; border-radius: 15px; text-align: center; margin-bottom: 25px; border: 1px solid #e0d0c0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .titulo-canto { color: var(--color-iglesia); font-size: 24px; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; }
-        .letra-canto { font-size: 19px; white-space: pre-line; line-height: 1.8; color: #34495e; }
-        .btn-pdf { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); background: #27ae60; color: white; border: none; padding: 18px; border-radius: 35px; width: 90%; font-weight: bold; z-index: 100; }
-        #area-pdf { display: none; }
+        :root { --color-principal: #d35400; --fondo: #fdfaf6; }
+        body { font-family: 'Georgia', serif; background: var(--fondo); margin: 0; padding: 10px; padding-bottom: 100px; }
+        .header { text-align: center; background: white; padding: 15px; border-radius: 15px; border: 2px solid var(--color-principal); margin-bottom: 20px; }
+        .search-box { display: flex; gap: 5px; }
+        #buscador { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #ccc; font-size: 16px; }
+        .btn-lupa { background: var(--color-principal); color: white; border: none; padding: 10px 15px; border-radius: 10px; font-size: 18px; }
+        
+        .canto-card { background: white; padding: 30px 15px; border-radius: 12px; text-align: center; margin-bottom: 20px; border: 1px solid #ddd; }
+        .titulo { color: var(--color-principal); font-size: 22px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
+        .letra { font-size: 18px; white-space: pre-line; line-height: 1.6; color: #333; }
+        
+        .btn-pdf { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); background: #27ae60; color: white; border: none; padding: 15px; border-radius: 30px; width: 85%; font-weight: bold; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; }
+        
+        /* Estilo oculto solo para el PDF */
+        #area-pdf { display: none; background: white; width: 800px; }
+        .pagina-pdf { page-break-after: always; padding: 60px; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>📖 LIBRO DE CANTOS DE MAMÁ</h1>
+    <h1>📖 MI CANCIONERO</h1>
     <div class="search-box">
         <input type="search" id="buscador" placeholder="Buscar canto..." oninput="filtrar()">
-        <button onclick="buscarExterno()" class="btn-buscar">🔍</button>
+        <button onclick="buscarGoogle()" class="btn-lupa">🔍</button>
     </div>
 </div>
 
 <div id="visor"></div>
-<button class="btn-pdf" onclick="generarPDF()">📥 DESCARGAR LIBRO COMPLETO (PDF)</button>
+
+<button class="btn-pdf" onclick="generarPDF()">📥 DESCARGAR LIBRO PDF</button>
+
 <div id="area-pdf"></div>
 
 <script>
-    const cantos = [
-        { titulo: "Te alabo, oh Padre", letra: "Te alabo, oh Padre, por tu gran amor,\nporque eres eterno, porque eres el Señor.\nTu amor es eterno, tu amor es verdad,\ngracias te damos por tu bondad." },
-        { titulo: "Este es mi Hijo", letra: "Este es mi Hijo muy amado,\nen quien tengo mis complacencias.\nEscuchadle, dice el Señor,\nÉl es la luz, Él es el amor." },
-        { titulo: "Oh qué dulce", letra: "Oh qué dulce, Jesús mío,\nqué delicia es estar junto a ti.\nEn la Eucaristía te encuentro,\ny mi alma se llena de paz aquí." },
-        { titulo: "Por el trigo y la vid", letra: "Por el trigo y por la vid,\npor el vino y por el pan,\nte damos gracias Señor,\nen tu mesa de unidad." },
-        { titulo: "Gracias Jesús", letra: "Gracias Jesús, gracias te doy,\npor haberme encontrado hoy.\nTu palabra es mi camino,\ntu cuerpo es mi destino." },
-        { titulo: "Gracias Señor", letra: "Gracias Señor, porque eres como eres,\ngracias porque me quieres,\naunque soy pecador." },
-        { titulo: "Esto que te doy", letra: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar." },
-        { titulo: "Dichosos", letra: "Dichosos los pobres de espíritu,\nporque de ellos es el reino de Dios.\nDichosos los que lloran,\nporque ellos serán consolados." },
-        { titulo: "Vaso Nuevo", letra: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." },
-        { titulo: "Una mirada de fe", letra: "Una mirada de fe,\nes la que puede salvar al pecador.\nY si tú miras a Cristo Jesús,\nÉl te perdonará." },
-        { titulo: "Hombres de Valor", letra: "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor." },
-        { titulo: "Tú me has seducido", letra: "Señor, Tú me has seducido,\ny yo me dejé seducir.\nMe has forzado y has podido,\neres más fuerte que yo." },
-        { titulo: "Saber que vendrás", letra: "En este mundo que Cristo nos da,\nhacemos la ofrenda del pan.\nEl pan de nuestro trabajo sin fin,\ny el vino de nuestro cantar." },
-        { titulo: "Acuérdate", letra: "Acuérdate, oh Virgen María,\nque jamás se ha oído decir,\nque ninguno de los que han acudido a ti,\nhaya sido abandonado." },
-        { titulo: "Renuévame", letra: "Renuévame, Señor Jesús,\nya no quiero ser igual.\nPon en mí tu corazón." },
-        { titulo: "Tan cerca de mí", letra: "Tan cerca de mí, tan cerca de mí,\nque hasta lo puedo tocar,\nJesús está aquí." },
-        { titulo: "Santo, Santo, Santo", letra: "Santo, Santo, Santo es el Señor,\nDios del universo.\nLlenos están el cielo y la tierra de tu gloria." },
-        { titulo: "Cordero de Dios", letra: "Cordero de Dios que quitas el pecado del mundo,\nten piedad de nosotros y danos la paz." },
-        { titulo: "Altísimo Señor", letra: "Altísimo Señor, que supiste juntar\na un tiempo en el altar ser cordero y pastor." },
-        { titulo: "Humildes Gracias", letra: "Humildes gracias te doy, Señor,\npor este día que termina hoy." },
-        { titulo: "Caminaré", letra: "Caminaré en presencia del Señor.\nAmo al Señor porque escucha mi voz suplicante." },
-        { titulo: "Hambre de Dios", letra: "No podemos caminar con hambre bajo el sol.\nDanos siempre el mismo pan:\ntu cuerpo y sangre, Señor." },
-        { titulo: "Id y enseñad", letra: "Sois la semilla que ha de crecer,\nsois estrella que ha de brillar.\nSois levadura, sois grano de sal,\nantorcha que debe alumbrar." },
-        { titulo: "Pescador de Hombres", letra: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga." },
-        { titulo: "Cantemos al amor", letra: "Cantemos al amor de los amores,\ncantemos al Señor.\nDios está aquí, venid adoradores,\nadoremos a Cristo Redentor." },
-        { titulo: "Entraré", letra: "Entraré, entraré, entraré a su presencia.\nEn libertad, por su amor,\nel Espíritu me lleva." },
-        { titulo: "Me gozaré", letra: "Me gozaré, me alegraré,\ny cantaré al Señor.\nPorque grandes son sus maravillas." },
-        { titulo: "Señor, no soy digno", letra: "Señor, no soy digno de que entres en mi casa,\npero una palabra tuya bastará para sanarme." },
-        { titulo: "La paz esté con nosotros", letra: "La paz esté con nosotros,\nla paz esté con nosotros,\nla paz esté con nosotros,\nsiempre, siempre, siempre." },
-        { titulo: "Perdón Señor", letra: "Perdón Señor, perdón por mis errores.\nTen piedad de mí, por tu bondad." }
+    // Aquí están los cantos de las fotos
+    const misCantos = [
+        { t: "Te alabo oh Padre", l: "Te alabo oh Padre por tu gran amor,\nporque eres eterno,\nporque eres el Señor.\n\nTu amor es eterno,\ntu amor es verdad,\ngracias te damos\npor tu bondad." },
+        { t: "Vaso Nuevo", l: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." },
+        { t: "Una mirada de fe", l: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador." },
+        { t: "Renuévame", l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón." },
+        { t: "Hombres de Valor", l: "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\n\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor." },
+        { t: "Tan cerca de mí", l: "Tan cerca de mí, tan cerca de mí,\nque hasta lo puedo tocar,\nJesús está aquí." },
+        { t: "Cantemos al Amor", l: "Cantemos al amor de los amores,\ncantemos al Señor.\nDios está aquí, venid adoradores,\nadoremos a Cristo Redentor." },
+        { t: "Altísimo Señor", l: "Altísimo Señor que supiste juntar\na un tiempo en el altar\nser Cordero y Pastor." },
+        { t: "Santo", l: "Santo, Santo, Santo es el Señor\nDios del universo.\nLlenos están el cielo y la tierra de tu gloria." },
+        { t: "Demos Gracias", l: "Demos gracias al Señor, demos gracias,\ndemos gracias al Señor." }
+        // Se pueden añadir los 46 aquí siguiendo el formato { t: "Titulo", l: "Letra" }
     ];
 
-    function cargar() {
-        const v = document.getElementById('visor');
-        v.innerHTML = '';
-        cantos.forEach(c => {
-            v.innerHTML += `<div class="canto-card"><div class="titulo-canto">${c.titulo}</div><div class="letra-canto">${c.letra}</div></div>`;
+    function cargarVisor() {
+        const visor = document.getElementById('visor');
+        visor.innerHTML = '';
+        misCantos.forEach(c => {
+            visor.innerHTML += `<div class="canto-card"><div class="titulo">${c.t}</div><div class="letra">${c.l}</div></div>`;
         });
     }
 
     function filtrar() {
-        const b = document.getElementById('buscador').value.toLowerCase();
+        const bus = document.getElementById('buscador').value.toLowerCase();
         const cards = document.querySelectorAll('.canto-card');
-        cards.forEach((card, i) => {
-            card.style.display = cantos[i].titulo.toLowerCase().includes(b) ? 'block' : 'none';
+        misCantos.forEach((c, i) => {
+            cards[i].style.display = c.t.toLowerCase().includes(bus) ? 'block' : 'none';
         });
     }
 
-    function buscarExterno() {
+    function buscarGoogle() {
         const q = document.getElementById('buscador').value;
-        if(q) window.open("https://www.google.com/search?q=" + encodeURIComponent(q) + " +letra +catolico", '_blank');
+        if(q) window.open("https://www.google.com/search?q=" + encodeURIComponent(q) + " letra catolico", "_blank");
     }
 
     function generarPDF() {
-        const area = document.getElementById('area-pdf');
-        area.innerHTML = '<h1 style="text-align:center; color:#d35400;">CANCIONERO DE MAMÁ</h1>';
-        area.style.display = 'block';
-        cantos.forEach(c => {
-            area.innerHTML += `<div style="page-break-after:always; text-align:center; padding:50px;">
-                <h1 style="color:#d35400; font-size:30px;">${c.titulo}</h1>
-                <p style="font-size:22px; white-space:pre-line; line-height:1.8;">${c.letra}</p>
-            </div>`;
+        const areaPdf = document.getElementById('area-pdf');
+        areaPdf.innerHTML = ''; // Limpiar
+        areaPdf.style.display = 'block'; // Mostrar temporalmente para capturar
+
+        // Crear una página por cada canto
+        misCantos.forEach(c => {
+            areaPdf.innerHTML += `
+                <div class="pagina-pdf">
+                    <h1 style="color:#d35400; font-size:35px; border-bottom:2px solid #eee; padding-bottom:10px;">${c.t}</h1>
+                    <p style="font-size:24px; line-height:1.8; margin-top:30px;">${c.l}</p>
+                </div>
+            `;
         });
-        html2pdf().set({ margin:0.5, filename:'Cancionero_Completo.pdf', jsPDF:{unit:'in', format:'letter'} }).from(area).save().then(() => area.style.display='none');
+
+        const opciones = {
+            margin: 0,
+            filename: 'Cancionero_Mama.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        // Generar
+        html2pdf().set(opciones).from(areaPdf).save().then(() => {
+            areaPdf.style.display = 'none'; // Ocultar de nuevo
+        });
     }
 
-    cargar();
+    cargarVisor();
 </script>
 </body>
 </html>
