@@ -2,165 +2,154 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cancionero de Mamá - Versión Final</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libro de Cantos de Mamá</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        :root { --main-color: #d35400; --bg-paper: #fdfaf6; --text-color: #2c3e50; }
+        :root { --color-iglesia: #d35400; --fondo: #fdfaf6; }
+        body { font-family: 'Georgia', serif; background: var(--fondo); color: #2c3e50; margin: 0; padding: 15px; }
         
-        body { font-family: 'Georgia', serif; background: var(--bg-paper); color: var(--text-color); margin: 0; padding: 15px; }
-        
-        .container { max-width: 100%; margin: auto; padding-bottom: 100px; }
+        .header { text-align: center; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; border: 2px solid var(--color-iglesia); }
+        h1 { margin: 0; color: var(--color-iglesia); font-size: 24px; }
 
-        .header { text-align: center; margin-bottom: 25px; }
-        h1 { font-size: 26px; color: var(--main-color); margin-bottom: 5px; }
-        .sub { font-size: 13px; color: #7f8c8d; margin-bottom: 15px; }
+        /* Buscador */
+        #buscador { width: 100%; padding: 15px; border-radius: 25px; border: 2px solid #ddd; font-size: 18px; box-sizing: border-box; outline: none; text-align: center; margin-top: 10px; }
+        #buscador:focus { border-color: var(--color-iglesia); }
 
-        /* Buscador móvil */
-        .search-container { display: flex; gap: 8px; margin-bottom: 20px; }
-
-        #buscador { 
-            flex: 1; padding: 15px; border-radius: 12px; 
-            border: 2px solid var(--main-color); font-size: 16px;
-            outline: none; background: white;
-        }
-
-        .btn-buscar {
-            background: var(--main-color); color: white; border: none;
-            padding: 0 20px; border-radius: 12px; font-size: 20px;
-        }
-
-        /* Tarjetas centradas */
+        /* Tarjeta de Canto Centrada */
+        .visor-cantos { margin-top: 20px; }
         .canto-card { 
-            background: white; padding: 30px 20px; border-radius: 15px; 
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: center;
-            border: 1px solid #f0e0d0; margin-bottom: 30px;
+            background: white; padding: 40px 20px; border-radius: 15px; 
+            text-align: center; margin-bottom: 25px; border: 1px solid #e0d0c0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
+        .titulo-canto { color: var(--color-iglesia); font-size: 26px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; border-bottom: 1px solid #eee; display: inline-block; padding-bottom: 5px; }
+        .letra-canto { font-size: 20px; white-space: pre-line; line-height: 1.8; color: #34495e; }
 
-        .titulo-canto { color: var(--main-color); font-size: 24px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #fce4d6; display: inline-block; padding-bottom: 5px; }
-        .letra-canto { font-size: 19px; white-space: pre-line; color: #34495e; line-height: 1.7; }
-
-        /* Botón de descarga */
-        .btn-pdf { 
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: #27ae60; color: white; border: none; 
-            padding: 18px; border-radius: 35px; font-weight: bold; 
-            font-size: 16px; width: 85%; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 100;
-        }
-
+        /* Botón de PDF fijo */
+        .btn-pdf { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); background: #27ae60; color: white; border: none; padding: 15px; border-radius: 30px; font-weight: bold; width: 90%; font-size: 18px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 100; cursor: pointer; }
+        
         #area-pdf { display: none; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>📖 Mi Cancionero</h1>
-        <p class="sub">Toca la lupa para buscar letras nuevas en Google</p>
-        <div class="search-container">
-            <input type="search" id="buscador" placeholder="Buscar canto guardado..." oninput="filtrarLocal()">
-            <button class="btn-buscar" onclick="buscarExterno()">🔍</button>
-        </div>
-    </div>
-    
-    <div id="visor">
-        </div>
-
-    <button class="btn-pdf" onclick="generarPDF()">📥 GUARDAR LIBRO (PDF)</button>
+<div class="header">
+    <h1>📖 Mi Cancionero Católico</h1>
+    <input type="search" id="buscador" placeholder="🔎 Busca un canto aquí..." oninput="filtrar()">
 </div>
+
+<div id="visor" class="visor-cantos">
+    </div>
+
+<button class="btn-pdf" onclick="generarPDF()">📥 IMPRIMIR LIBRO (PDF)</button>
 
 <div id="area-pdf"></div>
 
 <script>
-    // LISTA DE CANTOS: Aquí es donde agregas los que ella ya tiene
-    const cantos = [
-        { 
-            titulo: "Pescador de Hombres", 
+    // BASE DE DATOS INTEGRADA (Aquí puedes seguir pegando más abajo)
+    const baseDeDatos = [
+        {
+            titulo: "Pescador de Hombres",
             letra: `Tú has venido a la orilla,
-                    no has buscado ni a sabios ni a ricos,
-                    tan solo quieres que yo te siga.
+            no has buscado ni a sabios ni a ricos,
+            tan solo quieres que yo te siga.
 
-                    Señor, me has mirado a los ojos,
-                    sonriendo has dicho mi nombre,
-                    en la arena he dejado mi barca,
-                    junto a ti buscaré otro mar.` 
+            Señor, me has mirado a los ojos,
+            sonriendo has dicho mi nombre,
+            en la arena he dejado mi barca,
+            junto a ti buscaré otro mar.`
         },
-        { 
-            titulo: "Hacia Tí", 
-            letra: `Caminamos hacia tí señor,
-                    con esperanza y mucha fe,
-                    guíanos por el buen camino,
-                    que siempre te seguiré.` 
+        {
+            titulo: "Alabaré",
+            letra: `Alabaré, alabaré, alabaré, alabaré,
+            alabaré a mi Señor.
+
+            Juan vio el número de los redimidos
+            y todos alababan al Señor.
+            Unos oraban, otros cantaban
+            y todos alababan al Señor.`
+        },
+        {
+            titulo: "Cerca de Ti, Señor",
+            letra: `Cerca de Ti, Señor, yo quiero estar,
+            tu grande eterno amor quiero gozar.
+            Llena mi pobre ser, limpia mi corazón,
+            hazme tu voluntad, hazme tu amor.`
+        },
+        {
+            titulo: "Vienen con Alegría",
+            letra: `Vienen con alegría, Señor,
+            cantando vienen con alegría, Señor,
+            los que caminan por la vida, Señor,
+            sembrando tu paz y amor.`
+        },
+        {
+            titulo: "Paz, Señor",
+            letra: `Paz, Señor, en el cielo y la tierra.
+            Paz, Señor, en las olas del mar.
+            Paz, Señor, en las flores que mueren.
+            Paz, Señor, en mi propio cantar.`
+        },
+        {
+            titulo: "Hacia Ti, Morada Santa",
+            letra: `Hacia Ti, morada santa,
+            hacia Ti, tierra del Salvador,
+            peregrinos, caminantes,
+            vamos hacia Ti.`
         }
     ];
 
     function cargarCantos() {
         const visor = document.getElementById('visor');
         visor.innerHTML = '';
-        cantos.forEach((canto) => {
+        baseDeDatos.forEach((c) => {
             visor.innerHTML += `
                 <div class="canto-card">
-                    <div class="titulo-canto">${canto.titulo}</div>
-                    <div class="letra-canto">${canto.letra}</div>
+                    <div class="titulo-canto">${c.titulo}</div>
+                    <div class="letra-canto">${c.letra}</div>
                 </div>
             `;
         });
     }
 
-    // Filtrar mientras escribe
-    function filtrarLocal() {
-        const query = document.getElementById('buscador').value.toLowerCase();
+    function filtrar() {
+        const busqueda = document.getElementById('buscador').value.toLowerCase();
         const cards = document.querySelectorAll('.canto-card');
+        
         cards.forEach((card, index) => {
-            const match = cantos[index].titulo.toLowerCase().includes(query);
-            card.style.display = match ? 'block' : 'none';
+            const titulo = baseDeDatos[index].titulo.toLowerCase();
+            const letra = baseDeDatos[index].letra.toLowerCase();
+            if(titulo.includes(busqueda) || letra.includes(busqueda)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
         });
     }
 
-    // BUSCADOR EXTERNO: Optimizado para que no falle
-    function buscarExterno() {
-        const busqueda = document.getElementById('buscador').value;
-        if (busqueda.trim() !== "") {
-            // Buscamos la canción + letra + católico para ir a lo seguro
-            const url = `https://www.google.com/search?q=${encodeURIComponent(busqueda)} +letra +catolico`;
-            window.open(url, '_blank');
-        }
-    }
-
-    // Detectar el botón "Ir" o "Buscar" del teclado del cel
-    document.getElementById('buscador').addEventListener('search', buscarExterno);
-    document.getElementById('buscador').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') { buscarExterno(); }
-    });
-
-    // GENERADOR DE PDF
     function generarPDF() {
-        const areaPdf = document.getElementById('area-pdf');
-        areaPdf.innerHTML = '<h1 style="text-align:center; color:#d35400; font-size:40px;">CANCIONERO</h1>';
-        areaPdf.style.display = 'block';
+        const area = document.getElementById('area-pdf');
+        area.innerHTML = '<h1 style="text-align:center; color:#d35400; font-size:40px; margin-top:100px;">CANCIONERO CATÓLICO</h1>';
+        area.style.display = 'block';
 
-        cantos.forEach(canto => {
-            areaPdf.innerHTML += `
+        baseDeDatos.forEach(c => {
+            area.innerHTML += `
                 <div style="page-break-after: always; padding: 60px 40px; text-align: center;">
-                    <h1 style="color: #d35400; font-size: 32px; border-bottom: 2px solid #eee;">${canto.titulo}</h1>
-                    <div style="font-size: 22px; line-height: 1.8; white-space: pre-line; margin-top: 30px;">
-                        ${canto.letra}
+                    <h1 style="color: #d35400; font-size: 35px; border-bottom: 2px solid #eee;">${c.titulo}</h1>
+                    <div style="font-size: 24px; line-height: 1.8; white-space: pre-line; margin-top: 40px;">
+                        ${c.letra}
                     </div>
                 </div>
             `;
         });
 
-        const config = {
+        html2pdf().set({
             margin: 0,
-            filename: 'Cancionero_Mama.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
+            filename: 'Libro_Cantos_Mama.pdf',
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-
-        html2pdf().set(config).from(areaPdf).save().then(() => {
-            areaPdf.style.display = 'none';
-        });
+        }).from(area).save().then(() => { area.style.display = 'none'; });
     }
 
     cargarCantos();
