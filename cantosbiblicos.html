@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancionero de Mamá - Listado</title>
+    <title>Cancionero de Mamá</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root { --naranja: #d35400; --verde: #27ae60; --fondo: #f4f1ea; }
@@ -12,60 +12,120 @@
         .header { text-align: center; border-bottom: 3px solid var(--naranja); margin-bottom: 25px; background: white; padding: 15px; border-radius: 15px; }
         #buscador { width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #ddd; font-size: 18px; box-sizing: border-box; }
 
-        .lista-cantos { display: flex; flex-direction: column; gap: 12px; }
-        
         .fila-canto { 
             background: white; padding: 20px; border-radius: 12px; 
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 10px;
+            cursor: pointer;
         }
         
-        .titulo-lista { font-size: 18px; font-weight: bold; color: #333; text-transform: uppercase; }
-        
-        .btn-descargar { 
-            background: var(--verde); color: white; border: none; 
-            padding: 12px 18px; border-radius: 8px; font-size: 14px; 
-            font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px;
-        }
+        .titulo-lista { font-size: 18px; font-weight: bold; color: #333; }
 
-        /* Área de renderizado del PDF (se mantiene oculta) */
+        /* VENTANA MODAL (La hoja que se abre) */
+        .modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.8); z-index: 2000; overflow-y: auto;
+        }
+        .modal-contenido { 
+            background: white; margin: 20px auto; padding: 40px 20px; width: 90%; 
+            max-width: 600px; border-radius: 15px; text-align: center; position: relative;
+        }
+        .letra-previa { font-size: 20px; white-space: pre-line; line-height: 1.7; margin: 30px 0; }
+        
+        .btn-descarga-final { 
+            background: var(--verde); color: white; border: none; padding: 15px 30px; 
+            border-radius: 30px; font-size: 18px; font-weight: bold; width: 100%; cursor: pointer;
+        }
+        .btn-cerrar { background: #ccc; color: #333; border: none; padding: 10px; border-radius: 10px; margin-top: 15px; width: 100%; }
+
+        /* Solo para el motor del PDF */
         #molde-pdf { display: none; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1 style="color: var(--naranja); margin: 0 0 10px 0;">📔 MI CANCIONERO</h1>
-    <input type="search" id="buscador" placeholder="🔎 Buscar por nombre..." oninput="filtrar()">
+    <h1 style="color: var(--naranja); margin:0;">📔 MI CANCIONERO</h1>
+    <p style="font-size: 14px; color: #666;">Toca un canto para verlo y descargarlo</p>
+    <input type="search" id="buscador" placeholder="🔎 Buscar canto..." oninput="filtrar()">
 </div>
 
-<div class="lista-cantos" id="contenedor">
+<div id="contenedor"></div>
+
+<div id="miModal" class="modal">
+    <div class="modal-contenido">
+        <h1 id="modalTitulo" style="color: var(--naranja);"></h1>
+        <div id="modalLetra" class="letra-previa"></div>
+        
+        <button class="btn-descarga-final" id="btnBajar">📥 GUARDAR EN MIS ARCHIVOS</button>
+        <button class="btn-cerrar" onclick="cerrarModal()">VOLVER ATRÁS</button>
     </div>
+</div>
 
 <div id="molde-pdf"></div>
 
 <script>
-    // He incluido una muestra de los cantos de tus fotos. 
-    // Puedes copiar y pegar más bloques de {t: "", l: ""} aquí.
+    // Usaré los cantos que transcribí de tus fotos
     const misCantos = [
-        { t: "TE ALABO OH PADRE", l: "Te alabo oh Padre por tu gran amor,\nporque eres eterno, porque eres el Señor.\n\nTu amor es eterno, tu amor es verdad,\ngracias te damos por tu bondad.\n\nGracias por la vida, gracias por el sol,\ngracias te damos por tu amor Señor." },
+        { t: "TE ALABO OH PADRE", l: "Te alabo oh Padre por tu gran amor,\nporque eres eterno, porque eres el Señor.\n\nTu amor es eterno, tu amor es verdad,\ngracias te damos por tu bondad." },
         { t: "VASO NUEVO", l: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." },
-        { t: "ESTO QUE TE DOY", l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar.\n\nToma mi vida, ponla en tu corazón,\ndame tu mano y llévame,\npastor de amor, Señor." },
-        { t: "HOMBRES DE VALOR", l: "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\n¿Quién dirá que la vida es hermosa?\n¿Quién dirá que vale la pena vivir?\n\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor." }
+        { t: "ESTO QUE TE DOY", l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar." },
+        { t: "HOMBRES DE VALOR", l: "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\n\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor." }
     ];
+
+    let cantoSeleccionado = null;
 
     function cargarLista() {
         const div = document.getElementById('contenedor');
         div.innerHTML = '';
         misCantos.forEach((c, i) => {
             div.innerHTML += `
-                <div class="fila-canto">
+                <div class="fila-canto" onclick="abrirModal(${i})">
                     <span class="titulo-lista">${c.t}</span>
-                    <button class="btn-descargar" onclick="bajarHoja(${i})">
-                        GUARDAR PDF 📥
-                    </button>
+                    <span style="color: var(--naranja);">ver ></span>
                 </div>
             `;
+        });
+    }
+
+    function abrirModal(index) {
+        cantoSeleccionado = misCantos[index];
+        document.getElementById('modalTitulo').innerText = cantoSeleccionado.t;
+        document.getElementById('modalLetra').innerText = cantoSeleccionado.l;
+        document.getElementById('miModal').style.display = 'block';
+        
+        // Configurar el botón de descarga
+        document.getElementById('btnBajar').onclick = function() {
+            descargarPDF(cantoSeleccionado);
+        };
+    }
+
+    function cerrarModal() {
+        document.getElementById('miModal').style.display = 'none';
+    }
+
+    function descargarPDF(canto) {
+        const molde = document.getElementById('molde-pdf');
+        molde.style.display = 'block';
+        molde.innerHTML = `
+            <div style="padding: 1in; text-align: center; font-family: 'Georgia', serif;">
+                <h1 style="color: #d35400; font-size: 30pt; border-bottom: 2px solid #333; padding-bottom: 10px;">${canto.t}</h1>
+                <p style="font-size: 24pt; line-height: 1.8; white-space: pre-line; margin-top: 40px;">${canto.l}</p>
+            </div>
+        `;
+
+        const opciones = {
+            margin: 0,
+            filename: canto.t + '.pdf',
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        // Esto fuerza la descarga al sistema de archivos del celular
+        html2pdf().set(opciones).from(molde).save().then(() => {
+            molde.style.display = 'none';
+            alert("¡Listo! El canto se guardó en tu carpeta de Descargas.");
         });
     }
 
@@ -77,34 +137,7 @@
         });
     }
 
-    function bajarHoja(index) {
-        const canto = misCantos[index];
-        const molde = document.getElementById('molde-pdf');
-        
-        molde.style.display = 'block';
-        molde.innerHTML = `
-            <div style="padding: 1in; text-align: center; background: white; height: 100%;">
-                <h1 style="color: #d35400; font-size: 30pt; margin-bottom: 40pt; border-bottom: 2px solid #333; padding-bottom: 10px;">${canto.t}</h1>
-                <p style="font-size: 22pt; line-height: 1.8; white-space: pre-line; color: #000;">${canto.l}</p>
-            </div>
-        `;
-
-        const opciones = {
-            margin: 0,
-            filename: canto.t + '.pdf',
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 2, logging: false, useCORS: true },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-
-        // Ejecutar descarga
-        html2pdf().set(opciones).from(molde).save().then(() => {
-            molde.style.display = 'none';
-        });
-    }
-
     cargarLista();
 </script>
-
 </body>
 </html>
