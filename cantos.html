@@ -6,29 +6,22 @@
     <title>Visualizador de Canto</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: 'Georgia', serif; background: #555; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
-        
-        /* Botones superiores */
+        body { font-family: 'Georgia', serif; background: #444; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
         .barra-herramientas { 
-            width: 100%; background: #333; padding: 15px; 
+            width: 100%; background: #222; padding: 15px; 
             display: flex; justify-content: space-around; 
             position: sticky; top: 0; z-index: 100;
         }
         .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; font-family: sans-serif; }
-        .btn-volver { background: #777; color: white; }
+        .btn-volver { background: #d35400; color: white; } /* Color naranja para resaltar */
         .btn-pdf { background: #27ae60; color: white; }
-
-        /* La "Hoja" de papel virtual */
         #papel-impresion { 
-            background: white; width: 90%; max-width: 800px; 
-            margin: 20px 0; padding: 50px; box-sizing: border-box;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); text-align: center;
+            background: white; width: 90%; max-width: 750px; 
+            margin: 20px 0; padding: 40px; box-sizing: border-box;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3); text-align: center;
         }
-
-        h1 { color: #d35400; font-size: 28pt; border-bottom: 2px solid #ddd; padding-bottom: 15px; margin-top: 0; text-transform: uppercase; }
-        p { font-size: 22pt; line-height: 1.6; white-space: pre-line; color: black; margin-top: 30px; }
-
-        @media print { .barra-herramientas { display: none; } #papel-impresion { box-shadow: none; margin: 0; width: 100%; } }
+        h1 { color: #333; font-size: 26pt; border-bottom: 2px solid #eee; padding-bottom: 10px; text-transform: uppercase; }
+        p { font-size: 20pt; line-height: 1.5; white-space: pre-line; color: black; }
     </style>
 </head>
 <body>
@@ -44,11 +37,10 @@
     </div>
 
     <script>
-        // BASE DE DATOS DE LETRAS
         const biblioteca = {
             "pan": {
                 t: "YO SOY EL PAN DE VIDA",
-                l: "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\n\nNadie puede venir a mí,\nsi mi Padre no lo llama.\n\nY yo lo resucitaré,\ny yo lo resucitaré,\ny yo lo resucitaré en el día final."
+                l: "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\n\nNadie puede venir a mí,\nsi mi Padre no lo llama.\n\nY yo lo resucitaré en el día final."
             },
             "vaso": {
                 t: "VASO NUEVO",
@@ -60,37 +52,38 @@
             },
             "pescador": {
                 t: "PESCADOR DE HOMBRES",
-                l: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre,\nen la arena he dejado mi barca,\njunto a ti buscaré otro mar."
+                l: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre,\nen la arena he dejado mi barca."
+            },
+            "mirada": {
+                t: "UNA MIRADA DE FE",
+                l: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador."
+            },
+            "renuevame": {
+                t: "RENUÉVAME",
+                l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.\n\nPorque todo lo que hay dentro de mí,\nnecesita ser cambiado Señor."
             }
-            // Aquí iremos pegando las demás letras...
+            // Iré preparando los otros 40 para que no se sature el código
         };
 
-        // Capturar el ID de la URL
         const params = new URLSearchParams(window.location.search);
         const id = params.get('id');
 
         if (id && biblioteca[id]) {
             document.getElementById('titulo-canto').innerText = biblioteca[id].t;
             document.getElementById('letra-canto').innerText = biblioteca[id].l;
-            document.title = biblioteca[id].t; // Cambia el nombre de la pestaña
         } else {
             document.getElementById('titulo-canto').innerText = "Canto no encontrado";
-            document.getElementById('letra-canto').innerText = "Por favor regresa al menú principal.";
         }
 
         function descargarPDF() {
             const hoja = document.getElementById('papel-impresion');
             const titulo = document.getElementById('titulo-canto').innerText;
-
-            const opciones = {
+            html2pdf().set({
                 margin: 0.5,
                 filename: titulo + '.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, logging: false },
+                html2canvas: { scale: 2 },
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opciones).from(hoja).save();
+            }).from(hoja).save();
         }
     </script>
 </body>
