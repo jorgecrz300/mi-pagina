@@ -3,104 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancionero de Mamá - Completo</title>
+    <title>Cancionero de Mamá</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        :root { --naranja: #d35400; --verde: #27ae60; --crema: #fdfaf6; }
-        body { font-family: 'serif'; background: var(--crema); margin: 0; padding: 15px; }
-        .header { text-align: center; border-bottom: 2px solid var(--naranja); margin-bottom: 20px; padding-bottom: 10px; }
-        #buscador { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; margin-bottom: 20px; box-sizing: border-box; }
-        .lista-cantos { display: flex; flex-direction: column; gap: 10px; }
-        .fila-canto { 
-            background: white; padding: 15px; border-radius: 10px; 
-            display: flex; justify-content: space-between; align-items: center;
-            border-left: 5px solid var(--naranja); box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .titulo-lista { font-size: 15px; font-weight: bold; color: #2c3e50; text-transform: uppercase; flex: 1; }
-        .btn-descargar { background: var(--verde); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        :root { --naranja: #d35400; --verde: #27ae60; --blanco: #ffffff; }
+        body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 15px; }
         
-        /* Contenedor del PDF (se hace visible solo un segundo al generar) */
-        #molde-pdf { position: absolute; left: -9999px; top: 0; background: white; width: 600px; }
-        .hoja-pdf { padding: 40px; text-align: center; }
+        .header { text-align: center; padding: 10px; background: white; border-radius: 10px; margin-bottom: 20px; border-bottom: 4px solid var(--naranja); }
+        h1 { color: var(--naranja); font-size: 20px; margin: 0; }
+
+        .lista { display: flex; flex-direction: column; gap: 10px; }
+        
+        /* Tarjeta de cada música - Totalmente independiente */
+        .tarjeta-musica { 
+            background: var(--blanco); padding: 15px; border-radius: 8px; 
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .titulo { font-weight: bold; font-size: 14px; color: #333; text-transform: uppercase; }
+        
+        .btn-pdf { 
+            background: var(--verde); color: white; border: none; 
+            padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold;
+        }
+
+        /* Molde invisible */
+        #molde-impresion { display: none; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1 style="color: var(--naranja);">📖 MI CANCIONERO</h1>
-    <input type="search" id="buscador" placeholder="🔎 Buscar por nombre..." oninput="filtrar()">
+    <h1>📖 MI CANCIONERO PERSONAL</h1>
 </div>
 
-<div class="lista-cantos" id="contenedor"></div>
+<div class="lista" id="lista-canciones">
+    </div>
 
-<div id="molde-pdf"></div>
+<div id="molde-impresion"></div>
 
 <script>
-    const misCantos = [
-        { t: "YO SOY EL PAN DE VIDA", l: "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\n\nNadie puede venir a mí,\nsi mi Padre no lo llama.\n\nY yo lo resucitaré,\ny yo lo resucitaré,\ny yo lo resucitaré en el día final." },
-        { t: "TE ALABO OH PADRE", l: "Te alabo oh Padre por tu gran amor,\nporque eres eterno, porque eres el Señor.\n\nTu amor es eterno, tu amor es verdad,\ngracias te damos por tu bondad.\n\nGracias por la vida, gracias por el sol,\ngracias te damos por tu amor Señor." },
-        { t: "VASO NUEVO", l: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." },
-        { t: "PESCADOR DE HOMBRES", l: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre,\nen la arena he dejado mi barca,\njunto a ti buscaré otro mar." },
-        { t: "UNA MIRADA DE FE", l: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador." },
-        { t: "ESTO QUE TE DOY", l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar." },
-        { t: "RENUÉVAME", l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón." },
-        { t: "CANTEMOS AL AMOR", l: "Cantemos al Amor de los amores,\ncantemos al Señor.\n¡Dios está aquí! Venid adoradores,\nadoremos a Cristo Redentor." },
-        { t: "ALTÍSIMO SEÑOR", l: "Altísimo Señor, que supiste juntar\na un tiempo en el altar ser Cordero y Pastor.\n\nQuisiera con fervor recibirte en mi pecho,\ny ser de tu amor el más dulce provecho." },
-        { t: "CAMINARÉ", l: "Caminaré en presencia del Señor.\n\nAmo al Señor porque escucha mi voz suplicante,\nporque inclina su oído hacia mí\nel día que lo invoco." },
-        { t: "DEMOS GRACIAS", l: "Demos gracias al Señor, demos gracias,\ndemos gracias al Señor.\n\nPor las mañanas las aves cantan\nlas alabanzas a Cristo el Salvador." },
-        { t: "HOY PERDÓNAME", l: "Hoy perdóname, hoy por siempre,\nsin mirar la mentira, lo vacío de mi dar.\nSin mirar a donde voy ni mi paso al caminar." },
-        { t: "GRACIAS SEÑOR", l: "Gracias Señor, porque eres como eres,\ngracias porque me quieres\naunque soy pecador." },
-        { t: "ID Y ENSEÑAD", l: "Sois la semilla que ha de crecer,\nsois estrella que ha de brillar.\nSois levadura, sois grano de sal,\nantorcha que debe alumbrar." },
-        { t: "HOMBRES DE VALOR", l: "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\n\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor." }
+    // LISTA DE MÚSICAS (Cada una es independiente)
+    const canciones = [
+        { 
+            nombre: "YO SOY EL PAN DE VIDA", 
+            letra: "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\n\nNadie puede venir a mí,\nsi mi Padre no lo llama.\n\nY yo lo resucitaré,\ny yo lo resucitaré,\ny yo lo resucitaré en el día final." 
+        },
+        { 
+            nombre: "VASO NUEVO", 
+            letra: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." 
+        },
+        { 
+            nombre: "TE ALABO OH PADRE", 
+            letra: "Te alabo oh Padre por tu gran amor,\nporque eres eterno, porque eres el Señor.\n\nTu amor es eterno, tu amor es verdad,\ngracias te damos por tu bondad.\n\nGracias por la vida, gracias por el sol,\ngracias te damos por tu amor Señor." 
+        },
+        { 
+            nombre: "PESCADOR DE HOMBRES", 
+            letra: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre,\nen la arena he dejado mi barca,\njunto a ti buscaré otro mar." 
+        },
+        { 
+            nombre: "UNA MIRADA DE FE", 
+            letra: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador." 
+        },
+        { 
+            nombre: "ESTO QUE TE DOY", 
+            letra: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar." 
+        },
+        { 
+            nombre: "HOY PERDÓNAME", 
+            letra: "Hoy perdóname, hoy por siempre,\nsin mirar la mentira, lo vacío de mi dar.\nSin mirar a donde voy ni mi paso al caminar.\n\nSi caminé a la derecha,\no si me fui a la izquierda,\nhoy te pido perdón Señor." 
+        }
     ];
 
-    function cargarLista() {
-        const div = document.getElementById('contenedor');
-        div.innerHTML = '';
-        const listaOrdenada = [...misCantos].sort((a, b) => a.t.localeCompare(b.t));
-        listaOrdenada.forEach((c, i) => {
-            div.innerHTML += `
-                <div class="fila-canto">
-                    <span class="titulo-lista">${c.t}</span>
-                    <button class="btn-descargar" onclick="bajarHoja(${i})">PDF 📥</button>
-                </div>
-            `;
-        });
-    }
+    const contenedor = document.getElementById('lista-canciones');
 
-    function filtrar() {
-        const texto = document.getElementById('buscador').value.toLowerCase();
-        const filas = document.querySelectorAll('.fila-canto');
-        const lista = [...misCantos].sort((a, b) => a.t.localeCompare(b.t));
-        lista.forEach((c, i) => {
-            filas[i].style.display = c.t.toLowerCase().includes(texto) ? 'flex' : 'none';
-        });
-    }
+    // Crear la lista en pantalla
+    canciones.forEach((canto, index) => {
+        const div = document.createElement('div');
+        div.className = 'tarjeta-musica';
+        div.innerHTML = `
+            <span class="titulo">${canto.nombre}</span>
+            <button class="btn-pdf" onclick="generarPDF(${index})">DESCARGAR PDF</button>
+        `;
+        contenedor.appendChild(div);
+    });
 
-    function bajarHoja(index) {
-        const lista = [...misCantos].sort((a, b) => a.t.localeCompare(b.t));
-        const canto = lista[index];
-        const molde = document.getElementById('molde-pdf');
+    // Función que fabrica el PDF de UNA SOLA música
+    function generarPDF(index) {
+        const musica = canciones[index];
+        const molde = document.getElementById('molde-impresion');
         
+        // Limpiamos y preparamos el contenido
+        molde.style.display = 'block';
         molde.innerHTML = `
-            <div class="hoja-pdf">
-                <h1 style="color: #d35400; font-size: 26pt; margin-bottom: 25px;">${canto.t}</h1>
-                <p style="font-size: 20pt; line-height: 1.5; white-space: pre-line;">${canto.l}</p>
+            <div style="padding: 40px; font-family: serif; text-align: center;">
+                <h1 style="font-size: 30pt; color: #d35400; text-transform: uppercase; border-bottom: 2px solid black; padding-bottom: 10px;">${musica.nombre}</h1>
+                <p style="font-size: 22pt; line-height: 1.6; white-space: pre-line; margin-top: 30px;">${musica.letra}</p>
             </div>
         `;
 
-        const opciones = {
-            margin: 0.8,
-            filename: `${canto.t}.pdf`,
+        const config = {
+            margin: 0.5,
+            filename: musica.nombre + '.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, logging: false },
+            html2canvas: { scale: 2 },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
 
-        html2pdf().set(opciones).from(molde).save();
+        // Descarga el PDF y luego esconde el molde de nuevo
+        html2pdf().set(config).from(molde).save().then(() => {
+            molde.style.display = 'none';
+        });
     }
-
-    cargarLista();
 </script>
+
 </body>
 </html>
