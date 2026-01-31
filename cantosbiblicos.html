@@ -2,86 +2,99 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cancionero de Mamá</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        :root { --principal: #d35400; --fondo: #fdfaf6; --verde: #27ae60; }
-        body { font-family: 'Georgia', serif; background: var(--fondo); margin: 0; padding: 15px; padding-bottom: 50px; }
+        :root { --naranja: #d35400; --verde: #27ae60; --crema: #fdfaf6; }
+        body { font-family: 'Georgia', serif; background: var(--crema); margin: 0; padding: 15px; color: #333; }
         
-        .header { text-align: center; background: white; padding: 15px; border-radius: 15px; border: 2px solid var(--principal); margin-bottom: 20px; }
-        h1 { margin: 0; color: var(--principal); font-size: 22px; }
+        .header { text-align: center; border-bottom: 2px solid var(--naranja); margin-bottom: 20px; padding-bottom: 10px; }
+        #buscador { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; margin-bottom: 20px; box-sizing: border-box; }
 
-        #buscador { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; margin-top: 10px; }
-
-        .canto-card { background: white; padding: 25px 15px; border-radius: 15px; text-align: center; margin-bottom: 25px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .titulo { color: var(--principal); font-size: 24px; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; }
-        .letra { font-size: 19px; white-space: pre-line; line-height: 1.7; color: #333; margin-bottom: 20px; }
-
-        .btn-descargar { background: var(--verde); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 14px; width: 100%; }
+        .lista-cantos { display: flex; flex-direction: column; gap: 15px; }
         
-        /* Estilo para el PDF (Oculto) */
-        #molde-pdf { display: none; background: white; }
+        /* Fila de cada canción */
+        .fila-canto { 
+            background: white; padding: 15px; border-radius: 10px; 
+            display: flex; justify-content: space-between; align-items: center;
+            border-left: 5px solid var(--naranja); box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .info-canto { flex: 1; cursor: pointer; }
+        .titulo-lista { font-size: 18px; font-weight: bold; color: #2c3e50; }
+        
+        .btn-descargar { 
+            background: var(--verde); color: white; border: none; 
+            padding: 8px 12px; border-radius: 5px; font-size: 12px; 
+            font-weight: bold; cursor: pointer; margin-left: 10px;
+        }
+
+        /* Estilo para el PDF (Oculto en la web) */
+        #molde-pdf { display: none; }
+        .hoja-pdf { padding: 50px; text-align: center; background: white; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>📖 MI CANCIONERO</h1>
-    <input type="search" id="buscador" placeholder="Buscar por nombre..." oninput="filtrar()">
+    <h1 style="color: var(--naranja);">📖 MIS CANTOS</h1>
+    <input type="search" id="buscador" placeholder="🔎 Buscar nombre de canción..." oninput="filtrar()">
 </div>
 
-<div id="visor"></div>
+<div class="lista-cantos" id="contenedor">
+    </div>
 
 <div id="molde-pdf"></div>
 
 <script>
-    // LISTA DE CANTOS EXTRAÍDOS DE LAS FOTOS
+    // Transcripción fiel de las fotos enviadas
     const misCantos = [
-        { t: "Te alabo oh Padre", l: "Te alabo oh Padre por tu gran amor,\nporque eres eterno,\nporque eres el Señor.\n\nTu amor es eterno,\ntu amor es verdad,\ngracias te damos\npor tu bondad." },
-        { t: "Vaso Nuevo", l: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." },
-        { t: "Una mirada de fe", l: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador." },
-        { t: "Renuévame", l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.\n\nPorque todo lo que hay dentro de mí,\nnecesita ser cambiado Señor.\nPorque todo lo que hay dentro de mi corazón,\nnecesita más de ti." },
-        { t: "Hombres de Valor", l: "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\n¿Quién dirá que la vida es hermosa,\nquién dirá que vale la pena vivir?\n\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor." },
-        { t: "Tan cerca de mí", l: "Tan cerca de mí, tan cerca de mí,\nque hasta lo puedo tocar,\nJesús está aquí.\n\nMíralo a tu lado por la calle,\ncaminando entre la multitud." },
-        { t: "Cantemos al Amor", l: "Cantemos al amor de los amores,\ncantemos al Señor.\nDios está aquí, venid adoradores,\nadoremos a Cristo Redentor." },
-        { t: "Altísimo Señor", l: "Altísimo Señor que supiste juntar\na un tiempo en el altar\nser Cordero y Pastor.\n\nQuisiera con fervor recibirte en mi pecho\ny ser de tu amor el más dulce provecho." },
-        { t: "Santo (Misa)", l: "Santo, Santo, Santo es el Señor\nDios del universo.\nLlenos están el cielo y la tierra de tu gloria.\nHosanna en el cielo." },
-        { t: "Demos Gracias", l: "Demos gracias al Señor, demos gracias,\ndemos gracias al Señor.\n\nPor las mañanas las aves cantan\nlas alabanzas a Cristo el Salvador." }
+        { t: "TE ALABO OH PADRE", l: "Te alabo oh Padre por tu gran amor,\nporque eres eterno, porque eres el Señor.\n\nTu amor es eterno, tu amor es verdad,\ngracias te damos por tu bondad.\n\nGracias por la vida, gracias por el sol,\ngracias te damos por tu amor Señor." },
+        { t: "ESTE ES MI HIJO", l: "Este es mi hijo muy amado,\nen quien tengo mi complacencia.\n\nEscuchadlo, escuchadlo,\nes el enviado de Dios,\nes el camino, es la verdad." },
+        { t: "VASO NUEVO", l: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." },
+        { t: "OH QUÉ DULCE", l: "Oh qué dulce Jesús mío,\nqué delicia es estar junto a ti.\nEn la Eucaristía te encuentro,\ny mi alma se llena de paz." },
+        { t: "GRACIAS SEÑOR", l: "Gracias Señor, porque eres como eres,\ngracias porque me quieres\naunque soy pecador.\n\nGracias por este nuevo día,\ngracias por tu compañía\ny por tu gran amor." },
+        { t: "UNA MIRADA DE FE", l: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador." },
+        { t: "HOMBRES DE VALOR", l: "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\n¿Quién dirá que la vida es hermosa?\n¿Quién dirá que vale la pena vivir?\n\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor." },
+        { t: "RENUÉVAME", l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.\n\nPorque todo lo que hay dentro de mí,\nnecesita ser cambiado Señor.\nPorque todo lo que hay dentro de mi corazón,\nnecesita más de ti." },
+        { t: "TAN CERCA DE MÍ", l: "Tan cerca de mí, tan cerca de mí,\nque hasta lo puedo tocar,\nJesús está aquí.\n\nMíralo a tu lado por la calle,\ncaminando entre la multitud.\nMuchos no lo ven porque ciegos van,\nocupados sin mirar a Dios." },
+        { t: "ESTO QUE TE DOY", l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar." }
+        // Se pueden añadir los demás aquí...
     ];
 
-    function cargarCantos() {
-        const visor = document.getElementById('visor');
-        visor.innerHTML = '';
-        misCantos.forEach((c, index) => {
-            visor.innerHTML += `
-                <div class="canto-card" id="canto-${index}">
-                    <div class="titulo">${c.t}</div>
-                    <div class="letra">${c.l}</div>
-                    <button class="btn-descargar" onclick="descargarIndividual(${index})">📥 DESCARGAR ESTA HOJA</button>
+    function cargarLista() {
+        const div = document.getElementById('contenedor');
+        div.innerHTML = '';
+        misCantos.forEach((c, i) => {
+            div.innerHTML += `
+                <div class="fila-canto">
+                    <div class="info-canto">
+                        <span class="titulo-lista">${c.t}</span>
+                    </div>
+                    <button class="btn-descargar" onclick="bajarHoja(${i})">PDF 📥</button>
                 </div>
             `;
         });
     }
 
     function filtrar() {
-        const bus = document.getElementById('buscador').value.toLowerCase();
-        const cards = document.querySelectorAll('.canto-card');
+        const texto = document.getElementById('buscador').value.toLowerCase();
+        const filas = document.querySelectorAll('.fila-canto');
         misCantos.forEach((c, i) => {
-            cards[i].style.display = c.t.toLowerCase().includes(bus) ? 'block' : 'none';
+            filas[i].style.display = c.t.toLowerCase().includes(texto) ? 'flex' : 'none';
         });
     }
 
-    function descargarIndividual(index) {
+    function bajarHoja(index) {
         const canto = misCantos[index];
         const molde = document.getElementById('molde-pdf');
         
-        // Preparamos el diseño del PDF
         molde.style.display = 'block';
         molde.innerHTML = `
-            <div style="padding: 60px; text-align: center; font-family: 'Georgia', serif;">
-                <h1 style="color: #d35400; font-size: 38px; border-bottom: 2px solid #eee; padding-bottom: 10px; text-transform: uppercase;">${canto.t}</h1>
-                <p style="font-size: 26px; line-height: 1.8; white-space: pre-line; margin-top: 40px; color: #333;">${canto.l}</p>
+            <div class="hoja-pdf">
+                <h1 style="color: #d35400; font-size: 32px; border-bottom: 2px solid #ddd; padding-bottom: 10px;">${canto.t}</h1>
+                <p style="font-size: 24px; line-height: 1.8; white-space: pre-line; margin-top: 40px;">${canto.l}</p>
             </div>
         `;
 
@@ -95,11 +108,11 @@
 
         html2pdf().set(opciones).from(molde).save().then(() => {
             molde.style.display = 'none';
-            molde.innerHTML = '';
         });
     }
 
-    cargarCantos();
+    cargarLista();
 </script>
+
 </body>
 </html>
