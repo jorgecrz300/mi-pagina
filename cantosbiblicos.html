@@ -3,103 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancionero de Mamá</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <title>Cancionero Pro - Mamá</title>
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; padding: 15px; margin: 0; }
-        .header { text-align: center; background: white; padding: 15px; border-bottom: 5px solid #d35400; position: sticky; top: 0; z-index: 100; }
-        #buscador { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
-        .lista { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .tarjeta { background: white; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .btn-pdf { background: #27ae60; color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        #area-pdf { position: absolute; left: -9999px; top: 0; width: 600px; background: white; color: black; }
+        :root { --naranja: #e67e22; --fondo: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--fondo); margin: 0; padding: 20px; }
+        
+        .header { text-align: center; margin-bottom: 30px; }
+        .instrucciones { background: #fff3cd; padding: 10px; border-radius: 8px; font-size: 14px; margin-bottom: 20px; border: 1px solid #ffeeba; }
+
+        .grid-cantos { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        
+        .canto-card { 
+            background: white; padding: 20px; border-radius: 12px; 
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 6px solid var(--naranja);
+        }
+
+        .canto-info h3 { margin: 0; font-size: 16px; color: #333; text-transform: uppercase; }
+
+        .btn-ver { 
+            background: var(--naranja); color: white; border: none; 
+            padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;
+        }
+
+        /* Estilo para la pantalla de impresión */
+        @media print {
+            body * { visibility: hidden; }
+            #area-imprimir, #area-imprimir * { visibility: visible; }
+            #area-imprimir { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none; }
+        }
+
+        #visor-emergente { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; 
+        }
+        
+        #imagen-grande { max-width: 90%; max-height: 80%; border: 5px solid white; }
+        .controles { margin-top: 20px; display: flex; gap: 10px; }
+        .btn-accion { padding: 15px 25px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1 style="color:#d35400; font-size: 20px; margin-bottom: 10px;">📔 MI CANCIONERO COMPLETO</h1>
-    <input type="search" id="buscador" placeholder="🔎 Buscar canto..." oninput="filtrar()">
+    <h1>🎶 MI CANCIONERO</h1>
+    <div class="instrucciones">
+        Paso 1: Toca <b>VER</b>. <br>
+        Paso 2: Toca <b>IMPRIMIR</b> y elige "Guardar como PDF".
+    </div>
 </div>
 
-<div class="lista" id="contenedor"></div>
+<div class="grid-cantos" id="lista">
+    <div class="canto-card">
+        <div class="canto-info">
+            <h3>YO SOY EL PAN DE VIDA</h3>
+        </div>
+        <button class="btn-ver" onclick="abrirVisor('PAN DE VIDA', 'https://i.ibb.co/vzYm8mN/ejemplo.jpg')">VER 👁️</button>
+    </div>
+    
+    <div class="canto-card">
+        <div class="canto-info">
+            <h3>VASO NUEVO</h3>
+        </div>
+        <button class="btn-ver" onclick="abrirVisor('VASO NUEVO', 'URL_DE_TU_FOTO_2')">VER 👁️</button>
+    </div>
+</div>
 
-<div id="area-pdf"></div>
+<div id="visor-emergente">
+    <h2 id="titulo-visor" style="color: white;"></h2>
+    <img id="imagen-grande" src="" alt="Canto">
+    <div class="controles">
+        <button class="btn-accion" style="background: #ccc;" onclick="cerrarVisor()">CERRAR</button>
+        <button class="btn-accion" style="background: #27ae60; color: white;" onclick="imprimirCanto()">IMPRIMIR / PDF 🖨️</button>
+    </div>
+</div>
+
+<div id="area-imprimir"></div>
 
 <script>
-    // Usamos una base de datos de cantos organizada
-    const diccionarioCantos = {
-        "YO SOY EL PAN DE VIDA": "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\n\nNadie puede venir a mí,\nsi mi Padre no lo llama.\n\nY yo lo resucitaré,\ny yo lo resucitaré,\ny yo lo resucitaré en el día final.",
-        "TE ALABO OH PADRE": "Te alabo oh Padre por tu gran amor,\nporque eres eterno, porque eres el Señor.\n\nTu amor es eterno, tu amor es verdad,\ngracias te damos por tu bondad.",
-        "VASO NUEVO": "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo.",
-        "PESCADOR DE HOMBRES": "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre,\nen la arena he dejado mi barca,\njunto a ti buscaré otro mar.",
-        "UNA MIRADA DE FE": "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador.",
-        "ESTO QUE TE DOY": "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar.",
-        "CANTEMOS AL AMOR": "Cantemos al Amor de los amores,\ncantemos al Señor.\n¡Dios está aquí! Venid adoradores,\nadoremos a Cristo Redentor.",
-        "ALTÍSIMO SEÑOR": "Altísimo Señor, que supiste juntar\na un tiempo en el altar ser Cordero y Pastor.\n\nQuisiera con fervor recibirte en mi pecho,\ny ser de tu amor el más dulce provecho.",
-        "CAMINARÉ EN PRESENCIA": "Caminaré en presencia del Señor.\n\nAmo al Señor porque escucha mi voz suplicante,\nporque inclina su oído hacia mí\nel día que lo invoco.",
-        "ID Y ENSEÑAD": "Sois la semilla que ha de crecer,\nsois estrella que ha de brillar.\nSois levadura, sois grano de sal,\nantorcha que debe alumbrar.",
-        "DEMOS GRACIAS AL SEÑOR": "Demos gracias al Señor, demos gracias,\ndemos gracias al Señor.\n\nPor las mañanas las aves cantan\nlas alabanzas a Cristo el Salvador.",
-        "HOY PERDÓNAME": "Hoy perdóname, hoy por siempre,\nsin mirar la mentira, lo vacío de mi dar.\nSin mirar a donde voy ni mi paso al caminar.",
-        "HOMBRES DE VALOR": "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\n\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor.",
-        "RENUÉVAME": "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.",
-        "SANTO ES EL SEÑOR": "Santo, Santo, Santo es el Señor,\nDios del universo.\nLlenos están el cielo y la tierra de tu gloria.",
-        "CORDERO DE DIOS": "Cordero de Dios que quitas el pecado del mundo,\nten piedad de nosotros y danos la paz.",
-        "ENTRE TUS MANOS": "Entre tus manos pongo mi vida Señor,\nentre tus manos pongo mi existir.\nHay que morir para vivir,\nentre tus manos confío mi ser.",
-        "ALMA DE CRISTO": "Alma de Cristo, santifícame.\nCuerpo de Cristo, sálvame.\nSangre de Cristo, embriágame.\nAgua del costado de Cristo, lávame.",
-        "JUNTO A TI MARÍA": "Junto a ti María, como un niño quiero estar.\nTómame en tus brazos, guíame en mi caminar.\nMadre, Madre, Madre, Madre.",
-        "AMAR ES ENTREGARSE": "Amar es entregarse olvidándose de sí.\nBuscando lo que a otro pueda hacer feliz.\nQué lindo es vivir para amar,\nqué grande es tener para dar.",
-        "DIOS ESTÁ AQUÍ": "Dios está aquí, tan cierto como el aire que respiro.\nTan cierto como la mañana se levanta el sol.\nTan cierto como que este canto lo puedes oír."
-        // Se pueden añadir más siguiendo este formato exacto
-    };
-
-    const nombres = Object.keys(diccionarioCantos).sort();
-
-    function mostrarLista(lista) {
-        const contenedor = document.getElementById('contenedor');
-        contenedor.innerHTML = '';
-        lista.forEach(nombre => {
-            const div = document.createElement('div');
-            div.className = 'tarjeta';
-            div.innerHTML = `
-                <span style="font-weight:bold; font-size:14px; text-transform:uppercase;">${nombre}</span>
-                <button class="btn-pdf" onclick="bajarPDF('${nombre.replace(/'/g, "\\'")}')">BAJAR PDF</button>
-            `;
-            contenedor.appendChild(div);
-        });
-    }
-
-    function filtrar() {
-        const term = document.getElementById('buscador').value.toUpperCase();
-        const filtradas = nombres.filter(n => n.includes(term));
-        mostrarLista(filtradas);
-    }
-
-    function bajarPDF(titulo) {
-        const letra = diccionarioCantos[titulo];
-        const area = document.getElementById('area-pdf');
+    function abrirVisor(titulo, url) {
+        document.getElementById('titulo-visor').innerText = titulo;
+        document.getElementById('imagen-grande').src = url;
+        document.getElementById('visor-emergente').style.display = 'flex';
         
-        // Solo cargamos el texto en el momento del clic
-        area.innerHTML = `
-            <div style="padding: 50px; text-align: center; background: white;">
-                <h1 style="font-size: 32pt; border-bottom: 2px solid black; padding-bottom: 15px;">${titulo}</h1>
-                <p style="font-size: 24pt; line-height: 1.6; white-space: pre-line; margin-top: 40px; color: black;">${letra}</p>
+        // Preparamos el área de impresión de una vez
+        document.getElementById('area-imprimir').innerHTML = `
+            <div style="text-align:center;">
+                <h1 style="text-transform:uppercase;">${titulo}</h1>
+                <img src="${url}" style="width:100%;">
             </div>
         `;
-
-        const opt = {
-            margin: 0.5,
-            filename: titulo + '.pdf',
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-
-        html2pdf().set(opt).from(area).save().then(() => {
-            area.innerHTML = ''; // Limpiamos memoria inmediatamente
-        });
     }
 
-    mostrarLista(nombres);
+    function cerrarVisor() {
+        document.getElementById('visor-emergente').style.display = 'none';
+    }
+
+    function imprimirCanto() {
+        window.print();
+    }
 </script>
+
 </body>
 </html>
