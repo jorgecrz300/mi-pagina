@@ -3,107 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancionero Pro - Mamá</title>
+    <title>Cancionero de Mamá</title>
     <style>
-        :root { --naranja: #e67e22; --fondo: #f4f7f6; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--fondo); margin: 0; padding: 20px; }
+        body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 20px; text-align: center; }
+        .header { background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-bottom: 5px solid #d35400; }
+        .lista { display: grid; gap: 10px; }
+        .tarjeta { background: white; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn-ver { background: #e67e22; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; text-decoration: none; }
         
-        .header { text-align: center; margin-bottom: 30px; }
-        .instrucciones { background: #fff3cd; padding: 10px; border-radius: 8px; font-size: 14px; margin-bottom: 20px; border: 1px solid #ffeeba; }
-
-        .grid-cantos { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        
-        .canto-card { 
-            background: white; padding: 20px; border-radius: 12px; 
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 6px solid var(--naranja);
-        }
-
-        .canto-info h3 { margin: 0; font-size: 16px; color: #333; text-transform: uppercase; }
-
-        .btn-ver { 
-            background: var(--naranja); color: white; border: none; 
-            padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;
-        }
-
-        /* Estilo para la pantalla de impresión */
+        /* Esto hace que al imprimir solo salga la foto y nada más */
         @media print {
-            body * { visibility: hidden; }
-            #area-imprimir, #area-imprimir * { visibility: visible; }
-            #area-imprimir { position: absolute; left: 0; top: 0; width: 100%; }
-            .no-print { display: none; }
+            .no-imprimir { display: none; }
+            img { width: 100%; height: auto; }
         }
-
-        #visor-emergente { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; 
-        }
-        
-        #imagen-grande { max-width: 90%; max-height: 80%; border: 5px solid white; }
-        .controles { margin-top: 20px; display: flex; gap: 10px; }
-        .btn-accion { padding: 15px 25px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>🎶 MI CANCIONERO</h1>
-    <div class="instrucciones">
-        Paso 1: Toca <b>VER</b>. <br>
-        Paso 2: Toca <b>IMPRIMIR</b> y elige "Guardar como PDF".
+<div class="header no-imprimir">
+    <h1 style="color:#d35400;">📔 MI CANCIONERO</h1>
+    <p>Toca el botón para ver la letra y luego dale a imprimir.</p>
+</div>
+
+<div class="lista no-imprimir">
+    <div class="tarjeta">
+        <span>YO SOY EL PAN DE VIDA</span>
+        <a href="fotos/pan_de_vida.jpg" class="btn-ver">VER LETRA 👁️</a>
+    </div>
+
+    <div class="tarjeta">
+        <span>ESTO QUE TE DOY</span>
+        <a href="fotos/esto_que_te_doy.jpg" class="btn-ver">VER LETRA 👁️</a>
     </div>
 </div>
 
-<div class="grid-cantos" id="lista">
-    <div class="canto-card">
-        <div class="canto-info">
-            <h3>YO SOY EL PAN DE VIDA</h3>
-        </div>
-        <button class="btn-ver" onclick="abrirVisor('PAN DE VIDA', 'https://i.ibb.co/vzYm8mN/ejemplo.jpg')">VER 👁️</button>
-    </div>
-    
-    <div class="canto-card">
-        <div class="canto-info">
-            <h3>VASO NUEVO</h3>
-        </div>
-        <button class="btn-ver" onclick="abrirVisor('VASO NUEVO', 'URL_DE_TU_FOTO_2')">VER 👁️</button>
-    </div>
-</div>
-
-<div id="visor-emergente">
-    <h2 id="titulo-visor" style="color: white;"></h2>
-    <img id="imagen-grande" src="" alt="Canto">
-    <div class="controles">
-        <button class="btn-accion" style="background: #ccc;" onclick="cerrarVisor()">CERRAR</button>
-        <button class="btn-accion" style="background: #27ae60; color: white;" onclick="imprimirCanto()">IMPRIMIR / PDF 🖨️</button>
-    </div>
-</div>
-
-<div id="area-imprimir"></div>
-
-<script>
-    function abrirVisor(titulo, url) {
-        document.getElementById('titulo-visor').innerText = titulo;
-        document.getElementById('imagen-grande').src = url;
-        document.getElementById('visor-emergente').style.display = 'flex';
-        
-        // Preparamos el área de impresión de una vez
-        document.getElementById('area-imprimir').innerHTML = `
-            <div style="text-align:center;">
-                <h1 style="text-transform:uppercase;">${titulo}</h1>
-                <img src="${url}" style="width:100%;">
-            </div>
-        `;
-    }
-
-    function cerrarVisor() {
-        document.getElementById('visor-emergente').style.display = 'none';
-    }
-
-    function imprimirCanto() {
-        window.print();
-    }
-</script>
+<p class="no-imprimir" style="margin-top:20px; font-size: 12px; color: #666;">
+    Tip: Al abrir la foto, deja presionado el dedo sobre ella y dale a "Compartir" -> "Imprimir".
+</p>
 
 </body>
 </html>
