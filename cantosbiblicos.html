@@ -3,30 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu de Cantos</title>
+    <title>Cantos Bíblicos - Menú</title>
     <style>
-        body { font-family: sans-serif; background: #fdfaf6; padding: 20px; }
-        h1 { color: #d35400; text-align: center; border-bottom: 2px solid #d35400; padding-bottom: 10px; }
-        .lista { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        :root { --naranja: #d35400; --fondo: #fdfaf6; }
+        body { font-family: sans-serif; background: var(--fondo); margin: 0; padding: 20px; color: #333; }
+        header { text-align: center; border-bottom: 3px solid var(--naranja); margin-bottom: 30px; padding-bottom: 10px; }
+        h1 { margin: 0; color: var(--naranja); font-size: 24px; text-transform: uppercase; }
+        
+        .buscador-caja { margin-bottom: 20px; }
+        #buscador { width: 100%; padding: 15px; border-radius: 25px; border: 2px solid #ddd; box-sizing: border-box; font-size: 16px; }
+
+        .lista { display: grid; gap: 12px; }
         .boton-canto { 
-            background: white; padding: 20px; border-radius: 10px; 
+            background: white; padding: 20px; border-radius: 12px; 
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-decoration: none; color: #333;
-            font-weight: bold; border-left: 5px solid #d35400;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05); text-decoration: none; 
+            color: #2c3e50; font-weight: bold; border-left: 6px solid var(--naranja);
+            transition: 0.2s;
         }
+        .boton-canto:active { transform: scale(0.98); background: #f9f9f9; }
+        .flecha { color: var(--naranja); font-size: 20px; }
     </style>
 </head>
 <body>
 
-    <h1>📖 MI CANCIONERO</h1>
+<header>
+    <h1>📖 Cantos Bíblicos</h1>
+</header>
 
-    <div class="lista">
-        <a href="canto.html?id=pan" class="boton-canto">YO SOY EL PAN DE VIDA <span>▶</span></a>
-        <a href="canto.html?id=vaso" class="boton-canto">VASO NUEVO <span>▶</span></a>
-        <a href="canto.html?id=padre" class="boton-canto">TE ALABO OH PADRE <span>▶</span></a>
-        <a href="canto.html?id=pescador" class="boton-canto">PESCADOR DE HOMBRES <span>▶</span></a>
-        <a href="canto.html?id=esto" class="boton-canto">ESTO QUE TE DOY <span>▶</span></a>
-    </div>
+<div class="buscador-caja">
+    <input type="text" id="buscador" placeholder="🔎 Buscar canto..." oninput="filtrar()">
+</div>
+
+<div class="lista" id="contenedor">
+    <a href="cantos.html?id=pan" class="boton-canto"><span>YO SOY EL PAN DE VIDA</span> <span class="flecha">▶</span></a>
+    <a href="cantos.html?id=vaso" class="boton-canto"><span>VASO NUEVO</span> <span class="flecha">▶</span></a>
+    <a href="cantos.html?id=padre" class="boton-canto"><span>TE ALABO OH PADRE</span> <span class="flecha">▶</span></a>
+    <a href="cantos.html?id=pescador" class="boton-canto"><span>PESCADOR DE HOMBRES</span> <span class="flecha">▶</span></a>
+    <a href="cantos.html?id=mirada" class="boton-canto"><span>UNA MIRADA DE FE</span> <span class="flecha">▶</span></a>
+    <a href="cantos.html?id=esto" class="boton-canto"><span>ESTO QUE TE DOY</span> <span class="flecha">▶</span></a>
+    <a href="cantos.html?id=renuevame" class="boton-canto"><span>RENUÉVAME</span> <span class="flecha">▶</span></a>
+</div>
+
+<script>
+    function filtrar() {
+        const busqueda = document.getElementById('buscador').value.toLowerCase();
+        const botones = document.querySelectorAll('.boton-canto');
+        botones.forEach(btn => {
+            const texto = btn.innerText.toLowerCase();
+            btn.style.display = texto.includes(busqueda) ? 'flex' : 'none';
+        });
+    }
+</script>
 
 </body>
 </html>
