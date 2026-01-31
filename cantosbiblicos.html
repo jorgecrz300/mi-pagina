@@ -2,112 +2,143 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mis Cantos - Generador de PDF</title>
+    <title>Cancionero de Mamá - Edición Centrada</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f4f9; color: #333; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #2c3e50; }
+        body { font-family: 'Georgia', serif; background: #fdfaf6; color: #2c3e50; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
         
-        /* Buscador */
-        input#buscador { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+        /* Buscador elegante */
+        .search-box { text-align: center; margin-bottom: 40px; }
+        #buscador { width: 80%; padding: 15px; border-radius: 30px; border: 2px solid #d35400; font-size: 18px; outline: none; text-align: center; }
+
+        /* Contenedor de Cantos en Pantalla */
+        .visor-canciones { display: flex; flex-direction: column; gap: 50px; }
         
-        /* Lista de canciones */
-        .cancion-item { border-bottom: 1px solid #eee; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .cancion-item:hover { background: #f9f9f9; }
+        .canto-card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center; /* ESTO CENTRA TODO */
+            border: 1px solid #eee;
+        }
+
+        .titulo-canto { color: #d35400; font-size: 28px; margin-bottom: 20px; border-bottom: 2px solid #f39c12; display: inline-block; padding-bottom: 5px; }
         
-        /* Área que se convertirá en PDF */
-        #area-pdf { display: none; padding: 40px; background: white; }
-        .pagina-pdf { page-break-after: always; }
-        
-        button { background: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
-        button.btn-print { background: #27ae60; width: 100%; font-size: 18px; margin-top: 20px; }
+        .letra-canto { 
+            font-size: 20px; 
+            line-height: 1.6; 
+            white-space: pre-line; /* Mantiene los saltos de línea */
+            color: #34495e;
+        }
+
+        /* Botón de impresión flotante */
+        .btn-flotante { 
+            position: fixed; bottom: 30px; right: 30px; 
+            background: #d35400; color: white; border: none; 
+            padding: 20px; border-radius: 50px; cursor: pointer; 
+            font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-size: 16px;
+        }
+        .btn-flotante:hover { background: #e67e22; transform: scale(1.05); }
+
+        /* Estilos exclusivos para el PDF */
+        #area-pdf { display: none; text-align: center; }
+        .pagina-pdf { page-break-after: always; padding: 50px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📖 Mi Cancionero</h1>
-    <input type="text" id="buscador" placeholder="Buscar por título..." onkeyup="filtrar()">
+    <div class="search-box">
+        <h1>📖 Mis Cantos Preferidos</h1>
+        <input type="text" id="buscador" placeholder="¿Qué canto buscamos hoy, mamá?" onkeyup="filtrar()">
+    </div>
     
-    <div id="lista-canciones">
+    <div id="visor" class="visor-canciones">
         </div>
 
-    <button class="btn-print" onclick="generarPDF()">📥 DESCARGAR LIBRO (PDF)</button>
+    <button class="btn-flotante" onclick="generarPDF()">📥 GUARDAR TODO EN PDF</button>
 </div>
 
 <div id="area-pdf"></div>
 
 <script>
-    // BASE DE DATOS DE CANTOS (Aquí tú y tu compa pueden agregar cientos)
     const cantos = [
-        { titulo: "Canto de Alegría", letra: "Alegría de vivir...\nEn este día especial.\nCanto porque soy feliz." },
-        { titulo: "Paz en la Tierra", letra: "La paz esté con nosotros.\nQue el mundo se llene de amor.\nUnidos todos de la mano." },
-        { titulo: "Hacia Tí", letra: "Caminamos hacia tí señor.\nCon esperanza y mucha fe.\nGuíanos por el buen camino." }
+        { 
+            titulo: "Canto de Alegría", 
+            letra: `Alegría de vivir,
+                    en este día especial,
+                    canto porque soy feliz,
+                    en tu presencia celestial.` 
+        },
+        { 
+            titulo: "Paz en la Tierra", 
+            letra: `La paz esté con nosotros,
+                    que el mundo se llene de amor,
+                    unidos todos de la mano,
+                    le cantamos al Creador.` 
+        },
+        { 
+            titulo: "Hacia Tí", 
+            letra: `Caminamos hacia tí señor,
+                    con esperanza y mucha fe,
+                    guíanos por el buen camino,
+                    que siempre te seguiré.` 
+        }
     ];
 
-    const listaDiv = document.getElementById('lista-canciones');
-
-    // Cargar la lista al inicio
-    function cargarCantos() {
-        listaDiv.innerHTML = '';
-        cantos.forEach((canto, index) => {
-            listaDiv.innerHTML += `
-                <div class="cancion-item">
-                    <span><strong>${canto.titulo}</strong></span>
-                    <button onclick="verLetra(${index})">Ver Letra</button>
+    function mostrarCantos() {
+        const visor = document.getElementById('visor');
+        visor.innerHTML = '';
+        cantos.forEach((canto) => {
+            visor.innerHTML += `
+                <div class="canto-card">
+                    <div class="titulo-canto">${canto.titulo}</div>
+                    <div class="letra-canto">${canto.letra}</div>
                 </div>
             `;
         });
     }
 
-    // Buscador en tiempo real
     function filtrar() {
         const busqueda = document.getElementById('buscador').value.toLowerCase();
-        const items = document.querySelectorAll('.cancion-item');
+        const cards = document.querySelectorAll('.canto-card');
         
-        items.forEach((item, index) => {
+        cards.forEach((card, index) => {
             const titulo = cantos[index].titulo.toLowerCase();
-            item.style.display = titulo.includes(busqueda) ? 'flex' : 'none';
+            card.style.display = titulo.includes(busqueda) ? 'block' : 'none';
         });
     }
 
-    function verLetra(index) {
-        alert("LETRA:\n\n" + cantos[index].letra);
-    }
-
-    // LA MAGIA DEL PDF
     function generarPDF() {
         const areaPdf = document.getElementById('area-pdf');
-        areaPdf.innerHTML = '<h1>LIBRO DE CANTOS</h1><hr>';
+        areaPdf.innerHTML = '';
         areaPdf.style.display = 'block';
 
-        // Metemos cada canción en una página nueva
         cantos.forEach(canto => {
             areaPdf.innerHTML += `
                 <div class="pagina-pdf">
-                    <h2>${canto.titulo}</h2>
-                    <p style="white-space: pre-line; font-size: 18px;">${canto.letra}</p>
+                    <h1 style="color: #d35400; font-size: 35px;">${canto.titulo}</h1>
+                    <div style="font-size: 22px; line-height: 1.8; white-space: pre-line;">${canto.letra}</div>
                 </div>
             `;
         });
 
-        // Configuración de html2pdf
         const opciones = {
-            margin: 1,
-            filename: 'Cancionero_Mama.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
+            margin: 0.5,
+            filename: 'Libro_de_Cantos_Centrado.pdf',
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
 
-        // Generar y descargar
         html2pdf().set(opciones).from(areaPdf).save().then(() => {
-            areaPdf.style.display = 'none'; // Volver a ocultar
+            areaPdf.style.display = 'none';
         });
     }
 
-    cargarCantos();
+    mostrarCantos();
 </script>
 
 </body>
