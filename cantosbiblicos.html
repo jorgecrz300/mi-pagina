@@ -3,43 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancionero de Mamá</title>
+    <title>El Cancionero de Mamá</title>
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 20px; text-align: center; }
-        .header { background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-bottom: 5px solid #d35400; }
-        .lista { display: grid; gap: 10px; }
-        .tarjeta { background: white; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .btn-ver { background: #e67e22; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; text-decoration: none; }
-        
-        /* Esto hace que al imprimir solo salga la foto y nada más */
-        @media print {
-            .no-imprimir { display: none; }
-            img { width: 100%; height: auto; }
+        :root {
+            --naranja: #d35400;
+            --crema: #fdfaf6;
+            --texto: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--crema);
+            color: var(--texto);
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 3px solid var(--naranja);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--naranja);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .buscador-contenedor {
+            margin-bottom: 25px;
+        }
+
+        #buscador {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #buscador:focus {
+            border-color: var(--naranja);
+        }
+
+        .grid-cantos {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .tarjeta-canto {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--naranja);
+            transition: transform 0.2s;
+        }
+
+        .tarjeta-canto:active {
+            transform: scale(0.98);
+        }
+
+        .info h2 {
+            margin: 0;
+            font-size: 15px;
+            text-transform: uppercase;
+            color: #333;
+        }
+
+        .btn-abrir {
+            background-color: var(--naranja);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #888;
         }
     </style>
 </head>
 <body>
 
-<div class="header no-imprimir">
-    <h1 style="color:#d35400;">📔 MI CANCIONERO</h1>
-    <p>Toca el botón para ver la letra y luego dale a imprimir.</p>
+<header>
+    <h1>📖 Mi Cancionero</h1>
+</header>
+
+<div class="buscador-contenedor">
+    <input type="text" id="buscador" placeholder="🔎 Buscar canto..." oninput="filtrar()">
 </div>
 
-<div class="lista no-imprimir">
-    <div class="tarjeta">
-        <span>YO SOY EL PAN DE VIDA</span>
-        <a href="fotos/pan_de_vida.jpg" class="btn-ver">VER LETRA 👁️</a>
+<div class="grid-cantos" id="contenedor">
     </div>
 
-    <div class="tarjeta">
-        <span>ESTO QUE TE DOY</span>
-        <a href="fotos/esto_que_te_doy.jpg" class="btn-ver">VER LETRA 👁️</a>
-    </div>
-</div>
+<footer>
+    Hecho con amor para Mamá ❤️
+</footer>
 
-<p class="no-imprimir" style="margin-top:20px; font-size: 12px; color: #666;">
-    Tip: Al abrir la foto, deja presionado el dedo sobre ella y dale a "Compartir" -> "Imprimir".
-</p>
+<script>
+    // Lista de nombres de los cantos (El Tronco)
+    // Cuando agregues más en canto.html, pon el nombre aquí también
+    const cantos = [
+        "YO SOY EL PAN DE VIDA",
+        "VASO NUEVO",
+        "TE ALABO OH PADRE",
+        "PESCADOR DE HOMBRES",
+        "UNA MIRADA DE FE",
+        "ESTO QUE TE DOY",
+        "CANTEMOS AL AMOR",
+        "ALTÍSIMO SEÑOR",
+        "CAMINARÉ EN PRESENCIA",
+        "ID Y ENSEÑAD",
+        "DEMOS GRACIAS AL SEÑOR",
+        "HOY PERDÓNAME",
+        "HOMBRES DE VALOR",
+        "RENUÉVAME",
+        "SANTO ES EL SEÑOR",
+        "CORDERO DE DIOS",
+        "ENTRE TUS MANOS",
+        "ALMA DE CRISTO",
+        "JUNTO A TI MARÍA",
+        "AMAR ES ENTREGARSE",
+        "DIOS ESTÁ AQUÍ"
+    ];
+
+    function cargarMenu() {
+        const contenedor = document.getElementById('contenedor');
+        contenedor.innerHTML = '';
+        
+        // Ordenar alfabéticamente
+        cantos.sort().forEach(nombre => {
+            const card = document.createElement('div');
+            card.className = 'tarjeta-canto';
+            card.innerHTML = `
+                <div class="info">
+                    <h2>${nombre}</h2>
+                </div>
+                <button class="btn-abrir" onclick="irACanto('${nombre}')">Abrir 👁️</button>
+            `;
+            contenedor.appendChild(card);
+        });
+    }
+
+    function irACanto(nombre) {
+        // Esta es la parte mágica: envía el nombre a la otra página
+        window.location.href = `canto.html?canto=${encodeURIComponent(nombre)}`;
+    }
+
+    function filtrar() {
+        const busqueda = document.getElementById('buscador').value.toLowerCase();
+        const tarjetas = document.querySelectorAll('.tarjeta-canto');
+        
+        tarjetas.forEach(tarjeta => {
+            const titulo = tarjeta.querySelector('h2').innerText.toLowerCase();
+            if (titulo.includes(busqueda)) {
+                tarjeta.style.display = 'flex';
+            } else {
+                tarjeta.style.display = 'none';
+            }
+        });
+    }
+
+    // Iniciar el menú
+    cargarMenu();
+</script>
 
 </body>
 </html>
