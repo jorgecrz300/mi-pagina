@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Cancionero de Mamá</title>
+    <title>Cancionero de Mamá - Versión Corregida</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root { --naranja: #d35400; --verde: #27ae60; --crema: #fdfaf6; }
@@ -12,7 +12,7 @@
         .header { text-align: center; border-bottom: 2px solid var(--naranja); margin-bottom: 20px; padding-bottom: 10px; }
         #buscador { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; margin-bottom: 20px; box-sizing: border-box; }
 
-        .lista-cantos { display: flex; flex-direction: column; gap: 15px; }
+        .lista-cantos { display: flex; flex-direction: column; gap: 12px; }
         
         .fila-canto { 
             background: white; padding: 15px; border-radius: 10px; 
@@ -28,8 +28,15 @@
             font-weight: bold; cursor: pointer; margin-left: 10px;
         }
 
+        /* Área de impresión ajustada para evitar cortes */
         #molde-pdf { display: none; }
-        .hoja-pdf { padding: 50px; text-align: center; background: white; }
+        .hoja-pdf { 
+            padding: 40px; 
+            text-align: center; 
+            background: white; 
+            width: 750px; /* Ancho fijo para el motor de PDF */
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
@@ -40,14 +47,14 @@
 </div>
 
 <div class="lista-cantos" id="contenedor"></div>
-
 <div id="molde-pdf"></div>
 
 <script>
+    // Lista completa y revisada (asegurando que ninguna esté en blanco)
     const misCantos = [
         { t: "TE ALABO OH PADRE", l: "Te alabo oh Padre por tu gran amor,\nporque eres eterno, porque eres el Señor.\n\nTu amor es eterno, tu amor es verdad,\ngracias te damos por tu bondad.\n\nGracias por la vida, gracias por el sol,\ngracias te damos por tu amor Señor." },
         { t: "VASO NUEVO", l: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." },
-        { t: "PESCADOR DE HOMBRES", l: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre,\nen la arena he dejado mi barca,\njunto a ti buscaré otro mar." },
+        { t: "PESCADOR DE HOMBRES", l: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre,\nen la arena he dejado mi barca,\njunto a ti buscaré otro mar.\n\nTú necesitas mis manos,\nmi cansancio que a otros descanse,\namor que quiera seguir amando." },
         { t: "UNA MIRADA DE FE", l: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador." },
         { t: "ESTO QUE TE DOY", l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar.\n\nToma mi vida, ponla en tu corazón,\ndame tu mano y llévame,\npastor de amor, Señor." },
         { t: "RENUÉVAME", l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.\n\nPorque todo lo que hay dentro de mí,\nnecesita ser cambiado Señor.\nPorque todo lo que hay dentro de mi corazón,\nnecesita más de ti." },
@@ -67,8 +74,8 @@
     function cargarLista() {
         const div = document.getElementById('contenedor');
         div.innerHTML = '';
-        // Ordenar alfabéticamente
-        misCantos.sort((a, b) => a.t.localeCompare(b.t)).forEach((c, i) => {
+        const lista = [...misCantos].sort((a, b) => a.t.localeCompare(b.t));
+        lista.forEach((c, i) => {
             div.innerHTML += `
                 <div class="fila-canto">
                     <span class="titulo-lista">${c.t}</span>
@@ -81,33 +88,38 @@
     function filtrar() {
         const texto = document.getElementById('buscador').value.toLowerCase();
         const filas = document.querySelectorAll('.fila-canto');
-        misCantos.sort((a, b) => a.t.localeCompare(b.t)).forEach((c, i) => {
+        const lista = [...misCantos].sort((a, b) => a.t.localeCompare(b.t));
+        lista.forEach((c, i) => {
             filas[i].style.display = c.t.toLowerCase().includes(texto) ? 'flex' : 'none';
         });
     }
 
     function bajarHoja(index) {
-        const listaOrdenada = misCantos.sort((a, b) => a.t.localeCompare(b.t));
-        const canto = listaOrdenada[index];
+        const lista = [...misCantos].sort((a, b) => a.t.localeCompare(b.t));
+        const canto = lista[index];
         const molde = document.getElementById('molde-pdf');
         
+        // Ajuste de tamaño de fuente dinámico para evitar cortes
+        let fontSize = "24pt";
+        if (canto.l.length > 400) fontSize = "20pt";
+        if (canto.l.length > 600) fontSize = "17pt";
+
         molde.style.display = 'block';
         molde.innerHTML = `
             <div class="hoja-pdf">
-                <h1 style="color: #d35400; font-size: 32px; border-bottom: 2px solid #ddd; padding-bottom: 10px; text-transform: uppercase;">${canto.t}</h1>
-                <p style="font-size: 24px; line-height: 1.8; white-space: pre-line; margin-top: 40px; color: #000;">${canto.l}</p>
+                <h1 style="color: #d35400; font-size: 30pt; border-bottom: 2px solid #ddd; margin-bottom: 30px; text-transform: uppercase;">${canto.t}</h1>
+                <p style="font-size: ${fontSize}; line-height: 1.6; white-space: pre-line; color: #000;">${canto.l}</p>
             </div>
         `;
 
         const opciones = {
-            margin: 0,
+            margin: [0.5, 0.5, 0.5, 0.5], // Margen de media pulgada por lado
             filename: `${canto.t}.pdf`,
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 2 },
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, letterRendering: true },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
 
-        // Generar descarga directa
         html2pdf().set(opciones).from(molde).save().then(() => {
             molde.style.display = 'none';
         });
