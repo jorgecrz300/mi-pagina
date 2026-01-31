@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancionero de Mamá</title>
+    <title>El Gran Cancionero de Mamá</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root { --naranja: #d35400; --verde: #27ae60; --crema: #fdfaf6; }
@@ -20,12 +20,12 @@
             border-left: 5px solid var(--naranja); box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .info-canto { flex: 1; cursor: pointer; }
-        .titulo-lista { font-size: 18px; font-weight: bold; color: #2c3e50; }
+        .info-canto { flex: 1; }
+        .titulo-lista { font-size: 16px; font-weight: bold; color: #2c3e50; text-transform: uppercase; }
         
         .btn-descargar { 
             background: var(--verde); color: white; border: none; 
-            padding: 10px 15px; border-radius: 8px; font-size: 14px; 
+            padding: 10px 15px; border-radius: 8px; font-size: 13px; 
             font-weight: bold; cursor: pointer; margin-left: 10px;
         }
 
@@ -36,8 +36,8 @@
 <body>
 
 <div class="header">
-    <h1 style="color: var(--naranja);">📖 MIS CANTOS</h1>
-    <input type="search" id="buscador" placeholder="🔎 Buscar nombre de canción..." oninput="filtrar()">
+    <h1 style="color: var(--naranja);">📖 CANCIONERO COMPLETO</h1>
+    <input type="search" id="buscador" placeholder="🔎 Buscar por nombre de canto..." oninput="filtrar()">
 </div>
 
 <div class="lista-cantos" id="contenedor"></div>
@@ -50,18 +50,30 @@
         { t: "ESTE ES MI HIJO", l: "Este es mi hijo muy amado,\nen quien tengo mi complacencia.\n\nEscuchadlo, escuchadlo,\nes el enviado de Dios,\nes el camino, es la verdad." },
         { t: "VASO NUEVO", l: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." },
         { t: "OH QUÉ DULCE", l: "Oh qué dulce Jesús mío,\nqué delicia es estar junto a ti.\nEn la Eucaristía te encuentro,\ny mi alma se llena de paz." },
-        { t: "GRACIAS SEÑOR", l: "Gracias Señor, porque eres como eres,\ngracias porque me quieres\naunque soy pecador.\n\nGracias por este nuevo día,\ngracias por tu compañía\ny por tu gran amor." },
         { t: "UNA MIRADA DE FE", l: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador." },
-        { t: "HOMBRES DE VALOR", l: "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\n¿Quién dirá que la vida es hermosa?\n¿Quién dirá que vale la pena vivir?\n\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor." },
         { t: "RENUÉVAME", l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.\n\nPorque todo lo que hay dentro de mí,\nnecesita ser cambiado Señor.\nPorque todo lo que hay dentro de mi corazón,\nnecesita más de ti." },
-        { t: "TAN CERCA DE MÍ", l: "Tan cerca de mí, tan cerca de mí,\nque hasta lo puedo tocar,\nJesús está aquí.\n\nMíralo a tu lado por la calle,\ncaminando entre la multitud.\nMuchos no lo ven porque ciegos van,\nocupados sin mirar a Dios." },
-        { t: "ESTO QUE TE DOY", l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar." }
+        { t: "ESTO QUE TE DOY", l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar." },
+        { t: "PESCADOR DE HOMBRES", l: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre,\nen la arena he dejado mi barca,\njunto a ti buscaré otro mar." },
+        { t: "CANTEMOS AL AMOR", l: "Cantemos al Amor de los amores,\ncantemos al Señor.\n¡Dios está aquí! Venid adoradores,\nadoremos a Cristo Redentor." },
+        { t: "ALTÍSIMO SEÑOR", l: "Altísimo Señor, que supiste juntar\na un tiempo en el altar ser Cordero y Pastor.\nQuisiera con fervor recibirte en mi pecho,\ny ser de tu amor el más dulce provecho." },
+        { t: "CAMINARÉ", l: "Caminaré en presencia del Señor.\n\nAmo al Señor porque escucha mi voz suplicante,\nporque inclina su oído hacia mí\nel día que lo invoco." },
+        { t: "ID Y ENSEÑAD", l: "Sois la semilla que ha de crecer,\nsois estrella que ha de brillar.\nSois levadura, sois grano de sal,\nantorcha que debe alumbrar." },
+        { t: "DEMOS GRACIAS", l: "Demos gracias al Señor, demos gracias,\ndemos gracias al Señor.\n\nPor las mañanas las aves cantan\nlas alabanzas a Cristo el Salvador." },
+        { t: "SANTO, SANTO, SANTO", l: "Santo, Santo, Santo es el Señor,\nDios del universo.\nLlenos están el cielo y la tierra de tu gloria.\n\n¡Hosanna en el cielo!\nBendito el que viene en nombre del Señor." },
+        { t: "CORDERO DE DIOS", l: "Cordero de Dios que quitas el pecado del mundo,\nten piedad de nosotros.\n\nCordero de Dios que quitas el pecado del mundo,\ndanos la paz." },
+        { t: "GRACIAS SEÑOR", l: "Gracias Señor, porque eres como eres,\ngracias porque me quieres\naunque soy pecador.\n\nGracias por este nuevo día,\ngracias por tu compañía\ny por tu gran amor." },
+        { t: "HOMBRES DE VALOR", l: "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\n\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor." },
+        { t: "TAN CERCA DE MÍ", l: "Tan cerca de mí, tan cerca de mí,\nque hasta lo puedo tocar,\nJesús está aquí." },
+        { t: "ACUÉRDATE", l: "Acuérdate, oh Virgen María,\nque jamás se ha oído decir,\nque ninguno de los que han acudido a ti,\nhaya sido abandonado." },
+        { t: "HUMILDES GRACIAS", l: "Humildes gracias te doy, Señor,\npor este día que termina hoy.\n\nGracias te doy por la vida y el sol,\ngracias te doy por tu inmenso amor." },
+        { t: "HOY PERDÓNAME", l: "Hoy perdóname, hoy por siempre.\nSin mirar la mentira, lo vacío de mi dar.\nSin mirar a donde voy, ni mis pasos al caminar." },
+        { t: "YO SOY EL PAN DE VIDA", l: "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed." }
     ];
 
     function cargarLista() {
         const div = document.getElementById('contenedor');
         div.innerHTML = '';
-        misCantos.forEach((c, i) => {
+        misCantos.sort((a, b) => a.t.localeCompare(b.t)).forEach((c, i) => {
             div.innerHTML += `
                 <div class="fila-canto">
                     <div class="info-canto">
@@ -76,20 +88,22 @@
     function filtrar() {
         const texto = document.getElementById('buscador').value.toLowerCase();
         const filas = document.querySelectorAll('.fila-canto');
-        misCantos.forEach((c, i) => {
+        const cantosFiltrados = misCantos.sort((a, b) => a.t.localeCompare(b.t));
+        cantosFiltrados.forEach((c, i) => {
             filas[i].style.display = c.t.toLowerCase().includes(texto) ? 'flex' : 'none';
         });
     }
 
     function bajarHoja(index) {
-        const canto = misCantos[index];
+        const listaOrdenada = misCantos.sort((a, b) => a.t.localeCompare(b.t));
+        const canto = listaOrdenada[index];
         const molde = document.getElementById('molde-pdf');
         
         molde.style.display = 'block';
         molde.innerHTML = `
             <div class="hoja-pdf">
-                <h1 style="color: #d35400; font-size: 32px; border-bottom: 2px solid #ddd; padding-bottom: 10px;">${canto.t}</h1>
-                <p style="font-size: 24px; line-height: 1.8; white-space: pre-line; margin-top: 40px;">${canto.l}</p>
+                <h1 style="color: #d35400; font-size: 32px; border-bottom: 2px solid #ddd; padding-bottom: 10px; text-transform: uppercase;">${canto.t}</h1>
+                <p style="font-size: 24px; line-height: 1.8; white-space: pre-line; margin-top: 40px; color: #000;">${canto.l}</p>
             </div>
         `;
 
@@ -97,18 +111,18 @@
             margin: 0,
             filename: `${canto.t}.pdf`,
             image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+            html2canvas: { scale: 2, useCORS: true },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
 
-        // Generar y descargar
         html2pdf().set(opciones).from(molde).toPdf().get('pdf').save().then(() => {
             molde.style.display = 'none';
-            alert("¡Canto descargado! Revisa tu carpeta de 'Descargas' o 'Mis Archivos'.");
+            alert("¡Canto descargado! Lo encontrarás en tu carpeta de 'Descargas'.");
         });
     }
 
     cargarLista();
 </script>
+
 </body>
 </html>
