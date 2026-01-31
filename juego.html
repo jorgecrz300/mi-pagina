@@ -13,7 +13,7 @@
         .login-box { border: 2px solid var(--main-color); padding: 30px; text-align: center; border-radius: 10px; background: #0a0a0a; box-shadow: 0 0 20px var(--main-color); }
         input { background: #111; color: var(--main-color); border: 1px solid var(--main-color); padding: 10px; margin: 10px; text-align: center; outline: none; }
 
-        /* LEADERBOARD (Top Derecha) */
+        /* LEADERBOARD */
         .leaderboard { position: fixed; top: 10px; right: 10px; width: 200px; background: rgba(0,0,0,0.9); border: 1px solid var(--accent); padding: 10px; border-radius: 5px; font-size: 10px; z-index: 90; box-shadow: 0 0 10px var(--accent); }
         .leaderboard h3 { margin: 0 0 8px 0; color: var(--accent); text-align: center; font-size: 12px; }
         .rank-item { display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding: 3px 0; }
@@ -44,10 +44,29 @@
         .btn-gamble { background: var(--accent); color: white; font-size: 9px; }
         .count-badge { color: #fbff00; font-size: 10px; display: block; margin-bottom: 3px; }
 
+        /* NUEVO: BOTÓN DE ALERTA HACKER */
+        #hacker-alert-btn {
+            position: fixed;
+            z-index: 2000;
+            padding: 15px 25px;
+            background: #ff0000;
+            color: white;
+            border: 3px solid #fff;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+            box-shadow: 0 0 20px #ff0000;
+            border-radius: 5px;
+            animation: flash 0.5s infinite;
+        }
+        @keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
         #adminBtn { position: fixed; bottom: 0; right: 0; width: 30px; height: 30px; opacity: 0; z-index: 999; }
     </style>
 </head>
 <body>
+
+    <button id="hacker-alert-btn" onclick="detenerRobo()">¡STOP HACKER!</button>
 
     <div class="leaderboard">
         <h3>🏆 TOP HACKERS</h3>
@@ -113,19 +132,13 @@
 
     <div id="adminBtn" onclick="abrirAdmin()"></div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
-
     <script>
-        // CONFIGURACIÓN DE FIREBASE (AQUÍ PEGARÁS LO QUE TE DARÉ APARTE)
-        // const firebaseConfig = { ... };
-        // firebase.initializeApp(firebaseConfig);
-        // const db = firebase.database();
-
         let user = "";
         let data = { pts: 0, pwr: 2, bots: 0, rb: 0 };
         let modoDios = false;
         let girando = false;
+        let timerRobo, intervaloMovimiento;
+        const btnAlerta = document.getElementById('hacker-alert-btn');
 
         function getMulti() { return 1 + (data.rb * 0.5); }
 
@@ -138,7 +151,7 @@
             const saved = localStorage.getItem('cybUser_' + user);
             if (saved) data = JSON.parse(saved);
             actualizar();
-            actualizarLeaderboardLocal(); // Se activa el ranking
+            actualizarLeaderboardLocal();
         }
 
         function cambiarNombre() {
@@ -161,18 +174,9 @@
             document.getElementById('btnRebirth').disabled = data.pts < 50000;
         }
 
-        // --- LÓGICA DE RANKING (PARA FIREBASE) ---
         function actualizarLeaderboardLocal() {
-            // Esta función simula lo que haría Firebase. 
-            // Muestra tus propios datos mientras no conectes la base de datos real.
             const list = document.getElementById('leaderboard-list');
-            list.innerHTML = `
-                <div class="rank-item">
-                    <span class="rank-name">1. ${user}</span>
-                    <span>RB: ${data.rb} | 💰 ${Math.floor(data.pts)}</span>
-                </div>
-            `;
-            // SI FIREBASE ESTÁ CONECTADO, AQUÍ IRÍA: db.ref('ranking/' + user).set({ pts: data.pts, rb: data.rb });
+            list.innerHTML = `<div class="rank-item"><span class="rank-name">1. ${user}</span><span>RB: ${data.rb} | 💰 ${Math.floor(data.pts)}</span></div>`;
         }
 
         function clickPc() { data.pts += (data.pwr * getMulti()); actualizar(); }
@@ -197,6 +201,43 @@
             }, 2550);
         }
 
+        // LÓGICA DE EVENTO HACKER
+        function moverBotonAlerta() {
+            const x = Math.random() * (window.innerWidth - 150);
+            const y = Math.random() * (window.innerHeight - 50);
+            btnAlerta.style.left = x + "px"; btnAlerta.style.top = y + "px";
+        }
+
+        function eventoHackerRival() {
+            if (girando || data.pts < 100) return;
+            document.getElementById('log').innerText = "⚠️ ¡ALERTA! HACKER RIVAL ROBANDO BTC";
+            document.getElementById('log').style.color = "red";
+            btnAlerta.style.display = "block";
+            moverBotonAlerta();
+            intervaloMovimiento = setInterval(moverBotonAlerta, 600);
+            timerRobo = setTimeout(() => { finalizarAtaque(false); }, 5000);
+        }
+
+        function detenerRobo() { finalizarAtaque(true); }
+
+        function finalizarAtaque(exito) {
+            clearInterval(intervaloMovimiento);
+            clearTimeout(timerRobo);
+            btnAlerta.style.display = "none";
+            if (exito) {
+                let bono = Math.floor(data.pts * 0.02) + 500;
+                data.pts += bono;
+                document.getElementById('log').innerText = "✅ RECHAZADO: +" + bono + " BTC";
+                document.getElementById('log').style.color = "var(--main-color)";
+            } else {
+                let perdida = Math.floor(data.pts * 0.05);
+                data.pts -= perdida;
+                document.getElementById('log').innerText = "❌ HACKEO EXITOSO: -" + perdida + " BTC";
+                document.getElementById('log').style.color = "red";
+            }
+            actualizar(); guardar();
+        }
+
         function hacerRebirth() { if(data.pts >= 50000){ data.rb++; data.pts=0; data.pwr=2; data.bots=0; actualizar(); guardar(); actualizarLeaderboardLocal(); } }
         function comprarUp() { if(data.pts >= 50){ data.pts -= 50; data.pwr += 2; actualizar(); guardar(); } }
         function comprarAuto() { if(data.pts >= 150){ data.pts -= 150; data.bots++; actualizar(); guardar(); } }
@@ -212,6 +253,9 @@
         
         setInterval(() => { if(data.bots > 0){ data.pts += (data.bots * getMulti()); actualizar(); } }, 1000);
         setInterval(() => { guardar(); actualizarLeaderboardLocal(); }, 10000);
+        
+        // Probabilidad de ataque cada 40 segundos
+        setInterval(() => { if(Math.random() < 0.3) eventoHackerRival(); }, 40000);
     </script>
 </body>
 </html>
