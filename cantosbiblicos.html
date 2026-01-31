@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Gran Cancionero de Mamá</title>
+    <title>El Cancionero de Mamá</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root { --naranja: #d35400; --verde: #27ae60; --crema: #fdfaf6; }
@@ -20,8 +20,7 @@
             border-left: 5px solid var(--naranja); box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .info-canto { flex: 1; }
-        .titulo-lista { font-size: 16px; font-weight: bold; color: #2c3e50; text-transform: uppercase; }
+        .titulo-lista { font-size: 15px; font-weight: bold; color: #2c3e50; text-transform: uppercase; flex: 1; }
         
         .btn-descargar { 
             background: var(--verde); color: white; border: none; 
@@ -36,7 +35,7 @@
 <body>
 
 <div class="header">
-    <h1 style="color: var(--naranja);">📖 CANCIONERO COMPLETO</h1>
+    <h1 style="color: var(--naranja);">📖 CANCIONERO DE MAMÁ</h1>
     <input type="search" id="buscador" placeholder="🔎 Buscar por nombre de canto..." oninput="filtrar()">
 </div>
 
@@ -47,39 +46,33 @@
 <script>
     const misCantos = [
         { t: "TE ALABO OH PADRE", l: "Te alabo oh Padre por tu gran amor,\nporque eres eterno, porque eres el Señor.\n\nTu amor es eterno, tu amor es verdad,\ngracias te damos por tu bondad.\n\nGracias por la vida, gracias por el sol,\ngracias te damos por tu amor Señor." },
-        { t: "ESTE ES MI HIJO", l: "Este es mi hijo muy amado,\nen quien tengo mi complacencia.\n\nEscuchadlo, escuchadlo,\nes el enviado de Dios,\nes el camino, es la verdad." },
         { t: "VASO NUEVO", l: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." },
-        { t: "OH QUÉ DULCE", l: "Oh qué dulce Jesús mío,\nqué delicia es estar junto a ti.\nEn la Eucaristía te encuentro,\ny mi alma se llena de paz." },
-        { t: "UNA MIRADA DE FE", l: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador." },
-        { t: "RENUÉVAME", l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.\n\nPorque todo lo que hay dentro de mí,\nnecesita ser cambiado Señor.\nPorque todo lo que hay dentro de mi corazón,\nnecesita más de ti." },
-        { t: "ESTO QUE TE DOY", l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar." },
         { t: "PESCADOR DE HOMBRES", l: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre,\nen la arena he dejado mi barca,\njunto a ti buscaré otro mar." },
-        { t: "CANTEMOS AL AMOR", l: "Cantemos al Amor de los amores,\ncantemos al Señor.\n¡Dios está aquí! Venid adoradores,\nadoremos a Cristo Redentor." },
-        { t: "ALTÍSIMO SEÑOR", l: "Altísimo Señor, que supiste juntar\na un tiempo en el altar ser Cordero y Pastor.\nQuisiera con fervor recibirte en mi pecho,\ny ser de tu amor el más dulce provecho." },
-        { t: "CAMINARÉ", l: "Caminaré en presencia del Señor.\n\nAmo al Señor porque escucha mi voz suplicante,\nporque inclina su oído hacia mí\nel día que lo invoco." },
-        { t: "ID Y ENSEÑAD", l: "Sois la semilla que ha de crecer,\nsois estrella que ha de brillar.\nSois levadura, sois grano de sal,\nantorcha que debe alumbrar." },
-        { t: "DEMOS GRACIAS", l: "Demos gracias al Señor, demos gracias,\ndemos gracias al Señor.\n\nPor las mañanas las aves cantan\nlas alabanzas a Cristo el Salvador." },
-        { t: "SANTO, SANTO, SANTO", l: "Santo, Santo, Santo es el Señor,\nDios del universo.\nLlenos están el cielo y la tierra de tu gloria.\n\n¡Hosanna en el cielo!\nBendito el que viene en nombre del Señor." },
-        { t: "CORDERO DE DIOS", l: "Cordero de Dios que quitas el pecado del mundo,\nten piedad de nosotros.\n\nCordero de Dios que quitas el pecado del mundo,\ndanos la paz." },
+        { t: "UNA MIRADA DE FE", l: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador." },
+        { t: "ESTO QUE TE DOY", l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar.\n\nToma mi vida, ponla en tu corazón,\ndame tu mano y llévame,\npastor de amor, Señor." },
+        { t: "RENUÉVAME", l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.\n\nPorque todo lo que hay dentro de mí,\nnecesita ser cambiado Señor.\nPorque todo lo que hay dentro de mi corazón,\nnecesita más de ti." },
+        { t: "CANTEMOS AL AMOR", l: "Cantemos al Amor de los amores,\ncantemos al Señor.\n¡Dios está aquí! Venid adoradores,\nadoremos a Cristo Redentor.\n\nGloria a Cristo Jesús,\ncielos y tierra bendecid al Señor.\nHonor y gloria a ti, Rey de la gloria,\namor por siempre a ti, Dios del amor." },
+        { t: "ALTÍSIMO SEÑOR", l: "Altísimo Señor, que supiste juntar\na un tiempo en el altar ser Cordero y Pastor.\n\nQuisiera con fervor recibirte en mi pecho,\ny ser de tu amor el más dulce provecho." },
+        { t: "ID Y ENSEÑAD", l: "Sois la semilla que ha de crecer,\nsois estrella que ha de brillar.\nSois levadura, sois grano de sal,\nantorcha que debe alumbrar.\n\nId amigos por el mundo anunciando el amor,\nmensajeros de la vida, de la paz y el perdón." },
+        { t: "CAMINARÉ", l: "Caminaré en presencia del Señor.\n\nAmo al Señor porque escucha mi voz suplicante,\nporque inclina su oído hacia mí\nel día que lo invoco.\n\nMe envolvían redes de muerte,\ncaí en tristeza y en angustia,\ninvoqué el nombre del Señor:\nSeñor, salva mi vida." },
+        { t: "SANTO (MISA)", l: "Santo, Santo, Santo es el Señor,\nDios del universo.\nLlenos están el cielo y la tierra de tu gloria.\n\n¡Hosanna en el cielo!\nBendito el que viene en nombre del Señor.\n¡Hosanna en el cielo!" },
+        { t: "CORDERO DE DIOS", l: "Cordero de Dios que quitas el pecado del mundo,\nten piedad de nosotros.\n\nCordero de Dios que quitas el pecado del mundo,\nten piedad de nosotros.\n\nCordero de Dios que quitas el pecado del mundo,\ndanos la paz." },
         { t: "GRACIAS SEÑOR", l: "Gracias Señor, porque eres como eres,\ngracias porque me quieres\naunque soy pecador.\n\nGracias por este nuevo día,\ngracias por tu compañía\ny por tu gran amor." },
         { t: "HOMBRES DE VALOR", l: "¿Quién irá abriendo caminos?\n¿Quién irá sembrando la paz?\n\nHombres de valor es lo que Dios busca,\nhombres que se entreguen por amor." },
-        { t: "TAN CERCA DE MÍ", l: "Tan cerca de mí, tan cerca de mí,\nque hasta lo puedo tocar,\nJesús está aquí." },
         { t: "ACUÉRDATE", l: "Acuérdate, oh Virgen María,\nque jamás se ha oído decir,\nque ninguno de los que han acudido a ti,\nhaya sido abandonado." },
-        { t: "HUMILDES GRACIAS", l: "Humildes gracias te doy, Señor,\npor este día que termina hoy.\n\nGracias te doy por la vida y el sol,\ngracias te doy por tu inmenso amor." },
-        { t: "HOY PERDÓNAME", l: "Hoy perdóname, hoy por siempre.\nSin mirar la mentira, lo vacío de mi dar.\nSin mirar a donde voy, ni mis pasos al caminar." },
-        { t: "YO SOY EL PAN DE VIDA", l: "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed." }
+        { t: "YO SOY EL PAN DE VIDA", l: "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\n\nNadie puede venir a mí,\nsi mi Padre no lo llama.\n\nY yo lo resucitaré,\ny yo lo resucitaré,\ny yo lo resucitaré en el día final." },
+        { t: "HOY PERDÓNAME", l: "Hoy perdóname, hoy por siempre,\nsin mirar la mentira, lo vacío de mi dar.\nSin mirar a donde voy ni mi paso al caminar.\n\nSi caminé a la derecha,\no si me fui a la izquierda,\nhoy te pido perdón Señor." }
     ];
 
     function cargarLista() {
         const div = document.getElementById('contenedor');
         div.innerHTML = '';
+        // Ordenar alfabéticamente
         misCantos.sort((a, b) => a.t.localeCompare(b.t)).forEach((c, i) => {
             div.innerHTML += `
                 <div class="fila-canto">
-                    <div class="info-canto">
-                        <span class="titulo-lista">${c.t}</span>
-                    </div>
-                    <button class="btn-descargar" onclick="bajarHoja(${i})">DESCARGAR 📥</button>
+                    <span class="titulo-lista">${c.t}</span>
+                    <button class="btn-descargar" onclick="bajarHoja(${i})">PDF 📥</button>
                 </div>
             `;
         });
@@ -88,8 +81,7 @@
     function filtrar() {
         const texto = document.getElementById('buscador').value.toLowerCase();
         const filas = document.querySelectorAll('.fila-canto');
-        const cantosFiltrados = misCantos.sort((a, b) => a.t.localeCompare(b.t));
-        cantosFiltrados.forEach((c, i) => {
+        misCantos.sort((a, b) => a.t.localeCompare(b.t)).forEach((c, i) => {
             filas[i].style.display = c.t.toLowerCase().includes(texto) ? 'flex' : 'none';
         });
     }
@@ -111,18 +103,17 @@
             margin: 0,
             filename: `${canto.t}.pdf`,
             image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 2, useCORS: true },
+            html2canvas: { scale: 2 },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
 
-        html2pdf().set(opciones).from(molde).toPdf().get('pdf').save().then(() => {
+        // Generar descarga directa
+        html2pdf().set(opciones).from(molde).save().then(() => {
             molde.style.display = 'none';
-            alert("¡Canto descargado! Lo encontrarás en tu carpeta de 'Descargas'.");
         });
     }
 
     cargarLista();
 </script>
-
 </body>
 </html>
