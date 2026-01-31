@@ -3,58 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Letra del Canto</title>
+    <title>Letra</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: serif; background: white; margin: 0; padding: 20px; text-align: center; }
-        .botonera { margin-bottom: 20px; display: flex; justify-content: space-between; }
-        .btn { padding: 10px 20px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
-        .btn-volver { background: #555; color: white; }
-        .btn-pdf { background: #27ae60; color: white; }
-        #hoja { border: 1px solid #eee; padding: 40px; min-height: 80vh; }
-        h1 { color: #d35400; font-size: 30pt; border-bottom: 2px solid #333; padding-bottom: 10px; }
-        p { font-size: 22pt; line-height: 1.7; white-space: pre-line; color: black; }
+        body { font-family: serif; background: white; padding: 20px; text-align: center; }
+        .controles { margin-bottom: 30px; display: flex; justify-content: space-between; }
+        .btn { padding: 10px 15px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; }
+        #hoja-pdf { border: 1px solid #ddd; padding: 30px; background: white; }
+        h1 { color: #d35400; font-size: 28pt; text-transform: uppercase; }
+        p { font-size: 20pt; line-height: 1.6; white-space: pre-line; }
     </style>
 </head>
 <body>
 
-    <div class="botonera no-print">
-        <button class="btn btn-volver" onclick="location.href='index.html'">⬅ VOLVER AL MENÚ</button>
-        <button class="btn btn-pdf" onclick="descargar()">DESCARGAR PDF 📥</button>
+    <div class="controles">
+        <a href="index.html" class="btn" style="background:#888; color:white;">⬅ VOLVER</a>
+        <button onclick="bajarPDF()" class="btn" style="background:#27ae60; color:white;">DESCARGAR PDF 📥</button>
     </div>
 
-    <div id="hoja">
-        <h1 id="titulo">Cargando...</h1>
-        <p id="contenido"></p>
+    <div id="hoja-pdf">
+        <h1 id="titulo"></h1>
+        <p id="letra"></p>
     </div>
 
     <script>
-        // Aquí puedes meter todas las 46 letras. No se borrarán porque esta página solo carga una.
-        const biblioteca = {
-            "YO SOY EL PAN DE VIDA": "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed...",
-            "ESTO QUE TE DOY": "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo...",
-            "VASO NUEVO": "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor..."
-            // Agrega aquí todas las demás...
+        // Aquí guardamos las letras con un "ID" corto para que no haya errores
+        const letras = {
+            "pan": {
+                titulo: "YO SOY EL PAN DE VIDA",
+                texto: "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\n\nY yo lo resucitaré en el día final."
+            },
+            "vaso": {
+                titulo: "VASO NUEVO",
+                texto: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nYo quiero ser un vaso nuevo."
+            },
+            "padre": {
+                titulo: "TE ALABO OH PADRE",
+                texto: "Te alabo oh Padre por tu gran amor,\nporque eres eterno, porque eres el Señor."
+            },
+            "pescador": {
+                titulo: "PESCADOR DE HOMBRES",
+                texto: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga."
+            },
+            "esto": {
+                titulo: "ESTO QUE TE DOY",
+                texto: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma."
+            }
         };
 
-        // Leer qué canción quiere mamá
-        const parametros = new URLSearchParams(window.location.search);
-        const nombreCanto = parametros.get('canto');
+        // El truco para saber qué canción mostrar:
+        const urlParams = new URLSearchParams(window.location.search);
+        const idCanto = urlParams.get('id');
 
-        if (nombreCanto && biblioteca[nombreCanto]) {
-            document.getElementById('titulo').innerText = nombreCanto;
-            document.getElementById('contenido').innerText = biblioteca[nombreCanto];
+        if (letras[idCanto]) {
+            document.getElementById('titulo').innerText = letras[idCanto].titulo;
+            document.getElementById('letra').innerText = letras[idCanto].texto;
+        } else {
+            document.getElementById('titulo').innerText = "Canto no encontrado";
         }
 
-        function descargar() {
-            const elemento = document.getElementById('hoja');
-            const opt = {
+        function bajarPDF() {
+            const element = document.getElementById('hoja-pdf');
+            html2pdf().set({
                 margin: 0.5,
-                filename: nombreCanto + '.pdf',
+                filename: document.getElementById('titulo').innerText + '.pdf',
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(elemento).save();
+            }).from(element).save();
         }
     </script>
 </body>
