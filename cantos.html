@@ -3,73 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Letra</title>
+    <title>Visualizador de Canto</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: serif; background: white; padding: 20px; text-align: center; }
-        .controles { margin-bottom: 30px; display: flex; justify-content: space-between; }
-        .btn { padding: 10px 15px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; }
-        #hoja-pdf { border: 1px solid #ddd; padding: 30px; background: white; }
-        h1 { color: #d35400; font-size: 28pt; text-transform: uppercase; }
-        p { font-size: 20pt; line-height: 1.6; white-space: pre-line; }
+        body { font-family: 'Georgia', serif; background: #555; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        
+        /* Botones superiores */
+        .barra-herramientas { 
+            width: 100%; background: #333; padding: 15px; 
+            display: flex; justify-content: space-around; 
+            position: sticky; top: 0; z-index: 100;
+        }
+        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; font-family: sans-serif; }
+        .btn-volver { background: #777; color: white; }
+        .btn-pdf { background: #27ae60; color: white; }
+
+        /* La "Hoja" de papel virtual */
+        #papel-impresion { 
+            background: white; width: 90%; max-width: 800px; 
+            margin: 20px 0; padding: 50px; box-sizing: border-box;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); text-align: center;
+        }
+
+        h1 { color: #d35400; font-size: 28pt; border-bottom: 2px solid #ddd; padding-bottom: 15px; margin-top: 0; text-transform: uppercase; }
+        p { font-size: 22pt; line-height: 1.6; white-space: pre-line; color: black; margin-top: 30px; }
+
+        @media print { .barra-herramientas { display: none; } #papel-impresion { box-shadow: none; margin: 0; width: 100%; } }
     </style>
 </head>
 <body>
 
-    <div class="controles">
-        <a href="index.html" class="btn" style="background:#888; color:white;">⬅ VOLVER</a>
-        <button onclick="bajarPDF()" class="btn" style="background:#27ae60; color:white;">DESCARGAR PDF 📥</button>
+    <div class="barra-herramientas">
+        <a href="index.html" class="btn btn-volver">⬅ VOLVER AL MENÚ</a>
+        <button onclick="descargarPDF()" class="btn btn-pdf">DESCARGAR PDF 📥</button>
     </div>
 
-    <div id="hoja-pdf">
-        <h1 id="titulo"></h1>
-        <p id="letra"></p>
+    <div id="papel-impresion">
+        <h1 id="titulo-canto">Cargando...</h1>
+        <p id="letra-canto"></p>
     </div>
 
     <script>
-        // Aquí guardamos las letras con un "ID" corto para que no haya errores
-        const letras = {
+        // BASE DE DATOS DE LETRAS
+        const biblioteca = {
             "pan": {
-                titulo: "YO SOY EL PAN DE VIDA",
-                texto: "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\n\nY yo lo resucitaré en el día final."
+                t: "YO SOY EL PAN DE VIDA",
+                l: "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\n\nNadie puede venir a mí,\nsi mi Padre no lo llama.\n\nY yo lo resucitaré,\ny yo lo resucitaré,\ny yo lo resucitaré en el día final."
             },
             "vaso": {
-                titulo: "VASO NUEVO",
-                texto: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nYo quiero ser un vaso nuevo."
-            },
-            "padre": {
-                titulo: "TE ALABO OH PADRE",
-                texto: "Te alabo oh Padre por tu gran amor,\nporque eres eterno, porque eres el Señor."
-            },
-            "pescador": {
-                titulo: "PESCADOR DE HOMBRES",
-                texto: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga."
+                t: "VASO NUEVO",
+                l: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo."
             },
             "esto": {
-                titulo: "ESTO QUE TE DOY",
-                texto: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma."
+                t: "ESTO QUE TE DOY",
+                l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar."
+            },
+            "pescador": {
+                t: "PESCADOR DE HOMBRES",
+                l: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre,\nen la arena he dejado mi barca,\njunto a ti buscaré otro mar."
             }
+            // Aquí iremos pegando las demás letras...
         };
 
-        // El truco para saber qué canción mostrar:
-        const urlParams = new URLSearchParams(window.location.search);
-        const idCanto = urlParams.get('id');
+        // Capturar el ID de la URL
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
 
-        if (letras[idCanto]) {
-            document.getElementById('titulo').innerText = letras[idCanto].titulo;
-            document.getElementById('letra').innerText = letras[idCanto].texto;
+        if (id && biblioteca[id]) {
+            document.getElementById('titulo-canto').innerText = biblioteca[id].t;
+            document.getElementById('letra-canto').innerText = biblioteca[id].l;
+            document.title = biblioteca[id].t; // Cambia el nombre de la pestaña
         } else {
-            document.getElementById('titulo').innerText = "Canto no encontrado";
+            document.getElementById('titulo-canto').innerText = "Canto no encontrado";
+            document.getElementById('letra-canto').innerText = "Por favor regresa al menú principal.";
         }
 
-        function bajarPDF() {
-            const element = document.getElementById('hoja-pdf');
-            html2pdf().set({
+        function descargarPDF() {
+            const hoja = document.getElementById('papel-impresion');
+            const titulo = document.getElementById('titulo-canto').innerText;
+
+            const opciones = {
                 margin: 0.5,
-                filename: document.getElementById('titulo').innerText + '.pdf',
-                html2canvas: { scale: 2 },
+                filename: titulo + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, logging: false },
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            }).from(element).save();
+            };
+
+            html2pdf().set(opciones).from(hoja).save();
         }
     </script>
 </body>
