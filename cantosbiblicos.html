@@ -3,102 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cantos Bíblicos - Menú</title>
+    <title>Cancionero Católico</title>
     <style>
         :root { --naranja: #d35400; --fondo: #fdfaf6; }
         body { font-family: sans-serif; background: var(--fondo); margin: 0; padding: 20px; }
         header { text-align: center; border-bottom: 3px solid var(--naranja); margin-bottom: 20px; }
-        h1 { color: var(--naranja); font-size: 22px; }
-        
-        .lista { display: grid; gap: 10px; min-height: 450px; align-content: start; }
+        h1 { color: var(--naranja); font-size: 22px; text-transform: uppercase; }
+        .lista { display: grid; gap: 10px; min-height: 500px; align-content: start; }
         .boton-canto { 
-            background: white; padding: 15px; border-radius: 10px; 
+            background: white; padding: 18px; border-radius: 10px; 
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-decoration: none; 
             color: #333; font-weight: bold; border-left: 5px solid var(--naranja);
         }
-
-        /* Estilos de la Paginación */
-        .paginacion { 
-            display: flex; justify-content: center; align-items: center; 
-            gap: 15px; margin-top: 30px; padding: 10px;
-        }
-        .btn-pag { 
-            background: white; border: 1px solid var(--naranja); color: var(--naranja);
-            padding: 8px 16px; border-radius: 5px; cursor: pointer; font-weight: bold;
-        }
-        .btn-pag:disabled { border-color: #ccc; color: #ccc; cursor: not-allowed; }
-        .info-pag { font-weight: bold; color: #555; }
+        .paginacion { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 30px; }
+        .btn-pag { background: white; border: 1px solid var(--naranja); color: var(--naranja); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-pag:disabled { border-color: #ccc; color: #ccc; }
     </style>
 </head>
 <body>
-
-<header>
-    <h1>📖 MI CANCIONERO</h1>
-</header>
-
-<div class="lista" id="lista-cantos">
-    </div>
-
+<header><h1>📖 MI CANCIONERO</h1></header>
+<div class="lista" id="lista-cantos"></div>
 <div class="paginacion">
-    <button class="btn-pag" id="btn-prev" onclick="cambiarPagina(-1)">◀ Anterior</button>
-    <span class="info-pag" id="num-pag">Página 1</span>
-    <button class="btn-pag" id="btn-next" onclick="cambiarPagina(1)">Siguiente ▶</button>
+    <button class="btn-pag" id="btn-prev" onclick="cambiarPagina(-1)">◀ ANTERIOR</button>
+    <span id="num-pag" style="font-weight:bold;"></span>
+    <button class="btn-pag" id="btn-next" onclick="cambiarPagina(1)">SIGUIENTE ▶</button>
 </div>
-
 <script>
-    // ESTA ES TU LISTA DE TODAS LAS MÚSICAS (Puedes meter las 50 aquí)
     const todosLosCantos = [
-        { id: "pescador", t: "PESCADOR DE HOMBRES" },
-        { id: "hacia_ti", t: "HACIA TI MORADA SANTA" },
+        { id: "senor_piedad", t: "SEÑOR TEN PIEDAD" },
         { id: "pan_vida", t: "YO SOY EL PAN DE VIDA" },
         { id: "perdon_dios", t: "PERDÓN OH DIOS MÍO" },
+        { id: "hacia_ti", t: "HACIA TI MORADA SANTA" },
+        { id: "pescador", t: "PESCADOR DE HOMBRES" },
         { id: "vaso_nuevo", t: "VASO NUEVO" },
         { id: "entre_manos", t: "ENTRE TUS MANOS" },
         { id: "dios_esta", t: "DIOS ESTÁ AQUÍ" },
         { id: "alma_cristo", t: "ALMA DE CRISTO" },
         { id: "pueblo_mio", t: "PUEBLO MÍO (CUARESMA)" },
         { id: "altisimo", t: "ALTÍSIMO SEÑOR" },
+        { id: "cantemos_amor", t: "CANTEMOS AL AMOR DE LOS AMORES" },
+        { id: "ave_maria", t: "AVE MARÍA" },
+        { id: "pecador_donde", t: "PECADOR ¿DÓNDE VAS?" },
+        { id: "noche_morir", t: "ANTES DE MORIR (A LA VIRGEN)" },
         { id: "id_ensenad", t: "ID Y ENSEÑAD" },
-        { id: "caminare", t: "CAMINARÉ EN PRESENCIA" },
         { id: "hoy_perdon", t: "HOY PERDÓNAME" },
-        { id: "hombres_valor", t: "HOMBRES DE VALOR" },
-        { id: "renuevame", t: "RENUÉVAME" }
+        { id: "renuevame", t: "RENUÉVAME SEÑOR" },
+        { id: "oh_maria", t: "OH MARÍA MADRE MÍA" },
+        { id: "mirada_fe", t: "UNA MIRADA DE FE" }
     ];
-
     let paginaActual = 1;
-    const cantosPorPagina = 10; // AQUÍ CAMBIAS SI QUIERES 10 o 15
-
-    function mostrarCantos() {
+    const cantosPorPagina = 10;
+    function mostrar() {
         const contenedor = document.getElementById('lista-cantos');
         contenedor.innerHTML = '';
-
         const inicio = (paginaActual - 1) * cantosPorPagina;
-        const fin = inicio + cantosPorPagina;
-        const cantosVisibles = todosLosCantos.slice(inicio, fin);
-
-        cantosVisibles.forEach(canto => {
-            const link = document.createElement('a');
-            link.href = `cantos.html?id=${canto.id}`;
-            link.className = 'boton-canto';
-            link.innerHTML = `<span>${canto.t}</span> <span>▶</span>`;
-            contenedor.appendChild(link);
+        const visibles = todosLosCantos.slice(inicio, inicio + cantosPorPagina);
+        visibles.forEach(c => {
+            contenedor.innerHTML += `<a href="cantos.html?id=${c.id}" class="boton-canto"><span>${c.t}</span> ▶</a>`;
         });
-
-        // Actualizar botones y número de página
-        document.getElementById('num-pag').innerText = `Página ${paginaActual}`;
-        document.getElementById('btn-prev').disabled = (paginaActual === 1);
-        document.getElementById('btn-next').disabled = (fin >= todosLosCantos.length);
+        document.getElementById('num-pag').innerText = `Pág. ${paginaActual}`;
+        document.getElementById('btn-prev').disabled = paginaActual === 1;
+        document.getElementById('btn-next').disabled = (inicio + cantosPorPagina) >= todosLosCantos.length;
     }
-
-    function cambiarPagina(direccion) {
-        paginaActual += direccion;
-        mostrarCantos();
-        window.scrollTo(0, 0); // Sube al inicio de la lista al cambiar
-    }
-
-    // Iniciar
-    mostrarCantos();
+    function cambiarPagina(d) { paginaActual += d; mostrar(); window.scrollTo(0,0); }
+    mostrar();
 </script>
 </body>
 </html>
