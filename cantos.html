@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Cantos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body { font-family: 'Georgia', serif; background: #333; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        .barra { width: 100%; background: #111; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; z-index: 100; }
+        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; color: white; font-family: sans-serif; }
+        #hoja { background: white; width: 95%; max-width: 800px; margin: 20px; padding: 60px 40px; box-sizing: border-box; box-shadow: 0 0 20px rgba(0,0,0,0.5); text-align: center; min-height: 100vh; }
+        h1 { color: #d35400; font-size: 28pt; border-bottom: 2px solid #eee; padding-bottom: 10px; text-transform: uppercase; margin-bottom: 30px; }
+        p { font-size: 20pt; line-height: 1.8; white-space: pre-line; color: black; text-align: center; margin: 0; width: 100%; }
+        @media print { .barra { display: none; } #hoja { box-shadow: none; margin: 0; width: 100%; } }
+    </style>
+</head>
+<body>
+
+<div class="barra">
+    <a href="javascript:history.back()" class="btn" style="background:#d35400;">⬅ VOLVER</a>
+    <button onclick="bajarPDF()" class="btn" style="background:#27ae60;">DESCARGAR PDF 📥</button>
+</div>
+
+<div id="hoja">
+    <h1 id="titulo">Cargando...</h1>
+    <p id="letra"></p>
+</div>
+
+<script>
+    const biblioteca = {
+        "dios_esta": { t: "DIOS ESTÁ AQUÍ", l: "CORO:\nDios está aquí,\ntan cierto como el aire que respiro,\ntan cierto como la mañana se levanta el sol,\ntan cierto como que este canto lo puedes oír.\n\n1. Lo puedes sentir a tu lado en este mismo instante,\nlo puedes sentir muy dentro de tu corazón.\nLo puedes sentir en ese problema que tienes,\nJesús está aquí, si quieres lo puedes seguir.\n\n2. Santo, Santo, Santo, mi corazón te adora,\nmi corazón te sabe decir: ¡Santo eres Tú!" },
+        
+        "la_guadalupana": { 
+            t: "LA GUADALUPANA", 
+            l: "1. Desde el cielo una hermosa mañana (bis),\nla Guadalupana (bis), la Guadalupana bajó al Tepeyac.\n\n2. Su llegada llenó de alegría (bis),\nde luz y armonía (bis), de luz y armonía todo el Anáhuac.\n\n3. Junto al monte pasaba Juan Diego (bis),\ny acercose luego (bis), y acercose luego al oír cantar.\n\n4. Juan Dieguito la Virgen le dijo (bis),\neste cerro elijo (bis), este cerro elijo para hacer mi altar.\n\n5. En la tilma entre rosas pintadas (bis),\nsu imagen amada (bis), su imagen amada se dignó dejar.\n\n6. Desde entonces para el mexicano (bis),\nser Guadalupano (bis), ser Guadalupano es algo esencial." 
+        },
+
+        "tu_reinaras": {
+            t: "¡TÚ REINARÁS!",
+            l: "1. ¡Tú reinarás! Este es el grito\nque ardiente exhala nuestra fe.\n¡Tú reinarás! Oh Rey bendito,\npues tú dijiste: ¡Reinaré!\n\nCORO:\nReine Jesús por siempre,\nreine su ley en nuestra patria, en nuestro suelo.\nQue es el único sendero,\nque nos conduce hasta el cielo.\n\n2. ¡Tú reinarás! Dulce esperanza,\nque el alma llena de placer.\nHabrá por fin paz y bonanza,\nficidad habrá doquier.\n\n3. ¡Tú reinarás! En este suelo,\nte prometemos nuestro amor.\nOh buen Jesús, danos consuelo,\ny de tu gracia el resplandor."
+        },
+        
+        "pescador": {
+            t: "PESCADOR DE HOMBRES",
+            l: "1. Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nCORO:\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre.\nEn la arena he dejado mi barca:\njunto a Ti buscaré otro mar.\n\n2. Tú sabes bien lo que tengo,\nen mi barca no hay oro ni espadas,\ntan solo redes y mi trabajo.\n\n3. Tú necesitas mis manos,\nmi cansancio que a otros descanse,\namor que quiera seguir amando."
+        }
+        // Aquí iremos pegando las demás...
+    };
+
+    const id = new URLSearchParams(window.location.search).get('id');
+    if(id && biblioteca[id]) {
+        document.getElementById('titulo').innerText = biblioteca[id].t;
+        document.getElementById('letra').innerText = biblioteca[id].l;
+        document.title = biblioteca[id].t;
+    } else {
+        document.getElementById('titulo').innerText = "Canto no encontrado";
+        document.getElementById('letra').innerText = "Por favor, regresa al menú y selecciona una canción válida.";
+    }
+
+    function bajarPDF() {
+        const elemento = document.getElementById('hoja');
+        const nombreArchivo = document.getElementById('titulo').innerText;
+        const opciones = {
+            margin: 0.5,
+            filename: nombreArchivo + '.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opciones).from(elemento).save();
+    }
+</script>
+</body>
+</html>
