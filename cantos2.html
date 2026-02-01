@@ -1,1 +1,43 @@
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancionero - Pág 2</title>
+    <style>
+        :root { --naranja: #d35400; --fondo: #fdfaf6; --marron: #5d4037; }
+        body { font-family: sans-serif; background: var(--fondo); margin: 0; padding: 20px; }
+        header { text-align: center; margin-bottom: 10px; }
+        h1 { color: var(--naranja); font-size: 22px; text-transform: uppercase; margin: 0; }
+        .cuadro-bienvenida { background: #fff3e0; border: 1px dashed var(--naranja); padding: 15px; border-radius: 12px; margin: 15px 0; font-style: italic; color: var(--marron); text-align: center; }
+        .lista { display: grid; gap: 10px; margin-top: 20px; }
+        .boton-canto { background: white; padding: 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-decoration: none; color: #333; font-weight: bold; border-left: 6px solid var(--naranja); }
+        .paginacion { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 30px; }
+        .btn-pag { background: var(--naranja); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; }
+        .num-pag { font-weight: bold; color: var(--marron); }
+    </style>
+</head>
+<body>
+<header>
+    <h1>📖 MI CANCIONERO</h1>
+    <div class="cuadro-bienvenida">"El Señor es mi Pastor, nada me falta." <br><strong>(Salmo 23,1)</strong></div>
+</header>
+<div class="lista">
+    <a href="cantos.html?id=perdon_dios" class="boton-canto">11. PERDÓN OH DIOS MÍO <span>▶</span></a>
+    <a href="cantos.html?id=pueblo_mio" class="boton-canto">12. PUEBLO MÍO <span>▶</span></a>
+    <a href="cantos.html?id=id_ensenad" class="boton-canto">13. SOIS LA SEMILLA <span>▶</span></a>
+    <a href="cantos.html?id=hoy_perdon" class="boton-canto">14. HOY PERDÓNAME <span>▶</span></a>
+    <a href="cantos.html?id=renuevame" class="boton-canto">15. RENUÉVAME SEÑOR <span>▶</span></a>
+    <a href="cantos.html?id=oh_maria" class="boton-canto">16. OH MARÍA MADRE MÍA <span>▶</span></a>
+    <a href="cantos.html?id=vienen_con_alegria" class="boton-canto">17. VIENEN CON ALEGRÍA <span>▶</span></a>
+    <a href="cantos.html?id=santa_maria_camino" class="boton-canto">18. SANTA MARÍA DEL CAMINO <span>▶</span></a>
+    <a href="cantos.html?id=tomado_mano" class="boton-canto">19. TOMADO DE LA MANO <span>▶</span></a>
+    <a href="cantos.html?id=alabar" class="boton-canto">20. ALABARÉ A MI SEÑOR <span>▶</span></a>
+</div>
+<div class="paginacion">
+    <a href="cantos1.html" class="btn-pag">◀ Ant.</a>
+    <span class="num-pag">2 / 10</span>
+    <a href="cantos3.html" class="btn-pag">Sig. ▶</a>
+</div>
+</body>
+</html>
