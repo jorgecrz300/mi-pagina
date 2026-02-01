@@ -3,67 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancionero Católico 100</title>
+    <title>Cancionero con Buscador</title>
     <style>
         :root { --naranja: #d35400; --fondo: #fdfaf6; }
         body { font-family: sans-serif; background: var(--fondo); margin: 0; padding: 20px; }
-        header { text-align: center; border-bottom: 3px solid var(--naranja); margin-bottom: 20px; }
-        h1 { color: var(--naranja); font-size: 20px; text-transform: uppercase; }
-        .lista { display: grid; gap: 8px; min-height: 480px; align-content: start; }
+        header { text-align: center; margin-bottom: 10px; }
+        h1 { color: var(--naranja); font-size: 20px; text-transform: uppercase; margin-bottom: 15px; }
+
+        /* Estilo del Buscador */
+        .buscador-container {
+            position: relative;
+            margin-bottom: 20px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #buscador {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border-radius: 25px;
+            border: 2px solid var(--naranja);
+            font-size: 16px;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .lupa {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: var(--naranja);
+        }
+
+        .lista { display: grid; gap: 8px; min-height: 400px; align-content: start; }
         .boton-canto { 
             background: white; padding: 15px; border-radius: 10px; 
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-decoration: none; 
             color: #333; font-weight: bold; border-left: 5px solid var(--naranja); font-size: 14px;
         }
+        
         .paginacion { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 25px; }
-        .btn-pag { background: var(--naranja); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; }
-        .btn-pag:disabled { background: #ccc; }
+        .btn-pag { background: var(--naranja); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-pag:disabled { background: #ccc; cursor: not-allowed; }
+        #mensaje-vacio { text-align: center; color: #777; margin-top: 20px; display: none; }
     </style>
 </head>
 <body>
-<header><h1>📖 CANCIONERO COMPLETO (100)</h1></header>
+
+<header>
+    <h1>📖 MI CANCIONERO</h1>
+    <div class="buscador-container">
+        <input type="text" id="buscador" placeholder="Buscar canto (ej. Pescador)..." onkeyup="filtrar()">
+        <span class="lupa">🔍</span>
+    </div>
+</header>
+
+<div id="mensaje-vacio">No se encontró ninguna canción.</div>
 <div class="lista" id="lista-cantos"></div>
-<div class="paginacion">
+
+<div class="paginacion" id="control-paginas">
     <button class="btn-pag" id="btn-prev" onclick="cambiarPagina(-1)">◀</button>
     <span id="num-pag" style="font-weight:bold;"></span>
     <button class="btn-pag" id="btn-next" onclick="cambiarPagina(1)">▶</button>
 </div>
+
 <script>
     const todosLosCantos = [
         {id:"dios_esta", t:"DIOS ESTÁ AQUÍ"}, {id:"pescador", t:"PESCADOR DE HOMBRES"},
         {id:"vaso_nuevo", t:"VASO NUEVO"}, {id:"entre_manos", t:"ENTRE TUS MANOS"},
         {id:"pan_vida", t:"YO SOY EL PAN DE VIDA"}, {id:"hacia_ti", t:"HACIA TI MORADA SANTA"},
         {id:"altisimo", t:"ALTÍSIMO SEÑOR"}, {id:"alma_cristo", t:"ALMA DE CRISTO"},
-        {id:"cantemos_amor", t:"CANTEMOS AL AMOR DE LOS AMORES"}, {id:"ave_maria", t:"AVE MARÍA (DIOS TE SALVE)"},
+        {id:"cantemos_amor", t:"CANTEMOS AL AMOR DE LOS AMORES"}, {id:"ave_maria", t:"AVE MARÍA"},
         {id:"perdon_dios", t:"PERDÓN OH DIOS MÍO"}, {id:"pueblo_mio", t:"PUEBLO MÍO (IMPROPERIOS)"},
-        {id:"id_ensenad", t:"ID Y ENSEÑAD"}, {id:"hoy_perdon", t:"HOY PERDÓNAME"},
+        {id:"id_ensenad", t:"ID Y ENSEÑAD (SOIS LA SEMILLA)"}, {id:"hoy_perdon", t:"HOY PERDÓNAME"},
         {id:"renuevame", t:"RENUÉVAME SEÑOR"}, {id:"oh_maria", t:"OH MARÍA MADRE MÍA"},
-        {id:"mirada_fe", t:"UNA MIRADA DE FE"}, {id:"alabar", t:"ALABARÉ A MI SEÑOR"},
         {id:"vienen_con_alegria", t:"VIENEN CON ALEGRÍA"}, {id:"santa_maria_camino", t:"SANTA MARÍA DEL CAMINO"},
-        {id:"tomado_mano", t:"TOMADO DE LA MANO"}, {id:"cristo_joven", t:"UN JOVEN GALILEO"},
-        {id:"mas_cerca", t:"MÁS CERCA OH DIOS DE TI"}, {id:"queremos_paz", t:"DANOS LA PAZ"},
-        {id:"amemonos_hermanos", t:"AMÉMONOS DE CORAZÓN"}, {id:"senor_piedad", t:"SEÑOR TEN PIEDAD"},
-        {id:"gloria_misa", t:"GLORIA A DIOS EN EL CIELO"}, {id:"santo_misa", t:"SANTO ES EL SEÑOR"},
-        {id:"cordero_misa", t:"CORDERO DE DIOS"}, {id:"padre_nuestro", t:"PADRE NUESTRO (CANTO)"}
-        // ... (Aquí el sistema permite hasta 100 sin trabarse)
+        {id:"tomado_mano", t:"TOMADO DE LA MANO"}, {id:"alabar", t:"ALABARÉ A MI SEÑOR"},
+        {id:"cristo_joven", t:"UN JOVEN GALILEO"}, {id:"mas_cerca", t:"MÁS CERCA OH DIOS DE TI"},
+        {id:"queremos_paz", t:"DANOS LA PAZ"}, {id:"amemonos_hermanos", t:"AMÉMONOS DE CORAZÓN"},
+        {id:"senor_piedad", t:"SEÑOR TEN PIEDAD"}, {id:"gloria_misa", t:"GLORIA A DIOS EN EL CIELO"},
+        {id:"santo_misa", t:"SANTO ES EL SEÑOR"}, {id:"cordero_misa", t:"CORDERO DE DIOS"},
+        {id:"padre_nuestro", t:"PADRE NUESTRO (CANTO)"}, {id:"mirada_fe", t:"UNA MIRADA DE FE"}
     ];
 
+    let cantosFiltrados = [...todosLosCantos];
     let paginaActual = 1;
     const porPagina = 10;
+
     function mostrar() {
         const contenedor = document.getElementById('lista-cantos');
+        const controles = document.getElementById('control-paginas');
+        const mensaje = document.getElementById('mensaje-vacio');
         contenedor.innerHTML = '';
+
+        if (cantosFiltrados.length === 0) {
+            mensaje.style.display = 'block';
+            controles.style.display = 'none';
+            return;
+        } else {
+            mensaje.style.display = 'none';
+            controles.style.display = 'flex';
+        }
+
         const inicio = (paginaActual - 1) * porPagina;
-        const visibles = todosLosCantos.slice(inicio, inicio + porPagina);
+        const visibles = cantosFiltrados.slice(inicio, inicio + porPagina);
+
         visibles.forEach(c => {
             contenedor.innerHTML += `<a href="cantos.html?id=${c.id}" class="boton-canto"><span>${c.t}</span> ▶</a>`;
         });
-        document.getElementById('num-pag').innerText = `Página ${paginaActual} de ${Math.ceil(todosLosCantos.length/porPagina)}`;
+
+        document.getElementById('num-pag').innerText = `Pág. ${paginaActual} de ${Math.ceil(cantosFiltrados.length/porPagina)}`;
         document.getElementById('btn-prev').disabled = paginaActual === 1;
-        document.getElementById('btn-next').disabled = (inicio + porPagina) >= todosLosCantos.length;
+        document.getElementById('btn-next').disabled = (inicio + porPagina) >= cantosFiltrados.length;
     }
-    function cambiarPagina(d) { paginaActual += d; mostrar(); window.scrollTo(0,0); }
+
+    function cambiarPagina(d) {
+        paginaActual += d;
+        mostrar();
+        window.scrollTo(0,0);
+    }
+
+    function filtrar() {
+        const texto = document.getElementById('buscador').value.toLowerCase();
+        cantosFiltrados = todosLosCantos.filter(canto => 
+            canto.t.toLowerCase().includes(texto)
+        );
+        paginaActual = 1; // Reiniciar a la primera página tras buscar
+        mostrar();
+    }
+
     mostrar();
 </script>
 </body>
