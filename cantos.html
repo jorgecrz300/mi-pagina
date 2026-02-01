@@ -3,15 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Letra Completa</title>
+    <title>Visualizador de Cantos</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { font-family: 'Georgia', serif; background: #333; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
         .barra { width: 100%; background: #111; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; z-index: 100; }
         .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; color: white; font-family: sans-serif; }
-        #hoja { background: white; width: 95%; max-width: 750px; margin: 20px; padding: 40px; box-sizing: border-box; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        h1 { color: #d35400; font-size: 24pt; border-bottom: 2px solid #eee; text-align: center; text-transform: uppercase; margin-top: 0; }
-        p { font-size: 19pt; line-height: 1.6; white-space: pre-line; color: black; margin-top: 20px; }
+        
+        /* AQUÍ ESTÁ EL CAMBIO: Todo centrado */
+        #hoja { 
+            background: white; 
+            width: 95%; 
+            max-width: 750px; 
+            margin: 20px; 
+            padding: 50px 20px; 
+            box-sizing: border-box; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); 
+            text-align: center; /* Centra el título y el texto */
+        }
+        
+        h1 { color: #d35400; font-size: 26pt; border-bottom: 2px solid #eee; padding-bottom: 10px; text-transform: uppercase; }
+        
+        p { 
+            font-size: 20pt; 
+            line-height: 1.7; 
+            white-space: pre-line; 
+            color: black; 
+            margin-top: 30px;
+            display: inline-block; /* Ayuda a que el centrado sea perfecto */
+            text-align: center; 
+        }
+
         @media print { .barra { display: none; } #hoja { box-shadow: none; margin: 0; width: 100%; } }
     </style>
 </head>
@@ -19,7 +41,7 @@
 
 <div class="barra">
     <a href="cantosbiblicos.html" class="btn" style="background:#d35400;">⬅ VOLVER</a>
-    <button onclick="bajarPDF()" class="btn" style="background:#27ae60;">DESCARGAR PDF 📥</button>
+    <button onclick="bajarPDF()" class="btn" style="background:#27ae60;">PDF 📥</button>
 </div>
 
 <div id="hoja">
