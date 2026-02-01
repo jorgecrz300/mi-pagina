@@ -3,28 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancionero Católico</title>
+    <title>Cantos Bíblicos</title>
     <style>
         :root { --naranja: #d35400; --fondo: #fdfaf6; --marron: #5d4037; }
-        body { font-family: sans-serif; background: var(--fondo); margin: 0; padding: 20px; text-align: center; }
-        h1 { color: var(--naranja); font-size: 26px; text-transform: uppercase; margin-bottom: 30px; }
-        .cuadro-paginas { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 400px; margin: 0 auto; }
-        .btn-seccion { 
-            background: white; padding: 35px 15px; border-radius: 20px; text-decoration: none; 
-            color: var(--naranja); font-weight: bold; font-size: 22px; 
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1); border: 3px solid var(--naranja); 
-            display: flex; flex-direction: column; 
+        body { font-family: 'Segoe UI', sans-serif; background: var(--fondo); margin: 0; padding: 20px; color: var(--marron); }
+        header { text-align: center; padding: 20px 0; border-bottom: 2px solid var(--naranja); margin-bottom: 30px; }
+        h1 { margin: 0; font-size: 28px; text-transform: uppercase; color: var(--naranja); }
+        
+        .contenedor-menu {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            max-width: 500px;
+            margin: 0 auto;
         }
-        .btn-seccion span { font-size: 14px; color: #777; margin-top: 10px; font-weight: normal; }
-        .btn-seccion:active { transform: scale(0.95); background: #fff3e0; }
+
+        .boton-pagina {
+            background: white;
+            border: 3px solid var(--naranja);
+            border-radius: 25px;
+            padding: 40px 20px;
+            text-decoration: none;
+            color: var(--marron);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+        .boton-pagina:active { transform: scale(0.95); background: #fff3e0; }
+
+        .boton-pagina strong { font-size: 24px; color: var(--naranja); }
+        .boton-pagina span { font-size: 16px; margin-top: 10px; font-style: italic; }
+
+        footer { text-align: center; margin-top: 50px; font-size: 14px; opacity: 0.8; }
     </style>
 </head>
 <body>
+
+<header>
     <h1>📖 MI CANCIONERO</h1>
-    <div class="cuadro-paginas">
-        <a href="cantos1.html" class="btn-seccion">PÁGINA 1<span>Cantos 1 al 10</span></a>
-        <a href="cantos2.html" class="btn-seccion">PÁGINA 2<span>Cantos 11 al 20</span></a>
-        <a href="cantos3.html" class="btn-seccion">PÁGINA 3<span>Cantos 21 al 30</span></a>
-    </div>
+</header>
+
+<div class="contenedor-menu">
+    <a href="cantos1.html" class="boton-pagina">
+        <strong>PÁGINA 1</strong>
+        <span>10 Cantos (Libreta y más)</span>
+    </a>
+
+    <a href="cantos2.html" class="boton-pagina">
+        <strong>PÁGINA 2</strong>
+        <span>Cantos Populares</span>
+    </a>
+
+    <a href="cantos3.html" class="boton-pagina">
+        <strong>PÁGINA 3</strong>
+        <span>Cantos de Adoración</span>
+    </a>
+</div>
+
+<footer>
+    "Cantar es orar dos veces" — San Agustín
+</footer>
+
 </body>
 </html>
