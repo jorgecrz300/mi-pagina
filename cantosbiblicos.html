@@ -59,7 +59,6 @@
 
 <header>
     <h1>📖 MI CANCIONERO</h1>
-    
     <div class="cuadro-bienvenida">
         <span class="cita" id="frase-biblica">"Canten al Señor un cántico nuevo."</span>
         <span class="referencia" id="referencia-biblica">Salmo 98</span>
@@ -81,7 +80,6 @@
 </div>
 
 <script>
-    // LISTA CORREGIDA: Versión Católica Tradicional
     const frases = [
         {f: "Canten al Señor un cántico nuevo, porque ha hecho maravillas.", r: "Salmo 98,1"},
         {f: "El Señor es mi Pastor, nada me falta.", r: "Salmo 23,1"},
@@ -110,7 +108,42 @@
         {id:"queremos_paz", t:"DANOS LA PAZ"}, {id:"amemonos_hermanos", t:"AMÉMONOS DE CORAZÓN"},
         {id:"senor_piedad", t:"SEÑOR TEN PIEDAD"}, {id:"gloria_misa", t:"GLORIA A DIOS EN EL CIELO"},
         {id:"santo_misa", t:"SANTO ES EL SEÑOR"}, {id:"cordero_misa", t:"CORDERO DE DIOS"},
-        {id:"padre_nuestro", t:"PADRE NUESTRO (CANTO)"}, {id:"mirada_fe", t:"UNA MIRADA DE FE"}
+        {id:"padre_nuestro", t:"PADRE NUESTRO (CANTO)"}, {id:"mirada_fe", t:"UNA MIRADA DE FE"},
+        {id:"junto_ti_maria", t:"JUNTO A TI MARÍA"}, {id:"resucito", t:"RESUCITÓ, RESUCITÓ"},
+        {id:"una_espiga", t:"UNA ESPIGA DORADA POR EL SOL"}, {id:"hambre_de_dios", t:"NO PODEMOS CAMINAR (HAMBRE DE DIOS)"},
+        {id:"te_presentamos_vino", t:"TE PRESENTAMOS EL VINO Y EL PAN"}, {id:"pueblo_de_reyes", t:"PUEBLO DE REYES"},
+        {id:"iglesia_soy", t:"IGLESIA SOY"}, {id:"la_paz_sea_con_vosotros", t:"LA PAZ SEA CON VOSOTROS"},
+        {id:"tu_has_venido", t:"TÚ HAS VENIDO A LA ORILLA"}, {id:"me_has_seducido", t:"ME HAS SEDUCIDO SEÑOR"},
+        {id:"sumergeme", t:"SUMÉRGEME"}, {id:"noche_de_paz", t:"NOCHE DE PAZ"},
+        {id:"tu_palabra_me_da_vida", t:"TU PALABRA ME DA VIDA"}, {id:"andando_de_tu_mano", t:"ANDANDO DE TU MANO"},
+        {id:"que_alegria_cuando_me_dijeron", t:"QUÉ ALEGRÍA CUANDO ME DIJERON"}, {id:"cristo_te_necesita", t:"CRISTO TE NECESITA"},
+        {id:"tan_cerca_de_mi", t:"TAN CERCA DE MÍ"}, {id:"senor_no_soy_igno", t:"SEÑOR NO SOY DIGNO"},
+        {id:"saber_que_vendra", t:"SABER QUE VENDRÁS"}, {id:"un_mandamiento_nuevo", t:"UN MANDAMIENTO NUEVO"},
+        {id:"u_bi_caritas", t:"UBI CARITAS"}, {id:"ven_espiritu_santo", t:"VEN ESPÍRITU SANTO (SECUENCIA)"},
+        {id:"en_su_mesa_hay_amor", t:"EN SU MESA HAY AMOR"}, {id:"el_auxilio_me_viene_del_senor", t:"EL AUXILIO ME VIENE DEL SEÑOR"},
+        {id:"bendito_bendito", t:"BENDITO, BENDITO"}, {id:"alabado_sea_el_santisimo", t:"ALABADO SEA EL SANTÍSIMO"},
+        {id:"cinco_panes_dos_peces", t:"CINCO PANES Y DOS PECES"}, {id:"donde_hay_caridad", t:"DONDE HAY CARIDAD Y AMOR"},
+        {id:"el_senor_nos_da_su_amor", t:"EL SEÑOR NOS DA SU AMOR"}, {id:"hombres_nuevos", t:"DANOS UN CORAZÓN (HOMBRES NUEVOS)"},
+        {id:"madre_de_los_creyentes", t:"MADRE DE LOS CREYENTES"}, {id:"maria_mame_de_la_luz", t:"MARÍA MADRE DE LA LUZ"},
+        {id:"nina_que_se_llama_maria", t:"NIÑA QUE SE LLAMA MARÍA"}, {id:"la_guadalupana", t:"LA GUADALUPANA"},
+        {id:"tu_reinaras", t:"¡TÚ REINARÁS!"}, {id:"reina_de_mexico", t:"REINA DE MÉXICO"},
+        {id:"el_profeta", t:"ANTES QUE TE FORMARAS (EL PROFETA)"}, {id:"getsemani", t:"PARA QUE NO ME OLVIDES (GETSEMANÍ)"},
+        {id:"nadie_te_ama_como_yo", t:"NADIE TE AMA COMO YO"}, {id:"como_no_creer_en_dios", t:"COMO NO CREER EN DIOS"},
+        {id:"esta_es_la_luz_de_cristo", t:"ESTA ES LA LUZ DE CRISTO"}, {id:"viva_cristo_rey", t:"VIVA CRISTO REY"},
+        {id:"cristo_rompe_las_cadenas", t:"CRISTO ROMPE LAS CADENAS"}, {id:"alabar_a_dios", t:"ALABAR A DIOS (CUANDO LOS SANTOS)"},
+        {id:"granito_de_mostaza", t:"SI TUVIERAS FE (MOSTAZA)"}, {id:"estamos_de_fiesta", t:"ESTAMOS DE FIESTA CON JESÚS"},
+        {id:"vienen_con_alegria_2", t:"YA VENIMOS AL ALTAR"}, {id:"senor_no_soy_digno_2", t:"SEÑOR NO SOY DIGNO (QUE ENTRES)"},
+        {id:"madre_eres_ternura", t:"MADRE ERES TERNURA"}, {id:"magnificat", t:"MAGNÍFICAT (CANTO)"},
+        {id:"gracias_senor", t:"GRACIAS SEÑOR POR LA VIDA"}, {id:"corazon_el_mas_puro", t:"CORAZÓN EL MÁS PURO"},
+        {id:"misterio_de_amor", t:"MISTERIO DE AMOR"}, {id:"fregona_de_paz", t:"HAZME UN INSTRUMENTO DE TU PAZ"},
+        {id:"ven_senor_jesus", t:"VEN SEÑOR JESÚS (ADVIENTO)"}, {id:"hacia_belen_va_una_burra", t:"HACIA BELÉN VA UNA BURRA"},
+        {id:"los_peces_en_el_rio", t:"LOS PECES EN EL RÍO"}, {id:"cantad_a_dios", t:"CANTAD A DIOS"},
+        {id:"en_esta_tarde_cristo", t:"EN ESTA TARDE CRISTO"}, {id:"perdon_senor", t:"PERDÓN SEÑOR, PERDÓN"},
+        {id:"ten_piedad_marista", t:"TEN PIEDAD DE MÍ OH DIOS"}, {id:"aleluya_tradicional", t:"ALELUYA (EL SEÑOR ES NUESTRO REY)"},
+        {id:"ofrenda_de_amor", t:"OFRENDA DE AMOR"}, {id:"una_espiga_2", t:"EL TRIGO QUE SE MUERE"},
+        {id:"santo_marin", t:"SANTO (MARIN)"}, {id:"cordero_mejia", t:"CORDERO DE DIOS (MEJÍA)"},
+        {id:"salve_regina", t:"SALVE REGINA (LATÍN)"}, {id:"el_angelus", t:"EL ÁNGELUS"},
+        {id:"viva_la_virgen", t:"VIVA LA VIRGEN, VIVA LA MADRE"}, {id:"adios_reina_del_cielo", t:"ADIÓS REINA DEL CIELO"}
     ];
 
     let cantosFiltrados = [...todosLosCantos];
