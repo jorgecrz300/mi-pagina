@@ -10,7 +10,6 @@
         header { text-align: center; margin-bottom: 10px; }
         h1 { color: var(--naranja); font-size: 22px; text-transform: uppercase; margin-bottom: 5px; }
 
-        /* Cuadro de Bienvenida con Frase Bíblica */
         .cuadro-bienvenida {
             background: #fff3e0;
             border: 1px dashed var(--naranja);
@@ -24,7 +23,6 @@
         .cita { font-size: 16px; display: block; margin-bottom: 5px; line-height: 1.4; }
         .referencia { font-size: 13px; font-weight: bold; color: var(--naranja); display: block; text-align: right; }
 
-        /* Buscador */
         .buscador-container {
             position: relative;
             margin-bottom: 20px;
@@ -63,8 +61,8 @@
     <h1>📖 MI CANCIONERO</h1>
     
     <div class="cuadro-bienvenida">
-        <span class="cita" id="frase-biblica">"Canten al Señor un cántico nuevo, porque ha hecho maravillas."</span>
-        <span class="referencia" id="referencia-biblica">Salmo 98:1</span>
+        <span class="cita" id="frase-biblica">"Canten al Señor un cántico nuevo."</span>
+        <span class="referencia" id="referencia-biblica">Salmo 98</span>
     </div>
 
     <div class="buscador-container">
@@ -83,17 +81,18 @@
 </div>
 
 <script>
+    // LISTA CORREGIDA: Versión Católica Tradicional
     const frases = [
-        {f: "Canten al Señor un cántico nuevo, porque ha hecho maravillas.", r: "Salmo 98:1"},
-        {f: "El Señor es mi fuerza y mi escudo, mi corazón confía en Él.", r: "Salmo 28:7"},
-        {f: "Alaba, alma mía, al Señor; alabaré al Señor toda mi vida.", r: "Salmo 146:1-2"},
-        {f: "Todo lo puedo en Cristo que me fortalece.", r: "Filipenses 4:13"},
-        {f: "El Señor es mi pastor, nada me falta.", r: "Salmo 23:1"},
-        {f: "Den gracias al Señor porque es bueno, porque es eterna su misericordia.", r: "Salmo 118:1"},
-        {f: "Mi alma glorifica al Señor, mi espíritu se alegra en Dios mi Salvador.", r: "Lucas 1:46-47"},
-        {f: "Hagan todo con amor.", r: "1 Corintios 16:14"},
-        {f: "Cantaré al Señor mientras viva.", r: "Salmo 104:33"},
-        {f: "La alegría del Señor es nuestra fortaleza.", r: "Nehemías 8:10"}
+        {f: "Canten al Señor un cántico nuevo, porque ha hecho maravillas.", r: "Salmo 98,1"},
+        {f: "El Señor es mi Pastor, nada me falta.", r: "Salmo 23,1"},
+        {f: "Mi alma glorifica al Señor, mi espíritu se alegra en Dios mi Salvador.", r: "Lucas 1,46-47"},
+        {f: "Todo lo puedo en Aquel que me fortalece.", r: "Filipenses 4,13"},
+        {f: "Den gracias al Señor porque es bueno, porque es eterna su misericordia.", r: "Salmo 118,1"},
+        {f: "El Señor es mi luz y mi salvación, ¿a quién temeré?", r: "Salmo 27,1"},
+        {f: "Cantaré al Señor mientras viva, alabaré a mi Dios mientras exista.", r: "Salmo 104,33"},
+        {f: "Donde están dos o tres reunidos en mi Nombre, allí estoy Yo.", r: "Mateo 18,20"},
+        {f: "Bendice, alma mía, al Señor, y todo mi ser a su santo Nombre.", r: "Salmo 103,1"},
+        {f: "Mi corazón está firme, Dios mío, quiero cantar y tocar para ti.", r: "Salmo 108,1"}
     ];
 
     const todosLosCantos = [
@@ -118,7 +117,6 @@
     let paginaActual = 1;
     const porPagina = 10;
 
-    // Función para poner la frase aleatoria
     function ponerFrase() {
         const azar = Math.floor(Math.random() * frases.length);
         document.getElementById('frase-biblica').innerText = `"${frases[azar].f}"`;
@@ -167,7 +165,6 @@
         mostrar();
     }
 
-    // Al cargar la página, se pone la frase y se muestran los cantos
     ponerFrase();
     mostrar();
 </script>
