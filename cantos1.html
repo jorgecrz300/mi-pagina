@@ -3,107 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Letra del Canto</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <title>Cancionero - Pág 1</title>
     <style>
-        body { font-family: 'Georgia', serif; background: #333; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
-        .barra { width: 100%; background: #111; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; z-index: 100; }
-        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; color: white; font-family: sans-serif; }
-        #hoja { background: white; width: 95%; max-width: 750px; margin: 20px; padding: 50px 30px; box-sizing: border-box; box-shadow: 0 0 20px rgba(0,0,0,0.5); text-align: center; }
-        h1 { color: #d35400; font-size: 24pt; border-bottom: 2px solid #eee; padding-bottom: 10px; text-transform: uppercase; }
-        p { font-size: 18pt; line-height: 1.6; white-space: pre-line; color: black; margin-top: 25px; display: inline-block; text-align: center; width: 100%; }
-        @media print { .barra { display: none; } #hoja { box-shadow: none; margin: 0; width: 100%; } }
+        :root { --naranja: #d35400; --fondo: #fdfaf6; --marron: #5d4037; }
+        body { font-family: sans-serif; background: var(--fondo); margin: 0; padding: 20px; }
+        header { text-align: center; margin-bottom: 10px; }
+        h1 { color: var(--naranja); font-size: 22px; text-transform: uppercase; margin: 0; }
+        .cuadro-bienvenida { background: #fff3e0; border: 1px dashed var(--naranja); padding: 15px; border-radius: 12px; margin: 15px 0; font-style: italic; color: var(--marron); text-align: center; }
+        .lista { display: grid; gap: 10px; margin-top: 20px; }
+        .boton-canto { background: white; padding: 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-decoration: none; color: #333; font-weight: bold; border-left: 6px solid var(--naranja); }
+        .paginacion { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 30px; }
+        .btn-pag { background: var(--naranja); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; }
+        .btn-pag.desactivado { background: #ccc; pointer-events: none; }
+        .num-pag { font-weight: bold; color: var(--marron); }
     </style>
 </head>
 <body>
-
-<div class="barra">
-    <a href="cantosbiblicos.html" class="btn" style="background:#d35400;">⬅ VOLVER</a>
-    <button onclick="bajarPDF()" class="btn" style="background:#27ae60;">DESCARGAR PDF 📥</button>
+<header>
+    <h1>📖 MI CANCIONERO</h1>
+    <div class="cuadro-bienvenida">"Canten al Señor un cántico nuevo, porque ha hecho maravillas." <br><strong>(Salmo 98,1)</strong></div>
+</header>
+<div class="lista">
+    <a href="cantos.html?id=dios_esta" class="boton-canto">1. DIOS ESTÁ AQUÍ <span>▶</span></a>
+    <a href="cantos.html?id=pescador" class="boton-canto">2. PESCADOR DE HOMBRES <span>▶</span></a>
+    <a href="cantos.html?id=vaso_nuevo" class="boton-canto">3. VASO NUEVO <span>▶</span></a>
+    <a href="cantos.html?id=entre_manos" class="boton-canto">4. ENTRE TUS MANOS <span>▶</span></a>
+    <a href="cantos.html?id=pan_vida" class="boton-canto">5. YO SOY EL PAN DE VIDA <span>▶</span></a>
+    <a href="cantos.html?id=hacia_ti" class="boton-canto">6. HACIA TI MORADA SANTA <span>▶</span></a>
+    <a href="cantos.html?id=altisimo" class="boton-canto">7. ALTÍSIMO SEÑOR <span>▶</span></a>
+    <a href="cantos.html?id=alma_cristo" class="boton-canto">8. ALMA DE CRISTO <span>▶</span></a>
+    <a href="cantos.html?id=cantemos_amor" class="boton-canto">9. CANTEMOS AL AMOR <span>▶</span></a>
+    <a href="cantos.html?id=ave_maria" class="boton-canto">10. AVE MARÍA <span>▶</span></a>
 </div>
-
-<div id="hoja">
-    <h1 id="titulo">Cargando...</h1>
-    <p id="letra"></p>
+<div class="paginacion">
+    <a href="#" class="btn-pag desactivado">◀ Ant.</a>
+    <span class="num-pag">1 / 10</span>
+    <a href="cantos2.html" class="btn-pag">Sig. ▶</a>
 </div>
-
-<script>
-    const biblioteca = {
-        // ... (Aquí van las primeras 30 que ya teníamos perfectas)
-        "dios_esta": { t: "DIOS ESTÁ AQUÍ", l: "CORO:\nDios está aquí,\ntan cierto como el aire que respiro,\ntan cierto como la mañana se levanta el sol,\ntan cierto como que este canto lo puedes oír.\n\n1. Lo puedes sentir a tu lado en este mismo instante,\nlo puedes sentir muy dentro de tu corazón.\nLo puedes sentir en ese problema que tienes,\nJesús está aquí, si quieres lo puedes seguir.\n\n2. Santo, Santo, Santo, mi corazón te adora,\nmi corazón te sabe decir: ¡Santo eres Tú!" },
-        "pescador": { t: "PESCADOR DE HOMBRES", l: "1. Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nCORO:\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre.\nEn la arena he dejado mi barca:\njunto a Ti buscaré otro mar.\n\n2. Tú sabes bien lo que tengo,\nen mi barca no hay oro ni espadas,\ntan solo redes y mi trabajo.\n\n3. Tú necesitas mis manos,\nmi cansancio que a otros descanse,\namor que quiera seguir amando.\n\n4. Tú pescador de otros lagos,\nansia eterna de almas que esperan.\nAmigo bueno que así me llamas." },
-        // (Agrego el resto de las 30 originales aquí internamente)
-        
-        // BLOQUE 31-65 CON LETRAS COMPLETAS:
-        "junto_ti_maria": {
-            t: "JUNTO A TI MARÍA",
-            l: "1. Junto a ti, María, como un niño quiero estar.\nTómame en tus manos, guíame en mi caminar.\nQuiero que me eduques, que me enseñes a rezar,\nhazme transparente, lléname de paz.\n\nCORO:\nMadre, Madre, Madre, Madre.\nMadre, Madre, Madre, Madre.\n\n2. Gracias, Madre mía, por llevarnos a Jesús.\nHaznos más humildes, tan sencillos como tú.\nGracias, Madre mía, por abrir tu corazón,\nporque nos congregas y nos das tu amor."
-        },
-        "resucito": {
-            t: "RESUCITÓ, RESUCITÓ",
-            l: "CORO:\n¡Resucitó, resucitó, resucitó, aleluya!\n¡Aleluya, aleluya, aleluya, resucitó!\n\n1. La muerte, ¿dónde está la muerte?\n¿Dónde está mi muerte? ¿Dónde su victoria?\n\n2. Gracias sean dadas al Padre,\nque nos pasó a su reino, donde se vive de amor.\n\n3. Si con Él morimos, con Él vivimos,\ncon Él cantamos: ¡Aleluya!"
-        },
-        "una_espiga": {
-            t: "UNA ESPIGA DORADA POR EL SOL",
-            l: "1. Una espiga dorada por el sol,\nel racimo que corta el viñador,\nse convierten ahora en pan y vino de amor,\nen el Cuerpo y la Sangre del Señor.\n\n2. Compartimos la misma comunión,\nsomos trigo del mismo sembrador,\nun molino, la vida, nos tritura con dolor,\nDios nos hace Eucaristía en el amor.\n\n3. Como granos que han hecho el mismo pan,\ncomo notas que tejen un cantar,\ncomo gotas de agua que se funden en el mar,\nlos cristianos un cuerpo formarán."
-        },
-        "te_presentamos_vino": {
-            t: "TE PRESENTAMOS EL VINO Y EL PAN",
-            l: "CORO:\nTe presentamos el vino y el pan,\nbendito seas por siempre, Señor.\n\n1. Bendito seas, Señor, por este pan que nos diste,\nfruto de la tierra y del trabajo de los hombres.\n\n2. Bendito seas, Señor, el vino tú nos lo diste,\nfruto de la vid y del trabajo de los hombres.\n\n3. Como este pan y vino se transformarán,\nen tu Cuerpo y Sangre, Señor Jesús."
-        },
-        "la_guadalupana": {
-            t: "LA GUADALUPANA",
-            l: "1. Desde el cielo una hermosa mañana (bis),\nla Guadalupana (bis), la Guadalupana bajó al Tepeyac.\n\n2. Su llegada llenó de alegría (bis),\nde luz y armonía (bis), de luz y armonía todo el Anáhuac.\n\n3. Junto al monte pasaba Juan Diego (bis),\ny acercose luego (bis), y acercose luego al oír cantar.\n\n4. Juan Dieguito la Virgen le dijo (bis),\neste cerro elijo (bis), este cerro elijo para hacer mi altar.\n\n5. En la tilma entre rosas pintadas (bis),\nsu imagen amada (bis), su imagen amada se dignó dejar."
-        },
-        "tu_reinaras": {
-            t: "¡TÚ REINARÁS!",
-            l: "1. ¡Tú reinarás! Este es el grito\nque ardiente exhala nuestra fe.\n¡Tú reinarás! Oh Rey bendito,\npues tú dijiste: ¡Reinaré!\n\nCORO:\nReine Jesús por siempre,\nreine su ley en nuestra patria, en nuestro suelo.\nQue es el único sendero,\nque nos conduce hasta el cielo.\n\n2. ¡Tú reinarás! Dulce esperanza,\nque el alma llena de placer.\nHabrá por fin paz y bonanza,\nficidad habrá doquier.\n\n3. ¡Tú reinarás! En este suelo,\nte prometemos nuestro amor.\nOh buen Jesús, danos consuelo,\ny de tu gracia el resplandor."
-        },
-        "me_has_seducido": {
-            t: "ME HAS SEDUCIDO SEÑOR",
-            l: "1. Señor, no soy nada. ¿Por qué me has llamado?\nHas pasado por mi puerta y me has mirado.\n\nCORO:\nMe has seducido, Señor, con tu mirada.\nMe has hablado al corazón y me has vencido.\nMe has seducido, Señor, y no he podido resistir.\n\n2. Señor, yo te sigo, y quiero darte todo.\nAunque a veces me canse, tú me sostienes.\nTu palabra es la fuerza que alimenta mi vivir."
-        },
-        "sumergeme": {
-            t: "SUMÉRGEME",
-            l: "Cansado del camino, sediento de Ti,\nun desierto he cruzado, sin fuerzas quedé,\nvengo a Ti.\n\nLuché como soldado, y a veces sufrí,\ny aunque la lucha he ganado,\nmi armadura he desgastado, vengo a Ti.\n\nCORO:\nSumergeme en el río de tu Espíritu.\nNecesito refrescar este seco corazón,\nsediento de Ti.\nSumergeme."
-        },
-        "tan_cerca_de_mi": {
-            t: "TAN CERCA DE MÍ",
-            l: "CORO:\nTan cerca de mí, tan cerca de mí,\nque hasta lo puedo tocar, Jesús está aquí.\n\n1. Le hablaré sin miedo al oído,\nle diré las cosas que hay en mí,\ny que solo a Él, le interesarán.\nÉl es más que un mito para mí.\n\n2. No busques a Cristo en lo alto,\nni lo busques en la oscuridad.\nMuy cerca de ti, en tu corazón,\npuedes adorar a tu Señor."
-        },
-        "un_mandamiento_nuevo": {
-            t: "UN MANDAMIENTO NUEVO",
-            l: "CORO:\nUn mandamiento nuevo nos da el Señor:\nque nos amemos todos como Él nos amó.\n\n1. La señal de los cristianos es amarse como hermanos.\n\n2. Quien no ama a sus hermanos miente si a Dios dice que ama.\n\n3. Donde hay caridad y amor, Cristo está y está su Iglesia.\n\n4. El que ama a sus hermanos, en la luz espera y vive."
-        },
-        "bendito_bendito": {
-            t: "BENDITO, BENDITO",
-            l: "CORO:\nBendito, bendito, bendito sea Dios.\nLos ángeles cantan y alaban a Dios.\nLos ángeles cantan y alaban a Dios.\n\n1. Yo creo, Jesús mío, que estás en el altar,\nen cuerpo y en alma, de verdad.\n\n2. Por amor al hombre moriste en la Cruz,\ny nos das tu Cuerpo, divina salud.\n\n3. Jesús Rey de gloria, fuente de amor,\nen Ti confiamos, ¡oh buen Salvador!"
-        }
-        // ... por espacio sigo agregando las letras exactas así de largas.
-    };
-
-    const id = new URLSearchParams(window.location.search).get('id');
-    if(id && biblioteca[id]) {
-        document.getElementById('titulo').innerText = biblioteca[id].t;
-        document.getElementById('letra').innerText = biblioteca[id].l;
-        document.title = biblioteca[id].t;
-    } else {
-        document.getElementById('titulo').innerText = "Canto no encontrado";
-    }
-
-    function bajarPDF() {
-        const elemento = document.getElementById('hoja');
-        const nombreArchivo = document.getElementById('titulo').innerText;
-        const opciones = {
-            margin: 0.5,
-            filename: nombreArchivo + '.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-        html2pdf().set(opciones).from(elemento).save();
-    }
-</script>
-
 </body>
 </html>
