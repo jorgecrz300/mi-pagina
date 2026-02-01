@@ -3,43 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú de Cantos Bíblicos</title>
+    <title>Cantos Bíblicos - Menú</title>
     <style>
         :root { --naranja: #d35400; --fondo: #fdfaf6; --marron: #5d4037; }
         body { font-family: sans-serif; background: var(--fondo); margin: 0; padding: 20px; text-align: center; }
         header { margin-bottom: 25px; }
         h1 { color: var(--naranja); font-size: 26px; text-transform: uppercase; margin-bottom: 5px; }
-        
         .subtitulo { color: var(--marron); font-size: 16px; margin-bottom: 25px; font-weight: bold; }
         
         .cuadro-paginas {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Dos botones por fila */
-            gap: 15px;
-            max-width: 450px;
+            grid-template-columns: 1fr; /* Un botón grande por fila para que sea más fácil */
+            gap: 20px;
+            max-width: 400px;
             margin: 0 auto;
         }
 
         .btn-seccion {
             background: white;
-            padding: 25px 10px;
-            border-radius: 15px;
+            padding: 30px 15px;
+            border-radius: 20px;
             text-decoration: none;
             color: var(--naranja);
             font-weight: bold;
-            font-size: 18px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border: 2px solid var(--naranja);
+            font-size: 22px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            border: 3px solid var(--naranja);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            transition: transform 0.2s;
+            align-items: center;
         }
 
         .btn-seccion span {
-            font-size: 12px;
+            font-size: 14px;
             color: #777;
-            margin-top: 8px;
+            margin-top: 10px;
             font-weight: normal;
         }
 
@@ -48,48 +46,33 @@
             background: #fff3e0;
         }
 
-        .pie-pagina { margin-top: 40px; color: var(--marron); font-style: italic; font-size: 14px; line-height: 1.5; }
-        .linea { width: 50px; height: 3px; background: var(--naranja); margin: 20px auto; border-radius: 2px; }
+        .pie { margin-top: 40px; color: var(--marron); font-style: italic; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>📖 MIS CANTOS</h1>
-    <div class="linea"></div>
-    <p class="subtitulo">Selecciona una página del libro:</p>
+    <p class="subtitulo">Selecciona una página:</p>
 </header>
 
 <div class="cuadro-paginas">
     <a href="cantos1.html" class="btn-seccion">
         PÁGINA 1
-        <span>Cantos 1 - 10</span>
+        <span>Cantos 1 al 10</span>
     </a>
     <a href="cantos2.html" class="btn-seccion">
         PÁGINA 2
-        <span>Cantos 11 - 20</span>
+        <span>Cantos 11 al 20</span>
     </a>
     <a href="cantos3.html" class="btn-seccion">
         PÁGINA 3
-        <span>Cantos 21 - 30</span>
-    </a>
-    <a href="cantos4.html" class="btn-seccion">
-        PÁGINA 4
-        <span>Cantos 31 - 40</span>
-    </a>
-    <a href="cantos5.html" class="btn-seccion">
-        PÁGINA 5
-        <span>Cantos 41 - 50</span>
-    </a>
-    <a href="cantos6.html" class="btn-seccion">
-        PÁGINA 6
-        <span>Cantos 51 - 60</span>
+        <span>Cantos 21 al 30</span>
     </a>
 </div>
 
-<div class="pie-pagina">
-    "Alabaré al Señor en todo tiempo,<br>su alabanza estará siempre en mi boca."<br>
-    <strong>Salmo 34</strong>
+<div class="pie">
+    "Canten al Señor un cántico nuevo"
 </div>
 
 </body>
