@@ -10,8 +10,8 @@
         .barra { width: 100%; background: #111; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; z-index: 100; }
         .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; color: white; font-family: sans-serif; }
         #hoja { background: white; width: 95%; max-width: 800px; margin: 20px; padding: 60px 40px; box-sizing: border-box; box-shadow: 0 0 20px rgba(0,0,0,0.5); text-align: center; min-height: 100vh; }
-        h1 { color: #d35400; font-size: 28pt; border-bottom: 2px solid #eee; padding-bottom: 10px; text-transform: uppercase; margin-bottom: 30px; }
-        p { font-size: 20pt; line-height: 1.8; white-space: pre-line; color: black; text-align: center; margin: 0; width: 100%; }
+        h1 { color: #d35400; font-size: 26pt; border-bottom: 2px solid #eee; padding-bottom: 10px; text-transform: uppercase; margin-bottom: 30px; }
+        p { font-size: 19pt; line-height: 1.7; white-space: pre-line; color: black; text-align: center; margin: 0; width: 100%; }
         @media print { .barra { display: none; } #hoja { box-shadow: none; margin: 0; width: 100%; } }
     </style>
 </head>
@@ -29,23 +29,25 @@
 
 <script>
     const biblioteca = {
-        "dios_esta": { t: "DIOS ESTÁ AQUÍ", l: "CORO:\nDios está aquí,\ntan cierto como el aire que respiro,\ntan cierto como la mañana se levanta el sol,\ntan cierto como que este canto lo puedes oír.\n\n1. Lo puedes sentir a tu lado en este mismo instante,\nlo puedes sentir muy dentro de tu corazón.\nLo puedes sentir en ese problema que tienes,\nJesús está aquí, si quieres lo puedes seguir.\n\n2. Santo, Santo, Santo, mi corazón te adora,\nmi corazón te sabe decir: ¡Santo eres Tú!" },
-        
-        "la_guadalupana": { 
-            t: "LA GUADALUPANA", 
-            l: "1. Desde el cielo una hermosa mañana (bis),\nla Guadalupana (bis), la Guadalupana bajó al Tepeyac.\n\n2. Su llegada llenó de alegría (bis),\nde luz y armonía (bis), de luz y armonía todo el Anáhuac.\n\n3. Junto al monte pasaba Juan Diego (bis),\ny acercose luego (bis), y acercose luego al oír cantar.\n\n4. Juan Dieguito la Virgen le dijo (bis),\neste cerro elijo (bis), este cerro elijo para hacer mi altar.\n\n5. En la tilma entre rosas pintadas (bis),\nsu imagen amada (bis), su imagen amada se dignó dejar.\n\n6. Desde entonces para el mexicano (bis),\nser Guadalupano (bis), ser Guadalupano es algo esencial." 
-        },
+        /* --- BLOQUE 1: ORIGINALES --- */
+        "dios_esta": { t: "DIOS ESTÁ AQUÍ", l: "CORO:\nDios está aquí,\ntan cierto como el aire que respiro,\ntan cierto como la mañana se levanta el sol,\ntan cierto como que este canto lo puedes oír.\n\n1. Lo puedes sentir a tu lado en este mismo instante,\lo puedes sentir muy dentro de tu corazón.\nLo puedes sentir en ese problema que tienes,\nJesús está aquí, si quieres lo puedes seguir.\n\n2. Santo, Santo, Santo, mi corazón te adora,\nmi corazón te sabe decir: ¡Santo eres Tú!" },
+        "pescador": { t: "PESCADOR DE HOMBRES", l: "1. Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nCORO:\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre.\nEn la arena he dejado mi barca:\njunto a Ti buscaré otro mar.\n\n2. Tú sabes bien lo que tengo,\nen mi barca no hay oro ni espadas,\ntan solo redes y mi trabajo.\n\n3. Tú necesitas mis manos,\nmi cansancio que a otros descanse,\namor que quiera seguir amando.\n\n4. Tú pescador de otros lagos,\nansia eterna de almas que esperan.\nAmigo bueno que así me llamas." },
+        "vaso_nuevo": { t: "VASO NUEVO", l: "1. Gracias quiero darte por amarme,\ngracias quiero darte yo a Ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mí también.\n\nCORO:\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." },
+        "entre_manos": { t: "ENTRE TUS MANOS", l: "CORO:\nEntre tus manos pongo mi vida Señor,\nentre tus manos pongo mi existir.\nHay que morir para vivir,\nentre tus manos confío mi ser.\n\n1. Si el grano de trigo no muere,\nsi no muere solo quedará,\npero si muere en abundancia dará\nun fruto eterno que no morirá." },
+        "pan_vida": { t: "YO SOY EL PAN DE VIDA", l: "1. Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\nNadie puede venir a mí,\nsi mi Padre no lo llama.\n\nCORO:\nY Yo lo resucitaré,\ny Yo lo resucitaré,\ny Yo lo resucitaré en el día final." },
 
-        "tu_reinaras": {
-            t: "¡TÚ REINARÁS!",
-            l: "1. ¡Tú reinarás! Este es el grito\nque ardiente exhala nuestra fe.\n¡Tú reinarás! Oh Rey bendito,\npues tú dijiste: ¡Reinaré!\n\nCORO:\nReine Jesús por siempre,\nreine su ley en nuestra patria, en nuestro suelo.\nQue es el único sendero,\nque nos conduce hasta el cielo.\n\n2. ¡Tú reinarás! Dulce esperanza,\nque el alma llena de placer.\nHabrá por fin paz y bonanza,\nficidad habrá doquier.\n\n3. ¡Tú reinarás! En este suelo,\nte prometemos nuestro amor.\nOh buen Jesús, danos consuelo,\ny de tu gracia el resplandor."
-        },
-        
-        "pescador": {
-            t: "PESCADOR DE HOMBRES",
-            l: "1. Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nCORO:\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre.\nEn la arena he dejado mi barca:\njunto a Ti buscaré otro mar.\n\n2. Tú sabes bien lo que tengo,\nen mi barca no hay oro ni espadas,\ntan solo redes y mi trabajo.\n\n3. Tú necesitas mis manos,\nmi cansancio que a otros descanse,\namor que quiera seguir amando."
-        }
-        // Aquí iremos pegando las demás...
+        /* --- BLOQUE 2: CANCIONES LARGAS (GUADALUPANA, ETC) --- */
+        "la_guadalupana": { t: "LA GUADALUPANA", l: "1. Desde el cielo una hermosa mañana (bis),\nla Guadalupana (bis), la Guadalupana bajó al Tepeyac.\n\n2. Su llegada llenó de alegría (bis),\nde luz y armonía (bis), de luz y armonía todo el Anáhuac.\n\n3. Junto al monte pasaba Juan Diego (bis),\ny acercose luego (bis), y acercose luego al oír cantar.\n\n4. Juan Dieguito la Virgen le dijo (bis),\neste cerro elijo (bis), este cerro elijo para hacer mi altar.\n\n5. En la tilma entre rosas pintadas (bis),\nsu imagen amada (bis), su imagen amada se dignó dejar." },
+        "tu_reinaras": { t: "¡TÚ REINARÁS!", l: "1. ¡Tú reinarás! Este es el grito\nque ardiente exhala nuestra fe.\n¡Tú reinarás! Oh Rey bendito,\npues tú dijiste: ¡Reinaré!\n\nCORO:\nReine Jesús por siempre,\nreine su ley en nuestra patria, en nuestro suelo.\nQue es el único sendero,\nque nos conduce hasta el cielo.\n\n2. ¡Tú reinarás! Dulce esperanza,\nque el alma llena de placer.\nHabrá por fin paz y bonanza,\nficidad habrá doquier." },
+
+        /* --- BLOQUE 3: LA LIBRETA DE MAMÁ (TRANSCRIPCIÓN EXACTA) --- */
+        "humildes_gracias": { t: "HUMILDES GRACIAS", l: "Humildes gracias demos a Dios\nque en una hostia todo se dio.\n\nCORO:\nGracias mil veces, gracias mil veces,\nhumildes gracias demos a Dios. (2)\n\n1. El que en los cielos encendió el Sol\nvino a este pueblo con gran amor.\nY allí escondido con blanda voz\ndame, me dice, tu corazón.\n\n2. Oh dueño mío, Rey y Señor,\ncómo pagarte tan rico don.\nLos que te siguen y oyen tu voz\nla vida eterna tendrán, Señor." },
+        "camino_al_monte": { t: "CAMINO AL MONTE", l: "Se ve un hombre y una cruz\nde tras le siguen gente que le llama Jesús.\n\nCORO:\nNo sé su nombre, pero no sé\npor qué le crucifican a Él. (2)\n\n1. Sigue su marcha, como el que sigue al sol\npero no saben que crucifican al Salvador.\nSe apaga el cielo por fin ya todo terminó\nsolo el Padre sabe todo lo que el Hijo sufrió.\n\n2. Pero no saben que no será\ncomo ellos piensan la realidad\nese buen hombre regresará\ny por siempre nunca morirá." },
+        "por_el_trigo_y_la_vid": { t: "POR EL TRIGO Y LA VID", l: "Por el trigo y la vid, que proviene de Ti,\nhoy Señor queremos darte gracias.\nPor el vino y el pan que tu mano nos da\nhoy Señor queremos darte gracias.\n\nCORO:\nVino y pan convertido por amor\nen tu Cuerpo y Sangre Señor, tú eres el pastor real.\nSu presencia viva está convertido por amor\nrecibimos la Santa Comunión.\n\n1. La gracia del Señor se derrama,\nel pan que es fortaleza del alma,\nes Cristo en Sacramento de amor.\n\n2. Jesús hoy nos invita a su mesa,\nquien coma de este pan tendrá vida eterna." },
+        "oh_dulce_jesus_mio": { t: "OH DULCE JESÚS MÍO", l: "1. Oh dulce Jesús mío, en mi pecho busca entrar,\nyo te espero, yo te ansío, yo te quiero yo abrazar.\n\n2. Eres tú mi fiel amigo, mi tesoro sin igual,\ny a ti solo quiero amar, oh dulce Jesús mío.\n\n3. Me mostraste tu camino con prodigio sin igual,\nsiendo Dios te hiciste niño y después te hiciste pan.\n\n4. Hoy en pago yo te entrego cuanto tengo, cuanto soy,\nmi trabajo y mi juego, mi alegría y mi dolor.\n\n5. Te consagro mi pureza, la preciosa flor de luz,\ny el retrato de tu belleza Rey del Cielo mi Jesús." },
+        "oh_senor_delante_de_ti": { t: "OH SEÑOR DELANTE DE TI", l: "1. Oh Señor delante de Ti,\nmis manos abiertas reciben tu Pan.\nOh Señor, espiga de amor llenas mi corazón.\n\nCORO:\nY entre tus manos oh Señor,\nguárdanos, guárdanos, danos lo que es amor. (2)\n\n2. Oh Señor, sendero de amor,\nmi alma en silencio escucha tu voz.\nOh Señor maestro y pastor danos lo que es amor.\n\n3. Oh Señor fe y hermandad\nmi pueblo celebra la fiesta pascual.\nOh Señor en torno a tu altar sella nuestra amistad." },
+        "te_alabo_padre": { t: "TE ALABO OH PADRE", l: "Te alabo oh Padre por este pan,\nfruto de la tierra y del trabajo del hombre.\nTe alabo oh Padre por este vino,\nfruto de la vid y del trabajo del hombre.\n\nCORO:\nTe los presentamos para que se conviertan\nen el Cuerpo y la Sangre de tu Hijo Jesús.\n\n1. Como el pan que estaba disperso por los campos\nse ha unido para formar un solo pan.\nAsí también nosotros Señor,\nformemos un solo cuerpo en el amor." },
+        "mirando_al_cielo": { t: "MIRANDO AL CIELO TRISTE", l: "Mirando al cielo triste estarás,\nporque un amigo se te fue.\nMirando al cielo triste estarás,\nporque tu hijo ya no está.\n\nCORO:\nPero no llores, que él vive en Dios,\npero no llores, que él ya llegó.\nÉl está alegre, él está en paz,\njunto a María y al Salvador.\n\n1. La muerte no es el fin del camino,\nes solo un paso hacia la luz.\nNos volveremos a ver allá,\nen la presencia de Jesús." }
     };
 
     const id = new URLSearchParams(window.location.search).get('id');
@@ -55,7 +57,7 @@
         document.title = biblioteca[id].t;
     } else {
         document.getElementById('titulo').innerText = "Canto no encontrado";
-        document.getElementById('letra').innerText = "Por favor, regresa al menú y selecciona una canción válida.";
+        document.getElementById('letra').innerText = "Regresa al menú principal.";
     }
 
     function bajarPDF() {
