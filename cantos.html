@@ -3,88 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Canto</title>
+    <title>Letra</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { font-family: 'Georgia', serif; background: #444; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
-        .barra-herramientas { 
-            width: 100%; background: #222; padding: 15px; 
-            display: flex; justify-content: space-around; 
-            position: sticky; top: 0; z-index: 100;
-        }
-        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; font-family: sans-serif; }
-        .btn-volver { background: #d35400; color: white; } /* Color naranja para resaltar */
-        .btn-pdf { background: #27ae60; color: white; }
-        #papel-impresion { 
-            background: white; width: 90%; max-width: 750px; 
-            margin: 20px 0; padding: 40px; box-sizing: border-box;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3); text-align: center;
-        }
-        h1 { color: #333; font-size: 26pt; border-bottom: 2px solid #eee; padding-bottom: 10px; text-transform: uppercase; }
-        p { font-size: 20pt; line-height: 1.5; white-space: pre-line; color: black; }
+        .barra { width: 100%; background: #222; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; }
+        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; color: white; font-family: sans-serif; }
+        #hoja { background: white; width: 90%; max-width: 750px; margin: 20px; padding: 40px; box-sizing: border-box; text-align: center; }
+        h1 { color: #333; font-size: 24pt; border-bottom: 2px solid #eee; padding-bottom: 10px; text-transform: uppercase; }
+        p { font-size: 18pt; line-height: 1.6; white-space: pre-line; color: black; text-align: left; margin-top: 30px; }
     </style>
 </head>
 <body>
 
-    <div class="barra-herramientas">
-        <a href="cantosbiblicos.html" class="btn btn-volver">⬅ VOLVER AL MENÚ</a>
-        <button onclick="descargarPDF()" class="btn btn-pdf">DESCARGAR PDF 📥</button>
-    </div>
+<div class="barra">
+    <a href="cantosbiblicos.html" class="btn" style="background:#d35400;">⬅ VOLVER</a>
+    <button onclick="bajarPDF()" class="btn" style="background:#27ae60;">PDF 📥</button>
+</div>
 
-    <div id="papel-impresion">
-        <h1 id="titulo-canto">Cargando...</h1>
-        <p id="letra-canto"></p>
-    </div>
+<div id="hoja">
+    <h1 id="titulo"></h1>
+    <p id="letra"></p>
+</div>
 
-    <script>
-        const biblioteca = {
-            "pan": {
-                t: "YO SOY EL PAN DE VIDA",
-                l: "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\n\nNadie puede venir a mí,\nsi mi Padre no lo llama.\n\nY yo lo resucitaré en el día final."
-            },
-            "vaso": {
-                t: "VASO NUEVO",
-                l: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo."
-            },
-            "esto": {
-                t: "ESTO QUE TE DOY",
-                l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar."
-            },
-            "pescador": {
-                t: "PESCADOR DE HOMBRES",
-                l: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre,\nen la arena he dejado mi barca."
-            },
-            "mirada": {
-                t: "UNA MIRADA DE FE",
-                l: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador."
-            },
-            "renuevame": {
-                t: "RENUÉVAME",
-                l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.\n\nPorque todo lo que hay dentro de mí,\nnecesita ser cambiado Señor."
-            }
-            // Iré preparando los otros 40 para que no se sature el código
-        };
-
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
-
-        if (id && biblioteca[id]) {
-            document.getElementById('titulo-canto').innerText = biblioteca[id].t;
-            document.getElementById('letra-canto').innerText = biblioteca[id].l;
-        } else {
-            document.getElementById('titulo-canto').innerText = "Canto no encontrado";
+<script>
+    const biblioteca = {
+        "pan_vida": {
+            t: "YO SOY EL PAN DE VIDA",
+            l: "Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\n\nNadie puede venir a mí,\nsi mi Padre no lo llama.\n\nY yo lo resucitaré,\ny yo lo resucitaré,\ny yo lo resucitaré en el día final."
+        },
+        "vaso_nuevo": {
+            t: "VASO NUEVO",
+            l: "Gracias quiero darte por amarme,\ngracias quiero darte yo a ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mi también.\n\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo."
+        },
+        "alabo_padre": {
+            t: "TE ALABO OH PADRE",
+            l: "Te alabo oh Padre por tu gran amor,\nporque eres eterno, porque eres el Señor.\n\nTu amor es eterno, tu amor es verdad,\ngracias te damos por tu bondad.\n\nGracias por la vida, gracias por el sol,\ngracias te damos por tu amor Señor."
+        },
+        "pescador": {
+            t: "PESCADOR DE HOMBRES",
+            l: "Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre,\nen la arena he dejado mi barca,\njunto a ti buscaré otro mar."
+        },
+        "mirada_fe": {
+            t: "UNA MIRADA DE FE",
+            l: "Una mirada de fe, una mirada de fe\nes la que puede salvar al pecador.\n\nY si tú miras a Cristo Jesús\nÉl te perdonará,\nporque una mirada de fe\nes la que puede salvar al pecador."
+        },
+        "esto_doy": {
+            t: "ESTO QUE TE DOY",
+            l: "Esto que te doy es vino y pan Señor,\nesto que te doy es mi trabajo.\nEs mi corazón, mi alma,\nes mi cuerpo y mi razón,\nel esfuerzo de mi caminar."
+        },
+        "renuevame": {
+            t: "RENUÉVAME",
+            l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.\n\nPorque todo lo que hay dentro de mí,\nnecesita ser cambiado Señor."
+        },
+        "caminare": {
+            t: "CAMINARÉ",
+            l: "Caminaré en presencia del Señor.\n\nAmo al Señor porque escucha mi voz suplicante,\nporque inclina su oído hacia mí\nel día que lo invoco."
+        },
+        "id_ensenad": {
+            t: "ID Y ENSEÑAD",
+            l: "Sois la semilla que ha de crecer,\nsois estrella que ha de brillar.\nSois levadura, sois grano de sal,\nantorcha que debe alumbrar.\n\nId amigos por el mundo anunciando el amor,\nmensajeros de la vida, de la paz y el perdón."
+        },
+        "hoy_perdon": {
+            t: "HOY PERDÓNAME",
+            l: "Hoy perdóname, hoy por siempre,\nsin mirar la mentira, lo vacío de mi dar.\nSin mirar a donde voy ni mi paso al caminar."
         }
+    };
 
-        function descargarPDF() {
-            const hoja = document.getElementById('papel-impresion');
-            const titulo = document.getElementById('titulo-canto').innerText;
-            html2pdf().set({
-                margin: 0.5,
-                filename: titulo + '.pdf',
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            }).from(hoja).save();
-        }
-    </script>
+    const id = new URLSearchParams(window.location.search).get('id');
+    if (id && biblioteca[id]) {
+        document.getElementById('titulo').innerText = biblioteca[id].t;
+        document.getElementById('letra').innerText = biblioteca[id].l;
+    }
+
+    function bajarPDF() {
+        const opt = { margin: 0.5, filename: document.getElementById('titulo').innerText + '.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
+        html2pdf().set(opt).from(document.getElementById('hoja')).save();
+    }
+</script>
 </body>
 </html>
