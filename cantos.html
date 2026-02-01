@@ -29,126 +29,71 @@
 
 <script>
     const biblioteca = {
-        "dios_esta": {
-            t: "DIOS ESTÁ AQUÍ",
-            l: "CORO:\nDios está aquí,\ntan cierto como el aire que respiro,\ntan cierto como la mañana se levanta el sol,\ntan cierto como que este canto lo puedes oír.\n\n1. Lo puedes sentir a tu lado en este mismo instante,\nlo puedes sentir muy dentro de tu corazón.\nLo puedes sentir en ese problema que tienes,\nJesús está aquí, si quieres lo puedes seguir.\n\n2. Santo, Santo, Santo, mi corazón te adora,\nmi corazón te sabe decir: ¡Santo eres Tú!\n\n(Se repite CORO)"
-        },
-        "mirada_fe": {
-            t: "UNA MIRADA DE FE",
-            l: "1. Una mirada de fe, una mirada de fe,\nes la que puede salvar al pecador. (Bis)\n\nCORO:\nY si tú miras a Cristo Jesús,\nÉl te perdonará,\nporque una mirada de fe,\nes la que puede salvar al pecador.\n\n2. Una mirada de amor, una mirada de amor,\nes la que puede salvar al pecador. (Bis)\n\n3. Una mirada de esperanza, una mirada de esperanza,\nes la que puede salvar al pecador. (Bis)"
-        },
-        "pescador": {
-            t: "PESCADOR DE HOMBRES",
-            l: "1. Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nCORO:\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre.\nEn la arena he dejado mi barca:\njunto a Ti buscaré otro mar.\n\n2. Tú sabes bien lo que tengo,\nen mi barca no hay oro ni espadas,\ntan solo redes y mi trabajo.\n\n3. Tú necesitas mis manos,\nmi cansancio que a otros descanse,\namor que quiera seguir amando.\n\n4. Tú pescador de otros lagos,\nansia eterna de almas que esperan.\nAmigo bueno que así me llamas."
-        },
-        "vaso_nuevo": {
-            t: "VASO NUEVO",
-            l: "1. Gracias quiero darte por amarme,\ngracias quiero darte yo a Ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mí también.\n\nCORO:\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo.\n\n2. Te conocí y te amé,\nte pedí perdón y me escuchaste.\nSi te ofendí, perdóname Señor,\npues te amo y nunca te olvidaré."
-        },
-        "entre_manos": {
-            t: "ENTRE TUS MANOS",
-            l: "CORO:\nEntre tus manos pongo mi vida Señor,\nentre tus manos pongo mi existir.\nHay que morir para vivir,\nentre tus manos confío mi ser.\n\n1. Si el grano de trigo no muere,\nsi no muere solo quedará,\npero si muere en abundancia dará\nun fruto eterno que no morirá.\n\n2. Es mi anhelo, mi anhelo creciente,\nen el surco contigo morir;\ny fecunda será la simiente, Señor,\nrevestida de eterno esplendor."
-        },
-        "pan_vida": {
-            t: "YO SOY EL PAN DE VIDA",
-            l: "1. Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\nNadie puede venir a mí,\nsi mi Padre no lo llama.\n\nCORO:\nY Yo lo resucitaré,\ny Yo lo resucitaré,\ny Yo lo resucitaré en el día final.\n\n2. El Pan que Yo daré\nes mi Cuerpo vida para el mundo,\nel que coma de mi Carne\ntendrá vida para siempre."
-        },
-        "hacia_ti": {
-            t: "HACIA TI MORADA SANTA",
-            l: "CORO:\nHacia ti morada santa,\nhacia ti tierra del Salvador,\nperegrinos, caminantes,\nvamos hacia ti.\n\n1. Venimos a tu mesa,\nsellaremos tu Alianza,\ncomeremos tu carne,\ntu sangre nos limpiará.\n\n2. Reinaremos contigo,\nen tu morada santa,\nbeberemos tu cáliz,\nel cáliz de la alegría."
-        },
-        "altisimo": {
-            t: "ALTÍSIMO SEÑOR",
-            l: "CORO:\nAltísimo Señor que supisteis juntar,\na un tiempo en el altar ser Cordero y Pastor.\nQuisiera con fervor amar y recibir,\na quien por mí quiso morir.\n\n1. Cordero divinal, por nuestro sumo bien,\ninmolado en Salén; en tu puro raudal\nde gracia celestial lava mi corazón,\nque fiel te rinde adoración.\n\n2. Suavísimo maná que sabe a dulce miel,\nven, y del mundo vil nada me gustará;\nven, y se trocará del destierro cruel\ncon tu dulzura la amarga hiel."
-        },
-        "alma_cristo": {
-            t: "ALMA DE CRISTO",
-            l: "Alma de Cristo, santifícame.\nCuerpo de Cristo, sálvame.\nSangre de Cristo, embriágame.\nAgua del costado de Cristo, lávame.\n\nPasión de Cristo, confórtame.\n¡Oh, buen Jesús!, óyeme.\nDentro de tus llagas, escóndeme.\n\nNo permitas que me aparte de Ti.\nDel enemigo malo, defiéndeme.\nEn la hora de mi muerte, llámame.\n\nY mándame ir a Ti,\npara que con tus santos te alabe.\nPor los siglos de los siglos. Amén."
-        },
-        "cantemos_amor": {
-            t: "CANTEMOS AL AMOR DE LOS AMORES",
-            l: "1. Cantemos al Amor de los amores,\ncantemos al Señor.\n¡Dios está aquí! Venid adoradores,\nadoremos a Cristo Redentor.\n\nCORO:\n¡Gloria a Cristo Jesús!\nCielos y tierra, bendecid al Señor.\n¡Honor y gloria a Ti, Rey de la gloria!\nAmor por siempre a Ti, Dios del Amor.\n\n2. Unamos nuestra voz a los cantares\ndel coro celestial.\nDios está aquí, al Dios de los altares\nalabemos con gozo angelical."
-        },
-        "ave_maria": {
-            t: "AVE MARÍA",
-            l: "Dios te salve, María, llena eres de gracia,\nel Señor es contigo.\nBendita Tú eres entre todas las mujeres,\ny bendito es el fruto de tu vientre, Jesús.\n\nSanta María, Madre de Dios,\nruega por nosotros, pecadores,\nahora y en la hora de nuestra muerte. Amén."
-        },
-        "perdon_dios": {
-            t: "PERDÓN OH DIOS MÍO",
-            l: "CORO:\nPerdón, oh Dios mío,\nperdón e indulgencia,\nperdón y clemencia,\nperdón y piedad.\n\n1. Pequé, ya mi alma su culpa confiesa.\nMil veces me pesa de tanta maldad.\n\n2. Por mí en el Calvario tu sangre vertiste;\nen la Cruz estuviste por mí hasta expirar.\n\n3. Mas ya arrepentido te busco lloroso,\n¡Oh Padre amoroso, oh Dios de bondad!"
-        },
-        "pueblo_mio": {
-            t: "PUEBLO MÍO (IMPROPERIOS)",
-            l: "CORO:\nPueblo mío, ¿qué te he hecho?\n¿en qué te he ofendido? ¡Respóndeme!\n\n1. Yo te saqué de Egipto,\ny tú preparaste una cruz para tu Salvador.\n(Santo es Dios, Santo y Fuerte,\nSanto e Inmortal, ten piedad de nosotros).\n\n2. Yo te guié cuarenta años por el desierto,\nte alimenté con el maná,\ny tú preparaste una cruz para tu Salvador.\n\n3. ¿Qué más pude hacer por ti que no haya hecho?\nYo te planté como viña mía escogida,\ny tú me has dado vinagre en mi sed."
-        },
-        "id_ensenad": {
-            t: "ID Y ENSEÑAD (SOIS LA SEMILLA)",
-            l: "1. Sois la semilla que ha de crecer,\nsois estrella que ha de brillar.\nSois levadura, sois grano de sal,\nantorcha que debe alumbrar.\n\nCORO:\nId amigos por el mundo anunciando el amor,\nmensajeros de la vida, de la paz y el perdón.\nSed amigos los testigos de mi resurrección,\nid llevando mi presencia, con vosotros estoy.\n\n2. Sois una llama que ha de encender\nresplandores de fe y caridad.\nSois los pastores que han de guiar\nal mundo por la verdad."
-        },
-        "hoy_perdon": {
-            t: "HOY PERDÓNAME",
-            l: "1. Hoy perdóname, hoy por siempre,\nsin mirar la mentira, lo vacío de mi dar.\nSin mirar a donde voy ni mi paso al caminar.\n\nCORO:\nSi caminé a la derecha o si me fui a la izquierda,\nhoy te pido perdón Señor.\n\n2. Si no ayudé al que sufría, si en mi hermano no te vi,\nhoy te pido perdón Señor.\n\n3. Gracias por tu gran amor, gracias por tu gran perdón,\nhoy te pido perdón Señor."
-        },
-        "renuevame": {
-            t: "RENUÉVAME",
-            l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.\n\nCORO:\nPorque todo lo que hay dentro de mí,\nnecesita ser cambiado Señor.\nPorque todo lo que hay dentro de mi corazón,\nnecesita más de Ti."
-        },
-        "oh_maria": {
-            t: "OH MARÍA MADRE MÍA",
-            l: "CORO:\nOh María, Madre mía, oh consuelo del mortal!\nAmparadme y guiadme a la patria celestial.\n\n1. Con el ángel de María las grandezas celebrad;\ntransportados de alegría sus finezas publicad.\n\n2. Quien a ti ferviente clama halla alivio en el pesar,\npues tu nombre luz derrama, gozo y bálsamo sin par."
-        },
-        "vienen_con_alegria": {
-            t: "VIENEN CON ALEGRÍA",
-            l: "CORO:\nVienen con alegría, Señor,\ncantando vienen con alegría, Señor,\nlos que caminan por la vida, Señor,\nsembrando tu paz y amor.\n\n1. Vienen trayendo la esperanza\na un mundo cargado de ansiedad,\na un mundo que busca y que no alcanza\ncaminos de amor y de amistad.\n\n2. Vienen trayendo entre sus manos\nesfuerzos de hermanos por la paz,\ndesee de un mundo más humano\nque nace del bien y la verdad."
-        },
-        "santa_maria_camino": {
-            t: "SANTA MARÍA DEL CAMINO",
-            l: "1. Mientras recorres la vida tú nunca solo estás,\ncontigo por el camino Santa María va.\n\nCORO:\nVen con nosotros a caminar, Santa María ven.\nVen con nosotros a caminar, Santa María ven.\n\n2. Aunque te digan algunos que nada puede cambiar,\nlucha por un mundo nuevo, lucha por la verdad.\n\n3. Si por el mundo los hombres sin conocerse van,\nno niegues nunca tu mano al que contigo está."
-        },
-        "tomado_mano": {
-            t: "TOMADO DE LA MANO",
-            l: "CORO:\nTomado de la mano con Jesús yo voy,\nle sigo como oveja que encontró al pastor.\nTomado de la mano con Jesús yo voy,\na donde Él va.\n\n1. Si Jesús me dice amigo, deja todo y ven conmigo,\ndonde todo es más hermoso y más feliz.\n\n2. Si Jesús me dice amigo, deja todo y ven conmigo,\nyo mi mano pondré en la suya e iré con Él."
-        },
-        "alabar": {
-            t: "ALABARÉ A MI SEÑOR",
-            l: "CORO:\nAlabaré, alabaré, alabaré, alabaré,\nalabaré a mi Señor. (Bis)\n\n1. Juan vio el número de los redimidos\ny todos alababan al Señor.\nUnos cantaban, otros oraban,\ny todos alababan al Señor.\n\n2. Todos unidos alegres cantamos\nglorias y alabanzas al Señor.\n¡Gloria al Padre, gloria al Hijo,\ny gloria al Espíritu de amor!"
-        },
-        "cristo_joven": {
-            t: "UN JOVEN GALILEO",
-            l: "1. Una mañana cerca del mar,\napareció un joven Galileo.\nNadie podía imaginar\nque el Hijo de Dios estaba allí.\n\nCORO:\nSu nombre era Jesús de Nazaret,\nsu fama se extendió por la región.\nY en cada corazón una esperanza nació,\nporque el Mesías al fin llegó.\n\n2. Él enseñaba con autoridad,\ncuraba enfermos y daba libertad."
-        },
-        "mas_cerca": {
-            t: "MÁS CERCA OH DIOS DE TI",
-            l: "1. Más cerca, oh Dios, de Ti, yo quiero estar,\naunque sobre una cruz me haya de alzar.\nMi canto aún así, constante habrá de ser:\nmás cerca, oh Dios, de Ti, más cerca sí.\n\n2. Si caminando voy y de ansiedad,\nme lleno al presentir la oscuridad,\naún mi sueño así, me mostrará que estoy\nmás cerca, oh Dios, de Ti, más cerca sí."
-        },
-        "queremos_paz": {
-            t: "DANOS LA PAZ",
-            l: "CORO:\nDanos la paz, danos tu paz, danos paz, Señor.\n\n1. Camina con nosotros, que encontremos tu amor.\nJuntando nuestras manos cantaremos al caminar.\n\n2. Danos, Señor, la paz. Danos, Señor, la paz.\nDanos, Señor, tu paz."
-        },
-        "amemonos_hermanos": {
-            t: "AMÉMONOS DE CORAZÓN",
-            l: "1. Amémonos de corazón, no de labios solamente. (Bis)\n\nCORO:\nPara cuando Cristo venga, para cuando Cristo venga,\nnos encuentre bien unidos. (Bis)\n\n2. ¿Cómo puedes tú orar, enojado con tu hermano? (Bis)\n\n3. Dios no escucha la oración si no estás reconciliado. (Bis)"
-        },
-        "senor_piedad": {
-            t: "SEÑOR TEN PIEDAD",
-            l: "Señor, ten piedad de nosotros. (Bis)\nCristo, ten piedad de nosotros. (Bis)\nSeñor, ten piedad de nosotros. (Bis)"
-        },
-        "gloria_misa": {
-            t: "GLORIA A DIOS EN EL CIELO",
-            l: "Gloria a Dios en el cielo,\ny en la tierra paz a los hombres que ama el Señor.\n\nPor tu inmensa gloria te alabamos, te bendecimos,\nte adoramos, te glorificamos, te damos gracias,\nSeñor Dios, Rey celestial, Dios Padre todopoderoso.\n\nSeñor, Hijo único, Jesucristo, Señor Dios, Cordero de Dios,\nHijo del Padre; Tú que quitas el pecado del mundo,\nten piedad de nosotros;\nTú que quitas el pecado del mundo,\natiende nuestra súplica;\nTú que estás sentado a la derecha del Padre,\nten piedad de nosotros."
-        },
-        "santo_misa": {
-            t: "SANTO ES EL SEÑOR",
-            l: "Santo, Santo, Santo es el Señor,\nDios del universo.\nLlenos están el cielo y la tierra de tu gloria.\nHosanna en el cielo.\n\nBendito el que viene en nombre del Señor.\nHosanna en el cielo."
-        },
-        "cordero_misa": {
-            t: "CORDERO DE DIOS",
-            l: "Cordero de Dios, que quitas el pecado del mundo,\nten piedad de nosotros. (Bis)\n\nCordero de Dios, que quitas el pecado del mundo,\ndanos la paz."
-        },
-        "padre_nuestro": {
-            t: "PADRE NUESTRO (CANTO)",
-            l: "Padre nuestro que estás en el cielo,\nsantificado sea tu nombre.\nVenga a nosotros tu reino,\nhágase tu voluntad en la tierra como en el cielo.\n\nDanos hoy nuestro pan de cada día,\nperdona nuestras deudas,\ncomo también nosotros perdonamos a nuestros deudores.\nNo nos dejes caer en tentación,\ny líbranos del mal. Amén."
-        }
+        "dios_esta": { t: "DIOS ESTÁ AQUÍ", l: "CORO:\nDios está aquí,\ntan cierto como el aire que respiro,\ntan cierto como la mañana se levanta el sol,\ntan cierto como que este canto lo puedes oír.\n\n1. Lo puedes sentir a tu lado en este mismo instante,\nlo puedes sentir muy dentro de tu corazón.\nLo puedes sentir en ese problema que tienes,\nJesús está aquí, si quieres lo puedes seguir." },
+        "mirada_fe": { t: "UNA MIRADA DE FE", l: "1. Una mirada de fe, una mirada de fe,\nes la que puede salvar al pecador. (Bis)\n\nCORO:\nY si tú miras a Cristo Jesús,\nÉl te perdonará,\nporque una mirada de fe,\nes la que puede salvar al pecador." },
+        "pescador": { t: "PESCADOR DE HOMBRES", l: "1. Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nCORO:\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre.\nEn la arena he dejado mi barca:\njunto a Ti buscaré otro mar." },
+        "vaso_nuevo": { t: "VASO NUEVO", l: "1. Gracias quiero darte por amarme,\ngracias quiero darte yo a Ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mí también.\n\nCORO:\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo." },
+        "entre_manos": { t: "ENTRE TUS MANOS", l: "CORO:\nEntre tus manos pongo mi vida Señor,\nentre tus manos pongo mi existir.\nHay que morir para vivir,\nentre tus manos confío mi ser.\n\n1. Si el grano de trigo no muere,\nsi no muere solo quedará,\npero si muere en abundancia dará\nun fruto eterno que no morirá." },
+        "pan_vida": { t: "YO SOY EL PAN DE VIDA", l: "1. Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\nNadie puede venir a mí,\nsi mi Padre no lo llama.\n\nCORO:\nY Yo lo resucitaré,\ny Yo lo resucitaré,\ny Yo lo resucitaré en el día final." },
+        "hacia_ti": { t: "HACIA TI MORADA SANTA", l: "CORO:\nHacia ti morada santa,\nhacia ti tierra del Salvador,\nperegrinos, caminantes,\nvamos hacia ti.\n\n1. Venimos a tu mesa,\nsellaremos tu Alianza,\ncomeremos tu carne,\ntu sangre nos limpiará." },
+        "altisimo": { t: "ALTÍSIMO SEÑOR", l: "CORO:\nAltísimo Señor que supisteis juntar,\na un tiempo en el altar ser Cordero y Pastor.\nQuisiera con fervor amar y recibir,\na quien por mí quiso morir.\n\n1. Cordero divinal, por nuestro sumo bien,\ninmolado en Salén; en tu puro raudal\nde gracia celestial lava mi corazón,\nque fiel te rinde adoración." },
+        "alma_cristo": { t: "ALMA DE CRISTO", l: "Alma de Cristo, santifícame.\nCuerpo de Cristo, sálvame.\nSangre de Cristo, embriágame.\nAgua del costado de Cristo, lávame.\n\nPasión de Cristo, confórtame.\n¡Oh, buen Jesús!, óyeme.\nDentro de tus llagas, escóndeme." },
+        "cantemos_amor": { t: "CANTEMOS AL AMOR DE LOS AMORES", l: "1. Cantemos al Amor de los amores,\ncantemos al Señor.\n¡Dios está aquí! Venid adoradores,\nadoremos a Cristo Redentor.\n\nCORO:\n¡Gloria a Cristo Jesús!\nCielos y tierra, bendecid al Señor.\n¡Honor y gloria a Ti, Rey de la gloria!\nAmor por siempre a Ti, Dios del Amor." },
+        "ave_maria": { t: "AVE MARÍA", l: "Dios te salve, María, llena eres de gracia,\nel Señor es contigo.\nBendita Tú eres entre todas las mujeres,\ny bendito es el fruto de tu vientre, Jesús.\n\nSanta María, Madre de Dios,\nruega por nosotros, pecadores,\nahora y en la hora de nuestra muerte. Amén." },
+        "perdon_dios": { t: "PERDÓN OH DIOS MÍO", l: "CORO:\nPerdón, oh Dios mío,\nperdón e indulgencia,\nperdón y clemencia,\nperdón y piedad.\n\n1. Pequé, ya mi alma su culpa confiesa.\nMil veces me pesa de tanta maldad." },
+        "pueblo_mio": { t: "PUEBLO MÍO (IMPROPERIOS)", l: "CORO:\nPueblo mío, ¿qué te he hecho?\n¿en qué te he ofendido? ¡Respóndeme!\n\n1. Yo te saqué de Egipto,\ny tú preparaste una cruz para tu Salvador." },
+        "id_ensenad": { t: "ID Y ENSEÑAD (SOIS LA SEMILLA)", l: "1. Sois la semilla que ha de crecer,\nsois estrella que ha de brillar.\nSois levadura, sois grano de sal,\nantorcha que debe alumbrar.\n\nCORO:\nId amigos por el mundo anunciando el amor,\nmensajeros de la vida, de la paz y el perdón." },
+        "hoy_perdon": { t: "HOY PERDÓNAME", l: "1. Hoy perdóname, hoy por siempre,\nsin mirar la mentira, lo vacío de mi dar.\nSin mirar a donde voy ni mi paso al caminar.\n\nCORO:\nSi caminé a la derecha o si me fui a la izquierda,\nhoy te pido perdón Señor." },
+        "renuevame": { t: "RENUÉVAME", l: "Renuévame Señor Jesús,\nya no quiero ser igual.\nRenuévame Señor Jesús,\npon en mí tu corazón.\n\nCORO:\nPorque todo lo que hay dentro de mí,\nnecesita ser cambiado Señor." },
+        "oh_maria": { t: "OH MARÍA MADRE MÍA", l: "CORO:\nOh María, Madre mía, oh consuelo del mortal!\nAmparadme y guiadme a la patria celestial.\n\n1. Con el ángel de María las grandezas celebrad;\ntransportados de alegría sus finezas publicad." },
+        "vienen_con_alegria": { t: "VIENEN CON ALEGRÍA", l: "CORO:\nVienen con alegría, Señor,\ncantando vienen con alegría, Señor,\nlos que caminan por la vida, Señor,\nsembrando tu paz y amor." },
+        "santa_maria_camino": { t: "SANTA MARÍA DEL CAMINO", l: "1. Mientras recorres la vida tú nunca solo estás,\ncontigo por el camino Santa María va.\n\nCORO:\nVen con nosotros a caminar, Santa María ven." },
+        "tomado_mano": { t: "TOMADO DE LA MANO", l: "CORO:\nTomado de la mano con Jesús yo voy,\nle sigo como oveja que encontró al pastor.\nTomado de la mano con Jesús yo voy,\na donde Él va." },
+        "alabar": { t: "ALABARÉ A MI SEÑOR", l: "CORO:\nAlabaré, alabaré, alabaré, alabaré,\nalabaré a mi Señor. (Bis)\n\n1. Juan vio el número de los redimidos\ny todos alababan al Señor." },
+        "cristo_joven": { t: "UN JOVEN GALILEO", l: "1. Una mañana cerca del mar,\napareció un joven Galileo.\nNadie podía imaginar\nque el Hijo de Dios estaba allí.\n\nCORO:\nSu nombre era Jesús de Nazaret,\nsu fama se extendió por la región." },
+        "mas_cerca": { t: "MÁS CERCA OH DIOS DE TI", l: "1. Más cerca, oh Dios, de Ti, yo quiero estar,\naunque sobre una cruz me haya de alzar.\nMi canto aún así, constante habrá de ser:\nmás cerca, oh Dios, de Ti, más cerca sí." },
+        "queremos_paz": { t: "DANOS LA PAZ", l: "CORO:\nDanos la paz, danos tu paz, danos paz, Señor.\n\n1. Camina con nosotros, que encontremos tu amor.\nJuntando nuestras manos cantaremos al caminar." },
+        "amemonos_hermanos": { t: "AMÉMONOS DE CORAZÓN", l: "1. Amémonos de corazón, no de labios solamente. (Bis)\n\nCORO:\nPara cuando Cristo venga, para cuando Cristo venga,\nnos encuentre bien unidos. (Bis)" },
+        "senor_piedad": { t: "SEÑOR TEN PIEDAD", l: "Señor, ten piedad de nosotros. (Bis)\nCristo, ten piedad de nosotros. (Bis)\nSeñor, ten piedad de nosotros. (Bis)" },
+        "gloria_misa": { t: "GLORIA A DIOS EN EL CIELO", l: "Gloria a Dios en el cielo,\ny en la tierra paz a los hombres que ama el Señor.\n\nPor tu inmensa gloria te alabamos, te bendecimos,\nte adoramos, te glorificamos, te damos gracias." },
+        "santo_misa": { t: "SANTO ES EL SEÑOR", l: "Santo, Santo, Santo es el Señor,\nDios del universo.\nLlenos están el cielo y la tierra de tu gloria.\nHosanna en el cielo." },
+        "cordero_misa": { t: "CORDERO DE DIOS", l: "Cordero de Dios, que quitas el pecado del mundo,\nten piedad de nosotros. (Bis)\n\nCordero de Dios, que quitas el pecado del mundo,\ndanos la paz." },
+        "padre_nuestro": { t: "PADRE NUESTRO (CANTO)", l: "Padre nuestro que estás en el cielo,\nsantificado sea tu nombre.\nVenga a nosotros tu reino,\nhágase tu voluntad en la tierra como en el cielo." },
+        "junto_ti_maria": { t: "JUNTO A TI MARÍA", l: "1. Junto a ti, María, como un niño quiero estar.\nTómame en tus manos, guíame en mi caminar.\nCORO:\nMadre, Madre, Madre, Madre.\nMadre, Madre, Madre, Madre." },
+        "resucito": { t: "RESUCITÓ, RESUCITÓ", l: "CORO:\n¡Resucitó, resucitó, resucitó, aleluya!\n¡Aleluya, aleluya, aleluya, resucitó!\n1. La muerte, ¿dónde está la muerte?" },
+        "una_espiga": { t: "UNA ESPIGA DORADA POR EL SOL", l: "1. Una espiga dorada por el sol,\nel racimo que corta el viñador,\nse convierten ahora en pan y vino de amor." },
+        "hambre_de_dios": { t: "NO PODEMOS CAMINAR (HAMBRE DE DIOS)", l: "CORO:\nNo podemos caminar con hambre bajo el sol,\ndanos siempre el mismo pan: tu cuerpo y sangre, Señor." },
+        "te_presentamos_vino": { t: "TE PRESENTAMOS EL VINO Y EL PAN", l: "CORO:\nTe presentamos el vino y el pan,\nbendito seas por siempre, Señor.\n1. Bendito seas, Señor, por este pan." },
+        "pueblo_de_reyes": { t: "PUEBLO DE REYES", l: "CORO:\nPueblo de reyes, asamblea santa,\npueblo sacerdotal, pueblo de Dios,\nbendice a tu Señor." },
+        "iglesia_soy": { t: "IGLESIA SOY", l: "1. Iglesia soy y tú también,\nen el bautismo renacemos a una vida nueva.\nCORO:\nUuuuuh, ¡Señor!, ten piedad." },
+        "la_paz_sea_con_vosotros": { t: "LA PAZ SEA CON VOSOTROS", l: "CORO:\nLa paz sea con vosotros,\nla paz sea con vosotros,\nque la paz de Dios esté con nosotros." },
+        "tu_has_venido": { t: "TÚ HAS VENIDO A LA ORILLA", l: "1. Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga." },
+        "me_has_seducido": { t: "ME HAS SEDUCIDO SEÑOR", l: "1. Señor, no soy nada. ¿Por qué me has llamado?\nCORO:\nMe has seducido, Señor, con tu mirada." },
+        "sumergeme": { t: "SUMÉRGEME", l: "Cansado del camino, sediento de ti,\nun desierto he cruzado, vengo a ti.\nCORO:\nSumergeme en el río de tu espíritu." },
+        "noche_de_paz": { t: "NOCHE DE PAZ", l: "1. ¡Noche de paz, noche de amor!\nTodo duerme en derredor.\nEntre los astros que esparcen su luz." },
+        "tu_palabra_me_da_vida": { t: "TU PALABRA ME DA VIDA", l: "CORO:\nTu palabra me da vida, confío en ti Señor.\nTu palabra es eterna, en ella esperaré." },
+        "andando_de_tu_mano": { t: "ANDANDO DE TU MANO", l: "Desde que yo era niño, siempre me has guiado.\nCORO:\nAndando de tu mano, qué fácil es la vida." },
+        "que_alegria_cuando_me_dijeron": { t: "QUÉ ALEGRÍA CUANDO ME DIJERON", l: "CORO:\nQué alegría cuando me dijeron:\nVamos a la casa del Señor." },
+        "cristo_te_necesita": { t: "CRISTO TE NECESITA", l: "1. Cristo te necesita para amar, para amar.\nCORO:\nNo importan las razas ni el color de la piel." },
+        "tan_cerca_de_mi": { t: "TAN CERCA DE MÍ", l: "CORO:\nTan cerca de mí, tan cerca de mí,\nque hasta lo puedo tocar, Jesús está aquí." },
+        "senor_no_soy_igno": { t: "SEÑOR NO SOY DIGNO", l: "Señor, no soy digno de que entres en mi casa,\npero una palabra tuya bastará para sanarme." },
+        "saber_que_vendra": { t: "SABER QUE VENDRÁS", l: "1. En este mundo que Cristo nos da,\nhacemos la ofrenda del pan.\nCORO:\nSaber que vendrás, saber que estarás." },
+        "un_mandamiento_nuevo": { t: "UN MANDAMIENTO NUEVO", l: "CORO:\nUn mandamiento nuevo nos da el Señor:\nque nos amemos todos como Él nos amó." },
+        "u_bi_caritas": { t: "UBI CARITAS", l: "CORO:\nUbi caritas et amor, ubi caritas Deus ibi est.\n1. Donde hay caridad y amor, allí está Dios." },
+        "ven_espiritu_santo": { t: "VEN ESPÍRITU SANTO", l: "Ven Espíritu Santo, llena los corazones de tus fieles,\ny enciende en ellos el fuego de tu amor." },
+        "en_su_mesa_hay_amor": { t: "EN SU MESA HAY AMOR", l: "1. El Señor nos ha reunido junto a Él.\nCORO:\nEn su mesa hay amor, la promesa del Señor." },
+        "el_auxilio_me_viene_del_senor": { t: "EL AUXILIO ME VIENE DEL SEÑOR", l: "CORO:\nEl auxilio me viene del Señor, que hizo el cielo y la tierra." },
+        "bendito_bendito": { t: "BENDITO, BENDITO", l: "CORO:\nBendito, bendito, bendito sea Dios.\nLos ángeles cantan y alaban a Dios." },
+        "alabado_sea_el_santisimo": { t: "ALABADO SEA EL SANTÍSIMO", l: "CORO:\nAlabado sea el Santísimo Sacramento del Altar,\ny la Virgen concebida sin pecado original." },
+        "cinco_panes_dos_peces": { t: "CINCO PANES Y DOS PECES", l: "Un niño se acercó y te dio sus cinco panes.\nDos peces te entregó y tú hiciste el milagro." },
+        "donde_hay_caridad": { t: "DONDE HAY CARIDAD Y AMOR", l: "CORO:\nDonde hay caridad y amor, allí está Dios." },
+        "el_senor_nos_da_su_amor": { t: "EL SEÑOR NOS DA SU AMOR", l: "El Señor nos da su amor como nadie nos lo dio.\nÉl nos guía como estrella en la oscuridad." },
+        "hombres_nuevos": { t: "DANOS UN CORAZÓN", l: "CORO:\nDanos un corazón grande para amar.\nDanos un corazón fuerte para luchar." },
+        "madre_de_los_creyentes": { t: "MADRE DE LOS CREYENTES", l: "CORO:\nMadre de los creyentes, que siempre fuiste fiel,\nguíanos por el camino que lleva al Señor." },
+        "maria_mame_de_la_luz": { t: "MARÍA MADRE DE LA LUZ", l: "María, Madre de la luz, enséñanos a amar a Jesús." },
+        "nina_que_se_llama_maria": { t: "NIÑA QUE SE LLAMA MARÍA", l: "Había una niña que se llamaba María,\ny Dios la eligió para ser su Madre." },
+        "la_guadalupana": { t: "LA GUADALUPANA", l: "Desde el cielo una hermosa mañana,\nla Guadalupana bajó al Tepeyac." },
+        "tu_reinaras": { t: "¡TÚ REINARÁS!", l: "¡Tú reinarás! Este es el grito que ardiente exhala nuestra fe." }
     };
 
     const id = new URLSearchParams(window.location.search).get('id');
