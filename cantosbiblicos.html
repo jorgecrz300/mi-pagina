@@ -3,203 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancionero Católico</title>
+    <title>Menú de Cantos Bíblicos</title>
     <style>
         :root { --naranja: #d35400; --fondo: #fdfaf6; --marron: #5d4037; }
-        body { font-family: sans-serif; background: var(--fondo); margin: 0; padding: 20px; }
-        header { text-align: center; margin-bottom: 10px; }
-        h1 { color: var(--naranja); font-size: 22px; text-transform: uppercase; margin-bottom: 5px; }
-
-        .cuadro-bienvenida {
-            background: #fff3e0;
-            border: 1px dashed var(--naranja);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-style: italic;
-            color: var(--marron);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .cita { font-size: 16px; display: block; margin-bottom: 5px; line-height: 1.4; }
-        .referencia { font-size: 13px; font-weight: bold; color: var(--naranja); display: block; text-align: right; }
-
-        .buscador-container {
-            position: relative;
-            margin-bottom: 20px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        #buscador {
-            width: 100%;
-            padding: 15px 45px 15px 15px;
-            border-radius: 25px;
-            border: 2px solid var(--naranja);
-            font-size: 16px;
-            outline: none;
-            box-sizing: border-box;
-        }
-        .lupa { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 20px; color: var(--naranja); }
-
-        .lista { display: grid; gap: 8px; min-height: 350px; align-content: start; }
-        .boton-canto { 
-            background: white; padding: 15px; border-radius: 10px; 
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-decoration: none; 
-            color: #333; font-weight: bold; border-left: 5px solid var(--naranja); font-size: 15px;
-        }
+        body { font-family: sans-serif; background: var(--fondo); margin: 0; padding: 20px; text-align: center; }
+        header { margin-bottom: 25px; }
+        h1 { color: var(--naranja); font-size: 26px; text-transform: uppercase; margin-bottom: 5px; }
         
-        .paginacion { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 25px; }
-        .btn-pag { background: var(--naranja); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .btn-pag:disabled { background: #ccc; cursor: not-allowed; }
-        #mensaje-vacio { text-align: center; color: #777; margin-top: 20px; display: none; }
+        .subtitulo { color: var(--marron); font-size: 16px; margin-bottom: 25px; font-weight: bold; }
+        
+        .cuadro-paginas {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Dos botones por fila */
+            gap: 15px;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .btn-seccion {
+            background: white;
+            padding: 25px 10px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: var(--naranja);
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 2px solid var(--naranja);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .btn-seccion span {
+            font-size: 12px;
+            color: #777;
+            margin-top: 8px;
+            font-weight: normal;
+        }
+
+        .btn-seccion:active {
+            transform: scale(0.95);
+            background: #fff3e0;
+        }
+
+        .pie-pagina { margin-top: 40px; color: var(--marron); font-style: italic; font-size: 14px; line-height: 1.5; }
+        .linea { width: 50px; height: 3px; background: var(--naranja); margin: 20px auto; border-radius: 2px; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>📖 MI CANCIONERO</h1>
-    <div class="cuadro-bienvenida">
-        <span class="cita" id="frase-biblica">"Canten al Señor un cántico nuevo."</span>
-        <span class="referencia" id="referencia-biblica">Salmo 98</span>
-    </div>
-
-    <div class="buscador-container">
-        <input type="text" id="buscador" placeholder="¿Qué canto buscas hoy?" onkeyup="filtrar()">
-        <span class="lupa">🔍</span>
-    </div>
+    <h1>📖 MIS CANTOS</h1>
+    <div class="linea"></div>
+    <p class="subtitulo">Selecciona una página del libro:</p>
 </header>
 
-<div id="mensaje-vacio">No se encontró ninguna canción.</div>
-<div class="lista" id="lista-cantos"></div>
-
-<div class="paginacion" id="control-paginas">
-    <button class="btn-pag" id="btn-prev" onclick="cambiarPagina(-1)">◀</button>
-    <span id="num-pag" style="font-weight:bold;"></span>
-    <button class="btn-pag" id="btn-next" onclick="cambiarPagina(1)">▶</button>
+<div class="cuadro-paginas">
+    <a href="cantos1.html" class="btn-seccion">
+        PÁGINA 1
+        <span>Cantos 1 - 10</span>
+    </a>
+    <a href="cantos2.html" class="btn-seccion">
+        PÁGINA 2
+        <span>Cantos 11 - 20</span>
+    </a>
+    <a href="cantos3.html" class="btn-seccion">
+        PÁGINA 3
+        <span>Cantos 21 - 30</span>
+    </a>
+    <a href="cantos4.html" class="btn-seccion">
+        PÁGINA 4
+        <span>Cantos 31 - 40</span>
+    </a>
+    <a href="cantos5.html" class="btn-seccion">
+        PÁGINA 5
+        <span>Cantos 41 - 50</span>
+    </a>
+    <a href="cantos6.html" class="btn-seccion">
+        PÁGINA 6
+        <span>Cantos 51 - 60</span>
+    </a>
 </div>
 
-<script>
-    const frases = [
-        {f: "Canten al Señor un cántico nuevo, porque ha hecho maravillas.", r: "Salmo 98,1"},
-        {f: "El Señor es mi Pastor, nada me falta.", r: "Salmo 23,1"},
-        {f: "Mi alma glorifica al Señor, mi espíritu se alegra en Dios mi Salvador.", r: "Lucas 1,46-47"},
-        {f: "Todo lo puedo en Aquel que me fortalece.", r: "Filipenses 4,13"},
-        {f: "Den gracias al Señor porque es bueno, porque es eterna su misericordia.", r: "Salmo 118,1"},
-        {f: "El Señor es mi luz y mi salvación, ¿a quién temeré?", r: "Salmo 27,1"},
-        {f: "Cantaré al Señor mientras viva, alabaré a mi Dios mientras exista.", r: "Salmo 104,33"},
-        {f: "Donde están dos o tres reunidos en mi Nombre, allí estoy Yo.", r: "Mateo 18,20"},
-        {f: "Bendice, alma mía, al Señor, y todo mi ser a su santo Nombre.", r: "Salmo 103,1"},
-        {f: "Mi corazón está firme, Dios mío, quiero cantar y tocar para ti.", r: "Salmo 108,1"}
-    ];
+<div class="pie-pagina">
+    "Alabaré al Señor en todo tiempo,<br>su alabanza estará siempre en mi boca."<br>
+    <strong>Salmo 34</strong>
+</div>
 
-    const todosLosCantos = [
-        {id:"dios_esta", t:"DIOS ESTÁ AQUÍ"}, {id:"pescador", t:"PESCADOR DE HOMBRES"},
-        {id:"vaso_nuevo", t:"VASO NUEVO"}, {id:"entre_manos", t:"ENTRE TUS MANOS"},
-        {id:"pan_vida", t:"YO SOY EL PAN DE VIDA"}, {id:"hacia_ti", t:"HACIA TI MORADA SANTA"},
-        {id:"altisimo", t:"ALTÍSIMO SEÑOR"}, {id:"alma_cristo", t:"ALMA DE CRISTO"},
-        {id:"cantemos_amor", t:"CANTEMOS AL AMOR DE LOS AMORES"}, {id:"ave_maria", t:"AVE MARÍA"},
-        {id:"perdon_dios", t:"PERDÓN OH DIOS MÍO"}, {id:"pueblo_mio", t:"PUEBLO MÍO (IMPROPERIOS)"},
-        {id:"id_ensenad", t:"ID Y ENSEÑAD (SOIS LA SEMILLA)"}, {id:"hoy_perdon", t:"HOY PERDÓNAME"},
-        {id:"renuevame", t:"RENUÉVAME SEÑOR"}, {id:"oh_maria", t:"OH MARÍA MADRE MÍA"},
-        {id:"vienen_con_alegria", t:"VIENEN CON ALEGRÍA"}, {id:"santa_maria_camino", t:"SANTA MARÍA DEL CAMINO"},
-        {id:"tomado_mano", t:"TOMADO DE LA MANO"}, {id:"alabar", t:"ALABARÉ A MI SEÑOR"},
-        {id:"cristo_joven", t:"UN JOVEN GALILEO"}, {id:"mas_cerca", t:"MÁS CERCA OH DIOS DE TI"},
-        {id:"queremos_paz", t:"DANOS LA PAZ"}, {id:"amemonos_hermanos", t:"AMÉMONOS DE CORAZÓN"},
-        {id:"senor_piedad", t:"SEÑOR TEN PIEDAD"}, {id:"gloria_misa", t:"GLORIA A DIOS EN EL CIELO"},
-        {id:"santo_misa", t:"SANTO ES EL SEÑOR"}, {id:"cordero_misa", t:"CORDERO DE DIOS"},
-        {id:"padre_nuestro", t:"PADRE NUESTRO (CANTO)"}, {id:"mirada_fe", t:"UNA MIRADA DE FE"},
-        {id:"junto_ti_maria", t:"JUNTO A TI MARÍA"}, {id:"resucito", t:"RESUCITÓ, RESUCITÓ"},
-        {id:"una_espiga", t:"UNA ESPIGA DORADA POR EL SOL"}, {id:"hambre_de_dios", t:"NO PODEMOS CAMINAR (HAMBRE DE DIOS)"},
-        {id:"te_presentamos_vino", t:"TE PRESENTAMOS EL VINO Y EL PAN"}, {id:"pueblo_de_reyes", t:"PUEBLO DE REYES"},
-        {id:"iglesia_soy", t:"IGLESIA SOY"}, {id:"la_paz_sea_con_vosotros", t:"LA PAZ SEA CON VOSOTROS"},
-        {id:"tu_has_venido", t:"TÚ HAS VENIDO A LA ORILLA"}, {id:"me_has_seducido", t:"ME HAS SEDUCIDO SEÑOR"},
-        {id:"sumergeme", t:"SUMÉRGEME"}, {id:"noche_de_paz", t:"NOCHE DE PAZ"},
-        {id:"tu_palabra_me_da_vida", t:"TU PALABRA ME DA VIDA"}, {id:"andando_de_tu_mano", t:"ANDANDO DE TU MANO"},
-        {id:"que_alegria_cuando_me_dijeron", t:"QUÉ ALEGRÍA CUANDO ME DIJERON"}, {id:"cristo_te_necesita", t:"CRISTO TE NECESITA"},
-        {id:"tan_cerca_de_mi", t:"TAN CERCA DE MÍ"}, {id:"senor_no_soy_igno", t:"SEÑOR NO SOY DIGNO"},
-        {id:"saber_que_vendra", t:"SABER QUE VENDRÁS"}, {id:"un_mandamiento_nuevo", t:"UN MANDAMIENTO NUEVO"},
-        {id:"u_bi_caritas", t:"UBI CARITAS"}, {id:"ven_espiritu_santo", t:"VEN ESPÍRITU SANTO (SECUENCIA)"},
-        {id:"en_su_mesa_hay_amor", t:"EN SU MESA HAY AMOR"}, {id:"el_auxilio_me_viene_del_senor", t:"EL AUXILIO ME VIENE DEL SEÑOR"},
-        {id:"bendito_bendito", t:"BENDITO, BENDITO"}, {id:"alabado_sea_el_santisimo", t:"ALABADO SEA EL SANTÍSIMO"},
-        {id:"cinco_panes_dos_peces", t:"CINCO PANES Y DOS PECES"}, {id:"donde_hay_caridad", t:"DONDE HAY CARIDAD Y AMOR"},
-        {id:"el_senor_nos_da_su_amor", t:"EL SEÑOR NOS DA SU AMOR"}, {id:"hombres_nuevos", t:"DANOS UN CORAZÓN (HOMBRES NUEVOS)"},
-        {id:"madre_de_los_creyentes", t:"MADRE DE LOS CREYENTES"}, {id:"maria_mame_de_la_luz", t:"MARÍA MADRE DE LA LUZ"},
-        {id:"nina_que_se_llama_maria", t:"NIÑA QUE SE LLAMA MARÍA"}, {id:"la_guadalupana", t:"LA GUADALUPANA"},
-        {id:"tu_reinaras", t:"¡TÚ REINARÁS!"}, {id:"reina_de_mexico", t:"REINA DE MÉXICO"},
-        {id:"el_profeta", t:"ANTES QUE TE FORMARAS (EL PROFETA)"}, {id:"getsemani", t:"PARA QUE NO ME OLVIDES (GETSEMANÍ)"},
-        {id:"nadie_te_ama_como_yo", t:"NADIE TE AMA COMO YO"}, {id:"como_no_creer_en_dios", t:"COMO NO CREER EN DIOS"},
-        {id:"esta_es_la_luz_de_cristo", t:"ESTA ES LA LUZ DE CRISTO"}, {id:"viva_cristo_rey", t:"VIVA CRISTO REY"},
-        {id:"cristo_rompe_las_cadenas", t:"CRISTO ROMPE LAS CADENAS"}, {id:"alabar_a_dios", t:"ALABAR A DIOS (CUANDO LOS SANTOS)"},
-        {id:"granito_de_mostaza", t:"SI TUVIERAS FE (MOSTAZA)"}, {id:"estamos_de_fiesta", t:"ESTAMOS DE FIESTA CON JESÚS"},
-        {id:"vienen_con_alegria_2", t:"YA VENIMOS AL ALTAR"}, {id:"senor_no_soy_digno_2", t:"SEÑOR NO SOY DIGNO (QUE ENTRES)"},
-        {id:"madre_eres_ternura", t:"MADRE ERES TERNURA"}, {id:"magnificat", t:"MAGNÍFICAT (CANTO)"},
-        {id:"gracias_senor", t:"GRACIAS SEÑOR POR LA VIDA"}, {id:"corazon_el_mas_puro", t:"CORAZÓN EL MÁS PURO"},
-        {id:"misterio_de_amor", t:"MISTERIO DE AMOR"}, {id:"fregona_de_paz", t:"HAZME UN INSTRUMENTO DE TU PAZ"},
-        {id:"ven_senor_jesus", t:"VEN SEÑOR JESÚS (ADVIENTO)"}, {id:"hacia_belen_va_una_burra", t:"HACIA BELÉN VA UNA BURRA"},
-        {id:"los_peces_en_el_rio", t:"LOS PECES EN EL RÍO"}, {id:"cantad_a_dios", t:"CANTAD A DIOS"},
-        {id:"en_esta_tarde_cristo", t:"EN ESTA TARDE CRISTO"}, {id:"perdon_senor", t:"PERDÓN SEÑOR, PERDÓN"},
-        {id:"ten_piedad_marista", t:"TEN PIEDAD DE MÍ OH DIOS"}, {id:"aleluya_tradicional", t:"ALELUYA (EL SEÑOR ES NUESTRO REY)"},
-        {id:"ofrenda_de_amor", t:"OFRENDA DE AMOR"}, {id:"una_espiga_2", t:"EL TRIGO QUE SE MUERE"},
-        {id:"santo_marin", t:"SANTO (MARIN)"}, {id:"cordero_mejia", t:"CORDERO DE DIOS (MEJÍA)"},
-        {id:"salve_regina", t:"SALVE REGINA (LATÍN)"}, {id:"el_angelus", t:"EL ÁNGELUS"},
-        {id:"viva_la_virgen", t:"VIVA LA VIRGEN, VIVA LA MADRE"}, {id:"adios_reina_del_cielo", t:"ADIÓS REINA DEL CIELO"}
-    ];
-
-    let cantosFiltrados = [...todosLosCantos];
-    let paginaActual = 1;
-    const porPagina = 10;
-
-    function ponerFrase() {
-        const azar = Math.floor(Math.random() * frases.length);
-        document.getElementById('frase-biblica').innerText = `"${frases[azar].f}"`;
-        document.getElementById('referencia-biblica').innerText = frases[azar].r;
-    }
-
-    function mostrar() {
-        const contenedor = document.getElementById('lista-cantos');
-        const controles = document.getElementById('control-paginas');
-        const mensaje = document.getElementById('mensaje-vacio');
-        contenedor.innerHTML = '';
-
-        if (cantosFiltrados.length === 0) {
-            mensaje.style.display = 'block';
-            controles.style.display = 'none';
-            return;
-        } else {
-            mensaje.style.display = 'none';
-            controles.style.display = 'flex';
-        }
-
-        const inicio = (paginaActual - 1) * porPagina;
-        const visibles = cantosFiltrados.slice(inicio, inicio + porPagina);
-
-        visibles.forEach(c => {
-            contenedor.innerHTML += `<a href="cantos.html?id=${c.id}" class="boton-canto"><span>${c.t}</span> ▶</a>`;
-        });
-
-        document.getElementById('num-pag').innerText = `Pág. ${paginaActual} de ${Math.ceil(cantosFiltrados.length/porPagina)}`;
-        document.getElementById('btn-prev').disabled = paginaActual === 1;
-        document.getElementById('btn-next').disabled = (inicio + porPagina) >= cantosFiltrados.length;
-    }
-
-    function cambiarPagina(d) {
-        paginaActual += d;
-        mostrar();
-        window.scrollTo(0,0);
-    }
-
-    function filtrar() {
-        const texto = document.getElementById('buscador').value.toLowerCase();
-        cantosFiltrados = todosLosCantos.filter(canto => 
-            canto.t.toLowerCase().includes(texto)
-        );
-        paginaActual = 1;
-        mostrar();
-    }
-
-    ponerFrase();
-    mostrar();
-</script>
 </body>
 </html>
