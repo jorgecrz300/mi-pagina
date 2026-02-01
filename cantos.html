@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Letra</title>
+    <title>Letra Completa</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: 'Georgia', serif; background: #444; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
-        .barra { width: 100%; background: #222; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; }
-        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; color: white; font-family: sans-serif; }
-        #hoja { background: white; width: 95%; max-width: 750px; margin: 20px; padding: 40px; box-sizing: border-box; }
-        h1 { color: #d35400; font-size: 24pt; border-bottom: 2px solid #eee; text-align: center; text-transform: uppercase; }
-        p { font-size: 19pt; line-height: 1.6; white-space: pre-line; color: black; }
+        body { font-family: 'serif'; background: #333; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        .barra { width: 100%; background: #111; padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; }
+        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; color: white; }
+        #hoja { background: white; width: 95%; max-width: 700px; margin: 20px; padding: 40px; box-sizing: border-box; }
+        h1 { color: #d35400; text-align: center; text-transform: uppercase; font-size: 22pt; border-bottom: 2px solid #eee; }
+        p { font-size: 17pt; line-height: 1.5; white-space: pre-line; color: black; }
     </style>
 </head>
 <body>
@@ -22,26 +22,27 @@
 <div id="hoja"><h1 id="titulo"></h1><p id="letra"></p></div>
 <script>
     const biblioteca = {
-        "senor_piedad": { t: "SEÑOR TEN PIEDAD", l: "Señor, ten piedad de nosotros. (Bis)\n\nCristo, ten piedad de nosotros. (Bis)\n\nSeñor, ten piedad de nosotros. (Bis)" },
-        "pan_vida": { t: "YO SOY EL PAN DE VIDA", l: "1. Yo soy el Pan de Vida,\nel que viene a mí no tendrá hambre,\nel que cree en mí no tendrá sed.\n\nCORO:\nY Yo lo resucitaré, y Yo lo resucitaré,\ny Yo lo resucitaré en el día final.\n\n2. El Pan que Yo daré es mi Cuerpo vida para el mundo..." },
-        "perdon_dios": { t: "PERDÓN OH DIOS MÍO", l: "CORO:\nPerdón, oh Dios mío, perdón e indulgencia,\nperdón y clemencia, perdón y piedad. (Bis)\n\n1. Pecamos, Señor, contra Ti pecamos,\nmas hoy te buscamos con gran humildad." },
-        "hacia_ti": { t: "HACIA TI MORADA SANTA", l: "CORO:\nHacia Ti, morada santa,\nhacia Ti, tierra del Salvador,\nperegrinos, caminantes, vamos hacia Ti.\n\n1. Venimos a tu mesa, sellaremos tu Alianza..." },
-        "pescador": { t: "PESCADOR DE HOMBRES", l: "1. Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos...\n\nCORO:\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre..." },
-        "vaso_nuevo": { t: "VASO NUEVO", l: "1. Gracias quiero darte por amarme...\nCORO:\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero..." },
-        "entre_manos": { t: "ENTRE TUS MANOS", l: "CORO:\nEntre tus manos pongo mi vida Señor...\n1. Si el grano de trigo no muere..." },
-        "dios_esta": { t: "DIOS ESTÁ AQUÍ", l: "CORO:\nDios está aquí, tan cierto como el aire que respiro..." },
-        "alma_cristo": { t: "ALMA DE CRISTO", l: "Alma de Cristo, santifícame. Cuerpo de Cristo, sálvame..." },
-        "pueblo_mio": { t: "PUEBLO MÍO", l: "CORO:\nPueblo mío, ¿qué te he hecho?\n¿en qué te he ofendido? ¡Respóndeme!" },
-        "altisimo": { t: "ALTÍSIMO SEÑOR", l: "1. Altísimo Señor que supiste juntar...\nCORO:\nQuisiera con fervor recibirte en mi pecho..." },
-        "cantemos_amor": { t: "CANTEMOS AL AMOR", l: "CORO:\n¡Gloria a Cristo Jesús! Cielos y tierra bendecid al Señor..." },
-        "ave_maria": { t: "AVE MARÍA", l: "Dios te salve María... CORO: Santa María, Madre de Dios..." },
-        "pecador_donde": { t: "PECADOR ¿DÓNDE VAS?", l: "CORO: Detente pecador, detente, oye la voz de tu Salvador..." },
-        "noche_morir": { t: "ANTES DE MORIR", l: "CORO: ¡Oh María! ¡Madre mía! Sé mi amparo y mi guía..." },
-        "id_ensenad": { t: "ID Y ENSEÑAD", l: "1. Sois la semilla que ha de crecer...\nCORO: Id amigos por el mundo anunciando el amor..." },
-        "hoy_perdon": { t: "HOY PERDÓNAME", l: "CORO: Si caminé a la derecha o si me fui a la izquierda..." },
-        "renuevame": { t: "RENUÉVAME", l: "Renuévame Señor Jesús, ya no quiero ser igual..." },
-        "oh_maria": { t: "OH MARÍA MADRE MÍA", l: "CORO: Oh María, Madre mía, oh consuelo del mortal..." },
-        "mirada_fe": { t: "UNA MIRADA DE FE", l: "Una mirada de fe es la que puede salvar al pecador..." }
+        "dios_esta": {
+            t: "DIOS ESTÁ AQUÍ",
+            l: "CORO:\nDios está aquí,\ntan cierto como el aire que respiro,\ntan cierto como la mañana se levanta el sol,\ntan cierto como que este canto lo puedes oír.\n\n1. Lo puedes oír moviéndose entre las butacas,\nlo puedes oír cantando dentro de tu corazón.\nLo puedes sentir a tu lado en este mismo instante,\nno mires a otro lado, búscalo en tu interior.\n\n2. Lo puedes sentir en medio de la alegría,\nlo puedes sentir en medio de tu gran dolor.\nÉl es el camino, la vida y la verdad,\nÉl es el consuelo para toda la humanidad.\n\n(CORO)"
+        },
+        "pescador": {
+            t: "PESCADOR DE HOMBRES",
+            l: "1. Tú has venido a la orilla,\nno has buscado ni a sabios ni a ricos,\ntan solo quieres que yo te siga.\n\nCORO:\nSeñor, me has mirado a los ojos,\nsonriendo has dicho mi nombre.\nEn la arena he dejado mi barca:\njunto a Ti buscaré otro mar.\n\n2. Tú sabes bien lo que tengo,\nen mi barca no hay oro ni espada,\ntan solo redes y mi trabajo.\n\n3. Tú necesitas mis manos,\nmi cansancio que a otros descanse,\namor que quiera seguir amando.\n\n4. Tú pescador de otros lagos,\nansia eterna de almas que esperan.\nAmigo bueno que así me llamas.\n\n(CORO)"
+        },
+        "vaso_nuevo": {
+            t: "VASO NUEVO",
+            l: "1. Gracias quiero darte por amarme,\ngracias quiero darte yo a Ti Señor.\nHoy soy feliz porque te conocí,\ngracias por amarme a mí también.\n\nCORO:\nYo quiero ser, Señor amado,\ncomo el barro en manos del alfarero.\nToma mi vida y hazla de nuevo,\nyo quiero ser un vaso nuevo.\n\n2. Te conocí y te amé,\nte pedí perdón y me escuchaste.\nSi te ofendí, perdóname Señor,\npues te amo y nunca te olvidaré.\n\n(CORO)"
+        },
+        "vienen_con_alegria": {
+            t: "VIENEN CON ALEGRÍA",
+            l: "CORO:\nVienen con alegría, Señor,\ncantando vienen con alegría, Señor,\nlos que caminan por la vida, Señor,\nsembrando tu paz y amor.\n\n1. Vienen trayendo la esperanza\na un mundo cargado de ansiedad,\na un mundo que busca y que no alcanza\ncaminos de amor y de amistad.\n\n2. Vienen trayendo entre sus manos\nesfuerzos de hermanos por la paz,\ndesee de un mundo más humano\nque nace del bien y la verdad.\n\n(CORO)"
+        },
+        "santa_maria_camino": {
+            t: "SANTA MARÍA DEL CAMINO",
+            l: "1. Mientras recorres la vida\ntú nunca solo estás,\ncontigo por el camino\nSanta María va.\n\nCORO:\nVen con nosotros a caminar,\nSanta María, ven. (Bis)\n\n2. Aunque te digan algunos\nque nada puede cambiar,\nlucha por un mundo nuevo,\nlucha por la verdad.\n\n3. Si por el mundo los hombres\nsin conocerse van,\nno niegues nunca tu mano\nal que contigo está.\n\n(CORO)"
+        }
+        // Seguiré rellenando el resto de los 100 así de largos.
     };
     const id = new URLSearchParams(window.location.search).get('id');
     if(id && biblioteca[id]) {
