@@ -3,14 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancionero con Buscador</title>
+    <title>Cancionero Católico</title>
     <style>
-        :root { --naranja: #d35400; --fondo: #fdfaf6; }
+        :root { --naranja: #d35400; --fondo: #fdfaf6; --marron: #5d4037; }
         body { font-family: sans-serif; background: var(--fondo); margin: 0; padding: 20px; }
         header { text-align: center; margin-bottom: 10px; }
-        h1 { color: var(--naranja); font-size: 20px; text-transform: uppercase; margin-bottom: 15px; }
+        h1 { color: var(--naranja); font-size: 22px; text-transform: uppercase; margin-bottom: 5px; }
 
-        /* Estilo del Buscador */
+        /* Cuadro de Bienvenida con Frase Bíblica */
+        .cuadro-bienvenida {
+            background: #fff3e0;
+            border: 1px dashed var(--naranja);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: var(--marron);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .cita { font-size: 16px; display: block; margin-bottom: 5px; line-height: 1.4; }
+        .referencia { font-size: 13px; font-weight: bold; color: var(--naranja); display: block; text-align: right; }
+
+        /* Buscador */
         .buscador-container {
             position: relative;
             margin-bottom: 20px;
@@ -27,21 +41,14 @@
             outline: none;
             box-sizing: border-box;
         }
-        .lupa {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 20px;
-            color: var(--naranja);
-        }
+        .lupa { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 20px; color: var(--naranja); }
 
-        .lista { display: grid; gap: 8px; min-height: 400px; align-content: start; }
+        .lista { display: grid; gap: 8px; min-height: 350px; align-content: start; }
         .boton-canto { 
             background: white; padding: 15px; border-radius: 10px; 
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-decoration: none; 
-            color: #333; font-weight: bold; border-left: 5px solid var(--naranja); font-size: 14px;
+            color: #333; font-weight: bold; border-left: 5px solid var(--naranja); font-size: 15px;
         }
         
         .paginacion { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 25px; }
@@ -54,8 +61,14 @@
 
 <header>
     <h1>📖 MI CANCIONERO</h1>
+    
+    <div class="cuadro-bienvenida">
+        <span class="cita" id="frase-biblica">"Canten al Señor un cántico nuevo, porque ha hecho maravillas."</span>
+        <span class="referencia" id="referencia-biblica">Salmo 98:1</span>
+    </div>
+
     <div class="buscador-container">
-        <input type="text" id="buscador" placeholder="Buscar canto (ej. Pescador)..." onkeyup="filtrar()">
+        <input type="text" id="buscador" placeholder="¿Qué canto buscas hoy?" onkeyup="filtrar()">
         <span class="lupa">🔍</span>
     </div>
 </header>
@@ -70,6 +83,19 @@
 </div>
 
 <script>
+    const frases = [
+        {f: "Canten al Señor un cántico nuevo, porque ha hecho maravillas.", r: "Salmo 98:1"},
+        {f: "El Señor es mi fuerza y mi escudo, mi corazón confía en Él.", r: "Salmo 28:7"},
+        {f: "Alaba, alma mía, al Señor; alabaré al Señor toda mi vida.", r: "Salmo 146:1-2"},
+        {f: "Todo lo puedo en Cristo que me fortalece.", r: "Filipenses 4:13"},
+        {f: "El Señor es mi pastor, nada me falta.", r: "Salmo 23:1"},
+        {f: "Den gracias al Señor porque es bueno, porque es eterna su misericordia.", r: "Salmo 118:1"},
+        {f: "Mi alma glorifica al Señor, mi espíritu se alegra en Dios mi Salvador.", r: "Lucas 1:46-47"},
+        {f: "Hagan todo con amor.", r: "1 Corintios 16:14"},
+        {f: "Cantaré al Señor mientras viva.", r: "Salmo 104:33"},
+        {f: "La alegría del Señor es nuestra fortaleza.", r: "Nehemías 8:10"}
+    ];
+
     const todosLosCantos = [
         {id:"dios_esta", t:"DIOS ESTÁ AQUÍ"}, {id:"pescador", t:"PESCADOR DE HOMBRES"},
         {id:"vaso_nuevo", t:"VASO NUEVO"}, {id:"entre_manos", t:"ENTRE TUS MANOS"},
@@ -91,6 +117,13 @@
     let cantosFiltrados = [...todosLosCantos];
     let paginaActual = 1;
     const porPagina = 10;
+
+    // Función para poner la frase aleatoria
+    function ponerFrase() {
+        const azar = Math.floor(Math.random() * frases.length);
+        document.getElementById('frase-biblica').innerText = `"${frases[azar].f}"`;
+        document.getElementById('referencia-biblica').innerText = frases[azar].r;
+    }
 
     function mostrar() {
         const contenedor = document.getElementById('lista-cantos');
@@ -130,10 +163,12 @@
         cantosFiltrados = todosLosCantos.filter(canto => 
             canto.t.toLowerCase().includes(texto)
         );
-        paginaActual = 1; // Reiniciar a la primera página tras buscar
+        paginaActual = 1;
         mostrar();
     }
 
+    // Al cargar la página, se pone la frase y se muestran los cantos
+    ponerFrase();
     mostrar();
 </script>
 </body>
