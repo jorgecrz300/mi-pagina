@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Reflejos - Visual</title>
+    <style>
+        /* Estilo de la pantalla negra */
+        body {
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #menu-inicio {
+            text-align: center;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #2ecc71;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+        }
+
+        /* El cuadro que se mueve */
+        #objetivo {
+            width: 50px;
+            height: 50px;
+            background-color: #e74c3c;
+            position: absolute;
+            display: none;
+            box-shadow: 0 0 20px #e74c3c;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="menu-inicio">
+        <h1>Prueba de Concentración</h1>
+        <p>Sigue el cuadro rojo con tus ojos. ¿Estás listo?</p>
+        <button onclick="empezarJuego()">¡LISTO!</button>
+    </div>
+
+    <div id="objetivo"></div>
+
+    <script>
+        const menu = document.getElementById('menu-inicio');
+        const objetivo = document.getElementById('objetivo');
+        
+        function empezarJuego() {
+            menu.style.display = 'none'; // Esconde el menú
+            objetivo.style.display = 'block'; // Muestra el cuadro
+            moverCuadro();
+            
+            // Cambia de posición cada 600 milisegundos (puedes bajarlo para más dificultad)
+            setInterval(moverCuadro, 600); 
+        }
+
+        function moverCuadro() {
+            // Calcula posiciones aleatorias basadas en el tamaño de la ventana
+            const x = Math.random() * (window.innerWidth - 50);
+            const y = Math.random() * (window.innerHeight - 50);
+            
+            objetivo.style.left = x + 'px';
+            objetivo.style.top = y + 'px';
+            
+            // Efecto de parpadeo opcional para aumentar la dificultad visual
+            objetivo.style.opacity = Math.random() * 0.5 + 0.5;
+        }
+    </script>
+</body>
+</html>
