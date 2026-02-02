@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prueba de Reflejos - Visual</title>
+    <title>Entrenamiento de Reflejos Pro</title>
     <style>
-        /* Estilo de la pantalla negra */
         body {
             margin: 0;
             background-color: #000;
             color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -18,70 +17,135 @@
             overflow: hidden;
         }
 
-        #menu-inicio {
+        #interfaz {
             text-align: center;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .controles { margin-top: 20px; }
+
+        select, button {
+            padding: 12px 25px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
         }
 
         button {
-            padding: 15px 30px;
-            font-size: 20px;
-            cursor: pointer;
             background-color: #2ecc71;
-            border: none;
             color: white;
-            border-radius: 5px;
-            transition: 0.3s;
+            font-weight: bold;
         }
 
-        button:hover {
-            background-color: #27ae60;
+        #timer {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+            color: #f1c40f;
+            display: none;
+            font-weight: bold;
         }
 
-        /* El cuadro que se mueve */
         #objetivo {
-            width: 50px;
-            height: 50px;
-            background-color: #e74c3c;
+            width: 45px;
+            height: 45px;
             position: absolute;
             display: none;
-            box-shadow: 0 0 20px #e74c3c;
-            border-radius: 4px;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+            transition: all 0.1s ease-out;
         }
+
+        h2 { color: #e74c3c; }
     </style>
 </head>
 <body>
 
-    <div id="menu-inicio">
-        <h1>Prueba de Concentración</h1>
-        <p>Sigue el cuadro rojo con tus ojos. ¿Estás listo?</p>
-        <button onclick="empezarJuego()">¡LISTO!</button>
+    <div id="timer">TIEMPO: <span id="segundos">60</span>s</div>
+
+    <div id="interfaz">
+        <h1 id="titulo">Reflejos Deportivos</h1>
+        <p id="instrucciones">Elige tu disciplina. Tienes 1 minuto.</p>
+        
+        <div class="controles" id="selector-zona">
+            <select id="categoria">
+                <option value="800" data-color="#3498db">Fútbol (Lento)</option>
+                <option value="600" data-color="#e67e22">Básquetbol (Medio)</option>
+                <option value="450" data-color="#f1c40f">Voleibol (Rápido)</option>
+                <option value="250" data-color="#2ecc71">Tenis (Extremo)</option>
+            </select>
+            <br><br>
+            <button onclick="iniciarPrueba()">¡LISTO!</button>
+        </div>
     </div>
 
     <div id="objetivo"></div>
 
     <script>
-        const menu = document.getElementById('menu-inicio');
+        let tiempoRestante = 60;
+        let intervaloMovimiento;
+        let intervaloReloj;
+
         const objetivo = document.getElementById('objetivo');
-        
-        function empezarJuego() {
-            menu.style.display = 'none'; // Esconde el menú
-            objetivo.style.display = 'block'; // Muestra el cuadro
-            moverCuadro();
+        const interfaz = document.getElementById('interfaz');
+        const displayTimer = document.getElementById('timer');
+        const segundosTexto = document.getElementById('segundos');
+
+        function iniciarPrueba() {
+            const selector = document.getElementById('categoria');
+            const velocidad = selector.value;
+            const color = selector.options[selector.selectedIndex].getAttribute('data-color');
             
-            // Cambia de posición cada 600 milisegundos (puedes bajarlo para más dificultad)
-            setInterval(moverCuadro, 600); 
+            // Configurar color de la pelota
+            objetivo.style.backgroundColor = color;
+            objetivo.style.boxShadow = `0 0 20px ${color}`;
+
+            interfaz.style.display = 'none';
+            objetivo.style.display = 'block';
+            displayTimer.style.display = 'block';
+            
+            moverPelota();
+            intervaloMovimiento = setInterval(moverPelota, velocidad);
+            
+            tiempoRestante = 60;
+            segundosTexto.innerText = tiempoRestante;
+            intervaloReloj = setInterval(actualizarReloj, 1000);
         }
 
-        function moverCuadro() {
-            // Calcula posiciones aleatorias basadas en el tamaño de la ventana
-            const x = Math.random() * (window.innerWidth - 50);
-            const y = Math.random() * (window.innerHeight - 50);
-            
+        function moverPelota() {
+            const x = Math.random() * (window.innerWidth - 60);
+            const y = Math.random() * (window.innerHeight - 60);
             objetivo.style.left = x + 'px';
             objetivo.style.top = y + 'px';
+        }
+
+        function actualizarReloj() {
+            tiempoRestante--;
+            segundosTexto.innerText = tiempoRestante;
+
+            if (tiempoRestante <= 0) {
+                finalizarPrueba();
+            }
+        }
+
+        function finalizarPrueba() {
+            clearInterval(intervaloMovimiento);
+            clearInterval(intervaloReloj);
             
-            // Efecto de parpadeo opcional para aumentar la dificultad visual
-            objetivo.style.opacity = Math.random() * 0.5 + 0.5;
+            objetivo.style.display = 'none';
+            displayTimer.style.display = 'none';
+            
+            interfaz.style.display = 'block';
+            document.getElementById('titulo').innerText = "¡TIEMPO ACABADO!";
+            document.getElementById('instrucciones').innerText = "Entrenamiento de reflejos terminado.";
+            document.getElementById('selector-zona').innerHTML = '<button onclick="location.reload()">VOLVER A INTENTAR</button>';
         }
     </script>
 </body>
