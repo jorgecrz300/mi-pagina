@@ -3,180 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sport Reflex Training Pro</title>
+    <title>Voley Reflex Pro - Física Real</title>
     <style>
-        body {
-            margin: 0;
-            background-color: #000;
-            color: #fff;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        
+        /* Escenario y Red */
+        #escenario { position: absolute; width: 100%; height: 100%; pointer-events: none; display: none; }
+        .red-voley { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; height: 140px; border: 2px solid #fff;
+            background-image: linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px);
+            background-size: 20px 20px; background-color: rgba(255,255,255,0.1); z-index: 2;
+        }
+        .red-voley::before, .red-voley::after { content: ''; position: absolute; width: 12px; height: 500px; background: #555; top: -100px; }
+        .red-voley::before { left: -12px; } .red-voley::after { right: -12px; }
+
+        /* Pelota */
+        #pelota { 
+            width: 50px; height: 50px; background: #f1c40f; position: absolute; 
+            border-radius: 50%; display: none; z-index: 5;
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.5), 0 0 15px #f1c40f;
         }
 
-        /* --- CONTENEDOR DE REDES --- */
-        #escenario {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            display: none;
-        }
-
-        /* VOLEIBOL REALISTA */
-        .red-voley {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%; height: 140px;
-            border: 2px solid #fff;
-            background-image: 
-                linear-gradient(white 1px, transparent 1px),
-                linear-gradient(90deg, white 1px, transparent 1px);
-            background-size: 20px 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        .red-voley::before, .red-voley::after {
-            content: ''; position: absolute;
-            width: 12px; height: 400px;
-            background: #555; top: -100px;
-        }
-        .red-voley::before { left: -12px; }
-        .red-voley::after { right: -12px; }
-
-        /* TENIS */
-        .red-tennis {
-            position: absolute; bottom: 0;
-            width: 100%; height: 100px;
-            background: rgba(255,255,255,0.15);
-            border-top: 4px solid #fff;
-            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px);
-        }
-
-        /* FÚTBOL */
-        .red-futbol {
-            position: absolute; bottom: 0; left: 15%;
-            width: 70%; height: 60%;
-            border: 10px solid #fff; border-bottom: none;
-            background: radial-gradient(circle, transparent 20%, rgba(255,255,255,0.05) 100%);
-        }
-
-        /* BÁSQUETBOL */
-        .red-basket {
-            position: absolute; top: 10%; left: 50%;
-            transform: translateX(-50%);
-            width: 120px; height: 120px;
-            border: 6px solid #e67e22; border-radius: 0 0 50% 50%;
-            box-shadow: 0 10px 20px rgba(230, 126, 34, 0.5);
-        }
-
-        /* --- INTERFAZ --- */
-        #menu {
-            text-align: center; z-index: 10;
-            background: rgba(20, 20, 20, 0.95);
-            padding: 40px; border-radius: 20px;
-            border: 2px solid #333;
-        }
-
-        #timer {
-            position: absolute; top: 30px;
-            font-size: 35px; color: #f1c40f;
-            font-weight: bold; display: none; z-index: 10;
-        }
-
-        #pelota {
-            width: 45px; height: 45px;
-            position: absolute; display: none;
-            border-radius: 50%; z-index: 5;
-            transition: all 0.15s ease-out;
-        }
-
-        select, button {
-            padding: 15px 25px; font-size: 18px;
-            margin: 10px; border-radius: 10px; border: none;
-            cursor: pointer;
-        }
-
-        button { background: #27ae60; color: white; font-weight: bold; }
-        button:hover { background: #2ecc71; }
+        /* UI */
+        #menu { text-align: center; z-index: 10; background: rgba(20,20,20,0.9); padding: 40px; border-radius: 20px; }
+        #timer { position: absolute; top: 20px; font-size: 30px; color: #f1c40f; display: none; }
+        button { padding: 15px 30px; font-size: 20px; cursor: pointer; background: #27ae60; color: #fff; border: none; border-radius: 10px; }
     </style>
 </head>
 <body>
 
     <div id="timer">01:00</div>
-    <div id="escenario"></div>
+    <div id="escenario"><div class="red-voley"></div></div>
     <div id="pelota"></div>
 
     <div id="menu">
-        <h1>Reflejos Deportivos IA</h1>
-        <p>Sigue el balón con los ojos durante 1 minuto.</p>
-        <select id="deporte">
-            <option value="850" data-red="red-futbol" data-color="#fff">Fútbol (Ritmo Lento)</option>
-            <option value="600" data-red="red-basket" data-color="#ff6b6b">Básquetbol (Ritmo Medio)</option>
-            <option value="400" data-red="red-voley" data-color="#f1c40f">Voleibol (Ritmo Rápido)</option>
-            <option value="250" data-red="red-tennis" data-color="#7bed9f">Tenis (Ritmo Extremo)</option>
-        </select>
-        <br>
-        <button onclick="comenzar()">¡ESTOY LISTO!</button>
+        <h1>Entrenamiento de Saque</h1>
+        <p>Sigue los rebotes y la trayectoria del saque.</p>
+        <button onclick="comenzarVoley()">¡INICIAR SAQUE!</button>
     </div>
 
     <script>
+        let posX, posY, velX, velY;
+        let gravedad = 0.25; // Fuerza que tira la pelota hacia abajo
+        let rebote = -0.85;  // Energía que mantiene al rebotar
         let tiempo = 60;
-        let movLoop, clockLoop;
+        let juegoActivo = false;
 
-        function comenzar() {
-            const sel = document.getElementById('deporte');
-            const speed = parseInt(sel.value);
-            const redClass = sel.options[sel.selectedIndex].getAttribute('data-red');
-            const ballColor = sel.options[sel.selectedIndex].getAttribute('data-color');
+        const pelota = document.getElementById('pelota');
+        const timerTxt = document.getElementById('timer');
 
-            // Preparar Escena
+        function comenzarVoley() {
             document.getElementById('menu').style.display = 'none';
-            const esc = document.getElementById('escenario');
-            esc.innerHTML = `<div class="${redClass}"></div>`;
-            esc.style.display = 'block';
-
-            const ball = document.getElementById('pelota');
-            ball.style.backgroundColor = ballColor;
-            ball.style.boxShadow = `0 0 25px ${ballColor}`;
-            ball.style.display = 'block';
-
-            const tDisplay = document.getElementById('timer');
-            tDisplay.style.display = 'block';
-
-            // Lógica
-            mover();
-            movLoop = setInterval(mover, speed);
-            clockLoop = setInterval(() => {
-                tiempo--;
-                let s = tiempo < 10 ? '0'+tiempo : tiempo;
-                tDisplay.innerText = `00:${s}`;
-                if(tiempo <= 0) finalizar();
-            }, 1000);
-        }
-
-        function mover() {
-            const ball = document.getElementById('pelota');
-            const x = Math.random() * (window.innerWidth - 60);
-            const y = Math.random() * (window.innerHeight - 60);
-            ball.style.left = x + 'px';
-            ball.style.top = y + 'px';
-        }
-
-        function finalizar() {
-            clearInterval(movLoop);
-            clearInterval(clockLoop);
-            document.getElementById('pelota').style.display = 'none';
-            document.getElementById('escenario').style.display = 'none';
-            document.getElementById('timer').innerText = "TIEMPO ACABADO";
+            document.getElementById('escenario').style.display = 'block';
+            pelota.style.display = 'block';
+            timerTxt.style.display = 'block';
             
-            setTimeout(() => {
-                location.reload();
-            }, 3000);
+            // Posición inicial (Saque desde un lado)
+            posX = 50;
+            posY = window.innerHeight - 100;
+            velX = 8 + Math.random() * 5; // Velocidad horizontal
+            velY = -15 - Math.random() * 5; // Impulso hacia arriba (Saque)
+            
+            juegoActivo = true;
+            loopPrincipal();
+            iniciarReloj();
+        }
+
+        function loopPrincipal() {
+            if (!juegoActivo) return;
+
+            // Aplicar Física
+            velY += gravedad;
+            posX += velX;
+            posY += velY;
+
+            // Rebote Suelo
+            if (posY + 50 > window.innerHeight) {
+                posY = window.innerHeight - 50;
+                velY *= rebote;
+            }
+            // Rebote Techo
+            if (posY < 0) {
+                posY = 0;
+                velY *= rebote;
+            }
+            // Rebote Paredes
+            if (posX + 50 > window.innerWidth || posX < 0) {
+                velX *= -1;
+            }
+
+            // Actualizar posición visual
+            pelota.style.left = posX + 'px';
+            pelota.style.top = posY + 'px';
+
+            requestAnimationFrame(loopPrincipal);
+        }
+
+        function iniciarReloj() {
+            const intv = setInterval(() => {
+                tiempo--;
+                timerTxt.innerText = `00:${tiempo < 10 ? '0'+tiempo : tiempo}`;
+                if (tiempo <= 0) {
+                    clearInterval(intv);
+                    juegoActivo = false;
+                    alert("TIEMPO ACABADO - Entrenamiento de Saque Completo");
+                    location.reload();
+                }
+            }, 1000);
         }
     </script>
 </body>
