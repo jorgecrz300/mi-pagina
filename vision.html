@@ -3,32 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voley Reflex Pro - Física Real</title>
+    <title>Voley Reflex - Saque Frontal</title>
     <style>
-        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Arial', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
         
-        /* Escenario y Red */
-        #escenario { position: absolute; width: 100%; height: 100%; pointer-events: none; display: none; }
-        .red-voley { 
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 90%; height: 140px; border: 2px solid #fff;
-            background-image: linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px);
-            background-size: 20px 20px; background-color: rgba(255,255,255,0.1); z-index: 2;
+        /* Red de Voleibol con Perspectiva */
+        #escenario {
+            position: absolute; width: 100%; height: 100%;
+            display: none; pointer-events: none; z-index: 1;
         }
-        .red-voley::before, .red-voley::after { content: ''; position: absolute; width: 12px; height: 500px; background: #555; top: -100px; }
-        .red-voley::before { left: -12px; } .red-voley::after { right: -12px; }
+        .red-voley {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%; height: 150px;
+            border: 3px solid #fff;
+            background-image: linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px);
+            background-size: 25px 25px;
+            background-color: rgba(255,255,255,0.1);
+        }
 
-        /* Pelota */
-        #pelota { 
-            width: 50px; height: 50px; background: #f1c40f; position: absolute; 
-            border-radius: 50%; display: none; z-index: 5;
-            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.5), 0 0 15px #f1c40f;
+        /* El Balón */
+        #pelota {
+            width: 50px; height: 50px;
+            background: radial-gradient(circle at 30% 30%, #f1c40f, #d4ac0d);
+            position: absolute; border-radius: 50%;
+            display: none; z-index: 5;
+            box-shadow: 0 0 20px #f1c40f;
+            transform: scale(0.1); /* Empieza pequeño (lejos) */
         }
 
         /* UI */
-        #menu { text-align: center; z-index: 10; background: rgba(20,20,20,0.9); padding: 40px; border-radius: 20px; }
-        #timer { position: absolute; top: 20px; font-size: 30px; color: #f1c40f; display: none; }
-        button { padding: 15px 30px; font-size: 20px; cursor: pointer; background: #27ae60; color: #fff; border: none; border-radius: 10px; }
+        #menu { text-align: center; z-index: 10; color: white; background: rgba(0,0,0,0.8); padding: 30px; border-radius: 20px; border: 1px solid #444; }
+        button { padding: 15px 30px; font-size: 20px; cursor: pointer; background: #f1c40f; color: #000; border: none; border-radius: 10px; font-weight: bold; }
+        #timer { position: absolute; top: 20px; font-size: 30px; color: #f1c40f; display: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -38,76 +45,62 @@
     <div id="pelota"></div>
 
     <div id="menu">
-        <h1>Entrenamiento de Saque</h1>
-        <p>Sigue los rebotes y la trayectoria del saque.</p>
-        <button onclick="comenzarVoley()">¡INICIAR SAQUE!</button>
+        <h1>Entrenamiento de Reacción</h1>
+        <p>Atento al saque frontal, luego sigue el ritmo rápido.</p>
+        <button onclick="iniciarEfecto()">EMPEZAR</button>
     </div>
 
     <script>
-        let posX, posY, velX, velY;
-        let gravedad = 0.25; // Fuerza que tira la pelota hacia abajo
-        let rebote = -0.85;  // Energía que mantiene al rebotar
-        let tiempo = 60;
-        let juegoActivo = false;
-
         const pelota = document.getElementById('pelota');
+        const menu = document.getElementById('menu');
+        const escenario = document.getElementById('escenario');
         const timerTxt = document.getElementById('timer');
+        
+        let tiempo = 60;
 
-        function comenzarVoley() {
-            document.getElementById('menu').style.display = 'none';
-            document.getElementById('escenario').style.display = 'block';
-            pelota.style.display = 'block';
+        function iniciarEfecto() {
+            menu.style.display = 'none';
+            escenario.style.display = 'block';
             timerTxt.style.display = 'block';
+            pelota.style.display = 'block';
+
+            // FASE 1: Saque hacia la pantalla (Perspectiva)
+            pelota.style.left = "50%";
+            pelota.style.top = "50%";
+            pelota.style.transform = "translate(-50%, -50%) scale(0.1)";
+            pelota.style.transition = "transform 1.2s ease-in, opacity 1.2s";
             
-            // Posición inicial (Saque desde un lado)
-            posX = 50;
-            posY = window.innerHeight - 100;
-            velX = 8 + Math.random() * 5; // Velocidad horizontal
-            velY = -15 - Math.random() * 5; // Impulso hacia arriba (Saque)
-            
-            juegoActivo = true;
-            loopPrincipal();
-            iniciarReloj();
+            setTimeout(() => {
+                pelota.style.transform = "translate(-50%, -50%) scale(4)"; // Se agranda (hacia ti)
+                pelota.style.opacity = "0.7";
+            }, 100);
+
+            // FASE 2: Movimiento rápido frenético
+            setTimeout(() => {
+                pelota.style.transition = "all 0.15s ease-out"; // Movimiento muy rápido
+                pelota.style.opacity = "1";
+                pelota.style.transform = "scale(1)";
+                
+                setInterval(moverFrenetico, 350); // Cambia de posición cada 350ms
+                iniciarReloj();
+            }, 1300);
         }
 
-        function loopPrincipal() {
-            if (!juegoActivo) return;
-
-            // Aplicar Física
-            velY += gravedad;
-            posX += velX;
-            posY += velY;
-
-            // Rebote Suelo
-            if (posY + 50 > window.innerHeight) {
-                posY = window.innerHeight - 50;
-                velY *= rebote;
-            }
-            // Rebote Techo
-            if (posY < 0) {
-                posY = 0;
-                velY *= rebote;
-            }
-            // Rebote Paredes
-            if (posX + 50 > window.innerWidth || posX < 0) {
-                velX *= -1;
-            }
-
-            // Actualizar posición visual
-            pelota.style.left = posX + 'px';
-            pelota.style.top = posY + 'px';
-
-            requestAnimationFrame(loopPrincipal);
+        function moverFrenetico() {
+            const x = Math.random() * (window.innerWidth - 60);
+            const y = Math.random() * (window.innerHeight - 60);
+            pelota.style.left = x + 'px';
+            pelota.style.top = y + 'px';
+            pelota.style.transform = `scale(${0.8 + Math.random()})`; // Pequeñas variaciones de tamaño para molestar la vista
         }
 
         function iniciarReloj() {
-            const intv = setInterval(() => {
+            const reloj = setInterval(() => {
                 tiempo--;
                 timerTxt.innerText = `00:${tiempo < 10 ? '0'+tiempo : tiempo}`;
                 if (tiempo <= 0) {
-                    clearInterval(intv);
-                    juegoActivo = false;
-                    alert("TIEMPO ACABADO - Entrenamiento de Saque Completo");
+                    clearInterval(reloj);
+                    alert("TIEMPO AGOTADO - Reflejos al límite");
                     location.reload();
                 }
             }, 1000);
