@@ -96,4 +96,88 @@
         }
 
         select, button {
-            padding: 15px
+            padding: 15px 25px; font-size: 18px;
+            margin: 10px; border-radius: 10px; border: none;
+            cursor: pointer;
+        }
+
+        button { background: #27ae60; color: white; font-weight: bold; }
+        button:hover { background: #2ecc71; }
+    </style>
+</head>
+<body>
+
+    <div id="timer">01:00</div>
+    <div id="escenario"></div>
+    <div id="pelota"></div>
+
+    <div id="menu">
+        <h1>Reflejos Deportivos IA</h1>
+        <p>Sigue el balón con los ojos durante 1 minuto.</p>
+        <select id="deporte">
+            <option value="850" data-red="red-futbol" data-color="#fff">Fútbol (Ritmo Lento)</option>
+            <option value="600" data-red="red-basket" data-color="#ff6b6b">Básquetbol (Ritmo Medio)</option>
+            <option value="400" data-red="red-voley" data-color="#f1c40f">Voleibol (Ritmo Rápido)</option>
+            <option value="250" data-red="red-tennis" data-color="#7bed9f">Tenis (Ritmo Extremo)</option>
+        </select>
+        <br>
+        <button onclick="comenzar()">¡ESTOY LISTO!</button>
+    </div>
+
+    <script>
+        let tiempo = 60;
+        let movLoop, clockLoop;
+
+        function comenzar() {
+            const sel = document.getElementById('deporte');
+            const speed = parseInt(sel.value);
+            const redClass = sel.options[sel.selectedIndex].getAttribute('data-red');
+            const ballColor = sel.options[sel.selectedIndex].getAttribute('data-color');
+
+            // Preparar Escena
+            document.getElementById('menu').style.display = 'none';
+            const esc = document.getElementById('escenario');
+            esc.innerHTML = `<div class="${redClass}"></div>`;
+            esc.style.display = 'block';
+
+            const ball = document.getElementById('pelota');
+            ball.style.backgroundColor = ballColor;
+            ball.style.boxShadow = `0 0 25px ${ballColor}`;
+            ball.style.display = 'block';
+
+            const tDisplay = document.getElementById('timer');
+            tDisplay.style.display = 'block';
+
+            // Lógica
+            mover();
+            movLoop = setInterval(mover, speed);
+            clockLoop = setInterval(() => {
+                tiempo--;
+                let s = tiempo < 10 ? '0'+tiempo : tiempo;
+                tDisplay.innerText = `00:${s}`;
+                if(tiempo <= 0) finalizar();
+            }, 1000);
+        }
+
+        function mover() {
+            const ball = document.getElementById('pelota');
+            const x = Math.random() * (window.innerWidth - 60);
+            const y = Math.random() * (window.innerHeight - 60);
+            ball.style.left = x + 'px';
+            ball.style.top = y + 'px';
+        }
+
+        function finalizar() {
+            clearInterval(movLoop);
+            clearInterval(clockLoop);
+            document.getElementById('pelota').style.display = 'none';
+            document.getElementById('escenario').style.display = 'none';
+            document.getElementById('timer').innerText = "TIEMPO ACABADO";
+            
+            setTimeout(() => {
+                location.reload();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
