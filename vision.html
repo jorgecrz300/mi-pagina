@@ -2,128 +2,72 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voley Training - Nishida Mode</title>
+    <title>Voley Training: Jugada Completa</title>
     <style>
-        body { margin: 0; background: #000; overflow: hidden; font-family: 'Arial Black', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; }
+        body { margin: 0; background: #050505; overflow: hidden; font-family: sans-serif; }
         
-        /* Red de Voleibol */
-        #escenario { position: absolute; width: 100%; height: 100%; display: none; pointer-events: none; z-index: 1; }
-        .red-voley {
+        /* Red basada en tu dibujo */
+        .red-container {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 90%; height: 150px; border: 3px solid #fff;
+            width: 80%; height: 180px; border: 3px solid #fff;
             background-image: linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px);
-            background-size: 25px 25px; background-color: rgba(255,255,255,0.1);
+            background-size: 20px 20px; background-color: rgba(255,255,255,0.1);
         }
+        .poste { position: absolute; width: 10px; height: 400px; background: #444; top: -110px; }
 
-        /* Balón con textura de voley */
         #pelota {
-            width: 55px; height: 55px;
-            background: linear-gradient(45deg, #fff 25%, #f1c40f 25%, #f1c40f 50%, #2980b9 50%, #2980b9 75%, #fff 75%);
-            background-size: 100% 100%;
-            position: absolute; border-radius: 50%; display: none; z-index: 5;
-            box-shadow: 0 0 20px rgba(255,255,255,0.5);
-            transform: scale(0.1);
+            width: 45px; height: 45px; background: radial-gradient(circle at 30% 30%, #fff, #f1c40f, #2980b9);
+            position: absolute; border-radius: 50%; display: none; z-index: 10;
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
         }
 
-        /* Menú y Botones */
-        #menu { text-align: center; z-index: 10; background: rgba(0,0,0,0.9); padding: 40px; border-radius: 20px; border: 2px solid #444; width: 320px; }
-        select, button { width: 100%; padding: 15px; margin-top: 15px; border-radius: 10px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; }
-        select { background: #333; color: white; }
-        button { background: #e74c3c; color: white; transition: 0.3s; }
-        button:hover { background: #c0392b; transform: scale(1.05); }
-
-        #timer { position: absolute; top: 20px; font-size: 40px; color: #f1c40f; display: none; font-weight: bold; text-shadow: 2px 2px #000; }
-        #nivel-actual { position: absolute; bottom: 20px; left: 20px; color: #555; font-size: 14px; }
+        #ui { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; z-index: 20; }
+        button { padding: 15px 30px; font-size: 20px; cursor: pointer; background: #27ae60; color: white; border: none; border-radius: 8px; }
+        #fase-info { position: absolute; top: 20px; width: 100%; text-align: center; color: #f1c40f; font-size: 24px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="timer">01:00</div>
-    <div id="nivel-actual"></div>
-    <div id="escenario"><div class="red-voley"></div></div>
-    <div id="pelota"></div>
-
-    <div id="menu">
-        <h1 style="color: #f1c40f; margin-bottom: 5px;">VOLEY REFLEX</h1>
-        <p style="font-size: 12px; margin-bottom: 20px;">ENTRENA TU VISTA AL LÍMITE</p>
-        
-        <label>Selecciona Nivel:</label>
-        <select id="nivel-select">
-            <option value="700">PRINCIPIANTE (Amateur)</option>
-            <option value="450">MEDIO (Jugador Elite)</option>
-            <option value="280">DIFÍCIL (Pro League)</option>
-            <option value="150">EXTREMO (Yuji Nishida Mode)</option>
-        </select>
-        
-        <button onclick="prepararSaque()">¡INICIAR PARTIDO!</button>
+    <div id="fase-info"></div>
+    <div id="ui"><button onclick="iniciarJugada()">INICIAR JUGADA</button></div>
+    
+    <div class="red-container">
+        <div class="poste" style="left: -10px;"></div>
+        <div class="poste" style="right: -10px;"></div>
     </div>
+
+    <div id="pelota"></div>
 
     <script>
         const pelota = document.getElementById('pelota');
-        const menu = document.getElementById('menu');
-        const timerTxt = document.getElementById('timer');
-        let tiempo = 60;
-        let velocidadJuego = 0;
+        const info = document.getElementById('fase-info');
+        const ui = document.getElementById('ui');
 
-        function prepararSaque() {
-            velocidadJuego = parseInt(document.getElementById('nivel-select').value);
-            menu.style.display = 'none';
-            document.getElementById('escenario').style.display = 'block';
-            timerTxt.style.display = 'block';
+        function iniciarJugada() {
+            ui.style.display = 'none';
             pelota.style.display = 'block';
+            faseRecepcion();
+        }
 
-            // --- EFECTO DE SAQUE HACIA TI ---
-            pelota.style.left = "50%";
-            pelota.style.top = "50%";
-            pelota.style.transform = "translate(-50%, -50%) scale(0.1)";
-            pelota.style.transition = "transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045)";
+        // 1. RECEPCIÓN: De derecha a izquierda (hacia el colocador)
+        function faseRecepcion() {
+            info.innerText = "1. RECEPCIÓN";
+            // Posición inicial: abajo a la derecha
+            pelota.style.transition = "none";
+            pelota.style.left = "80%";
+            pelota.style.top = "80%";
             
             setTimeout(() => {
-                pelota.style.transform = "translate(-50%, -50%) scale(5)"; // Viene hacia la cara
-                pelota.style.opacity = "0.5";
-            }, 50);
+                pelota.style.transition = "all 0.8s ease-out";
+                pelota.style.left = "20%"; // Llega al colocador en la izquierda
+                pelota.style.top = "40%";
+            }, 100);
 
-            // --- INICIO DE MOVIMIENTO SEGÚN NIVEL ---
-            setTimeout(() => {
-                pelota.style.transition = "all 0.1s ease-out";
-                pelota.style.opacity = "1";
-                pelota.style.transform = "scale(1)";
-                
-                if(velocidadJuego === 150) {
-                    pelota.style.boxShadow = "0 0 30px #f1c40f, 0 0 60px #fff"; // Efecto de energía para Nishida
-                }
-
-                setInterval(moverBola, velocidadJuego);
-                iniciarCuentaRegresiva();
-            }, 900);
+            setTimeout(faseColocacion, 900);
         }
 
-        function moverBola() {
-            const x = Math.random() * (window.innerWidth - 60);
-            const y = Math.random() * (window.innerHeight - 60);
-            
-            pelota.style.left = x + 'px';
-            pelota.style.top = y + 'px';
-            
-            // En nivel extremo, cambia ligeramente de tamaño para forzar el enfoque
-            if(velocidadJuego < 300) {
-                let randomScale = 0.7 + (Math.random() * 0.6);
-                pelota.style.transform = `scale(${randomScale})`;
-            }
-        }
-
-        function iniciarCuentaRegresiva() {
-            const countdown = setInterval(() => {
-                tiempo--;
-                timerTxt.innerText = `00:${tiempo < 10 ? '0'+tiempo : tiempo}`;
-                if (tiempo <= 0) {
-                    clearInterval(countdown);
-                    alert("SESIÓN TERMINADA\nNivel superado.");
-                    location.reload();
-                }
-            }, 1000);
-        }
-    </script>
-</body>
-</html>
+        // 2. COLOCACIÓN: De izquierda a derecha (parábola sobre la red)
+        function faseColocacion() {
+            info.innerText = "2. COLOCACIÓN";
+            pelota.style.transition = "all 1s cubic-bezier(0.45, 0.05, 0.55, 0.95)";
+            pelota
