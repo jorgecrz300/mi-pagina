@@ -70,4 +70,38 @@
         function faseColocacion() {
             info.innerText = "2. COLOCACIÓN";
             pelota.style.transition = "all 1s cubic-bezier(0.45, 0.05, 0.55, 0.95)";
-            pelota
+            pelota.style.left = "70%"; // Va hacia la zona del rematador
+            pelota.style.top = "15%";  // Punto más alto
+            
+            setTimeout(faseRemate, 1100);
+        }
+
+        // 3. REMATE: 4 Direcciones Aleatorias (Velocidad Explosiva)
+        function faseRemate() {
+            info.innerText = "3. ¡REMATE!";
+            pelota.style.transition = "all 0.15s ease-in"; // Mucho más rápido
+            
+            // Simulación de las 4 flechas de tu dibujo
+            const direcciones = [
+                {x: "10%", y: "90%"}, // Diagonal larga izquierda
+                {x: "40%", y: "95%"}, // Centro izquierda
+                {x: "70%", y: "95%"}, // Centro derecha
+                {x: "95%", y: "90%"}  // Línea derecha
+            ];
+
+            const destino = direcciones[Math.floor(Math.random() * direcciones.length)];
+            
+            pelota.style.left = destino.x;
+            pelota.style.top = destino.y;
+            pelota.style.transform = "scale(1.5)"; // Efecto de fuerza
+
+            setTimeout(() => {
+                pelota.style.display = 'none';
+                pelota.style.transform = "scale(1)";
+                ui.style.display = 'block';
+                info.innerText = "¡PUNTO!";
+            }, 500);
+        }
+    </script>
+</body>
+</html>
