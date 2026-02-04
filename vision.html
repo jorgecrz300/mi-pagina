@@ -2,105 +2,105 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Voley Training: Jugada Completa</title>
+    <title>Nishida Reflex Training - Ultra Realistic</title>
     <style>
-        body { margin: 0; background: #050505; overflow: hidden; font-family: sans-serif; }
+        body { margin: 0; background: #050505; overflow: hidden; font-family: 'Arial Black', sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; }
         
-        /* Red basada en tu dibujo */
-        .red-container {
+        /* Red Realista con Sombra */
+        #escenario { position: absolute; width: 100%; height: 100%; display: none; z-index: 1; }
+        .red-voley {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 80%; height: 180px; border: 3px solid #fff;
-            background-image: linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px);
-            background-size: 20px 20px; background-color: rgba(255,255,255,0.1);
+            width: 100%; height: 160px; border-top: 5px solid #fff; border-bottom: 5px solid #fff;
+            background: repeating-linear-gradient(0deg, transparent, transparent 18px, rgba(255,255,255,0.1) 18px, rgba(255,255,255,0.1) 20px),
+                        repeating-linear-gradient(90deg, transparent, transparent 18px, rgba(255,255,255,0.1) 18px, rgba(255,255,255,0.1) 20px);
+            background-color: rgba(255,255,255,0.05);
         }
-        .poste { position: absolute; width: 10px; height: 400px; background: #444; top: -110px; }
 
+        /* Balón con Estela (Motion Blur) */
         #pelota {
-            width: 45px; height: 45px; background: radial-gradient(circle at 30% 30%, #fff, #f1c40f, #2980b9);
-            position: absolute; border-radius: 50%; display: none; z-index: 10;
-            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+            width: 50px; height: 50px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Volleyball_ball.svg/1024px-Volleyball_ball.svg.png');
+            background-size: cover; background-color: #f1c40f;
+            position: absolute; border-radius: 50%; display: none; z-index: 5;
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.6);
+            transition: all 0.08s linear; /* Movimiento ultra fluido */
         }
 
-        #ui { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; z-index: 20; }
-        button { padding: 15px 30px; font-size: 20px; cursor: pointer; background: #27ae60; color: white; border: none; border-radius: 8px; }
-        #fase-info { position: absolute; top: 20px; width: 100%; text-align: center; color: #f1c40f; font-size: 24px; font-weight: bold; }
+        /* UI */
+        #menu { text-align: center; z-index: 10; color: white; background: rgba(0,0,0,0.85); padding: 30px; border: 2px solid #f1c40f; border-radius: 15px; }
+        button { background: #f1c40f; color: #000; padding: 15px 30px; border: none; font-weight: bold; font-size: 20px; cursor: pointer; border-radius: 5px; }
+        #timer { position: absolute; top: 20px; font-size: 40px; color: #f1c40f; display: none; z-index: 10; }
     </style>
 </head>
 <body>
 
-    <div id="fase-info"></div>
-    <div id="ui"><button onclick="iniciarJugada()">INICIAR JUGADA</button></div>
-    
-    <div class="red-container">
-        <div class="poste" style="left: -10px;"></div>
-        <div class="poste" style="right: -10px;"></div>
-    </div>
-
+    <div id="timer">60</div>
+    <div id="escenario"><div class="red-voley"></div></div>
     <div id="pelota"></div>
+
+    <div id="menu">
+        <h1 style="margin:0">NISHIDA MODE</h1>
+        <p>REACCIÓN BAJO PRESIÓN</p>
+        <button onclick="iniciar()">RECIBIR SAQUE</button>
+    </div>
 
     <script>
         const pelota = document.getElementById('pelota');
-        const info = document.getElementById('fase-info');
-        const ui = document.getElementById('ui');
+        let tiempo = 60;
+        let nishidaInterval;
 
-        function iniciarJugada() {
-            ui.style.display = 'none';
+        function iniciar() {
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('escenario').style.display = 'block';
+            document.getElementById('timer').style.display = 'block';
             pelota.style.display = 'block';
-            faseRecepcion();
-        }
 
-        // 1. RECEPCIÓN: De derecha a izquierda (hacia el colocador)
-        function faseRecepcion() {
-            info.innerText = "1. RECEPCIÓN";
-            // Posición inicial: abajo a la derecha
-            pelota.style.transition = "none";
-            pelota.style.left = "80%";
-            pelota.style.top = "80%";
+            // Saque inicial (Efecto de venir hacia ti)
+            pelota.style.left = "50%"; pelota.style.top = "50%";
+            pelota.style.transform = "scale(0.1)";
             
             setTimeout(() => {
-                pelota.style.transition = "all 0.8s ease-out";
-                pelota.style.left = "20%"; // Llega al colocador en la izquierda
-                pelota.style.top = "40%";
+                pelota.style.transition = "transform 0.5s ease-in";
+                pelota.style.transform = "scale(6)"; // El balón "estalla" frente a ti
+                pelota.style.filter = "blur(2px)";
             }, 100);
 
-            setTimeout(faseColocacion, 900);
-        }
-
-        // 2. COLOCACIÓN: De izquierda a derecha (parábola sobre la red)
-        function faseColocacion() {
-            info.innerText = "2. COLOCACIÓN";
-            pelota.style.transition = "all 1s cubic-bezier(0.45, 0.05, 0.55, 0.95)";
-            pelota.style.left = "70%"; // Va hacia la zona del rematador
-            pelota.style.top = "15%";  // Punto más alto
-            
-            setTimeout(faseRemate, 1100);
-        }
-
-        // 3. REMATE: 4 Direcciones Aleatorias (Velocidad Explosiva)
-        function faseRemate() {
-            info.innerText = "3. ¡REMATE!";
-            pelota.style.transition = "all 0.15s ease-in"; // Mucho más rápido
-            
-            // Simulación de las 4 flechas de tu dibujo
-            const direcciones = [
-                {x: "10%", y: "90%"}, // Diagonal larga izquierda
-                {x: "40%", y: "95%"}, // Centro izquierda
-                {x: "70%", y: "95%"}, // Centro derecha
-                {x: "95%", y: "90%"}  // Línea derecha
-            ];
-
-            const destino = direcciones[Math.floor(Math.random() * direcciones.length)];
-            
-            pelota.style.left = destino.x;
-            pelota.style.top = destino.y;
-            pelota.style.transform = "scale(1.5)"; // Efecto de fuerza
-
+            // Iniciar fase de juego frenético
             setTimeout(() => {
-                pelota.style.display = 'none';
-                pelota.style.transform = "scale(1)";
-                ui.style.display = 'block';
-                info.innerText = "¡PUNTO!";
-            }, 500);
+                pelota.style.transition = "all 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+                pelota.style.filter = "none";
+                nishidaInterval = setInterval(moverRealista, 200); // Velocidad Nishida
+                reloj();
+            }, 700);
+        }
+
+        function moverRealista() {
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 100);
+            
+            // Simular profundidad (el balón cambia de tamaño según "donde esté")
+            const escala = 0.5 + Math.random() * 1.5;
+            
+            // Simular desenfoque de movimiento si el salto es muy largo
+            pelota.style.filter = "blur(1px)";
+            pelota.style.left = x + 'px';
+            pelota.style.top = y + 'px';
+            pelota.style.transform = `scale(${escala})`;
+            
+            setTimeout(() => { pelota.style.filter = "none"; }, 50);
+        }
+
+        function reloj() {
+            const c = setInterval(() => {
+                tiempo--;
+                document.getElementById('timer').innerText = tiempo;
+                if(tiempo <= 0) {
+                    clearInterval(c);
+                    clearInterval(nishidaInterval);
+                    alert("ENTRENAMIENTO COMPLETADO");
+                    location.reload();
+                }
+            }, 1000);
         }
     </script>
 </body>
