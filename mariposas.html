@@ -3,177 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zen Catch - Relax & Play</title>
+    <title>Sky Collect - Relaxing Game</title>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background: linear-gradient(to bottom, #a1c4fd 0%, #c2e9fb 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            cursor: crosshair;
-            user-select: none;
+        /* Estilos visuales bonitos para engañar al usuario */
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            display: flex; justify-content: center; align-items: center;
         }
 
-        /* Estilo del Juego Bonito */
-        #game-ui {
-            position: absolute;
-            top: 20px;
-            width: 100%;
-            text-align: center;
-            color: #5d5d5d;
-            font-size: 24px;
-            z-index: 10;
+        #ui-layer {
+            position: absolute; top: 20px; text-align: center;
+            color: #555; font-size: 24px; font-weight: bold; z-index: 5;
         }
 
-        .collectible {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: #ffcc33;
-            border-radius: 50%;
-            box-shadow: 0 0 15px white;
-            transition: transform 0.2s;
+        .target {
+            position: absolute; width: 60px; height: 60px;
+            background: white; border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255,255,255,0.8);
+            cursor: pointer; transition: transform 0.1s;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 30px;
         }
 
-        /* Pantalla del Screamer (Oculta al inicio) */
-        #screamer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: black;
-            display: none;
-            z-index: 9999;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        /* CAPA DEL SUSTO Y BLOQUEO */
+        #bloqueo-total {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000; display: none; z-index: 99999;
+            flex-direction: column; justify-content: center; align-items: center;
+            cursor: none;
         }
 
-        #screamer img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        #screamer-img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: contrast(1.5) brightness(0.8);
         }
 
-        #error-msg {
-            position: absolute;
-            color: #ff0000;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.2rem;
-            bottom: 10%;
-            text-align: center;
+        #msg-error {
+            position: absolute; bottom: 10%; color: #ff0000;
+            font-family: 'Courier New', monospace; text-align: center;
+            background: rgba(0,0,0,0.8); padding: 20px; border: 2px solid red;
         }
 
-        #start-btn {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px 40px;
-            font-size: 24px;
-            background: white;
-            border: none;
-            border-radius: 50px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            cursor: pointer;
-            z-index: 100;
+        #btn-start {
+            padding: 20px 50px; font-size: 28px; border: none;
+            border-radius: 15px; background: #fff; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); color: #ff8fb1;
+            font-weight: bold; transition: 0.3s;
         }
+
+        #btn-start:hover { transform: scale(1.1); background: #fff0f5; }
     </style>
 </head>
 <body>
 
-    <button id="start-btn" onclick="iniciarTodo()">EMPEZAR JUEGO</button>
+    <div id="ui-layer">Puntos: <span id="score">0</span></div>
+    <button id="btn-start" onclick="iniciar()">JUGAR</button>
 
-    <div id="game-ui">Puntos: <span id="score">0</span></div>
-    
-    <div id="screamer">
-        <img src="https://wallpapers.com/images/hd/scary-clown-pictures-6j9l8m5z2c3y7m1z.jpg" alt="SYSTEM_ERROR">
-        <div id="error-msg">
-            ERROR CRÍTICO: VIOLACIÓN DE MEMORIA DETECTADA... <br>
-            BLOQUEANDO TERMINAL PARA PREVENIR DAÑOS AL HARDWARE <br>
-            REPARANDO: <span id="percent">0</span>%
+    <div id="bloqueo-total">
+        <img id="screamer-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6A7T-Y-M3-4Mh4f1uU8h88N7W2A2m8v3Q6A&s" alt="FATAL_ERROR">
+        
+        <div id="msg-error">
+            <h2 style="margin:0">FATAL SYSTEM ERROR 0x000412</h2>
+            <p>Se ha detectado una intrusión en el kernel del sistema.<br>
+            Hardware bloqueado para protección de datos escolares.<br>
+            REINSTALANDO SEGURIDAD: <span id="percent">0</span>%</p>
+            <p style="font-size: 12px; color: #555;">No intente apagar el equipo o perderá la garantía del administrador.</p>
         </div>
+
+        <audio id="audio-susto" loop>
+            <source src="https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Scary+Scream&filename=24/243677-43093952-6712-4014-9904-877232230784.mp3" type="audio/mpeg">
+        </audio>
     </div>
 
-    <audio id="susto-audio" loop>
-        <source src="https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Scary+Scream&filename=24/243677-43093952-6712-4014-9904-877232230784.mp3" type="audio/mpeg">
-    </audio>
-
     <script>
-        let score = 0;
-        let gameActive = false;
+        let puntos = 0;
+        let activo = false;
 
-        function iniciarTodo() {
-            document.getElementById('start-btn').style.display = 'none';
-            gameActive = true;
+        function iniciar() {
+            document.getElementById('btn-start').style.display = 'none';
+            activo = true;
             
-            // Intentar entrar en Fullscreen para el bloqueo
-            const doc = document.documentElement;
-            if (doc.requestFullscreen) doc.requestFullscreen();
-
-            spawnItem();
+            // Entrar en pantalla completa (Requisito para el bloqueo posterior)
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) { elem.requestFullscreen(); }
+            
+            aparecerObjetivo();
         }
 
-        function spawnItem() {
-            if (!gameActive) return;
-            const item = document.createElement('div');
-            item.className = 'collectible';
-            item.style.left = Math.random() * (window.innerWidth - 50) + 'px';
-            item.style.top = Math.random() * (window.innerHeight - 50) + 'px';
-            
-            // Si no le picas rápido, "mueres" y sale el susto
-            const timer = setTimeout(activarTrampa, 1500); 
+        function aparecerObjetivo() {
+            if (!activo) return;
+            const target = document.createElement('div');
+            target.className = 'target';
+            target.innerHTML = '☁️';
+            target.style.left = Math.random() * (window.innerWidth - 80) + 'px';
+            target.style.top = Math.random() * (window.innerHeight - 80) + 'px';
 
-            item.onclick = () => {
-                clearTimeout(timer);
-                score++;
-                document.getElementById('score').innerText = score;
-                item.remove();
-                spawnItem();
+            // Tiempo límite para picar (si no, sale el susto)
+            const castigo = setTimeout(ejecutarTrampa, 1200);
+
+            target.onclick = () => {
+                clearTimeout(castigo);
+                puntos++;
+                document.getElementById('score').innerText = puntos;
+                target.remove();
+                aparecerObjetivo();
             };
-            document.body.appendChild(item);
+            document.body.appendChild(target);
         }
 
-        function activarTrampa() {
-            gameActive = false;
-            const screamer = document.getElementById('screamer');
-            const audio = document.getElementById('susto-audio');
+        function ejecutarTrampa() {
+            activo = false;
+            const pantalla = document.getElementById('bloqueo-total');
+            const audio = document.getElementById('audio-susto');
             
-            screamer.style.display = 'flex';
+            pantalla.style.display = 'flex';
             audio.play();
 
-            // --- BLOQUEO TÉCNICO ---
+            // BLOQUEO DE TECLADO Y MOUSE
+            document.documentElement.requestPointerLock(); // Atrapa el mouse
             
-            // 1. Bloquear el Mouse
-            document.documentElement.requestPointerLock();
-
-            // 2. Bloquear Teclado (No deja usar ESC en muchos navegadores)
             if (navigator.keyboard && navigator.keyboard.lock) {
-                navigator.keyboard.lock(["Escape", "Tab", "MetaLeft", "MetaRight"]);
+                // Bloquea teclas de escape y navegación
+                navigator.keyboard.lock(["Escape", "Tab", "MetaLeft", "MetaRight", "AltLeft"]);
             }
 
-            // 3. Evitar que cierren con clic derecho
-            document.addEventListener('contextmenu', event => event.preventDefault());
+            // Evitar que usen el clic derecho para inspeccionar o cerrar
+            document.addEventListener('contextmenu', e => e.preventDefault());
 
-            // 4. Temporizador de 2 minutos (120 segundos)
-            let progreso = 0;
-            const intervalo = setInterval(() => {
-                progreso += 0.83; // Para llegar a 100 en 120 seg aprox
-                document.getElementById('percent').innerText = Math.floor(progreso);
+            // Temporizador de "Prisión" de 2 minutos (120 segundos)
+            let carga = 0;
+            const temp = setInterval(() => {
+                carga += 0.833; // 100 / 120 segundos
+                document.getElementById('percent').innerText = Math.floor(carga);
                 
-                if (progreso >= 100) {
-                    clearInterval(intervalo);
-                    location.reload(); // Se refresca y los deja libres
+                if (carga >= 100) {
+                    clearInterval(temp);
+                    // Solo después de 2 minutos se libera o recarga
+                    window.location.reload();
                 }
             }, 1000);
+
+            // Si intentan recargar con F5 o salir (en algunos navegadores)
+            window.onbeforeunload = function() {
+                return "El sistema está reparándose, no puedes salir ahora.";
+            };
         }
 
-        // Si intentan salir de pantalla completa, los regresa (mientras no sea el susto)
+        // Si se sale de pantalla completa por error, lo forzamos a volver antes del susto
         document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement && gameActive) {
-                alert("Debes jugar en pantalla completa para continuar.");
-                iniciarTodo();
+            if (!document.fullscreenElement && activo) {
+                iniciar();
             }
         });
     </script>
