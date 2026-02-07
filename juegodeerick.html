@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Fuego Libre MX: NUKE EDITION</title>
+    <style>
+        body { background: #000; color: #fff; font-family: 'Arial Black', sans-serif; margin: 0; overflow: hidden; }
+        canvas { background: #050505; display: block; margin: 0 auto; cursor: crosshair; border: 5px solid #ff0000; }
+        .hud { position: absolute; top: 0; width: 100%; display: flex; justify-content: space-around; background: rgba(0,0,0,0.8); padding: 15px; font-size: 22px; z-index: 10; }
+        #nuke-btn { display: none; position: absolute; bottom: 30px; right: 30px; background: #ff0000; color: white; border: 5px solid #fff; padding: 20px; font-size: 25px; cursor: pointer; border-radius: 50%; box-shadow: 0 0 20px #f00; animation: pulse 1s infinite; z-index: 100; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        #upgrade-menu { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; border: 4px solid #ff0000; padding: 20px; text-align: center; z-index: 100; border-radius: 10px; width: 80%; }
+        .upgrade-card { background: #222; border: 2px solid #444; padding: 10px; margin: 5px; display: inline-block; width: 200px; }
+        .buy-btn { background: #ff0000; color: #fff; border: none; padding: 10px; width: 100%; font-weight: bold; cursor: pointer; }
+        .buy-btn:disabled { background: #333; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="hud">
+        <div>❤️ HP: <span id="hp" style="color: #f00;">100</span></div>
+        <div>💀 KILLS: <span id="kills">0</span></div>
+        <div>💰 DINERO: <span id="money" style="color: #0f0;">$0</span></div>
+    </div>
+
+    <button id="nuke-btn" onclick="launchNuke()">☢️ NUKE</button>
+
+    <div id="upgrade-menu">
+        <h2 style="color: #ff0000;">⚠️ MERCADO NEGRO (Cada 10 Kills)</h2>
+        <div class="upgrade-card"><h3>PERFORACIÓN</h3><span id="cost-p">$10k</span><button class="buy-btn" id="btn-pierce" onclick="buy('pierce')">COMPRAR</button></div>
+        <div class="upgrade-card"><h3>MULTITIRO</h3><span id="cost-m">$15k</span><button class="buy-btn" id="btn-multi" onclick="buy('multi')">COMPRAR</button></div>
+        <div class="upgrade-card"><h3>CADENCIA</h3><span id="cost-f">$8k</span><button class="buy-btn" id="btn-fireRate" onclick="buy('fireRate')">COMPRAR</button></div>
+        <div class="upgrade-card"><h3>BOTIQUÍN</h3><span id="cost-h">$3k</span><button class="buy-btn" id="btn-health" onclick="buy('health')">REPARAR</button></div>
+        <br><br><button onclick="closeMenu()" style="color: #666; cursor: pointer; background: none; border: none;">VOLVER</button>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+
+        let player = { x: canvas.width/2, y: canvas.height/2, hp: 100, money: 0, kills: 0, angle: 0, bSpeed: 15, fRate: 500, pierce: 1, multi: false };
+        let bullets = [], enemies = [], keys = {}, mouse = { x: 0, y: 0 };
+        let menuOpen = false, lastShot = 0, nukeEffect = 0;
+        let costs = { pierce: 10000, multi: 15000, fireRate: 8000, health: 3000 };
+
+        window.onkeydown = e => keys[e.code] = true;
+        window.onkeyup = e => keys[e.code] = false;
+        canvas.onmousemove = e => { mouse.x = e.clientX; mouse.y = e.clientY; };
+        canvas.onmousedown = () => { if(!menuOpen) shoot(); };
+
+        function shoot() {
+            let now = Date.now();
+            if (now - lastShot > player.fRate) {
+                if(player.multi) {
+                    bullets.push({ x: player.x, y: player.y, angle: player.angle - 0.2, p: player.pierce });
+                    bullets.push({ x: player.x, y: player.y, angle: player.angle + 0.2, p: player.pierce });
+                }
+                bullets.push({ x: player.x, y: player.y, angle: player.angle, p: player.pierce });
+                lastShot = now;
+            }
+        }
+
+        function spawn() {
+            if (menuOpen) return;
+            let limit = 20 + Math.floor(player.kills);
+            if (enemies.length < limit && enemies.length < 300) {
+                enemies.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, hp: 40 });
+            }
+        }
+
+        function launchNuke() {
+            if (player.money >= 100000) {
+                player.money -= 100000;
+                player.kills += enemies.length;
+                enemies = [];
+                nukeEffect = 30; // Duración del destello
+                document.getElementById("nuke-btn").style.display = "none";
+            }
+        }
+
+        function openMenu() {
+            menuOpen = true;
+            document.getElementById("upgrade-menu").style.display = "block";
+            for (let k in costs) document.getElementById("btn-"+k).disabled = player.money < costs[k];
+        }
+
+        function closeMenu() { menuOpen = false; document.getElementById("upgrade-menu").style.display = "none"; }
+
+        function buy(type) {
+            if (player.money >= costs[type]) {
+                player.money -= costs[type];
+                if (type === 'pierce') player.pierce += 2;
+                if (type === 'multi') player.multi = true;
+                if (type === 'fireRate') player.fRate = Math.max(50, player.fRate - 80);
+                if (type === 'health') player.hp = 100;
+                costs[type] = Math.floor(costs[type] * 1.5);
+                closeMenu();
+            }
+        }
+
+        function update() {
+            if (menuOpen || player.hp <= 0) return;
+            if (keys["KeyW"]) player.y -= 7; if (keys["KeyS"]) player.y += 7;
+            if (keys["KeyA"]) player.x -= 7; if (keys["KeyD"]) player.x += 7;
+            player.angle = Math.atan2(mouse.y - player.y, mouse.x - player.x);
+
+            bullets.forEach((b, bi) => {
+                b.x += Math.cos(b.angle) * player.bSpeed;
+                b.y += Math.sin(b.angle) * player.bSpeed;
+                enemies.forEach((en, ei) => {
+                    if (Math.hypot(b.x - en.x, b.y - en.y) < 25) {
+                        en.hp -= 40; b.p--;
+                        if(b.p <= 0) bullets.splice(bi, 1);
+                        if (en.hp <= 0) { enemies.splice(ei, 1); player.money += 873; player.kills++; if (player.kills % 10 === 0) openMenu(); }
+                    }
+                });
+            });
+
+            enemies.forEach(en => {
+                let ang = Math.atan2(player.y - en.y, player.x - en.x);
+                en.x += Math.cos(ang) * 3; en.y += Math.sin(ang) * 3;
+                if (Math.hypot(player.x - en.x, player.y - en.y) < 25) player.hp -= 0.5;
+            });
+
+            if (player.money >= 100000) document.getElementById("nuke-btn").style.display = "block";
+            document.getElementById("hp").innerText = Math.round(player.hp);
+            document.getElementById("kills").innerText = player.kills;
+            document.getElementById("money").innerText = "$" + player.money;
+            if (player.hp <= 0) { alert("SQUAD ELIMINATED. Kills: " + player.kills); location.reload(); }
+        }
+
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            // Destello Nuke
+            if (nukeEffect > 0) { ctx.fillStyle = `rgba(255,255,255,${nukeEffect/30})`; ctx.fillRect(0,0,canvas.width,canvas.height); nukeEffect--; }
+            // Jugador
+            ctx.save(); ctx.translate(player.x, player.y); ctx.rotate(player.angle);
+            ctx.fillStyle = "#f00"; ctx.fillRect(-20, -20, 40, 40); ctx.restore();
+            // Balas y Enemigos
+            ctx.fillStyle = "#0ff"; bullets.forEach(b => ctx.fillRect(b.x, b.y, 10, 10));
+            ctx.fillStyle = "rgba(255,0,0,0.6)"; enemies.forEach(en => { ctx.beginPath(); ctx.arc(en.x, en.y, 20, 0, 7); ctx.fill(); });
+            requestAnimationFrame(() => { update(); draw(); });
+        }
+        setInterval(spawn, 200);
+        draw();
+    </script>
+</body>
+</html>
