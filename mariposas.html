@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sky Collect - Ultra Speed</title>
+    <title>Sky Collect - Relaxing Game</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -40,14 +40,14 @@
             background: rgba(0,0,0,0.8); padding: 20px; border: 2px solid red;
         }
 
-        /* IMAGEN FINAL */
+        /* IMAGEN FINAL (La de Pinterest) */
         #final-image {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: white; display: none; z-index: 100000;
-            flex-direction: column; justify-content: center; align-items: center;
+            justify-content: center; align-items: center;
         }
 
-        #final-image img { max-width: 90%; max-height: 80%; border-radius: 15px; }
+        #final-image img { max-width: 100%; max-height: 100%; }
 
         #btn-start {
             padding: 20px 50px; font-size: 28px; border: none;
@@ -64,8 +64,8 @@
     <div id="bloqueo-total">
         <img id="screamer-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6A7T-Y-M3-4Mh4f1uU8h88N7W2A2m8v3Q6A&s">
         <div id="msg-error">
-            <h2 style="margin:0">SYSTEM OVERLOAD - CRITICAL ERROR</h2>
-            <p>REINSTALANDO SEGURIDAD A ALTA VELOCIDAD: <span id="percent">0</span>%</p>
+            <h2 style="margin:0">FATAL SYSTEM ERROR</h2>
+            <p>REINSTALANDO SEGURIDAD: <span id="percent">0</span>%</p>
         </div>
         <audio id="audio-susto" loop>
             <source src="https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Scary+Scream&filename=24/243677-43093952-6712-4014-9904-877232230784.mp3" type="audio/mpeg">
@@ -73,9 +73,8 @@
     </div>
 
     <div id="final-image">
-        <img src="https://i.pinimg.com/736x/2c/3c/6e/2c3c6e9e4a8e56a4b1c8c88f4b1e3e6a.jpg" alt="Final">
-        <h1 style="color: black; font-family: sans-serif;">¡TE LA CREÍSTE! 😂</h1>
-        <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px;">Volver a inicio</button>
+        <img src="https://pin.it/6oz2YK5Sa" alt="Final">
+        <div style="position:absolute; bottom:20px; color:black; font-weight:bold;">¡ERA BROMA! Jajaja</div>
     </div>
 
     <script>
@@ -98,8 +97,7 @@
             target.style.left = Math.random() * (window.innerWidth - 80) + 'px';
             target.style.top = Math.random() * (window.innerHeight - 80) + 'px';
 
-            // El juego es rápido: si no picas en 1 segundo, pierdes
-            const castigo = setTimeout(ejecutarTrampa, 1000);
+            const castigo = setTimeout(ejecutarTrampa, 1200);
 
             target.onclick = () => {
                 clearTimeout(castigo);
@@ -126,21 +124,22 @@
             }
 
             let carga = 0;
-            // AHORA LA BARRA CARGA MUCHO MÁS RÁPIDO (Carga total en unos 15-20 segundos)
             const temp = setInterval(() => {
-                carga += Math.random() * 5; // Salta de forma aleatoria y rápida
-                if (carga > 100) carga = 100;
+                carga += 1; // Ajustado para que veas el progreso
                 document.getElementById('percent').innerText = Math.floor(carga);
                 
                 if (carga >= 100) {
                     clearInterval(temp);
+                    // TERMINA EL SUSTO Y MUESTRA LA FOTO DE PINTEREST
                     audio.pause();
                     pantalla.style.display = 'none';
                     pantallaFinal.style.display = 'flex';
                     document.exitPointerLock();
-                    if (document.exitFullscreen) document.exitFullscreen();
+                    
+                    // Liberar después de 10 segundos de la foto final
+                    setTimeout(() => { location.reload(); }, 10000);
                 }
-            }, 300); // Se actualiza cada 300 milisegundos
+            }, 1000); // 1% por segundo = 100 segundos de susto
         }
     </script>
 </body>
