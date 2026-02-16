@@ -5,160 +5,163 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cantos Bíblicos Católicos</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Great+Vibes&family=Montserrat:wght@300&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Great+Vibes&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        :root {
-            --oro: #b8860b;
-            --crema: #faf7f2;
-            --vino: #722f37;
+        :root { --oro: #b8860b; --crema: #faf7f2; --vino: #722f37; }
+        body { background-color: var(--crema); font-family: 'Montserrat', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; color: #333; }
+        
+        h1 { font-family: 'Cinzel', serif; color: var(--vino); text-align: center; border-bottom: 2px solid var(--oro); margin-bottom: 10px; }
+        
+        #cuadro-frase { background: white; border: 1px solid var(--oro); padding: 15px; margin-bottom: 25px; border-radius: 10px; text-align: center; font-style: italic; max-width: 90%; }
+
+        /* Contenedor de botones principales */
+        .controles-principales { display: flex; gap: 20px; margin-bottom: 20px; }
+
+        .cuadro-accion {
+            width: 140px; height: 140px; border: 3px dashed var(--oro); border-radius: 15px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: white; cursor: pointer; transition: 0.3s;
         }
 
-        body {
-            background-color: var(--crema);
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+        .plus-sign { font-size: 50px; color: var(--oro); }
+        .label-accion { font-size: 12px; font-weight: bold; color: var(--vino); text-transform: uppercase; }
+
+        /* Resultado y Botón Guardar */
+        #resultado-texto { 
+            font-family: 'Great Vibes', cursive; font-size: 1.8rem; color: var(--vino);
+            text-align: center; margin: 20px 0; white-space: pre-wrap; width: 90%;
         }
 
-        h1 {
-            font-family: 'Cinzel', serif;
-            color: var(--vino);
-            font-size: 1.8rem; /* Tamaño ajustado para móvil */
-            text-align: center;
-            margin-top: 20px;
-            border-bottom: 2px solid var(--oro);
+        .btn-guardar {
+            display: none; background: var(--vino); color: white; border: none;
+            padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer;
         }
 
-        /* Cuadro de Frases */
-        #contenedor-frase {
-            background: white;
-            border-left: 5px solid var(--oro);
-            padding: 15px;
-            margin: 20px 0;
-            width: 90%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border-radius: 5px;
-            text-align: center;
-            font-style: italic;
-            min-height: 50px;
+        /* Sección de Guardados */
+        #seccion-guardados { display: none; width: 100%; max-width: 500px; margin-top: 30px; }
+        .item-guardado { 
+            background: white; padding: 10px; border-radius: 8px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center; border: 1px solid #ddd;
         }
 
-        /* Botón de Cámara cuadrado */
-        .upload-area {
-            width: 200px;
-            height: 200px;
-            border: 3px dashed var(--oro);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: white;
-            color: var(--oro);
-            margin: 20px 0;
-            transition: 0.3s;
-            -webkit-tap-highlight-color: transparent; /* Quita el cuadro azul al tocar en Android */
-        }
-
-        .upload-area:active {
-            background-color: #eee;
-        }
-
-        .plus-icon {
-            font-size: 80px;
-            line-height: 1;
-        }
-
-        /* Texto que aparecerá de la foto */
-        #resultado-texto {
-            width: 90%;
-            margin-top: 30px;
-            text-align: center; /* Alineación central solicitada */
-            font-family: 'Great Vibes', cursive;
-            font-size: 1.6rem;
-            color: #444;
-            line-height: 1.6;
-            white-space: pre-wrap; /* Mantiene saltos de línea pero centrado */
-        }
-
-        #loading {
-            display: none;
-            color: var(--vino);
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        /* Ocultar el input original */
         #file-input { display: none; }
+        #loading { display: none; color: var(--oro); font-weight: bold; }
     </style>
 </head>
 <body>
 
     <h1>Cantos Bíblicos Católicos</h1>
 
-    <div id="contenedor-frase">
-        <span id="texto-biblico">"Buscad al Señor mientras se deja encontrar."</span>
+    <div id="cuadro-frase"><span id="frase-txt"></span></div>
+
+    <div class="controles-principales">
+        <label for="file-input" class="cuadro-accion">
+            <div class="plus-sign">+</div>
+            <div class="label-accion">Foto</div>
+        </label>
+        
+        <div class="cuadro-accion" onclick="toggleGuardados()">
+            <div class="plus-sign">📂</div>
+            <div class="label-accion">Guardados</div>
+        </div>
     </div>
 
-    <label for="file-input" class="upload-area">
-        <div class="plus-icon">+</div>
-        <div style="font-weight: bold;">TOMAR FOTO</div>
-    </label>
-    
     <input type="file" id="file-input" accept="image/*" capture="environment">
-
-    <div id="loading">Leyendo canto... ten paciencia 🕊️</div>
     
+    <div id="loading">Transformando imagen a texto... ✨</div>
     <div id="resultado-texto"></div>
+    <button id="btn-pdf" class="btn-guardar" onclick="generarPDF()">PDF y Guardar</button>
+
+    <div id="seccion-guardados">
+        <h3>Cantos en Memoria</h3>
+        <div id="lista-items"></div>
+    </div>
 
     <script>
-        // 1. Frases Católicas Aleatorias
-        const frasesBiblicas = [
-            "«El Señor es mi luz y mi salvación, ¿a quién temeré?» - Salmo 27",
-            "«Hagan todo lo que Él les diga.» - Juan 2, 5",
-            "«Mi alma glorifica al Señor y mi espíritu se llena de júbilo.» - Lucas 1",
-            "«Yo soy el Camino, la Verdad y la Vida.» - Juan 14, 6",
-            "«Nada te turbe, nada te espante, Dios no se munda.» - Sta. Teresa"
-        ];
+        const { jsPDF } = window.jspdf;
+        let textoExtraido = "";
 
-        // Cambiar frase al azar al entrar
-        document.getElementById('texto-biblico').innerText = frasesBiblicas[Math.floor(Math.random() * frasesBiblicas.length)];
+        // 1. Frases Aleatorias
+        const frases = ["«Canten al Señor un cántico nuevo»", "«Tu palabra es vida»", "«Alaba, alma mía, al Señor»"];
+        document.getElementById('frase-txt').innerText = frases[Math.floor(Math.random() * frases.length)];
 
-        // 2. Lógica para procesar la foto en Android
-        const fileInput = document.getElementById('file-input');
-        const resultado = document.getElementById('resultado-texto');
-        const loading = document.getElementById('loading');
-
-        fileInput.addEventListener('change', function(e) {
+        // 2. Procesar Foto (OCR)
+        document.getElementById('file-input').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
+            
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultado-texto').innerText = "";
+            document.getElementById('btn-pdf').style.display = 'none';
 
-            // Mostrar aviso de carga
-            loading.style.display = 'block';
-            resultado.innerText = "";
-
-            // Usar Tesseract para leer la imagen
-            Tesseract.recognize(
-                file,
-                'spa', // Idioma español
-                { logger: m => console.log(m) }
-            ).then(({ data: { text } }) => {
-                loading.style.display = 'none';
-                // Escribir el texto centrado
-                resultado.innerText = text;
-            }).catch(err => {
-                loading.style.display = 'none';
-                resultado.innerText = "Error al leer la foto. Intenta que la luz sea clara.";
-                console.error(err);
+            Tesseract.recognize(file, 'spa').then(({ data: { text } }) => {
+                document.getElementById('loading').style.display = 'none';
+                textoExtraido = text;
+                document.getElementById('resultado-texto').innerText = text;
+                document.getElementById('btn-pdf').style.display = 'block';
             });
         });
+
+        // 3. Generar PDF y Guardar en la Página
+        function generarPDF() {
+            const doc = new jsPDF();
+            
+            // Estilo del PDF
+            doc.setFont("times", "italic");
+            doc.setFontSize(20);
+            doc.setTextColor(114, 47, 55); // Color Vino
+            
+            // Centrar texto en PDF
+            const splitText = doc.splitTextToSize(textoExtraido, 180);
+            doc.text(splitText, 105, 40, { align: "center" });
+            
+            // Guardar archivo
+            const nombreArchivo = "Canto_" + Date.now() + ".pdf";
+            doc.save(nombreArchivo);
+
+            // Guardar en la "Memoria" de la página
+            let guardados = JSON.parse(localStorage.getItem('misCantos') || "[]");
+            guardados.push({ nombre: nombreArchivo, texto: textoExtraido });
+            localStorage.setItem('misCantos', JSON.stringify(guardados));
+            
+            alert("¡PDF Creado y Guardado en la sección de Guardados!");
+            actualizarLista();
+        }
+
+        // 4. Mostrar/Ocultar Guardados
+        function toggleGuardados() {
+            const sec = document.getElementById('seccion-guardados');
+            sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+            actualizarLista();
+        }
+
+        function actualizarLista() {
+            const lista = document.getElementById('lista-items');
+            const guardados = JSON.parse(localStorage.getItem('misCantos') || "[]");
+            lista.innerHTML = guardados.length === 0 ? "<p>No hay cantos guardados.</p>" : "";
+            
+            guardados.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'item-guardado';
+                div.innerHTML = `
+                    <span>📄 ${item.nombre.substring(0,15)}...</span>
+                    <button onclick="descargarNuevamente(${index})" style="color:var(--oro); background:none; border:1px solid; border-radius:5px; cursor:pointer;">Bajar</button>
+                `;
+                lista.appendChild(div);
+            });
+        }
+
+        function descargarNuevamente(index) {
+            const item = JSON.parse(localStorage.getItem('misCantos'))[index];
+            const doc = new jsPDF();
+            doc.setFont("times", "italic");
+            const splitText = doc.splitTextToSize(item.texto, 180);
+            doc.text(splitText, 105, 40, { align: "center" });
+            doc.save(item.nombre);
+        }
     </script>
 </body>
 </html>
