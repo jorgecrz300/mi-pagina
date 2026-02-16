@@ -3,69 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cantos Bíblicos</title>
+    <title>Cantos Bíblicos Católicos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&family=Montserrat:wght@300&display=swap" rel="stylesheet">
     <style>
-        :root { --naranja: #d35400; --fondo: #fdfaf6; --marron: #5d4037; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--fondo); margin: 0; padding: 20px; color: var(--marron); }
-        header { text-align: center; padding: 20px 0; border-bottom: 2px solid var(--naranja); margin-bottom: 30px; }
-        h1 { margin: 0; font-size: 28px; text-transform: uppercase; color: var(--naranja); }
-        
-        .contenedor-menu {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            max-width: 500px;
-            margin: 0 auto;
+        :root {
+            --oro: #d4af37;
+            --crema: #fdfbf7;
+            --vino: #5e0d0d;
         }
 
-        .boton-pagina {
-            background: white;
-            border: 3px solid var(--naranja);
-            border-radius: 25px;
-            padding: 40px 20px;
-            text-decoration: none;
-            color: var(--marron);
+        body {
+            background-color: var(--crema);
+            font-family: 'Montserrat', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-            transition: 0.3s;
+            margin: 0;
+            padding: 20px;
+            color: #333;
         }
 
-        .boton-pagina:active { transform: scale(0.95); background: #fff3e0; }
+        /* Título Elegante */
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--vino);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 2px solid var(--oro);
+        }
 
-        .boton-pagina strong { font-size: 24px; color: var(--naranja); }
-        .boton-pagina span { font-size: 16px; margin-top: 10px; font-style: italic; }
+        /* Cuadro de Frases Bíblicas */
+        #contenedor-frase {
+            background-color: white;
+            border: 1px solid var(--oro);
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 80%;
+            text-align: center;
+            font-style: italic;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
 
-        footer { text-align: center; margin-top: 50px; font-size: 14px; opacity: 0.8; }
+        /* Cuadrado para subir foto */
+        .upload-box {
+            width: 250px;
+            height: 250px;
+            border: 3px dashed var(--oro);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: background 0.3s;
+            background-color: #fff;
+        }
+
+        .upload-box:hover {
+            background-color: #f0ede4;
+        }
+
+        .plus-sign {
+            font-size: 60px;
+            color: var(--oro);
+            margin-bottom: 10px;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        /* Resultado del Texto */
+        #resultado-texto {
+            margin-top: 30px;
+            text-align: center; /* No como lista, alineado al centro */
+            max-width: 600px;
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.8rem;
+            color: var(--vino);
+            line-height: 1.4;
+        }
+
+        img#preview {
+            max-width: 200px;
+            margin-top: 10px;
+            border-radius: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>📖 MI CANCIONERO</h1>
-</header>
+    <h1>Cantos Bíblicos Católicos</h1>
 
-<div class="contenedor-menu">
-    <a href="cantos1.html" class="boton-pagina">
-        <strong>PÁGINA 1</strong>
-        <span>10 Cantos (Libreta y más)</span>
-    </a>
+    <div id="contenedor-frase">
+        <p id="frase-biblica">Cargando palabra de Dios...</p>
+    </div>
 
-    <a href="cantos2.html" class="boton-pagina">
-        <strong>PÁGINA 2</strong>
-        <span>Cantos Populares</span>
-    </a>
+    <label for="file-input" class="upload-box">
+        <div class="plus-sign">+</div>
+        <span>Subir o Tomar Foto</span>
+    </label>
+    <input type="file" id="file-input" accept="image/*">
 
-    <a href="cantos3.html" class="boton-pagina">
-        <strong>PÁGINA 3</strong>
-        <span>Cantos de Adoración</span>
-    </a>
-</div>
+    <img id="preview" alt="Vista previa">
 
-<footer>
-    "Cantar es orar dos veces" — San Agustín
-</footer>
+    <div id="resultado-texto"></div>
 
+    <script>
+        // 1. Lógica de Frases Aleatorias
+        const frases = [
+            "«El Señor es mi pastor, nada me falta.» (Salmo 23:1)",
+            "«Todo lo puedo en Aquel que me fortalece.» (Filipenses 4:13)",
+            "«Lámpara es tu palabra para mis pasos.» (Salmo 119:105)",
+            "«No tengan miedo, yo estoy con ustedes todos los días.» (Mateo 28:20)",
+            "«El amor es paciente, es servicial; el amor no tiene envidia.» (1 Corintios 13:4)"
+        ];
+
+        function cambiarFrase() {
+            const index = Math.floor(Math.random() * frases.length);
+            document.getElementById('frase-biblica').innerText = frases[index];
+        }
+
+        // 2. Lógica para mostrar la imagen y "simular" el texto
+        const input = document.getElementById('file-input');
+        const resultado = document.getElementById('resultado-texto');
+        const preview = document.getElementById('preview');
+
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                // Mostrar vista previa de la imagen
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+
+                // Simulación de procesamiento de texto
+                resultado.innerText = "Procesando canto... (Aquí aparecerá el texto de tu foto centrado elegantemente)";
+                
+                // Nota: Para que lea la foto de verdad, necesitarías integrar Tesseract.js
+            }
+        };
+
+        // Ejecutar al cargar la página
+        window.onload = cambiarFrase;
+    </script>
 </body>
 </html>
