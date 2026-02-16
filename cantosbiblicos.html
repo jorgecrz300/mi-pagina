@@ -4,94 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cantos Bíblicos Católicos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&family=Montserrat:wght@300&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Great+Vibes&family=Montserrat:wght@300&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+
     <style>
         :root {
-            --oro: #d4af37;
-            --crema: #fdfbf7;
-            --vino: #5e0d0d;
+            --oro: #b8860b;
+            --crema: #faf7f2;
+            --vino: #722f37;
         }
 
         body {
             background-color: var(--crema);
             font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 0;
-            padding: 20px;
-            color: #333;
+            min-height: 100vh;
         }
 
-        /* Título Elegante */
         h1 {
             font-family: 'Cinzel', serif;
             color: var(--vino);
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 1.8rem; /* Tamaño ajustado para móvil */
             text-align: center;
+            margin-top: 20px;
             border-bottom: 2px solid var(--oro);
         }
 
-        /* Cuadro de Frases Bíblicas */
+        /* Cuadro de Frases */
         #contenedor-frase {
-            background-color: white;
-            border: 1px solid var(--oro);
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 80%;
+            background: white;
+            border-left: 5px solid var(--oro);
+            padding: 15px;
+            margin: 20px 0;
+            width: 90%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 5px;
             text-align: center;
             font-style: italic;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            min-height: 50px;
         }
 
-        /* Cuadrado para subir foto */
-        .upload-box {
-            width: 250px;
-            height: 250px;
+        /* Botón de Cámara cuadrado */
+        .upload-area {
+            width: 200px;
+            height: 200px;
             border: 3px dashed var(--oro);
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
-            border-radius: 15px;
-            transition: background 0.3s;
-            background-color: #fff;
-        }
-
-        .upload-box:hover {
-            background-color: #f0ede4;
-        }
-
-        .plus-sign {
-            font-size: 60px;
+            background-color: white;
             color: var(--oro);
-            margin-bottom: 10px;
+            margin: 20px 0;
+            transition: 0.3s;
+            -webkit-tap-highlight-color: transparent; /* Quita el cuadro azul al tocar en Android */
         }
 
-        #file-input {
-            display: none;
+        .upload-area:active {
+            background-color: #eee;
         }
 
-        /* Resultado del Texto */
+        .plus-icon {
+            font-size: 80px;
+            line-height: 1;
+        }
+
+        /* Texto que aparecerá de la foto */
         #resultado-texto {
+            width: 90%;
             margin-top: 30px;
-            text-align: center; /* No como lista, alineado al centro */
-            max-width: 600px;
+            text-align: center; /* Alineación central solicitada */
             font-family: 'Great Vibes', cursive;
-            font-size: 1.8rem;
-            color: var(--vino);
-            line-height: 1.4;
+            font-size: 1.6rem;
+            color: #444;
+            line-height: 1.6;
+            white-space: pre-wrap; /* Mantiene saltos de línea pero centrado */
         }
 
-        img#preview {
-            max-width: 200px;
-            margin-top: 10px;
-            border-radius: 10px;
+        #loading {
             display: none;
+            color: var(--vino);
+            font-weight: bold;
+            margin-top: 10px;
         }
+
+        /* Ocultar el input original */
+        #file-input { display: none; }
     </style>
 </head>
 <body>
@@ -99,55 +104,61 @@
     <h1>Cantos Bíblicos Católicos</h1>
 
     <div id="contenedor-frase">
-        <p id="frase-biblica">Cargando palabra de Dios...</p>
+        <span id="texto-biblico">"Buscad al Señor mientras se deja encontrar."</span>
     </div>
 
-    <label for="file-input" class="upload-box">
-        <div class="plus-sign">+</div>
-        <span>Subir o Tomar Foto</span>
+    <label for="file-input" class="upload-area">
+        <div class="plus-icon">+</div>
+        <div style="font-weight: bold;">TOMAR FOTO</div>
     </label>
-    <input type="file" id="file-input" accept="image/*">
+    
+    <input type="file" id="file-input" accept="image/*" capture="environment">
 
-    <img id="preview" alt="Vista previa">
-
+    <div id="loading">Leyendo canto... ten paciencia 🕊️</div>
+    
     <div id="resultado-texto"></div>
 
     <script>
-        // 1. Lógica de Frases Aleatorias
-        const frases = [
-            "«El Señor es mi pastor, nada me falta.» (Salmo 23:1)",
-            "«Todo lo puedo en Aquel que me fortalece.» (Filipenses 4:13)",
-            "«Lámpara es tu palabra para mis pasos.» (Salmo 119:105)",
-            "«No tengan miedo, yo estoy con ustedes todos los días.» (Mateo 28:20)",
-            "«El amor es paciente, es servicial; el amor no tiene envidia.» (1 Corintios 13:4)"
+        // 1. Frases Católicas Aleatorias
+        const frasesBiblicas = [
+            "«El Señor es mi luz y mi salvación, ¿a quién temeré?» - Salmo 27",
+            "«Hagan todo lo que Él les diga.» - Juan 2, 5",
+            "«Mi alma glorifica al Señor y mi espíritu se llena de júbilo.» - Lucas 1",
+            "«Yo soy el Camino, la Verdad y la Vida.» - Juan 14, 6",
+            "«Nada te turbe, nada te espante, Dios no se munda.» - Sta. Teresa"
         ];
 
-        function cambiarFrase() {
-            const index = Math.floor(Math.random() * frases.length);
-            document.getElementById('frase-biblica').innerText = frases[index];
-        }
+        // Cambiar frase al azar al entrar
+        document.getElementById('texto-biblico').innerText = frasesBiblicas[Math.floor(Math.random() * frasesBiblicas.length)];
 
-        // 2. Lógica para mostrar la imagen y "simular" el texto
-        const input = document.getElementById('file-input');
+        // 2. Lógica para procesar la foto en Android
+        const fileInput = document.getElementById('file-input');
         const resultado = document.getElementById('resultado-texto');
-        const preview = document.getElementById('preview');
+        const loading = document.getElementById('loading');
 
-        input.onchange = (e) => {
+        fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (file) {
-                // Mostrar vista previa de la imagen
-                preview.src = URL.createObjectURL(file);
-                preview.style.display = 'block';
+            if (!file) return;
 
-                // Simulación de procesamiento de texto
-                resultado.innerText = "Procesando canto... (Aquí aparecerá el texto de tu foto centrado elegantemente)";
-                
-                // Nota: Para que lea la foto de verdad, necesitarías integrar Tesseract.js
-            }
-        };
+            // Mostrar aviso de carga
+            loading.style.display = 'block';
+            resultado.innerText = "";
 
-        // Ejecutar al cargar la página
-        window.onload = cambiarFrase;
+            // Usar Tesseract para leer la imagen
+            Tesseract.recognize(
+                file,
+                'spa', // Idioma español
+                { logger: m => console.log(m) }
+            ).then(({ data: { text } }) => {
+                loading.style.display = 'none';
+                // Escribir el texto centrado
+                resultado.innerText = text;
+            }).catch(err => {
+                loading.style.display = 'none';
+                resultado.innerText = "Error al leer la foto. Intenta que la luz sea clara.";
+                console.error(err);
+            });
+        });
     </script>
 </body>
 </html>
