@@ -3,226 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Cantos Elegante</title>
+    <title>Generador de Cantos</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* Definición de colores y estilos globales */
-        :root {
-            --naranja-principal: #d35400; /* Un tono más tierra, elegante */
-            --oro: #c5a059;
-            --fondo: #fdfaf6; /* Crema muy suave */
-            --texto: #2c3e50;
-        }
-
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: var(--fondo);
-            color: var(--texto);
-            margin: 0;
+            background-color: #f4f4f9;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        /* Diseño del encabezado */
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            margin-top: 20px;
+            padding: 30px;
         }
 
         h1 {
-            font-family: 'Cinzel', serif; /* Fuente estilo piedra/antigua */
-            color: var(--naranja-principal);
-            font-size: 2.8rem;
-            margin: 0;
-            letter-spacing: 3px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .subtitulo {
-            font-weight: 300;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            color: var(--oro);
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-
-        /* Diseño de la tarjeta del editor */
-        .contenedor-editor {
-            background-color: white;
-            width: 100%;
-            max-width: 800px;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.05); /* Sombra suave */
-            border: 1px solid #f1e6d8;
-            box-sizing: border-box;
-        }
-
-        /* Estilo para el input del título */
-        .input-titulo {
-            width: 100%;
             font-family: 'Cinzel', serif;
-            font-size: 1.8rem;
-            color: var(--naranja-principal);
-            border: none;
-            border-bottom: 2px solid #eee;
-            padding: 10px 0;
-            margin-bottom: 30px;
-            outline: none;
-            text-align: center;
-            transition: border-color 0.3s;
+            color: #d35400;
+            margin-bottom: 20px;
         }
 
-        .input-titulo:focus {
-            border-color: var(--oro);
-        }
-
-        /* Estilo para el área de la letra */
-        .textarea-letra {
+        .contenedor {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             width: 100%;
-            height: 450px; /* Más alto para mayor comodidad */
+            max-width: 650px;
+        }
+
+        input, textarea {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             font-family: 'Montserrat', sans-serif;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            padding: 20px;
-            resize: none; /* No cambiar tamaño manualmente */
-            outline: none;
+            font-size: 16px;
             box-sizing: border-box;
-            background-color: #fafafa;
-            transition: all 0.3s;
         }
 
-        .textarea-letra:focus {
-            border-color: #e0e0e0;
-            background-color: white;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
-        }
-
-        /* Diseño del botón */
-        .boton-container {
+        input {
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            color: #d35400;
             text-align: center;
-            margin-top: 30px;
         }
 
-        .btn-pdf {
-            background-color: var(--naranja-principal);
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #d35400;
             color: white;
             border: none;
-            padding: 15px 40px;
-            font-family: 'Montserrat', sans-serif;
+            border-radius: 6px;
             font-weight: 600;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(211, 84, 0, 0.3);
+            font-size: 16px;
+            transition: 0.3s;
         }
 
-        .btn-pdf:hover {
-            background-color: #b34700;
-            transform: translateY(-2px);
-            box-shadow: 0 7px 20px rgba(211, 84, 0, 0.4);
-        }
-
-        /* Pequeña nota al pie */
-        footer {
-            margin-top: auto;
-            padding: 20px;
-            font-size: 0.8rem;
-            color: #a0a0a0;
-            font-style: italic;
+        button:hover {
+            background-color: #a04000;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Cancionero</h1>
-        <div class="subtitulo">Editor Litúrgico</div>
-    </header>
+    <h1>Editor de Cantos</h1>
 
-    <div class="contenedor-editor">
-        <input type="text" id="titulo-canto" class="input-titulo" placeholder="Escribe el Título Aquí..." autocomplete="off">
-        
-        <textarea id="letra-canto" class="textarea-letra" placeholder="Escribe o pega la letra del canto aquí..."></textarea>
-        
-        <div class="boton-container">
-            <button class="btn-pdf" onclick="generarPDF()">Generar PDF Profesional</button>
-        </div>
+    <div class="contenedor">
+        <input type="text" id="titulo" placeholder="TÍTULO DEL CANTO">
+        <textarea id="letra" rows="15" placeholder="Escribe aquí la letra del canto..."></textarea>
+        <button onclick="generarPDF()">DESCARGAR PDF</button>
     </div>
 
-    <footer>
-        "Cantar es orar dos veces"
-    </footer>
-
     <script>
-        // Necesario para usar la librería jsPDF
         window.jsPDF = window.jspdf.jsPDF;
 
         function generarPDF() {
-            // 1. Obtener los textos escritos
-            // Convertimos el título a MAYÚSCULAS automáticamente
-            const tituloHtml = document.getElementById('titulo-canto').value.toUpperCase().trim();
-            const letra = document.getElementById('letra-canto').value;
+            const doc = new jsPDF();
+            const titulo = document.getElementById('titulo').value.toUpperCase();
+            const letra = document.getElementById('letra').value;
 
-            // 2. Validación básica
-            if (tituloHtml === "" || letra === "") {
-                alert("Por favor, escribe un título y la letra del canto.");
+            if (!titulo || !letra) {
+                alert("Por favor, rellena el título y la letra.");
                 return;
             }
 
-            // 3. Crear el documento PDF (A4)
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
+            // Configuración del PDF
+            const ancho = doc.internal.pageSize.getWidth();
 
-            // Configuración de márgenes y anchos
-            const anchoPagina = doc.internal.pageSize.getWidth();
-            const margenIzquierdo = 20;
-            const anchoTexto = anchoPagina - (margenIzquierdo * 2);
-
-            // --- DISEÑO DEL PDF ---
-
-            // A. TÍTULO: Naranja, Centrado, Negrita, Grande
-            doc.setTextColor(211, 84, 0); // Color #d35400
+            // Título en el PDF
+            doc.setTextColor(211, 84, 0); // Naranja
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(24);
-            // text(texto, x, y, opciones) - Centrado en x=anchoPagina/2
-            doc.text(tituloHtml, anchoPagina / 2, 30, { align: "center", maxWidth: anchoTexto });
+            doc.setFontSize(22);
+            doc.text(titulo, ancho / 2, 25, { align: "center" });
 
-            // B. LÍNEA DIVISORIA ELEGANTE (Gris suave)
-            doc.setDrawColor(220, 220, 220); // Gris muy claro
-            doc.setLineWidth(0.5);
-            doc.line(margenIzquierdo + 10, 38, anchoPagina - margenIzquierdo - 10, 38);
-
-            // C. CUERPO (Letra): Negro, Centrado, Tamaño normal
-            doc.setTextColor(0, 0, 0); // Negro puro
+            // Letra en el PDF
+            doc.setTextColor(0, 0, 0); // Negro
             doc.setFont("helvetica", "normal");
             doc.setFontSize(14);
             
-            // Ajuste automático de línea y salto de página si es muy largo
-            const lineasTexto = doc.splitTextToSize(letra, anchoTexto);
-            
-            // Imprimir las líneas centradas, empezando en Y=50
-            doc.text(lineasTexto, anchoPagina / 2, 50, { align: "center" });
+            const lineas = doc.splitTextToSize(letra, 170);
+            doc.text(lineas, ancho / 2, 40, { align: "center" });
 
-            // 4. Descargar el archivo
-            // Reemplazamos espacios por guiones bajos para el nombre del archivo
-            const nombreArchivo = tituloHtml.replace(/ /g, "_") + ".pdf";
-            doc.save(nombreArchivo);
+            doc.save(`${titulo}.pdf`);
         }
     </script>
 </body>
