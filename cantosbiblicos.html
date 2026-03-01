@@ -94,7 +94,7 @@
         const { jsPDF } = window.jspdf;
 
         let esAdmin = false;
-        let cantosCache = {}; // Guardamos los cantos aquí para refrescar la lista
+        let cantosCache = null;
         const PASS_ADMIN = "espe2009";
 
         function loginAdmin() {
@@ -102,7 +102,6 @@
             if (pass === PASS_ADMIN) {
                 esAdmin = true;
                 alert("Modo Administrador activado ✅");
-                // REFRESCAR LA LISTA PARA QUE APAREZCAN LOS BOTONES DE BORRAR
                 actualizarListaEnPantalla(cantosCache);
             } else {
                 alert("Clave incorrecta ❌");
@@ -110,11 +109,8 @@
         }
 
         function verificarAdmin() {
-            if (esAdmin) {
-                abrirSeccion('editor');
-            } else {
-                alert("Acceso restringido al administrador.");
-            }
+            if (esAdmin) { abrirSeccion('editor'); } 
+            else { alert("Acceso restringido al administrador."); }
         }
 
         function abrirSeccion(id) {
@@ -148,7 +144,6 @@
             });
         }
 
-        // Función separada para dibujar la lista
         function actualizarListaEnPantalla(datos) {
             const lista = document.getElementById('lista-cantos');
             lista.innerHTML = "";
@@ -157,21 +152,28 @@
                     const c = datos[key];
                     const div = document.createElement('div');
                     div.className = 'item-canto';
-                    const btnEliminar = esAdmin ? `<button onclick="eliminarCanto('${key}')" style="color:red">🗑️</button>` : "";
+                    
+                    const btnEliminar = esAdmin ? `<button class="btn-del" data-id="${key}">🗑️</button>` : "";
+                    
                     div.innerHTML = `<h3>${c.titulo}</h3>
                         <div>
-                            <button onclick="generarPDF('${c.titulo}', \`${c.letra}\`)">📄</button>
-                            <button onclick="imprimirDirecto('${c.titulo}', \`${c.letra}\`)">🖨️</button>
+                            <button class="btn-pdf" data-id="${key}">📄</button>
+                            <button class="btn-print" data-id="${key}">🖨️</button>
                             ${btnEliminar}
                         </div>`;
+                    
+                    // Eventos para que funcionen siempre
+                    div.querySelector('.btn-pdf').onclick = () => generarPDF(c.titulo, c.letra);
+                    div.querySelector('.btn-print').onclick = () => imprimirDirecto(c.titulo, c.letra);
+                    if(esAdmin) div.querySelector('.btn-del').onclick = () => eliminarCanto(key);
+                    
                     lista.appendChild(div);
                 });
             } else { lista.innerHTML = "<p>No hay cantos todavía.</p>"; }
         }
 
-        // Escuchar cambios en Firebase
         db.ref('cantos').on('value', (snapshot) => {
-            cantosCache = snapshot.val(); // Guardamos en el cache
+            cantosCache = snapshot.val();
             actualizarListaEnPantalla(cantosCache);
         });
 
