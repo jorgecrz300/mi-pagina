@@ -25,7 +25,7 @@
             min-height: 100vh;
         }
 
-        /* --- LOBBY ARTÍSTICO --- */
+        /* --- LOBBY --- */
         .lobby-container {
             position: relative;
             width: 100%;
@@ -36,7 +36,6 @@
             background-image: url('https://images.unsplash.com/photo-1510121175402-124b22c7eb16?q=80&w=2000');
             background-size: cover;
             background-position: center;
-            transition: 0.5s;
         }
 
         .lobby-container::before {
@@ -59,15 +58,15 @@
             width: 90%;
         }
 
-        h1 { font-family: 'Cinzel', serif; color: var(--naranja-biblico); letter-spacing: 3px; margin: 0; }
+        h1 { font-family: 'Cinzel', serif; color: var(--naranja-biblico); letter-spacing: 2px; margin: 0; }
         .linea { width: 60px; height: 2px; background: var(--oro-suave); margin: 15px auto; }
 
         .menu-botones { display: flex; justify-content: space-around; margin-top: 30px; }
 
         .btn-circular {
             background: white;
-            width: 80px;
-            height: 80px;
+            width: 85px;
+            height: 85px;
             border-radius: 50%;
             border: 2px solid var(--oro-suave);
             display: flex;
@@ -80,10 +79,10 @@
 
         .btn-circular:hover { transform: translateY(-5px); border-color: var(--naranja-biblico); }
         .btn-circular span { font-size: 30px; color: var(--naranja-biblico); }
-        .btn-circular p { font-size: 9px; font-weight: bold; margin-top: 4px; color: var(--oro-suave); }
+        .btn-circular p { font-size: 10px; font-weight: bold; margin: 5px 0 0; color: var(--oro-suave); }
 
-        /* --- BIBLIOTECA / MODAL --- */
-        .seccion-biblioteca {
+        /* --- SECCIONES --- */
+        .seccion {
             display: none;
             width: 90%;
             max-width: 600px;
@@ -92,45 +91,47 @@
             border-radius: 25px;
             margin: 40px 0;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s;
         }
 
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .btn-volver { background: none; color: var(--oro-suave); border: none; cursor: pointer; margin-bottom: 20px; font-weight: bold; font-size: 14px; }
+
+        /* --- BIBLIOTECA ITEMS --- */
         .canto-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .canto-info h3 { margin: 0; color: var(--naranja-biblico); font-family: 'Cinzel', serif; font-size: 0.9rem; }
+        .canto-info p { margin: 0; font-size: 0.75rem; color: #999; }
+
+        .acciones-item button {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 5px;
             transition: 0.2s;
         }
 
-        .canto-item:hover { background: #fdfaf6; }
-        .canto-info h3 { margin: 0; color: var(--naranja-biblico); font-family: 'Cinzel', serif; font-size: 1rem; }
-        .canto-info p { margin: 0; font-size: 0.8rem; color: #888; }
+        .acciones-item button:hover { background: #eee; }
 
-        .btn-icono { background: none; border: none; cursor: pointer; font-size: 18px; margin-left: 10px; }
-
-        /* --- EDITOR --- */
-        .card-editor {
-            display: none;
-            width: 90%;
-            max-width: 600px;
-            background: white;
-            padding: 30px;
-            border-radius: 25px;
-            margin: 40px 0;
-        }
-
+        /* --- FORMULARIO --- */
         input, textarea {
             width: 100%; border: 1px solid #eee; border-radius: 10px; padding: 15px;
-            margin-bottom: 15px; box-sizing: border-box; font-family: inherit; outline: none;
+            margin-bottom: 15px; box-sizing: border-box; font-family: inherit; outline: none; font-size: 16px;
         }
 
-        .btn-accion {
+        .btn-guardar {
             background: var(--naranja-biblico); color: white; border: none;
-            padding: 15px 30px; border-radius: 50px; font-weight: bold; cursor: pointer;
+            padding: 15px 40px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%;
         }
-
-        .btn-volver { background: none; color: var(--oro-suave); border: none; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -139,44 +140,43 @@
         <div class="lobby-content">
             <h1>Cantos Bíblicos</h1>
             <div class="linea"></div>
-            <p style="font-size: 0.9rem; color: #555;">Tu biblioteca espiritual digital</p>
+            <p style="font-size: 0.9rem; color: #555;">Tu biblioteca espiritual</p>
 
             <div class="menu-botones">
-                <div class="btn-circular" onclick="cambiarVista('editor')">
+                <div class="btn-circular" onclick="abrirSeccion('editor')">
                     <span>+</span>
                     <p>NUEVO</p>
                 </div>
                 <div class="btn-circular" onclick="abrirBiblioteca()">
                     <span>📂</span>
-                    <p>BIBLIOTECA</p>
+                    <p>COLECCIÓN</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="seccion-biblioteca" id="biblioteca">
+    <div class="seccion" id="editor">
         <button class="btn-volver" onclick="volverAlLobby()">← VOLVER AL INICIO</button>
-        <h2 style="font-family: 'Cinzel'; color: var(--oro-suave);">Mis Cantos Guardados</h2>
-        <div id="lista-cantos">
-            </div>
-    </div>
-
-    <div class="card-editor" id="editor">
-        <button class="btn-volver" onclick="volverAlLobby()">← VOLVER</button>
         <input type="text" id="titulo-canto" placeholder="TÍTULO DEL CANTO">
         <textarea id="letra-canto" placeholder="Escribe la letra aquí..."></textarea>
-        <div style="text-align: center;">
-            <button class="btn-accion" onclick="procesarYGuardar()">GENERAR Y GUARDAR</button>
-        </div>
+        <button class="btn-guardar" onclick="guardarNuevoCanto()">GENERAR Y GUARDAR</button>
+    </div>
+
+    <div class="seccion" id="biblioteca">
+        <button class="btn-volver" onclick="volverAlLobby()">← VOLVER AL INICIO</button>
+        <h2 style="font-family: 'Cinzel'; color: var(--oro-suave); margin-top: 0;">Mi Colección</h2>
+        <div id="lista-cantos"></div>
     </div>
 
     <script>
         const { jsPDF } = window.jspdf;
 
-        function cambiarVista(vista) {
+        // Cambiar entre pantallas
+        function abrirSeccion(id) {
             document.getElementById('lobby').style.display = 'none';
-            document.getElementById('editor').style.display = vista === 'editor' ? 'block' : 'none';
-            document.getElementById('biblioteca').style.display = vista === 'biblioteca' ? 'block' : 'none';
+            document.getElementById('editor').style.display = 'none';
+            document.getElementById('biblioteca').style.display = 'none';
+            document.getElementById(id).style.display = 'block';
         }
 
         function volverAlLobby() {
@@ -185,14 +185,16 @@
             document.getElementById('lobby').style.display = 'flex';
         }
 
-        // --- LÓGICA DE ALMACENAMIENTO ---
-        function procesarYGuardar() {
-            const titulo = document.getElementById('titulo-canto').value.toUpperCase();
-            const letra = document.getElementById('letra-canto').value;
+        // --- GUARDAR CANTO ---
+        function guardarNuevoCanto() {
+            const titulo = document.getElementById('titulo-canto').value.toUpperCase().trim();
+            const letra = document.getElementById('letra-canto').value.trim();
 
-            if (!titulo || !letra) return alert("Completa todos los campos");
+            if (!titulo || !letra) {
+                alert("Por favor, completa el título y la letra.");
+                return;
+            }
 
-            // 1. Guardar en LocalStorage
             const nuevoCanto = {
                 id: Date.now(),
                 titulo: titulo,
@@ -200,32 +202,68 @@
                 fecha: new Date().toLocaleDateString()
             };
 
-            let biblioteca = JSON.parse(localStorage.getItem('misCantos') || "[]");
-            biblioteca.push(nuevoCanto);
-            localStorage.setItem('misCantos', JSON.stringify(biblioteca));
+            // Obtener lista actual de LocalStorage
+            let coleccion = JSON.parse(localStorage.getItem('misCantosBD') || "[]");
+            coleccion.push(nuevoCanto);
+            
+            // Guardar de nuevo
+            localStorage.setItem('misCantosBD', JSON.stringify(coleccion));
 
-            // 2. Generar PDF
-            descargarPDF(titulo, letra);
+            // Descargar el PDF inmediatamente
+            generarPDF(titulo, letra);
 
-            // 3. Limpiar y volver
+            // Limpiar y avisar
             document.getElementById('titulo-canto').value = "";
             document.getElementById('letra-canto').value = "";
-            alert("Canto guardado en tu biblioteca.");
+            alert("¡Canto guardado en tu colección!");
             volverAlLobby();
         }
 
-        function descargarPDF(titulo, letra) {
+        // --- MOSTRAR BIBLIOTECA ---
+        function abrirBiblioteca() {
+            abrirSeccion('biblioteca');
+            const listaDiv = document.getElementById('lista-cantos');
+            const coleccion = JSON.parse(localStorage.getItem('misCantosBD') || "[]");
+
+            if (coleccion.length === 0) {
+                listaDiv.innerHTML = "<p style='text-align:center; color:#999; margin-top:20px;'>Tu biblioteca está vacía.</p>";
+                return;
+            }
+
+            listaDiv.innerHTML = ""; // Limpiar antes de llenar
+            coleccion.forEach((canto) => {
+                const item = document.createElement('div');
+                item.className = 'canto-item';
+                item.innerHTML = `
+                    <div class="canto-info">
+                        <h3>${canto.titulo}</h3>
+                        <p>${canto.fecha}</p>
+                    </div>
+                    <div class="acciones-item">
+                        <button onclick="recarcarPDF(${canto.id})">📄</button>
+                        <button onclick="eliminarCanto(${canto.id})" style="color:#e74c3c;">🗑️</button>
+                    </div>
+                `;
+                listaDiv.appendChild(item);
+            });
+        }
+
+        // --- FUNCIONES DE PDF ---
+        function generarPDF(titulo, letra) {
             const doc = new jsPDF();
             const pageWidth = doc.internal.pageSize.getWidth();
 
+            // Título Naranja
             doc.setTextColor(211, 84, 0);
             doc.setFont("helvetica", "bold");
             doc.setFontSize(22);
             doc.text(titulo, pageWidth / 2, 30, { align: "center" });
 
+            // Línea gris
             doc.setDrawColor(200, 200, 200);
             doc.line(20, 35, pageWidth - 20, 35);
 
+            // Letra Negra Centrada
             doc.setTextColor(0, 0, 0);
             doc.setFont("helvetica", "normal");
             doc.setFontSize(14);
@@ -235,36 +273,23 @@
             doc.save(`${titulo}.pdf`);
         }
 
-        function abrirBiblioteca() {
-            cambiarVista('biblioteca');
-            const lista = document.getElementById('lista-cantos');
-            const biblioteca = JSON.parse(localStorage.getItem('misCantos') || "[]");
-
-            if (biblioteca.length === 0) {
-                lista.innerHTML = "<p style='text-align:center; color:#999;'>Aún no tienes cantos guardados.</p>";
-                return;
+        // Descargar desde la biblioteca usando el ID
+        function recarcarPDF(id) {
+            const coleccion = JSON.parse(localStorage.getItem('misCantosBD') || "[]");
+            const canto = coleccion.find(c => c.id === id);
+            if (canto) {
+                generarPDF(canto.titulo, canto.letra);
             }
-
-            lista.innerHTML = biblioteca.map((canto, index) => `
-                <div class="canto-item">
-                    <div class="canto-info">
-                        <h3>${canto.titulo}</h3>
-                        <p>${canto.fecha}</p>
-                    </div>
-                    <div>
-                        <button class="btn-icono" onclick="descargarPDF('${canto.titulo}', '${canto.letra.replace(/\n/g, '\\n')}')">📄</button>
-                        <button class="btn-icono" onclick="eliminarCanto(${canto.id})" style="color:#e74c3c;">🗑️</button>
-                    </div>
-                </div>
-            `).join('');
         }
 
+        // --- ELIMINAR ---
         function eliminarCanto(id) {
-            if (!confirm("¿Seguro que quieres borrar este canto?")) return;
-            let biblioteca = JSON.parse(localStorage.getItem('misCantos') || "[]");
-            biblioteca = biblioteca.filter(c => c.id !== id);
-            localStorage.setItem('misCantos', JSON.stringify(biblioteca));
-            abrirBiblioteca();
+            if (confirm("¿Quieres eliminar este canto de tu colección?")) {
+                let coleccion = JSON.parse(localStorage.getItem('misCantosBD') || "[]");
+                coleccion = coleccion.filter(c => c.id !== id);
+                localStorage.setItem('misCantosBD', JSON.stringify(coleccion));
+                abrirBiblioteca(); // Refrescar lista
+            }
         }
     </script>
 </body>
