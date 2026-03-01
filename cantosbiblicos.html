@@ -1,1 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantos Bíblicos Católicos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@300;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --naranja: #d35400; --oro: #c5a059; --fondo: #fdfaf6; --cristal: rgba(255, 255, 255, 0.9); }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--fondo); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
 
+        /* LOBBY */
+        .lobby-container { position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; background-image: url('https://images.unsplash.com/photo-1510121175402-124b22c7eb16?q=80&w=2000'); background-size: cover; background-position: center; }
+        .lobby-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.3); }
+        .lobby-content { position: relative; z-index: 2; background: var(--cristal); padding: 40px; border-radius: 30px; backdrop-filter: blur(10px); text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); max-width: 400px; width: 90%; }
+        h1 { font-family: 'Cinzel', serif; color: var(--naranja); letter-spacing: 2px; margin: 0; }
+        .linea { width: 60px; height: 2px; background: var(--oro); margin: 15px auto; }
+        .menu-botones { display: flex; justify-content: space-around; margin-top: 30px; }
+        .btn-circular { background: white; width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--oro); display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; }
+        .btn-circular span { font-size: 30px; color: var(--naranja); }
+        .btn-circular p { font-size: 10px; font-weight: bold; margin: 5px 0 0; color: var(--oro); }
+
+        /* SECCIONES */
+        .seccion { display: none; width: 90%; max-width: 600px; background: white; padding: 30px; border-radius: 25px; margin: 40px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.1); animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .btn-volver { background: none; color: var(--oro); border: none; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
+
+        /* BIBLIOTECA */
+        .canto-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #f0f0f0; }
+        .canto-info h3 { margin: 0; color: var(--naranja); font-family: 'Cinzel', serif; font-size: 0.9rem; }
+        .acciones-item button { background: #f8f9fa; border: 1px solid #ddd; padding: 10px; border-radius: 8px; cursor: pointer; margin-left: 5px; font-size: 18px; }
+
+        /* FORMULARIO */
+        input, textarea { width: 100%; border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; font-size: 16px; outline: none; }
+        .btn-guardar { background: var(--naranja); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; }
+    </style>
+</head>
+<body>
+
+    <div class="lobby-container" id="lobby">
+        <div class="lobby-content">
+            <h1>Cantos Bíblicos</h1>
+            <div class="linea"></div>
+            <div class="menu-botones">
+                <div class="btn-circular" onclick="abrirSeccion('editor')"><span>+</span><p>NUEVO</p></div>
+                <div class="btn-circular" onclick="abrirBiblioteca()"><span>📂</span><p>COLECCIÓN</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="seccion" id="editor">
+        <button class="btn-volver" onclick="volverAlLobby()">← INICIO</button>
+        <input type="text" id="titulo-canto" placeholder="TÍTULO DEL CANTO">
+        <textarea id="letra-canto" placeholder="Escribe aquí la letra..."></textarea>
+        <button class="btn-guardar" onclick="guardarYGenerar()">GUARDAR Y GENERAR</button>
+    </div>
+
+    <div class="seccion" id="biblioteca">
+        <button class="btn-volver" onclick="volverAlLobby()">← INICIO</button>
+        <h2 style="font-family: 'Cinzel'; color: var(--oro);">Mis Cantos Guardados</h2>
+        <div id="lista-cantos"></div>
+    </div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+        // Icono de Cruz Cristiana elegante
+        const CRUZ_URL = "https://cdn-icons-png.flaticon.com/512/3503/3503112.png"; 
+
+        function abrirSeccion(id) {
+            document.getElementById('lobby').style.display = 'none';
+            document.getElementById('editor').style.display = 'none';
+            document.getElementById('biblioteca').style.display = 'none';
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function volverAlLobby() {
+            document.getElementById('editor').style.display = 'none';
+            document.getElementById('biblioteca').style.display = 'none';
+            document.getElementById('lobby').style.display = 'flex';
+        }
+
+        function calcularTamanioFuente(texto) {
+            if (texto.length < 200) return 26;
+            if (texto.length < 500) return 20;
+            if (texto.length < 1000) return 16;
+            return 13;
+        }
+
+        async function generarPDF(titulo, letra) {
+            const doc = new jsPDF();
+            
+            // Cruz arriba a la derecha (3x3 cm aprox = 30x30 unidades)
+            try {
+                doc.addImage(CRUZ_URL, 'PNG', 165, 10, 30, 30);
+            } catch(e) { console.log("Error cargando cruz"); }
+
+            // Título Naranja
+            doc.setTextColor(211, 84, 0);
+            doc.setFontSize(26);
+            doc.setFont("helvetica", "bold");
+            doc.text(titulo, 20, 30);
+
+            // Línea divisoria
+            doc.setDrawColor(200);
+            doc.line(20, 45, 190, 45);
+
+            // Cuerpo del Canto (Adaptable)
+            doc.setTextColor(0);
+            doc.setFont("helvetica", "normal");
+            const fontSize = calcularTamanioFuente(letra);
+            doc.setFontSize(fontSize);
+            
+            const lineas = doc.splitTextToSize(letra, 170);
+            doc.text(lineas, 105, 65, { align: "center" });
+
+            doc.save(`${titulo}.pdf`);
+        }
+
+        function guardarYGenerar() {
+            const tit = document.getElementById('titulo-canto').value.toUpperCase().trim();
+            const letr = document.getElementById('letra-canto').value.trim();
+            if (!tit || !letr) return alert("Completa los campos");
+
+            const nuevo = { id: Date.now(), titulo: tit, letra: letr, fecha: new Date().toLocaleDateString() };
+            let col = JSON.parse(localStorage.getItem('misCantosBD') || "[]");
+            col.push(nuevo);
+            localStorage.setItem('misCantosBD', JSON.stringify(col));
+
+            generarPDF(tit, letr);
+            volverAlLobby();
+        }
+
+        function abrirBiblioteca() {
+            abrirSeccion('biblioteca');
+            const lista = document.getElementById('lista-cantos');
+            const col = JSON.parse(localStorage.getItem('misCantosBD') || "[]");
+            lista.innerHTML = col.length === 0 ? "<p>No hay cantos guardados.</p>" : "";
+            col.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'canto-item';
+                div.innerHTML = `
+                    <div class="canto-info"><h3>${c.titulo}</h3><p>${c.fecha}</p></div>
+                    <div class="acciones-item">
+                        <button title="Descargar" onclick="recarcarPDF(${c.id})">📄</button>
+                        <button title="Imprimir" onclick="imprimirCanto(${c.id})">🖨️</button>
+                        <button title="Eliminar" onclick="eliminarCanto(${c.id})" style="color:red">🗑️</button>
+                    </div>`;
+                lista.appendChild(div);
+            });
+        }
+
+        function recarcarPDF(id) {
+            const col = JSON.parse(localStorage.getItem('misCantosBD') || "[]");
+            const c = col.find(x => x.id === id);
+            if (c) generarPDF(c.titulo, c.letra);
+        }
+
+        function imprimirCanto(id) {
+            const col = JSON.parse(localStorage.getItem('misCantosBD') || "[]");
+            const c = col.find(x => x.id === id);
+            if (!c) return;
+
+            const fontSize = calcularTamanioFuente(c.letra);
+            const ventana = window.open('', '_blank');
+            ventana.document.write(`
+                <html>
+                <head>
+                    <title>${c.titulo}</title>
+                    <style>
+                        body { font-family: sans-serif; padding: 40px; text-align: center; position: relative; }
+                        .cruz { position: absolute; top: 10px; right: 20px; width: 80px; }
+                        h1 { color: #d35400; text-align: left; margin-top: 30px; font-size: 30pt; font-weight: bold; }
+                        hr { border: 0; border-top: 2px solid #ccc; margin: 15px 0 35px; }
+                        p { font-size: ${fontSize + 6}pt; line-height: 1.5; white-space: pre-wrap; padding: 0 20px; }
+                    </style>
+                </head>
+                <body>
+                    <img src="${CRUZ_URL}" class="cruz">
+                    <h1>${c.titulo}</h1>
+                    <hr>
+                    <p>${c.letra}</p>
+                    <script>setTimeout(() => { window.print(); window.close(); }, 700);<\/script>
+                </body>
+                </html>
+            `);
+            ventana.document.close();
+        }
+
+        function eliminarCanto(id) {
+            if (confirm("¿Eliminar este canto?")) {
+                let col = JSON.parse(localStorage.getItem('misCantosBD') || "[]");
+                localStorage.setItem('misCantosBD', JSON.stringify(col.filter(x => x.id !== id)));
+                abrirBiblioteca();
+            }
+        }
+    </script>
+</body>
+</html>
