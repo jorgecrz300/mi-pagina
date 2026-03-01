@@ -15,6 +15,7 @@
         :root { --naranja: #d35400; --oro: #c5a059; --fondo: #fdfaf6; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--fondo); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
 
+        /* LOBBY */
         .lobby-container { position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; background-image: url('https://images.unsplash.com/photo-1510121175402-124b22c7eb16?q=80&w=2000'); background-size: cover; background-position: center; }
         .lobby-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); }
         .lobby-content { position: relative; z-index: 2; background: white; padding: 40px; border-radius: 30px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); width: 80%; max-width: 400px; }
@@ -22,19 +23,28 @@
         h1 { font-family: 'Cinzel', serif; color: var(--naranja); margin: 0; }
         .linea { width: 50px; height: 2px; background: var(--oro); margin: 15px auto; }
 
+        /* SECCIONES */
         .seccion { display: none; width: 90%; max-width: 700px; background: white; padding: 30px; border-radius: 20px; margin-top: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 50px; }
         .btn-volver { background: none; border: none; color: var(--oro); cursor: pointer; font-weight: bold; margin-bottom: 20px; }
 
+        /* EDITOR (SOLO ADMIN) */
+        #editor { display: none; }
         input#titulo-canto { width: 100%; font-family: 'Cinzel', serif; font-size: 1.5rem; text-align: center; border: none; border-bottom: 2px solid #eee; margin-bottom: 20px; padding: 10px; box-sizing: border-box; outline: none; color: var(--naranja); }
         textarea#letra-canto { width: 100%; height: 400px; border: 1px solid #eee; padding: 15px; box-sizing: border-box; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 500; resize: none; border-radius: 10px; outline: none; }
         .btn-guardar { width: 100%; background: var(--naranja); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 20px; }
 
+        /* BIBLIOTECA */
         .item-canto { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
         .item-canto h3 { margin: 0; font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--naranja); }
         .item-canto button { background: white; border: 1px solid #eee; padding: 8px; border-radius: 8px; cursor: pointer; margin-left: 5px; }
 
+        /* BOTONES ADMIN OCULTOS */
+        .admin-only { display: none; }
+
         footer { margin-top: auto; padding: 20px; font-size: 12px; color: #777; text-align: center; width: 100%; }
         .btn-advertencia { position: fixed; bottom: 20px; right: 20px; background: white; border: 2px solid var(--naranja); width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 24px; z-index: 100; }
+        
+        .btn-admin-lock { position: fixed; bottom: 20px; left: 20px; background: none; border: none; cursor: pointer; font-size: 18px; opacity: 0.3; }
     </style>
 </head>
 <body>
@@ -44,8 +54,14 @@
             <h1>Cantos Bíblicos</h1>
             <div class="linea"></div>
             <div style="display: flex; justify-content: space-around; margin-top: 30px;">
-                <div onclick="abrirSeccion('editor')" style="cursor:pointer"><span>➕</span><p style="font-size:10px; font-weight:bold; color:var(--oro)">NUEVO</p></div>
-                <div onclick="abrirBiblioteca()" style="cursor:pointer"><span>📂</span><p style="font-size:10px; font-weight:bold; color:var(--oro)">COLECCIÓN</p></div>
+                <div onclick="verificarAdmin()" style="cursor:pointer">
+                    <span>➕</span>
+                    <p style="font-size:10px; font-weight:bold; color:var(--oro)">NUEVO</p>
+                </div>
+                <div onclick="abrirBiblioteca()" style="cursor:pointer">
+                    <span>📂</span>
+                    <p style="font-size:10px; font-weight:bold; color:var(--oro)">COLECCIÓN</p>
+                </div>
             </div>
             <p style="font-size: 9px; margin-top: 30px; color: #aaa;">© 2026 Reservados todos los derechos de autor</p>
         </div>
@@ -53,23 +69,24 @@
 
     <div class="seccion" id="editor">
         <button class="btn-volver" onclick="volverAlLobby()">← INICIO</button>
-        <input type="text" id="titulo-canto" placeholder="TÍTULO">
+        <input type="text" id="titulo-canto" placeholder="TÍTULO DEL CANTO">
         <textarea id="letra-canto" placeholder="Escribe la letra aquí..."></textarea>
-        <button class="btn-guardar" onclick="guardarEnFirebase()">GUARDAR Y SINCRONIZAR</button>
+        <button class="btn-guardar" onclick="guardarEnFirebase()">GUARDAR PARA TODOS</button>
     </div>
 
     <div class="seccion" id="biblioteca">
         <button class="btn-volver" onclick="volverAlLobby()">← INICIO</button>
-        <h2 style="font-family: 'Cinzel'; color: var(--oro); text-align: center;">Mis Cantos (Nube)</h2>
+        <h2 style="font-family: 'Cinzel'; color: var(--oro); text-align: center;">Cantos de la Iglesia</h2>
         <div id="lista-cantos">Cargando cantos...</div>
     </div>
 
     <div class="btn-advertencia" onclick="mostrarAviso()">⚠️</div>
+    <button class="btn-admin-lock" onclick="loginAdmin()">🔒</button>
 
     <footer><span style="font-weight: 600; color: var(--oro);">© 2026 CANTOS BÍBLICOS - TODOS LOS DERECHOS RESERVADOS</span></footer>
 
     <script>
-        // CONFIGURACIÓN DE TU FIREBASE
+        // TU CONFIGURACIÓN DE FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyAk55Gj8rHaoqaLuJclace86dy7VutS5q8",
             authDomain: "cantos-catolicos-94bb0.firebaseapp.com",
@@ -83,6 +100,28 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const { jsPDF } = window.jspdf;
+
+        let esAdmin = false;
+        const PASS_ADMIN = "1234"; // <--- CAMBIA TU CONTRASEÑA AQUÍ
+
+        function loginAdmin() {
+            const pass = prompt("Introduce la clave de administrador:");
+            if (pass === PASS_ADMIN) {
+                esAdmin = true;
+                alert("Modo Administrador activado ✅");
+                abrirBiblioteca(); // Refrescar para ver botones de borrar
+            } else {
+                alert("Clave incorrecta ❌");
+            }
+        }
+
+        function verificarAdmin() {
+            if (esAdmin) {
+                abrirSeccion('editor');
+            } else {
+                alert("Solo el administrador puede agregar cantos nuevos.");
+            }
+        }
 
         function abrirSeccion(id) {
             document.getElementById('lobby').style.display = 'none';
@@ -102,20 +141,20 @@
         }
 
         function guardarEnFirebase() {
+            if (!esAdmin) return;
             const tit = document.getElementById('titulo-canto').value.toUpperCase().trim();
             const letr = document.getElementById('letra-canto').value.trim();
             if (!tit || !letr) return alert("Escribe algo primero");
 
             const nuevoCanto = { titulo: tit, letra: letr, timestamp: Date.now() };
             db.ref('cantos').push(nuevoCanto).then(() => {
-                alert("Canto guardado para todos");
+                alert("Canto guardado con éxito");
                 document.getElementById('titulo-canto').value = "";
                 document.getElementById('letra-canto').value = "";
                 volverAlLobby();
             });
         }
 
-        // Leer datos de la nube automáticamente
         db.ref('cantos').on('value', (snapshot) => {
             const lista = document.getElementById('lista-cantos');
             lista.innerHTML = "";
@@ -125,16 +164,26 @@
                     const c = datos[key];
                     const div = document.createElement('div');
                     div.className = 'item-canto';
+                    
+                    // Botón de eliminar solo visible si eres admin
+                    const btnEliminar = esAdmin ? `<button onclick="eliminarCanto('${key}')" style="color:red">🗑️</button>` : "";
+
                     div.innerHTML = `<h3>${c.titulo}</h3>
                         <div>
-                            <button onclick="generarPDF('${c.titulo}', \`${c.letra}\`)">📄</button>
-                            <button onclick="imprimirDirecto('${c.titulo}', \`${c.letra}\`)">🖨️</button>
-                            <button onclick="eliminarCanto('${key}')" style="color:red">🗑️</button>
+                            <button title="Descargar PDF" onclick="generarPDF('${c.titulo}', \`${c.letra}\`)">📄</button>
+                            <button title="Imprimir" onclick="imprimirDirecto('${c.titulo}', \`${c.letra}\`)">🖨️</button>
+                            ${btnEliminar}
                         </div>`;
                     lista.appendChild(div);
                 });
-            } else { lista.innerHTML = "<p>No hay cantos en la nube.</p>"; }
+            } else { lista.innerHTML = "<p>No hay cantos todavía.</p>"; }
         });
+
+        function eliminarCanto(key) {
+            if (confirm("¿Seguro que quieres borrar este canto para todos?")) {
+                db.ref('cantos/' + key).remove();
+            }
+        }
 
         function generarPDF(titulo, letra) {
             const doc = new jsPDF();
@@ -160,10 +209,6 @@
             const ventana = window.open('', '_blank');
             ventana.document.write(`<html><head><title>${titulo}</title><style>body{font-family:sans-serif;text-align:center;padding:40px;}h1{color:#d35400;font-size:28pt;}p{font-size:24pt;font-weight:bold;line-height:1.6;white-space:pre-wrap;}</style></head><body><h1>${titulo}</h1><hr><p>${letra}</p><script>setTimeout(()=>{window.print();window.close();},500);<\/script></body></html>`);
             ventana.document.close();
-        }
-
-        function eliminarCanto(key) {
-            if (confirm("¿Borrar de la nube para todos?")) { db.ref('cantos/' + key).remove(); }
         }
 
         function abrirBiblioteca() { abrirSeccion('biblioteca'); }
