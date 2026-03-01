@@ -3,111 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Cantos Bíblicos</title>
+    <title>Cantos Bíblicos - Elegante</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
     
     <style>
-        :root { --naranja: #d35400; --fondo: #fdfaf6; --marron: #5d4037; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--fondo); margin: 0; padding: 20px; text-align: center; color: var(--marron); }
-        
-        h1 { color: var(--naranja); text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid var(--naranja); display: inline-block; margin-bottom: 20px; }
-
-        /* Botón Principal "+" */
-        .btn-agregar {
-            background: white; width: 80px; height: 80px; border-radius: 50%;
-            border: 3px solid var(--naranja); color: var(--naranja);
-            font-size: 50px; font-weight: bold; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            margin: 20px auto; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .btn-agregar:active { transform: scale(0.9); background: #fff3e0; }
-
-        /* Cuadro de Entrada de Texto */
-        #contenedor-entrada { display: none; margin-top: 20px; }
-        textarea { 
-            width: 100%; max-width: 500px; height: 200px; border-radius: 15px; 
-            border: 2px solid #ccc; padding: 15px; font-size: 16px; 
-            box-sizing: border-box; font-family: inherit;
+        :root {
+            --oro: #c5a059;
+            --naranja-tierra: #d35400;
+            --fondo: #fcfaf7;
+            --texto: #2c3e50;
         }
 
-        /* Resultado Final REESCRITO AL MEDIO */
-        #resultado-final {
-            display: none; margin-top: 30px; padding: 20px;
-            background: white; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            max-width: 500px; margin-left: auto; margin-right: auto;
-            text-align: center; /* Centrado total */
-            white-space: pre-wrap; /* Respeta los saltos de línea */
-            font-size: 20px; line-height: 1.6; color: #333;
-            border: 1px solid #eee;
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--texto);
         }
 
-        .botones-grupo { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
-        .btn { padding: 12px 25px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; }
-        .btn-procesar { background: var(--naranja); color: white; }
-        .btn-pdf { background: #27ae60; color: white; margin-top: 20px; display: none; width: 100%; max-width: 500px; }
+        /* Lobby / Header */
+        header {
+            width: 100%;
+            padding: 40px 0;
+            text-align: center;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
 
-        .pie { margin-top: 50px; font-style: italic; opacity: 0.6; }
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--naranja-tierra);
+            margin: 0;
+            letter-spacing: 3px;
+            font-size: 1.8rem;
+        }
+
+        .subtitulo {
+            font-size: 0.9rem;
+            color: var(--oro);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+
+        /* Botón de Inicio Elegante */
+        .btn-principal {
+            background: white;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid var(--oro);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 20px rgba(197, 160, 89, 0.2);
+            margin-top: 20px;
+        }
+
+        .btn-principal:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(197, 160, 89, 0.3);
+            border-color: var(--naranja-tierra);
+        }
+
+        .btn-principal span {
+            font-size: 40px;
+            color: var(--naranja-tierra);
+        }
+
+        .btn-principal p {
+            font-size: 10px;
+            font-weight: bold;
+            color: var(--oro);
+            margin-top: 5px;
+        }
+
+        /* Contenedor de Escritura */
+        #editor {
+            display: none;
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            border: 1px solid white;
+        }
+
+        textarea {
+            width: 100%;
+            height: 250px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            background: #fff;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        /* Resultado Final */
+        #resultado-tarjeta {
+            display: none;
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 30px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            border: 1px solid #f1f1f1;
+        }
+
+        #texto-final {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: #333;
+            white-space: pre-wrap;
+        }
+
+        /* Botones de Acción */
+        .btn-accion {
+            padding: 15px 35px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 10px;
+        }
+
+        .btn-procesar { background: var(--naranja-tierra); color: white; }
+        .btn-pdf { background: #27ae60; color: white; display: none; }
+
+        .frase-dia {
+            margin-top: 40px;
+            font-style: italic;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
 
-    <h1>📖 MI CANCIONERO</h1>
+    <header>
+        <h1>Cancionero Litúrgico</h1>
+        <div class="subtitulo">Edición Digital</div>
+    </header>
 
-    <p>Presiona el botón para agregar un nuevo canto</p>
-    
-    <div class="btn-agregar" onclick="abrirEditor()">+</div>
-
-    <div id="contenedor-entrada">
-        <textarea id="texto-input" placeholder="Escribe o pega aquí la letra del canto..."></textarea>
-        <div class="botones-grupo">
-            <button class="btn btn-procesar" onclick="procesarTexto()">DAR FORMATO</button>
+    <div id="lobby">
+        <div class="btn-principal" onclick="mostrarEditor()">
+            <span>+</span>
+            <p>NUEVO CANTO</p>
         </div>
     </div>
 
-    <div id="resultado-final"></div>
+    <div id="editor">
+        <textarea id="texto-input" placeholder="Escribe la letra de tu canto aquí..."></textarea>
+        <div style="text-align:center;">
+            <button class="btn-accion btn-procesar" onclick="darFormato()">Generar Canto</button>
+        </div>
+    </div>
 
-    <button id="btn-descargar" class="btn btn-pdf" onclick="descargarPDF()">💾 GUARDAR EN PDF</button>
+    <div id="resultado-tarjeta">
+        <div id="texto-final"></div>
+        <button id="btn-descargar" class="btn-accion btn-pdf" onclick="bajarPDF()">💾 Guardar en PDF</button>
+    </div>
 
-    <div class="pie">"Alabaré a mi Señor"</div>
+    <div class="frase-dia">"Donde hay música, Dios siempre escucha."</div>
 
     <script>
         const { jsPDF } = window.jspdf;
 
-        function abrirEditor() {
-            document.getElementById('contenedor-entrada').style.display = 'block';
-            document.getElementById('resultado-final').style.display = 'none';
-            document.getElementById('btn-descargar').style.display = 'none';
-            document.getElementById('texto-input').focus();
+        function mostrarEditor() {
+            document.getElementById('lobby').style.display = 'none';
+            document.getElementById('editor').style.display = 'block';
+            document.getElementById('resultado-tarjeta').style.display = 'none';
         }
 
-        function procesarTexto() {
-            const texto = document.getElementById('texto-input').value;
-            if (texto.trim() === "") {
-                alert("Por favor, escribe algo primero.");
-                return;
-            }
+        function darFormato() {
+            const rawText = document.getElementById('texto-input').value;
+            if (rawText.trim() === "") return alert("Escribe el canto antes de continuar.");
 
-            const cajaResultado = document.getElementById('resultado-final');
-            cajaResultado.innerText = texto;
-            cajaResultado.style.display = 'block';
+            document.getElementById('editor').style.display = 'none';
+            const tarj = document.getElementById('resultado-tarjeta');
+            const txt = document.getElementById('texto-final');
             
+            txt.innerText = rawText;
+            tarj.style.display = 'block';
             document.getElementById('btn-descargar').style.display = 'inline-block';
-            document.getElementById('contenedor-entrada').style.display = 'none';
         }
 
-        function descargarPDF() {
+        function bajarPDF() {
             const doc = new jsPDF();
-            const texto = document.getElementById('resultado-final').innerText;
+            const texto = document.getElementById('texto-final').innerText;
             
-            // Configuración del PDF
             doc.setFont("helvetica", "normal");
             doc.setFontSize(16);
             
-            // Centrar el texto en el PDF automáticamente
             const lineas = doc.splitTextToSize(texto, 160);
             doc.text(lineas, 105, 40, { align: "center" });
 
-            doc.save("Canto_Biblico.pdf");
+            doc.save("Canto_Catolico.pdf");
+            alert("¡Tu canto ha sido guardado!");
+            location.reload(); // Vuelve al lobby
         }
     </script>
 
