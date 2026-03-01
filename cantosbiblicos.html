@@ -14,7 +14,7 @@
             --fondo: #fdfaf6;
         }
 
-        body { font-family: 'Montserrat', sans-serif; background-color: var(--fondo); margin: 0; display: flex; flex-direction: column; align-items: center; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--fondo); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
 
         /* LOBBY */
         .lobby-container { position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; background-image: url('https://images.unsplash.com/photo-1510121175402-124b22c7eb16?q=80&w=2000'); background-size: cover; background-position: center; }
@@ -25,7 +25,7 @@
         .linea { width: 50px; height: 2px; background: var(--oro); margin: 15px auto; }
 
         /* SECCIONES */
-        .seccion { display: none; width: 90%; max-width: 700px; background: white; padding: 30px; border-radius: 20px; margin-top: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .seccion { display: none; width: 90%; max-width: 700px; background: white; padding: 30px; border-radius: 20px; margin-top: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 50px; }
         .btn-volver { background: none; border: none; color: var(--oro); cursor: pointer; font-weight: bold; margin-bottom: 20px; }
 
         /* EDITOR */
@@ -36,6 +36,10 @@
         /* BIBLIOTECA */
         .item-canto { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
         .item-canto h3 { margin: 0; font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--naranja); }
+
+        /* COPYRIGHT EN LA WEB */
+        footer { margin-top: auto; padding: 20px; font-size: 12px; color: #777; text-align: center; width: 100%; }
+        .copyright { font-weight: 600; color: var(--oro); letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -48,6 +52,7 @@
                 <div onclick="abrirSeccion('editor')" style="cursor:pointer"><span>➕</span><p style="font-size:10px; font-weight:bold; color:var(--oro)">NUEVO</p></div>
                 <div onclick="abrirBiblioteca()" style="cursor:pointer"><span>📂</span><p style="font-size:10px; font-weight:bold; color:var(--oro)">COLECCIÓN</p></div>
             </div>
+            <p style="font-size: 9px; margin-top: 30px; color: #aaa;">© 2026 Reservados todos los derechos de autor</p>
         </div>
     </div>
 
@@ -63,6 +68,10 @@
         <h2 style="font-family: 'Cinzel'; color: var(--oro); text-align: center;">Mis Cantos</h2>
         <div id="lista-cantos"></div>
     </div>
+
+    <footer>
+        <span class="copyright">© 2026 CANTOS BÍBLICOS - TODOS LOS DERECHOS RESERVADOS</span>
+    </footer>
 
     <script>
         const { jsPDF } = window.jspdf;
@@ -98,32 +107,36 @@
             const doc = new jsPDF();
             const ancho = doc.internal.pageSize.getWidth();
             const altoHoja = doc.internal.pageSize.getHeight();
-            const margenInferior = 20;
+            const margenInferior = 30;
 
-            // 1. Título Fijo (Grande y claro)
+            // 1. Título
             doc.setTextColor(211, 84, 0);
             doc.setFont("helvetica", "bold");
             doc.setFontSize(26);
             doc.text(titulo, ancho / 2, 25, { align: "center", maxWidth: 180 });
 
-            // 2. Lógica para "Vista de 40 años" (Grande y gruesa)
-            let fontSize = 45; // Empezamos muy grande
-            doc.setFont("helvetica", "bold"); // Negrita para que resalte más
+            // 2. Lógica de tamaño de letra para mamá (grande y clara)
+            let fontSize = 45; 
+            doc.setFont("helvetica", "bold"); 
             
             let lineas = doc.splitTextToSize(letra, 170);
             let alturaTexto = lineas.length * (fontSize * 0.7); 
 
-            // Reducimos solo si se sale de la hoja, pero el mínimo es 22 (letra muy grande)
             while ((50 + alturaTexto) > (altoHoja - margenInferior) && fontSize > 22) {
                 fontSize -= 1;
                 alturaTexto = lineas.length * (fontSize * 0.7);
             }
 
-            // 3. Imprimir el texto con interlineado generoso
+            // 3. Imprimir el cuerpo
             doc.setFontSize(fontSize);
             doc.setTextColor(0, 0, 0);
-            // El espaciado entre líneas lo controlamos con el valor del eje Y en el bucle o directo:
             doc.text(lineas, ancho / 2, 50, { align: "center", lineHeightFactor: 1.5 });
+
+            // 4. MARCA DE COPYRIGHT EN EL PDF (Pequeñita abajo)
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150); // Gris claro
+            doc.setFont("helvetica", "italic");
+            doc.text("© 2026 Cantos Bíblicos - Todos los derechos reservados", ancho / 2, altoHoja - 10, { align: "center" });
 
             doc.save(`${titulo}.pdf`);
         }
