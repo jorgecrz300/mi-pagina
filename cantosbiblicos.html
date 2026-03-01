@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cantos Bíblicos Católicos</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@300;500;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --naranja-biblico: #d35400;
             --oro-suave: #c5a059;
             --fondo-crema: #fdfaf6;
+            --blanco-cristal: rgba(255, 255, 255, 0.85);
         }
 
         body {
@@ -22,188 +23,94 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* DISEÑO DEL LOBBY */
+        /* --- DISEÑO DEL LOBBY CON IMAGEN DE FONDO --- */
         .lobby-container {
-            text-align: center;
-            padding: 60px 20px;
+            position: relative;
             width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            /* Imagen de fondo artística: manos con vela y luz */
+            background-image: url('https://images.unsplash.com/photo-1510121175402-124b22c7eb16?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Capa oscura suave sobre la imagen para que el texto resalte */
+        .lobby-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        /* Contenido del lobby sobre la imagen */
+        .lobby-content {
+            position: relative;
+            z-index: 2;
+            background: var(--blanco-cristal);
+            padding: 40px 60px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px); /* Efecto cristal esmerilado */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         header h1 {
             font-family: 'Cinzel', serif;
             color: var(--naranja-biblico);
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             margin: 0;
-            letter-spacing: 4px;
+            letter-spacing: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         .linea-decorativa {
-            width: 80px;
+            width: 100px;
             height: 3px;
             background: var(--oro-suave);
-            margin: 15px auto;
+            margin: 20px auto;
+            border-radius: 2px;
         }
 
-        /* Botón de Agregar (+) */
+        .lobby-content p {
+            color: #5d4037;
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        /* Botón de Agregar (+) Elegante */
         .btn-plus-lobby {
             background: white;
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            border: 2px solid var(--oro-suave);
+            border: 3px solid var(--oro-suave);
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            margin: 40px auto;
-            transition: 0.4s ease;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            margin: 0 auto;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
         .btn-plus-lobby:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.05);
             border-color: var(--naranja-biblico);
-            box-shadow: 0 15px 30px rgba(211, 84, 0, 0.15);
+            box-shadow: 0 12px 25px rgba(211, 84, 0, 0.25);
         }
 
         .btn-plus-lobby span {
-            font-size: 50px;
+            font-size: 55px;
             color: var(--naranja-biblico);
-            font-weight: 300;
-        }
-
-        /* EDITOR Y RESULTADO */
-        .card-editor {
-            display: none;
-            width: 90%;
-            max-width: 600px;
-            background: white;
-            padding: 30px;
-            border-radius: 25px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-            margin-top: -20px;
-        }
-
-        input#titulo-canto {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
-            text-align: center;
-            color: var(--naranja-biblico);
-            outline: none;
-        }
-
-        textarea#letra-canto {
-            width: 100%;
-            height: 250px;
-            border: 1px solid #f1f1f1;
-            border-radius: 12px;
-            padding: 15px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1rem;
-            resize: none;
-            box-sizing: border-box;
-            outline: none;
-            background: #fafafa;
-        }
-
-        .btn-accion {
-            background: var(--naranja-biblico);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: 0.3s;
-        }
-
-        .btn-accion:hover { background: #b34700; }
-
-        .btn-pdf-final {
-            background: #27ae60;
-            display: none;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="lobby-container" id="lobby">
-        <header>
-            <h1>Cantos Bíblicos</h1>
-            <div class="linea-decorativa"></div>
-            <p style="color: #7f8c8d; font-weight: 300;">Reescribe y crea tus propios himnos</p>
-        </header>
-
-        <div class="btn-plus-lobby" onclick="abrirEditor()">
-            <span>+</span>
-        </div>
-    </div>
-
-    <div class="card-editor" id="editor">
-        <input type="text" id="titulo-canto" placeholder="TÍTULO DEL CANTO (EJ: UNA MIRADA DE FE)">
-        <textarea id="letra-canto" placeholder="Escribe la letra aquí..."></textarea>
-        
-        <div style="text-align: center;">
-            <button id="btn-previa" class="btn-accion" onclick="generarPDF()">Generar PDF Profesional</button>
-        </div>
-    </div>
-
-    <script>
-        const { jsPDF } = window.jspdf;
-
-        function abrirEditor() {
-            document.getElementById('lobby').style.display = 'none';
-            document.getElementById('editor').style.display = 'block';
-        }
-
-        function generarPDF() {
-            const titulo = document.getElementById('titulo-canto').value.toUpperCase();
-            const letra = document.getElementById('letra-canto').value;
-
-            if (!titulo || !letra) {
-                alert("Por favor rellena el título y la letra.");
-                return;
-            }
-
-            const doc = new jsPDF();
-            const pageWidth = doc.internal.pageSize.getWidth();
-
-            // 1. TÍTULO (Naranja, Grande, Centrado)
-            doc.setTextColor(211, 84, 0); // Color naranja
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(22);
-            doc.text(titulo, pageWidth / 2, 30, { align: "center" });
-
-            // 2. LÍNEA DIVISORIA (Como en tu imagen)
-            doc.setDrawColor(220, 220, 220); // Gris clarito
-            doc.setLineWidth(0.5);
-            doc.line(20, 35, pageWidth - 20, 35);
-
-            // 3. CUERPO DEL TEXTO (Negro, Centrado, Normal)
-            doc.setTextColor(0, 0, 0); // Negro
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(14);
-            
-            // Ajustar texto para que no se salga de los bordes
-            const lineas = doc.splitTextToSize(letra, 170);
-            doc.text(lineas, pageWidth / 2, 50, { align: "center" });
-
-            // Guardar
-            doc.save(`${titulo}.pdf`);
-            
-            alert("¡PDF Creado con éxito!");
-            location.reload(); // Regresa al lobby
-        }
-    </script>
-</body>
-</html>
+            font-weight: 3
