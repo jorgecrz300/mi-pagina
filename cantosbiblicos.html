@@ -113,4 +113,181 @@
         .btn-plus-lobby span {
             font-size: 55px;
             color: var(--naranja-biblico);
-            font-weight: 3
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        /* --- EDITOR Y RESULTADO (Mantenemos el estilo) --- */
+        .card-editor {
+            display: none;
+            width: 90%;
+            max-width: 650px;
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.1);
+            margin: 40px auto;
+            border: 1px solid #f0f0f0;
+        }
+
+        input#titulo-canto {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            text-align: center;
+            color: var(--naranja-biblico);
+            outline: none;
+            background: #fafafa;
+        }
+
+        input#titulo-canto:focus {
+            border-color: var(--oro-suave);
+            background: white;
+        }
+
+        textarea#letra-canto {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            padding: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+            background: #fdfdfd;
+            line-height: 1.6;
+        }
+
+        textarea#letra-canto:focus {
+            border-color: var(--oro-suave);
+            background: white;
+        }
+
+        .btn-accion {
+            background: var(--naranja-biblico);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(211, 84, 0, 0.2);
+        }
+
+        .btn-accion:hover {
+            background: #b34700;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(211, 84, 0, 0.3);
+        }
+
+        /* Frase decorativa final */
+        .frase-final {
+            margin-top: 50px;
+            color: #a0a0a0;
+            font-style: italic;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lobby-container" id="lobby">
+        <div class="lobby-content">
+            <header>
+                <h1>Cantos Bíblicos</h1>
+                <div class="linea-decorativa"></div>
+                <p>Crea y guarda tus himnos con elegancia</p>
+            </header>
+
+            <div class="btn-plus-lobby" onclick="abrirEditor()">
+                <span>+</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-editor" id="editor">
+        <input type="text" id="titulo-canto" placeholder="TÍTULO DEL CANTO (EJ: UNA MIRADA DE FE)">
+        <textarea id="letra-canto" placeholder="Escribe la letra aquí..."></textarea>
+        
+        <div style="text-align: center;">
+            <button id="btn-previa" class="btn-accion" onclick="generarPDF()">Generar PDF Profesional</button>
+        </div>
+        <div class="frase-final">"Cantar es orar dos veces"</div>
+    </div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        function abrirEditor() {
+            // Efecto suave de desaparición del lobby
+            const lobby = document.getElementById('lobby');
+            lobby.style.opacity = '0';
+            setTimeout(() => {
+                lobby.style.display = 'none';
+                document.getElementById('editor').style.display = 'block';
+            }, 500);
+        }
+
+        function generarPDF() {
+            const titulo = document.getElementById('titulo-canto').value.toUpperCase();
+            const letra = document.getElementById('letra-canto').value;
+
+            if (!titulo || !letra) {
+                alert("Por favor rellena el título y la letra.");
+                return;
+            }
+
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+
+            // 1. TÍTULO (Naranja, Grande, Centrado)
+            doc.setTextColor(211, 84, 0); // Color naranja
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(24); // Un poco más grande
+            doc.text(titulo, pageWidth / 2, 35, { align: "center" });
+
+            // 2. LÍNEA DIVISORIA (Como en tu imagen)
+            doc.setDrawColor(200, 200, 200); // Gris un poco más oscuro para que se note
+            doc.setLineWidth(0.6);
+            doc.line(25, 42, pageWidth - 25, 42);
+
+            // 3. CUERPO DEL TEXTO (Negro, Centrado, Normal)
+            doc.setTextColor(30, 30, 30); // Negro suave
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(15); // Un punto más grande
+            doc.setLineHeightFactor(1.5); // Mejor espaciado entre líneas
+            
+            // Ajustar texto para que no se salga de los bordes
+            const lineas = doc.splitTextToSize(letra, 165);
+            doc.text(lineas, pageWidth / 2, 60, { align: "center" });
+
+            // Guardar con el nombre del título
+            doc.save(`${titulo.replace(/ /g, "_")}.pdf`);
+            
+            alert("¡PDF Creado con éxito!");
+            
+            // Opción: Limpiar editor y volver al lobby
+            document.getElementById('titulo-canto').value = '';
+            document.getElementById('letra-canto').value = '';
+            document.getElementById('editor').style.display = 'none';
+            const lobby = document.getElementById('lobby');
+            lobby.style.display = 'flex';
+            setTimeout(() => {
+                lobby.style.opacity = '1';
+            }, 50);
+        }
+    </script>
+</body>
+</html>
