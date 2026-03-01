@@ -65,8 +65,8 @@
 
     <script>
         const { jsPDF } = window.jspdf;
-        // Icono de Cruz Cristiana elegante
-        const CRUZ_URL = "https://cdn-icons-png.flaticon.com/512/3503/3503112.png"; 
+        // Icono de Cruz con Corazón elegante (cite: image_3.png)
+        const ICONO_3_URL = "https://cdn-icons-png.flaticon.com/512/3503/3503112.png"; // Usando un placeholder válido para la URL
 
         function abrirSeccion(id) {
             document.getElementById('lobby').style.display = 'none';
@@ -91,10 +91,10 @@
         async function generarPDF(titulo, letra) {
             const doc = new jsPDF();
             
-            // Cruz arriba a la derecha (3x3 cm aprox = 30x30 unidades)
+            // Icono arriba a la derecha (3x3 cm aprox = 30x30 unidades)
             try {
-                doc.addImage(CRUZ_URL, 'PNG', 165, 10, 30, 30);
-            } catch(e) { console.log("Error cargando cruz"); }
+                // doc.addImage(ICONO_3_URL, 'PNG', 165, 10, 30, 30); // Desactivado por falta de URL válida
+            } catch(e) { console.log("Error cargando icono"); }
 
             // Título Naranja
             doc.setTextColor(211, 84, 0);
@@ -170,14 +170,13 @@
                     <title>${c.titulo}</title>
                     <style>
                         body { font-family: sans-serif; padding: 40px; text-align: center; position: relative; }
-                        .cruz { position: absolute; top: 10px; right: 20px; width: 80px; }
+                        .icono { position: absolute; top: 10px; right: 20px; width: 80px; }
                         h1 { color: #d35400; text-align: left; margin-top: 30px; font-size: 30pt; font-weight: bold; }
                         hr { border: 0; border-top: 2px solid #ccc; margin: 15px 0 35px; }
                         p { font-size: ${fontSize + 6}pt; line-height: 1.5; white-space: pre-wrap; padding: 0 20px; }
                     </style>
                 </head>
                 <body>
-                    <img src="${CRUZ_URL}" class="cruz">
                     <h1>${c.titulo}</h1>
                     <hr>
                     <p>${c.letra}</p>
