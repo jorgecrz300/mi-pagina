@@ -32,40 +32,17 @@
 
         .seccion { display: none; width: 90%; max-width: 700px; background: white; padding: 30px; border-radius: 20px; margin-top: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 50px; }
         
-        /* --- CAMBIO: EDITOR MÁS GRANDE --- */
-        input#titulo-canto { 
-            width: 100%; 
-            font-family: 'Cinzel', serif; 
-            font-size: 1.8rem; /* Título más grande */
-            text-align: center; 
-            border: none; 
-            border-bottom: 3px solid #f0f0f0; 
-            margin-bottom: 25px; 
-            padding: 15px; 
-            box-sizing: border-box; 
-            outline: none; 
-            color: var(--naranja); 
-        }
-        textarea#letra-canto { 
-            width: 100%; 
-            height: 550px; /* Mucho más alto */
-            border: 2px solid #f0f0f0; 
-            padding: 20px; 
-            box-sizing: border-box; 
-            font-family: 'Montserrat', sans-serif; 
-            font-size: 1.3rem; /* Letra más grande para leer mejor mientras escribes */
-            font-weight: 500; 
-            resize: none; 
-            border-radius: 15px; 
-            outline: none; 
-            line-height: 1.6;
-        }
-        /* -------------------------------- */
+        /* EDITOR GRANDE (COMO PEDISTE) */
+        input#titulo-canto { width: 100%; font-family: 'Cinzel', serif; font-size: 1.8rem; text-align: center; border: none; border-bottom: 3px solid #f0f0f0; margin-bottom: 25px; padding: 15px; box-sizing: border-box; outline: none; color: var(--naranja); }
+        textarea#letra-canto { width: 100%; height: 550px; border: 2px solid #f0f0f0; padding: 20px; box-sizing: border-box; font-family: 'Montserrat', sans-serif; font-size: 1.3rem; font-weight: 500; resize: none; border-radius: 15px; outline: none; line-height: 1.6; }
 
-        .item-canto { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #eee; }
-        .item-canto h3 { margin: 0; font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--naranja); flex: 1; padding-right: 15px; }
-        .item-canto .controles-canto { display: flex; gap: 10px; align-items: center; }
-        .item-canto button { background: white; border: 2px solid #eee; padding: 15px; border-radius: 15px; cursor: pointer; font-size: 22px; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; }
+        /* --- BOTONES DE LA LISTA AJUSTADOS PARA QUE EL TÍTULO NO SE APLASTE --- */
+        .item-canto { display: flex; justify-content: space-between; align-items: center; padding: 15px 10px; border-bottom: 1px solid #eee; gap: 10px; }
+        .item-canto h3 { margin: 0; font-family: 'Cinzel', serif; font-size: 0.95rem; color: var(--naranja); flex: 2; line-height: 1.2; word-wrap: break-word; }
+        .controles-canto { display: flex; gap: 6px; flex: 1; justify-content: flex-end; min-width: 140px; }
+        .item-canto button { background: white; border: 1.5px solid #eee; padding: 0; border-radius: 10px; cursor: pointer; font-size: 18px; width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+        .item-canto button:active { background: #f0f0f0; }
+        /* --------------------------------------------------------------------- */
 
         .btn-advertencia { position: fixed; bottom: 20px; right: 20px; background: white; border: 2px solid var(--naranja); width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 24px; z-index: 100; }
         .btn-admin-lock { position: fixed; bottom: 10px; left: 10px; background: none; border: none; cursor: pointer; font-size: 14px; opacity: 0.1; color: #ccc; z-index: 100; }
@@ -96,18 +73,9 @@
         <div class="modal-content">
             <h2 style="font-family:'Cinzel'; color:var(--naranja)">¿Cómo usar?</h2>
             <div class="linea"></div>
-            <div class="guia-paso">
-                <span class="icon-guia">📂</span>
-                <p>Presiona <b>COLECCIÓN</b> para ver los cantos.</p>
-            </div>
-            <div class="guia-paso">
-                <span class="icon-guia">🖨️</span>
-                <p>Presiona la <b>IMPRESORA</b> para imprimir directo.</p>
-            </div>
-            <div class="guia-paso">
-                <span class="icon-guia">📄</span>
-                <p>Presiona el <b>PAPEL</b> para guardar como PDF.</p>
-            </div>
+            <div class="guia-paso"><span class="icon-guia">📂</span><p>Presiona <b>COLECCIÓN</b> para ver los cantos.</p></div>
+            <div class="guia-paso"><span class="icon-guia">🖨️</span><p>Presiona la <b>IMPRESORA</b> para imprimir directo.</p></div>
+            <div class="guia-paso"><span class="icon-guia">📄</span><p>Presiona el <b>PAPEL</b> para guardar como PDF.</p></div>
             <button onclick="cerrarTutorial()" style="background:var(--naranja); color:white; border:none; padding:12px 30px; border-radius:50px; cursor:pointer; font-weight:bold; margin-top:10px;">¡ENTENDIDO!</button>
         </div>
     </div>
@@ -148,10 +116,7 @@
 
         function abrirTutorial() { document.getElementById('tutorialModal').style.display = 'block'; }
         function cerrarTutorial() { document.getElementById('tutorialModal').style.display = 'none'; }
-
-        function mostrarAviso() {
-            alert("esta web esta hecha para ayudar a personas que ayuden a la iglesia o vayan a la iglesia, aqui es para poder imprimir canciones biblico catolicos y se van a ir metiendo mas,, NO se hagan dueño de esta web");
-        }
+        function mostrarAviso() { alert("esta web esta hecha para ayudar a personas que ayuden a la iglesia o vayan a la iglesia, aqui es para poder imprimir canciones biblico catolicos y se van a ir metiendo mas,, NO se hagan dueño de esta web"); }
 
         function loginAdmin() {
             const pass = prompt("Acceso Administrador:");
