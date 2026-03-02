@@ -15,6 +15,7 @@
         :root { --naranja: #d35400; --oro: #c5a059; --fondo: #fdfaf6; }
         body { font-family: 'Montserrat', sans-serif; background-color: var(--fondo); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
 
+        /* LOBBY */
         .lobby-container { position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; background-image: url('https://images.unsplash.com/photo-1510121175402-124b22c7eb16?q=80&w=2000'); background-size: cover; background-position: center; }
         .lobby-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); }
         .lobby-content { position: relative; z-index: 2; background: white; padding: 40px; border-radius: 30px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); width: 80%; max-width: 400px; }
@@ -22,27 +23,29 @@
         h1 { font-family: 'Cinzel', serif; color: var(--naranja); margin: 0; }
         .linea { width: 50px; height: 2px; background: var(--oro); margin: 15px auto; }
 
+        /* BOTÓN AYUDA */
+        .btn-ayuda { position: absolute; top: 20px; right: 20px; background: var(--oro); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; font-size: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+        /* VENTANA TUTORIAL (MODAL) */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); }
+        .modal-content { background-color: white; margin: 10% auto; padding: 30px; border-radius: 20px; width: 85%; max-width: 450px; text-align: center; animation: aparecer 0.3s; }
+        @keyframes aparecer { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        .guia-paso { text-align: left; margin: 20px 0; display: flex; align-items: center; gap: 15px; }
+        .icon-guia { font-size: 30px; background: #fff5eb; padding: 10px; border-radius: 12px; }
+
+        /* SECCIONES Y LISTA */
         .seccion { display: none; width: 90%; max-width: 700px; background: white; padding: 30px; border-radius: 20px; margin-top: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 50px; }
-        .btn-volver { background: none; border: none; color: var(--oro); cursor: pointer; font-weight: bold; margin-bottom: 20px; }
-
-        input#titulo-canto { width: 100%; font-family: 'Cinzel', serif; font-size: 1.5rem; text-align: center; border: none; border-bottom: 2px solid #eee; margin-bottom: 20px; padding: 10px; box-sizing: border-box; outline: none; color: var(--naranja); }
-        textarea#letra-canto { width: 100%; height: 400px; border: 1px solid #eee; padding: 15px; box-sizing: border-box; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 500; resize: none; border-radius: 10px; outline: none; }
-        .btn-guardar { width: 100%; background: var(--naranja); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-
         .item-canto { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
         .item-canto h3 { margin: 0; font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--naranja); }
         .item-canto button { background: white; border: 1px solid #eee; padding: 8px; border-radius: 8px; cursor: pointer; margin-left: 5px; }
-
-        footer { margin-top: auto; padding: 20px; font-size: 12px; color: #777; text-align: center; width: 100%; }
-        .btn-advertencia { position: fixed; bottom: 20px; right: 20px; background: white; border: 2px solid var(--naranja); width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 24px; z-index: 100; }
         
         .btn-admin-lock { position: fixed; bottom: 10px; left: 10px; background: none; border: none; cursor: pointer; font-size: 14px; opacity: 0.1; color: #ccc; }
-        .btn-admin-lock:hover { opacity: 0.5; }
     </style>
 </head>
 <body>
 
     <div class="lobby-container" id="lobby">
+        <button class="btn-ayuda" onclick="abrirTutorial()">?</button>
         <div class="lobby-content">
             <h1>Cantos Bíblicos</h1>
             <div class="linea"></div>
@@ -60,23 +63,42 @@
         </div>
     </div>
 
+    <div id="tutorialModal" class="modal">
+        <div class="modal-content">
+            <h2 style="font-family:'Cinzel'; color:var(--naranja)">¿Cómo usar esta web?</h2>
+            <div class="linea"></div>
+            
+            <div class="guia-paso">
+                <span class="icon-guia">📂</span>
+                <p>Presiona <b>COLECCIÓN</b> para ver todos los cantos católicos.</p>
+            </div>
+            <div class="guia-paso">
+                <span class="icon-guia">🖨️</span>
+                <p>Presiona la <b>IMPRESORA</b> para imprimir el canto de inmediato.</p>
+            </div>
+            <div class="guia-paso">
+                <span class="icon-guia">📄</span>
+                <p>Presiona el <b>PAPEL</b> para guardar el canto como PDF en tu celular.</p>
+            </div>
+
+            <button onclick="cerrarTutorial()" style="background:var(--naranja); color:white; border:none; padding:12px 30px; border-radius:50px; cursor:pointer; font-weight:bold; margin-top:10px;">¡ENTENDIDO!</button>
+        </div>
+    </div>
+
     <div class="seccion" id="editor">
-        <button class="btn-volver" onclick="volverAlLobby()">← INICIO</button>
+        <button onclick="volverAlLobby()" style="background:none; border:none; color:var(--oro); cursor:pointer; font-weight:bold;">← INICIO</button>
         <input type="text" id="titulo-canto" placeholder="TÍTULO DEL CANTO">
         <textarea id="letra-canto" placeholder="Escribe la letra aquí..."></textarea>
-        <button class="btn-guardar" onclick="guardarEnFirebase()">GUARDAR PARA TODOS</button>
+        <button onclick="guardarEnFirebase()" style="width:100%; background:var(--naranja); color:white; border:none; padding:15px; border-radius:50px; font-weight:bold; cursor:pointer; margin-top:20px;">GUARDAR PARA TODOS</button>
     </div>
 
     <div class="seccion" id="biblioteca">
-        <button class="btn-volver" onclick="volverAlLobby()">← INICIO</button>
+        <button onclick="volverAlLobby()" style="background:none; border:none; color:var(--oro); cursor:pointer; font-weight:bold; margin-bottom:20px;">← INICIO</button>
         <h2 style="font-family: 'Cinzel'; color: var(--oro); text-align: center;">Cantos de la Iglesia</h2>
         <div id="lista-cantos">Cargando cantos...</div>
     </div>
 
-    <div class="btn-advertencia" onclick="mostrarAviso()">⚠️</div>
     <button class="btn-admin-lock" onclick="loginAdmin()">🔒</button>
-
-    <footer><span style="font-weight: 600; color: var(--oro);">© 2026 CANTOS BÍBLICOS - TODOS LOS DERECHOS RESERVADOS</span></footer>
 
     <script>
         const firebaseConfig = {
@@ -85,8 +107,7 @@
             projectId: "cantos-catolicos-94bb0",
             storageBucket: "cantos-catolicos-94bb0.firebasestorage.app",
             messagingSenderId: "816829274165",
-            appId: "1:816829274165:web:92c6a96e7cb964da94f97c",
-            measurementId: "G-6X9HK67XTN"
+            appId: "1:816829274165:web:92c6a96e7cb964da94f97c"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -94,8 +115,12 @@
         const { jsPDF } = window.jspdf;
 
         let esAdmin = false;
-        let cantosCache = null;
+        let cantosCache = {};
         const PASS_ADMIN = "espe2009";
+
+        // FUNCIONES TUTORIAL
+        function abrirTutorial() { document.getElementById('tutorialModal').style.display = 'block'; }
+        function cerrarTutorial() { document.getElementById('tutorialModal').style.display = 'none'; }
 
         function loginAdmin() {
             const pass = prompt("Acceso Administrador:");
@@ -103,14 +128,12 @@
                 esAdmin = true;
                 alert("Modo Administrador activado ✅");
                 actualizarListaEnPantalla(cantosCache);
-            } else {
-                alert("Clave incorrecta ❌");
-            }
+            } else { alert("Clave incorrecta ❌"); }
         }
 
         function verificarAdmin() {
             if (esAdmin) { abrirSeccion('editor'); } 
-            else { alert("Acceso restringido al administrador."); }
+            else { alert("Solo el administrador puede agregar cantos."); }
         }
 
         function abrirSeccion(id) {
@@ -126,16 +149,11 @@
             document.getElementById('lobby').style.display = 'flex';
         }
 
-        function mostrarAviso() {
-            alert("esta web esta hecha para ayudar a personas que ayuden a la iglesia o vayan a la iglesia, aqui es para poder imprimir canciones biblico catolicos y se van a ir metiendo mas,, NO se hagan dueño de esta web");
-        }
-
         function guardarEnFirebase() {
             if (!esAdmin) return;
             const tit = document.getElementById('titulo-canto').value.toUpperCase().trim();
             const letr = document.getElementById('letra-canto').value.trim();
             if (!tit || !letr) return alert("Escribe algo primero");
-
             db.ref('cantos').push({ titulo: tit, letra: letr, timestamp: Date.now() }).then(() => {
                 alert("Canto guardado");
                 document.getElementById('titulo-canto').value = "";
@@ -152,21 +170,13 @@
                     const c = datos[key];
                     const div = document.createElement('div');
                     div.className = 'item-canto';
-                    
-                    const btnEliminar = esAdmin ? `<button class="btn-del" data-id="${key}">🗑️</button>` : "";
-                    
+                    const btnEliminar = esAdmin ? `<button onclick="eliminarCanto('${key}')" style="color:red">🗑️</button>` : "";
                     div.innerHTML = `<h3>${c.titulo}</h3>
                         <div>
-                            <button class="btn-pdf" data-id="${key}">📄</button>
-                            <button class="btn-print" data-id="${key}">🖨️</button>
+                            <button onclick="generarPDF('${c.titulo}', \`${c.letra}\`)">📄</button>
+                            <button onclick="imprimirDirecto('${c.titulo}', \`${c.letra}\`)">🖨️</button>
                             ${btnEliminar}
                         </div>`;
-                    
-                    // Eventos para que funcionen siempre
-                    div.querySelector('.btn-pdf').onclick = () => generarPDF(c.titulo, c.letra);
-                    div.querySelector('.btn-print').onclick = () => imprimirDirecto(c.titulo, c.letra);
-                    if(esAdmin) div.querySelector('.btn-del').onclick = () => eliminarCanto(key);
-                    
                     lista.appendChild(div);
                 });
             } else { lista.innerHTML = "<p>No hay cantos todavía.</p>"; }
@@ -178,7 +188,7 @@
         });
 
         function eliminarCanto(key) {
-            if (confirm("¿Borrar este canto permanentemente?")) { db.ref('cantos/' + key).remove(); }
+            if (confirm("¿Borrar permanentemente?")) { db.ref('cantos/' + key).remove(); }
         }
 
         function generarPDF(titulo, letra) {
