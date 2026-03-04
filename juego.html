@@ -8,25 +8,18 @@
         :root { --main-color: #00ff41; --bg-color: #050505; --accent: #ff00ff; }
         body { background: var(--bg-color); color: var(--main-color); font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; user-select: none; overflow-x: hidden; }
         
-        /* LOGIN OVERLAY */
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
         .login-box { border: 2px solid var(--main-color); padding: 30px; text-align: center; border-radius: 10px; background: #0a0a0a; box-shadow: 0 0 20px var(--main-color); }
         input { background: #111; color: var(--main-color); border: 1px solid var(--main-color); padding: 10px; margin: 10px; text-align: center; outline: none; }
 
-        /* LEADERBOARD */
-        .leaderboard { position: fixed; top: 10px; right: 10px; width: 200px; background: rgba(0,0,0,0.9); border: 1px solid var(--accent); padding: 10px; border-radius: 5px; font-size: 10px; z-index: 90; box-shadow: 0 0 10px var(--accent); }
-        .leaderboard h3 { margin: 0 0 8px 0; color: var(--accent); text-align: center; font-size: 12px; }
-        .rank-item { display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding: 3px 0; }
-        .rank-name { color: var(--main-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80px; }
+        .leaderboard { position: fixed; top: 10px; right: 10px; width: 220px; background: rgba(0,0,0,0.9); border: 1px solid var(--accent); padding: 10px; border-radius: 5px; font-size: 10px; z-index: 90; box-shadow: 0 0 10px var(--accent); max-height: 200px; overflow-y: auto; }
+        .leaderboard h3 { margin: 0 0 8px 0; color: var(--accent); text-align: center; font-size: 12px; border-bottom: 1px solid var(--accent); }
+        .rank-item { display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding: 4px 0; }
+        .rank-name { color: var(--main-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 90px; }
 
-        /* HEADER & STATS */
         .header { text-align: center; border: 1px solid var(--main-color); padding: 15px; border-radius: 10px; width: 100%; max-width: 450px; background: rgba(0,255,65,0.02); margin-top: 50px; }
         #stats { font-size: 28px; font-weight: bold; margin: 5px 0; text-shadow: 0 0 10px var(--main-color); }
         
-        .transfer-btns { display: flex; gap: 5px; justify-content: center; margin-top: 10px; }
-        .btn-transfer { background: #444; color: white; font-size: 8px; padding: 5px; width: auto; }
-
-        /* RULETA */
         .roulette-container { width: 300px; height: 60px; border: 2px solid var(--accent); margin: 15px 0; position: relative; overflow: hidden; background: #111; border-radius: 8px; }
         .roulette-rail { display: flex; position: absolute; left: 0; transition: left 3s cubic-bezier(0.1, 0.7, 0.1, 1); }
         .slot { min-width: 100px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; border-right: 1px solid #222; }
@@ -35,7 +28,6 @@
         #pc-target { width: 100px; cursor: pointer; transition: 0.1s; margin: 10px 0; filter: drop-shadow(0 0 10px var(--main-color)); }
         #pc-target:active { transform: scale(0.9); }
 
-        /* TIENDA */
         .grid-tienda { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 480px; }
         .item { border: 1px solid var(--main-color); padding: 10px; border-radius: 8px; text-align: center; background: rgba(255,255,255,0.03); }
         
@@ -44,58 +36,34 @@
         .btn-gamble { background: var(--accent); color: white; font-size: 9px; }
         .count-badge { color: #fbff00; font-size: 10px; display: block; margin-bottom: 3px; }
 
-        /* NUEVO: BOTÓN DE ALERTA HACKER */
-        #hacker-alert-btn {
-            position: fixed;
-            z-index: 2000;
-            padding: 15px 25px;
-            background: #ff0000;
-            color: white;
-            border: 3px solid #fff;
-            font-weight: bold;
-            cursor: pointer;
-            display: none;
-            box-shadow: 0 0 20px #ff0000;
-            border-radius: 5px;
-            animation: flash 0.5s infinite;
-        }
+        #hacker-alert-btn { position: fixed; z-index: 2000; padding: 15px 25px; background: #ff0000; color: white; border: 3px solid #fff; font-weight: bold; cursor: pointer; display: none; box-shadow: 0 0 20px #ff0000; border-radius: 5px; animation: flash 0.5s infinite; }
         @keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-
         #adminBtn { position: fixed; bottom: 0; right: 0; width: 30px; height: 30px; opacity: 0; z-index: 999; }
     </style>
 </head>
 <body>
 
-    <button id="hacker-alert-btn" onclick="detenerRobo()">¡STOP HACKER!</button>
+    <button id="hacker-alert-btn">¡STOP HACKER!</button>
 
     <div class="leaderboard">
-        <h3>🏆 TOP HACKERS</h3>
-        <div id="leaderboard-list">
-            <div style="text-align:center">Local Mode Active</div>
-        </div>
+        <h3>🏆 GLOBAL RANKING</h3>
+        <div id="leaderboard-list">Cargando red...</div>
     </div>
 
     <div id="login-overlay">
         <div class="login-box">
             <h2>ACCESS TERMINAL</h2>
             <input type="text" id="username-input" placeholder="Hacker Name..." maxlength="12">
-            <button onclick="login()">INITIALIZE</button>
+            <button id="btn-login">INITIALIZE</button>
         </div>
     </div>
 
     <div class="header">
         <div style="font-size: 11px; color: var(--accent);">
-            HACKER: <span id="current-user">---</span> 
-            <button style="width:auto; padding: 2px 5px; margin:0;" onclick="cambiarNombre()">RENAME</button>
-            | REVIVE: <span id="rebirth-val">0</span>
+            HACKER: <span id="current-user">---</span> | REVIVE: <span id="rebirth-val">0</span>
         </div>
         <div id="stats">💰 <span id="puntos">0</span> BTC</div>
-        
-        <div class="transfer-btns">
-            <button class="btn-transfer" onclick="exportarDatos()">📤 BACKUP</button>
-            <button class="btn-transfer" onclick="importarDatos()">📥 IMPORT</button>
-        </div>
-        <button style="background:#ff3333; color:white; width:auto; padding:3px 8px; font-size:9px;" onclick="location.reload()">TERMINATE</button>
+        <div id="log" style="font-size: 12px; margin: 10px; color: yellow;">CONNECTING TO SERVER...</div>
     </div>
 
     <div class="roulette-container">
@@ -103,159 +71,20 @@
         <div class="roulette-rail" id="rail"></div>
     </div>
 
-    <div id="log" style="font-size: 12px; margin: 10px; color: yellow;">SYSTEM READY</div>
-
-    <img id="pc-target" src="https://cdn-icons-png.flaticon.com/512/689/689304.png" onclick="clickPc()">
+    <img id="pc-target" src="https://cdn-icons-png.flaticon.com/512/689/689304.png">
 
     <div class="grid-tienda">
         <div class="item" style="grid-column: span 2; border-color: #00ccff;">
-            <button id="btnRebirth" onclick="hacerRebirth()" style="background:#00ccff;">REBIRTH (50k BTC)</button>
+            <button id="btnRebirth" style="background:#00ccff;">REBIRTH (50k BTC)</button>
         </div>
 
         <div class="item" style="grid-column: span 2; border-color: var(--accent); display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
-            <button class="btn-gamble" onclick="jugar(75, 100, 1)">NOVATO (75% -> 100)</button>
-            <button class="btn-gamble" onclick="jugar(45, 10000, 500)">MEDIO (45% -> 10k)</button>
-            <button class="btn-gamble" onclick="jugar(30, 50000, 1000)">MEJOR (30% -> 50k)</button>
-            <button class="btn-gamble" onclick="jugar(0.1, 50000000000, 20000000)">MAESTRO (0.1% -> 50B)</button>
+            <button class="btn-gamble" id="gamble-1">NOVATO (75% -> 100)</button>
+            <button class="btn-gamble" id="gamble-2">MEDIO (45% -> 10k)</button>
+            <button class="btn-gamble" id="gamble-3">MEJOR (30% -> 50k)</button>
+            <button class="btn-gamble" id="gamble-4">MAESTRO (0.1% -> 50B)</button>
         </div>
 
         <div class="item">
             <span>CPU (+2)</span>
-            <button id="btnUp" onclick="comprarUp()">50 BTC</button>
-        </div>
-
-        <div class="item">
-            <span class="count-badge">BOTS: <span id="bot-count">0</span></span>
-            <button id="btnAuto" onclick="comprarAuto()">150 BTC</button>
-        </div>
-    </div>
-
-    <div id="adminBtn" onclick="abrirAdmin()"></div>
-
-    <script>
-        let user = "";
-        let data = { pts: 0, pwr: 2, bots: 0, rb: 0 };
-        let modoDios = false;
-        let girando = false;
-        let timerRobo, intervaloMovimiento;
-        const btnAlerta = document.getElementById('hacker-alert-btn');
-
-        function getMulti() { return 1 + (data.rb * 0.5); }
-
-        function login() {
-            const name = document.getElementById('username-input').value.trim().toUpperCase();
-            if (!name) return;
-            user = name;
-            document.getElementById('current-user').innerText = user;
-            document.getElementById('login-overlay').style.display = 'none';
-            const saved = localStorage.getItem('cybUser_' + user);
-            if (saved) data = JSON.parse(saved);
-            actualizar();
-            actualizarLeaderboardLocal();
-        }
-
-        function cambiarNombre() {
-            let nuevo = prompt("NUEVO ALIAS:", user);
-            if (nuevo && nuevo.trim() !== "") {
-                localStorage.removeItem('cybUser_' + user);
-                user = nuevo.trim().toUpperCase();
-                document.getElementById('current-user').innerText = user;
-                guardar();
-                actualizarLeaderboardLocal();
-            }
-        }
-
-        function actualizar() {
-            document.getElementById('puntos').innerText = Math.floor(data.pts).toLocaleString();
-            document.getElementById('rebirth-val').innerText = data.rb;
-            document.getElementById('bot-count').innerText = data.bots;
-            document.getElementById('btnUp').disabled = data.pts < 50;
-            document.getElementById('btnAuto').disabled = data.pts < 150;
-            document.getElementById('btnRebirth').disabled = data.pts < 50000;
-        }
-
-        function actualizarLeaderboardLocal() {
-            const list = document.getElementById('leaderboard-list');
-            list.innerHTML = `<div class="rank-item"><span class="rank-name">1. ${user}</span><span>RB: ${data.rb} | 💰 ${Math.floor(data.pts)}</span></div>`;
-        }
-
-        function clickPc() { data.pts += (data.pwr * getMulti()); actualizar(); }
-
-        function jugar(prob, premio, costo) {
-            if (girando || data.pts < costo) return;
-            data.pts -= costo; girando = true; actualizar();
-            const rail = document.getElementById('rail');
-            rail.style.transition = "none"; rail.style.left = "0px"; rail.innerHTML = '';
-            for(let i=0; i<30; i++) {
-                const s = document.createElement('div'); s.className = 'slot';
-                s.innerText = "HACKING"; rail.appendChild(s);
-            }
-            const exito = modoDios ? true : (Math.random() * 100 <= prob);
-            setTimeout(() => { rail.style.transition = "left 2.5s ease-out"; rail.style.left = "-2000px"; }, 50);
-            setTimeout(() => {
-                girando = false;
-                if(exito) { data.pts += premio; document.getElementById('log').innerText = "WIN: +" + premio; }
-                else { document.getElementById('log').innerText = "LOST"; }
-                actualizar(); guardar();
-                actualizarLeaderboardLocal();
-            }, 2550);
-        }
-
-        // LÓGICA DE EVENTO HACKER
-        function moverBotonAlerta() {
-            const x = Math.random() * (window.innerWidth - 150);
-            const y = Math.random() * (window.innerHeight - 50);
-            btnAlerta.style.left = x + "px"; btnAlerta.style.top = y + "px";
-        }
-
-        function eventoHackerRival() {
-            if (girando || data.pts < 100) return;
-            document.getElementById('log').innerText = "⚠️ ¡ALERTA! HACKER RIVAL ROBANDO BTC";
-            document.getElementById('log').style.color = "red";
-            btnAlerta.style.display = "block";
-            moverBotonAlerta();
-            intervaloMovimiento = setInterval(moverBotonAlerta, 600);
-            timerRobo = setTimeout(() => { finalizarAtaque(false); }, 5000);
-        }
-
-        function detenerRobo() { finalizarAtaque(true); }
-
-        function finalizarAtaque(exito) {
-            clearInterval(intervaloMovimiento);
-            clearTimeout(timerRobo);
-            btnAlerta.style.display = "none";
-            if (exito) {
-                let bono = Math.floor(data.pts * 0.02) + 500;
-                data.pts += bono;
-                document.getElementById('log').innerText = "✅ RECHAZADO: +" + bono + " BTC";
-                document.getElementById('log').style.color = "var(--main-color)";
-            } else {
-                let perdida = Math.floor(data.pts * 0.05);
-                data.pts -= perdida;
-                document.getElementById('log').innerText = "❌ HACKEO EXITOSO: -" + perdida + " BTC";
-                document.getElementById('log').style.color = "red";
-            }
-            actualizar(); guardar();
-        }
-
-        function hacerRebirth() { if(data.pts >= 50000){ data.rb++; data.pts=0; data.pwr=2; data.bots=0; actualizar(); guardar(); actualizarLeaderboardLocal(); } }
-        function comprarUp() { if(data.pts >= 50){ data.pts -= 50; data.pwr += 2; actualizar(); guardar(); } }
-        function comprarAuto() { if(data.pts >= 150){ data.pts -= 150; data.bots++; actualizar(); guardar(); } }
-
-        function abrirAdmin() {
-            const code = prompt("ADMIN:");
-            if(code === "JORGE_GOD") data.pts += 1000000000;
-            if(code === "SUERTE_MAX") modoDios = true;
-            actualizar(); guardar();
-        }
-
-        function guardar() { if(user) localStorage.setItem('cybUser_' + user, JSON.stringify(data)); }
-        
-        setInterval(() => { if(data.bots > 0){ data.pts += (data.bots * getMulti()); actualizar(); } }, 1000);
-        setInterval(() => { guardar(); actualizarLeaderboardLocal(); }, 10000);
-        
-        // Probabilidad de ataque cada 40 segundos
-        setInterval(() => { if(Math.random() < 0.3) eventoHackerRival(); }, 40000);
-    </script>
-</body>
-</html>
+            <button id="btnUp">50
