@@ -87,4 +87,157 @@
 
         <div class="item">
             <span>CPU (+2)</span>
-            <button id="btnUp">50
+            <button id="btnUp">50 BTC</button>
+        </div>
+
+        <div class="item">
+            <span class="count-badge">BOTS: <span id="bot-count">0</span></span>
+            <button id="btnAuto">150 BTC</button>
+        </div>
+    </div>
+
+    <div id="adminBtn"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA5MMVzYmwhm38MgMUTKyYgdpVSyPOYscw",
+            authDomain: "cyberclicker-78621.firebaseapp.com",
+            databaseURL: "https://cyberclicker-78621-default-rtdb.firebaseio.com",
+            projectId: "cyberclicker-78621",
+            storageBucket: "cyberclicker-78621.firebasestorage.app",
+            messagingSenderId: "161403727205",
+            appId: "1:161403727205:web:711bc83f5b337e696ac58c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Variables de Juego
+        let user = "";
+        let data = { pts: 0, pwr: 2, bots: 0, rb: 0 };
+        let modoDios = false;
+        let girando = false;
+        let timerRobo, intervaloMovimiento;
+
+        // --- FUNCIONES CORE ---
+
+        async function login() {
+            const nameInput = document.getElementById('username-input').value.trim().toUpperCase();
+            if (!nameInput) return;
+            user = nameInput;
+            
+            const userRef = ref(db, 'users/' + user);
+            const snapshot = await get(userRef);
+            
+            if (snapshot.exists()) {
+                data = snapshot.val();
+                document.getElementById('log').innerText = "DATA RESTORED";
+            } else {
+                await set(userRef, data);
+                document.getElementById('log').innerText = "NEW PROFILE CREATED";
+            }
+
+            document.getElementById('current-user').innerText = user;
+            document.getElementById('login-overlay').style.display = 'none';
+            actualizarUI();
+            escucharLeaderboard();
+        }
+
+        function guardarEnNube() {
+            if (!user) return;
+            update(ref(db, 'users/' + user), data);
+        }
+
+        function escucharLeaderboard() {
+            const usersRef = ref(db, 'users');
+            onValue(usersRef, (snapshot) => {
+                const allUsers = snapshot.val();
+                const sorted = Object.entries(allUsers)
+                    .map(([name, val]) => ({ name, ...val }))
+                    .sort((a, b) => (b.rb * 1000000 + b.pts) - (a.rb * 1000000 + a.pts))
+                    .slice(0, 10);
+
+                const list = document.getElementById('leaderboard-list');
+                list.innerHTML = sorted.map((u, i) => `
+                    <div class="rank-item">
+                        <span class="rank-name">${i+1}. ${u.name}</span>
+                        <span>RB:${u.rb} | 💰${Math.floor(u.pts).toLocaleString()}</span>
+                    </div>
+                `).join('');
+            });
+        }
+
+        function actualizarUI() {
+            document.getElementById('puntos').innerText = Math.floor(data.pts).toLocaleString();
+            document.getElementById('rebirth-val').innerText = data.rb;
+            document.getElementById('bot-count').innerText = data.bots;
+            document.getElementById('btnUp').disabled = data.pts < 50;
+            document.getElementById('btnAuto').disabled = data.pts < 150;
+            document.getElementById('btnRebirth').disabled = data.pts < 50000;
+        }
+
+        // --- ACCIONES DEL JUGADOR ---
+
+        const clickPc = () => {
+            data.pts += (data.pwr * (1 + data.rb * 0.5));
+            actualizarUI();
+        };
+
+        const jugar = (prob, premio, costo) => {
+            if (girando || data.pts < costo) return;
+            data.pts -= costo; girando = true; actualizarUI();
+            
+            const rail = document.getElementById('rail');
+            rail.style.transition = "none"; rail.style.left = "0px"; rail.innerHTML = '';
+            for(let i=0; i<30; i++) {
+                const s = document.createElement('div'); s.className = 'slot';
+                s.innerText = "HACKING"; rail.appendChild(s);
+            }
+            
+            const exito = modoDios ? true : (Math.random() * 100 <= prob);
+            setTimeout(() => { rail.style.transition = "left 2.5s ease-out"; rail.style.left = "-2000px"; }, 50);
+            setTimeout(() => {
+                girando = false;
+                if(exito) { data.pts += premio; document.getElementById('log').innerText = "WIN: +" + premio; }
+                else { document.getElementById('log').innerText = "LOST"; }
+                actualizarUI(); guardarEnNube();
+            }, 2550);
+        };
+
+        // --- EVENTOS Y LISTENERS ---
+        document.getElementById('btn-login').onclick = login;
+        document.getElementById('pc-target').onclick = clickPc;
+        document.getElementById('btnUp').onclick = () => { if(data.pts >= 50){ data.pts -= 50; data.pwr += 2; actualizarUI(); guardarEnNube(); } };
+        document.getElementById('btnAuto').onclick = () => { if(data.pts >= 150){ data.pts -= 150; data.bots++; actualizarUI(); guardarEnNube(); } };
+        document.getElementById('btnRebirth').onclick = () => { if(data.pts >= 50000){ data.rb++; data.pts=0; data.pwr=2; data.bots=0; actualizarUI(); guardarEnNube(); } };
+        
+        document.getElementById('gamble-1').onclick = () => jugar(75, 100, 1);
+        document.getElementById('gamble-2').onclick = () => jugar(45, 10000, 500);
+        document.getElementById('gamble-3').onclick = () => jugar(30, 50000, 1000);
+        document.getElementById('gamble-4').onclick = () => jugar(0.1, 50000000000, 20000000);
+
+        // Bots produciendo BTC
+        setInterval(() => {
+            if(data.bots > 0){
+                data.pts += (data.bots * (1 + data.rb * 0.5));
+                actualizarUI();
+            }
+        }, 1000);
+
+        // Guardado automático cada 10 segundos
+        setInterval(guardarEnNube, 10000);
+        
+        // Admin
+        document.getElementById('adminBtn').onclick = () => {
+            const code = prompt("ADMIN:");
+            if(code === "JORGE_GOD") data.pts += 1000000000;
+            if(code === "SUERTE_MAX") modoDios = true;
+            actualizarUI(); guardarEnNube();
+        };
+
+    </script>
+</body>
+</html>
