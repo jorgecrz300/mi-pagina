@@ -8,18 +8,22 @@
         :root { --main-color: #00ff41; --bg-color: #050505; --accent: #ff00ff; }
         body { background: var(--bg-color); color: var(--main-color); font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; user-select: none; overflow-x: hidden; }
         
+        /* LOGIN OVERLAY */
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
         .login-box { border: 2px solid var(--main-color); padding: 30px; text-align: center; border-radius: 10px; background: #0a0a0a; box-shadow: 0 0 20px var(--main-color); }
         input { background: #111; color: var(--main-color); border: 1px solid var(--main-color); padding: 10px; margin: 10px; text-align: center; outline: none; }
 
-        .leaderboard { position: fixed; top: 10px; right: 10px; width: 220px; background: rgba(0,0,0,0.9); border: 1px solid var(--accent); padding: 10px; border-radius: 5px; font-size: 10px; z-index: 90; box-shadow: 0 0 10px var(--accent); max-height: 200px; overflow-y: auto; }
+        /* LEADERBOARD */
+        .leaderboard { position: fixed; top: 10px; right: 10px; width: 220px; background: rgba(0,0,0,0.9); border: 1px solid var(--accent); padding: 10px; border-radius: 5px; font-size: 10px; z-index: 90; box-shadow: 0 0 10px var(--accent); max-height: 250px; overflow-y: auto; }
         .leaderboard h3 { margin: 0 0 8px 0; color: var(--accent); text-align: center; font-size: 12px; border-bottom: 1px solid var(--accent); }
-        .rank-item { display: flex; justify-content: space-between; border-bottom: 1px solid #222; padding: 4px 0; }
-        .rank-name { color: var(--main-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 90px; }
+        .rank-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding: 4px 0; }
+        .rank-name { color: var(--main-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80px; }
 
+        /* HEADER & STATS */
         .header { text-align: center; border: 1px solid var(--main-color); padding: 15px; border-radius: 10px; width: 100%; max-width: 450px; background: rgba(0,255,65,0.02); margin-top: 50px; }
         #stats { font-size: 28px; font-weight: bold; margin: 5px 0; text-shadow: 0 0 10px var(--main-color); }
         
+        /* RULETA */
         .roulette-container { width: 300px; height: 60px; border: 2px solid var(--accent); margin: 15px 0; position: relative; overflow: hidden; background: #111; border-radius: 8px; }
         .roulette-rail { display: flex; position: absolute; left: 0; transition: left 3s cubic-bezier(0.1, 0.7, 0.1, 1); }
         .slot { min-width: 100px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; border-right: 1px solid #222; }
@@ -28,6 +32,7 @@
         #pc-target { width: 100px; cursor: pointer; transition: 0.1s; margin: 10px 0; filter: drop-shadow(0 0 10px var(--main-color)); }
         #pc-target:active { transform: scale(0.9); }
 
+        /* TIENDA */
         .grid-tienda { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 480px; }
         .item { border: 1px solid var(--main-color); padding: 10px; border-radius: 8px; text-align: center; background: rgba(255,255,255,0.03); }
         
@@ -36,18 +41,27 @@
         .btn-gamble { background: var(--accent); color: white; font-size: 9px; }
         .count-badge { color: #fbff00; font-size: 10px; display: block; margin-bottom: 3px; }
 
+        /* HACKER ALERT */
         #hacker-alert-btn { position: fixed; z-index: 2000; padding: 15px 25px; background: #ff0000; color: white; border: 3px solid #fff; font-weight: bold; cursor: pointer; display: none; box-shadow: 0 0 20px #ff0000; border-radius: 5px; animation: flash 0.5s infinite; }
         @keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* ADMIN BACKDOOR */
+        #admin-lock { position: fixed; bottom: 10px; left: 10px; font-size: 18px; opacity: 0.02; cursor: pointer; transition: opacity 0.3s; z-index: 1000; }
+        #admin-lock:hover { opacity: 0.3; }
+        .btn-delete { color: #ff3333; background: none; border: 1px solid #ff3333; padding: 2px 5px; cursor: pointer; font-size: 8px; border-radius: 3px; margin-left: 5px; }
+        
         #adminBtn { position: fixed; bottom: 0; right: 0; width: 30px; height: 30px; opacity: 0; z-index: 999; }
     </style>
 </head>
 <body>
 
+    <div id="admin-lock">🔒</div>
+
     <button id="hacker-alert-btn">¡STOP HACKER!</button>
 
     <div class="leaderboard">
         <h3>🏆 GLOBAL RANKING</h3>
-        <div id="leaderboard-list">Cargando red...</div>
+        <div id="leaderboard-list">CONECTANDO...</div>
     </div>
 
     <div id="login-overlay">
@@ -63,7 +77,7 @@
             HACKER: <span id="current-user">---</span> | REVIVE: <span id="rebirth-val">0</span>
         </div>
         <div id="stats">💰 <span id="puntos">0</span> BTC</div>
-        <div id="log" style="font-size: 12px; margin: 10px; color: yellow;">CONNECTING TO SERVER...</div>
+        <div id="log" style="font-size: 12px; margin: 10px; color: yellow;">SYSTEM READY</div>
     </div>
 
     <div class="roulette-container">
@@ -100,7 +114,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, set, get, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA5MMVzYmwhm38MgMUTKyYgdpVSyPOYscw",
@@ -118,43 +132,43 @@
         // Variables de Juego
         let user = "";
         let data = { pts: 0, pwr: 2, bots: 0, rb: 0 };
+        let esAdminSesion = false;
         let modoDios = false;
         let girando = false;
-        let timerRobo, intervaloMovimiento;
+        const PASSWORD_SECRETA = "ADMIN1234";
 
-        // --- FUNCIONES CORE ---
+        // --- FUNCIONES DE NUBE ---
 
-        async function login() {
-            const nameInput = document.getElementById('username-input').value.trim().toUpperCase();
-            if (!nameInput) return;
-            user = nameInput;
+        window.login = async () => {
+            const name = document.getElementById('username-input').value.trim().toUpperCase();
+            if (!name) return;
+            user = name;
             
             const userRef = ref(db, 'users/' + user);
             const snapshot = await get(userRef);
             
             if (snapshot.exists()) {
                 data = snapshot.val();
-                document.getElementById('log').innerText = "DATA RESTORED";
+                document.getElementById('log').innerText = "DATA RESTORED FROM CLOUD";
             } else {
                 await set(userRef, data);
-                document.getElementById('log').innerText = "NEW PROFILE CREATED";
+                document.getElementById('log').innerText = "NEW HACKER REGISTERED";
             }
 
             document.getElementById('current-user').innerText = user;
             document.getElementById('login-overlay').style.display = 'none';
             actualizarUI();
             escucharLeaderboard();
-        }
+        };
 
-        function guardarEnNube() {
-            if (!user) return;
-            update(ref(db, 'users/' + user), data);
-        }
+        window.guardarEnNube = () => {
+            if (user) update(ref(db, 'users/' + user), data);
+        };
 
         function escucharLeaderboard() {
-            const usersRef = ref(db, 'users');
-            onValue(usersRef, (snapshot) => {
+            onValue(ref(db, 'users'), (snapshot) => {
                 const allUsers = snapshot.val();
+                if (!allUsers) return;
                 const sorted = Object.entries(allUsers)
                     .map(([name, val]) => ({ name, ...val }))
                     .sort((a, b) => (b.rb * 1000000 + b.pts) - (a.rb * 1000000 + a.pts))
@@ -164,11 +178,34 @@
                 list.innerHTML = sorted.map((u, i) => `
                     <div class="rank-item">
                         <span class="rank-name">${i+1}. ${u.name}</span>
-                        <span>RB:${u.rb} | 💰${Math.floor(u.pts).toLocaleString()}</span>
+                        <span>💰${Math.floor(u.pts).toLocaleString()}</span>
+                        ${esAdminSesion ? `<button class="btn-delete" onclick="eliminarUsuario('${u.name}')">DEL</button>` : ''}
                     </div>
                 `).join('');
             });
         }
+
+        // --- ADMIN BACKDOOR ---
+
+        window.solicitarAcceso = () => {
+            const psw = prompt("SISTEMA BLOQUEADO. INGRESE CLAVE MAESTRA:");
+            if (psw === PASSWORD_SECRETA) {
+                esAdminSesion = true;
+                document.getElementById('log').innerText = "MODO ADMIN: ACTIVADO";
+                document.getElementById('log').style.color = "cyan";
+                escucharLeaderboard();
+            } else {
+                alert("ERROR DE AUTENTICACIÓN");
+            }
+        };
+
+        window.eliminarUsuario = async (target) => {
+            if (confirm(`¿BORRAR DEFINITIVAMENTE A ${target}?`)) {
+                await remove(ref(db, 'users/' + target));
+            }
+        };
+
+        // --- LÓGICA DE JUEGO ---
 
         function actualizarUI() {
             document.getElementById('puntos').innerText = Math.floor(data.pts).toLocaleString();
@@ -179,8 +216,6 @@
             document.getElementById('btnRebirth').disabled = data.pts < 50000;
         }
 
-        // --- ACCIONES DEL JUGADOR ---
-
         const clickPc = () => {
             data.pts += (data.pwr * (1 + data.rb * 0.5));
             actualizarUI();
@@ -189,14 +224,12 @@
         const jugar = (prob, premio, costo) => {
             if (girando || data.pts < costo) return;
             data.pts -= costo; girando = true; actualizarUI();
-            
             const rail = document.getElementById('rail');
             rail.style.transition = "none"; rail.style.left = "0px"; rail.innerHTML = '';
             for(let i=0; i<30; i++) {
                 const s = document.createElement('div'); s.className = 'slot';
                 s.innerText = "HACKING"; rail.appendChild(s);
             }
-            
             const exito = modoDios ? true : (Math.random() * 100 <= prob);
             setTimeout(() => { rail.style.transition = "left 2.5s ease-out"; rail.style.left = "-2000px"; }, 50);
             setTimeout(() => {
@@ -207,9 +240,47 @@
             }, 2550);
         };
 
-        // --- EVENTOS Y LISTENERS ---
-        document.getElementById('btn-login').onclick = login;
+        // --- EVENTO HACKER RIVAL ---
+        const btnAlerta = document.getElementById('hacker-alert-btn');
+        let timerRobo, intervaloMovimiento;
+
+        function eventoHackerRival() {
+            if (girando || data.pts < 100) return;
+            document.getElementById('log').innerText = "⚠️ ¡ALERTA! HACKER RIVAL DETECTADO";
+            document.getElementById('log').style.color = "red";
+            btnAlerta.style.display = "block";
+            const mover = () => {
+                btnAlerta.style.left = Math.random() * (window.innerWidth - 150) + "px";
+                btnAlerta.style.top = Math.random() * (window.innerHeight - 50) + "px";
+            };
+            mover();
+            intervaloMovimiento = setInterval(mover, 600);
+            timerRobo = setTimeout(() => finalizarAtaque(false), 5000);
+        }
+
+        window.detenerRobo = () => finalizarAtaque(true);
+
+        function finalizarAtaque(exito) {
+            clearInterval(intervaloMovimiento); clearTimeout(timerRobo);
+            btnAlerta.style.display = "none";
+            if (exito) {
+                let bono = Math.floor(data.pts * 0.02) + 500;
+                data.pts += bono;
+                document.getElementById('log').innerText = "✅ ATAQUE RECHAZADO: +" + bono;
+                document.getElementById('log').style.color = "var(--main-color)";
+            } else {
+                let perdida = Math.floor(data.pts * 0.05);
+                data.pts -= perdida;
+                document.getElementById('log').innerText = "❌ SISTEMA VIOLADO: -" + perdida;
+            }
+            actualizarUI(); guardarEnNube();
+        }
+
+        // --- LISTENERS ---
+        document.getElementById('btn-login').onclick = window.login;
         document.getElementById('pc-target').onclick = clickPc;
+        document.getElementById('admin-lock').onclick = window.solicitarAcceso;
+        document.getElementById('hacker-alert-btn').onclick = window.detenerRobo;
         document.getElementById('btnUp').onclick = () => { if(data.pts >= 50){ data.pts -= 50; data.pwr += 2; actualizarUI(); guardarEnNube(); } };
         document.getElementById('btnAuto').onclick = () => { if(data.pts >= 150){ data.pts -= 150; data.bots++; actualizarUI(); guardarEnNube(); } };
         document.getElementById('btnRebirth').onclick = () => { if(data.pts >= 50000){ data.rb++; data.pts=0; data.pwr=2; data.bots=0; actualizarUI(); guardarEnNube(); } };
@@ -219,25 +290,16 @@
         document.getElementById('gamble-3').onclick = () => jugar(30, 50000, 1000);
         document.getElementById('gamble-4').onclick = () => jugar(0.1, 50000000000, 20000000);
 
-        // Bots produciendo BTC
-        setInterval(() => {
-            if(data.bots > 0){
-                data.pts += (data.bots * (1 + data.rb * 0.5));
-                actualizarUI();
-            }
-        }, 1000);
-
-        // Guardado automático cada 10 segundos
+        // Loops
+        setInterval(() => { if(data.bots > 0){ data.pts += (data.bots * (1 + data.rb * 0.5)); actualizarUI(); } }, 1000);
         setInterval(guardarEnNube, 10000);
-        
-        // Admin
-        document.getElementById('adminBtn').onclick = () => {
-            const code = prompt("ADMIN:");
-            if(code === "JORGE_GOD") data.pts += 1000000000;
-            if(code === "SUERTE_MAX") modoDios = true;
-            actualizarUI(); guardarEnNube();
-        };
+        setInterval(() => { if(Math.random() < 0.3) eventoHackerRival(); }, 40000);
 
+        document.getElementById('adminBtn').onclick = () => {
+            const code = prompt("CODE:");
+            if(code === "JORGE_GOD") { data.pts += 1000000000; actualizarUI(); guardarEnNube(); }
+            if(code === "SUERTE_MAX") modoDios = true;
+        };
     </script>
 </body>
 </html>
