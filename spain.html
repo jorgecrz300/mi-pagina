@@ -17,7 +17,10 @@
         .char-box.selected { border-color: var(--accent); background: #1f1f3a; }
         #start-btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; }
 
-        /* ADMIN PANEL */
+        /* ADMIN PANEL Y CANDADO */
+        #admin-lock { position: fixed; bottom: 5px; right: 5px; font-size: 0.8rem; cursor: pointer; opacity: 0.3; z-index: 500; }
+        #admin-lock:hover { opacity: 1; }
+        #admin-btn-open { display: none; position: fixed; bottom: 70px; right: 20px; background: #f39c12; color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; z-index: 501; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         #admin-panel { display: none; position: fixed; inset: 0; background: #111; z-index: 2000; padding: 20px; overflow-y: auto; }
         .admin-q-item { background: #222; padding: 10px; margin-bottom: 10px; border-radius: 8px; border-left: 5px solid var(--primary); }
         .admin-close { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; }
@@ -26,15 +29,14 @@
         #game-ui { display: none; flex-direction: column; height: 100vh; }
         #status-bar { background: rgba(0,0,0,0.8); padding: 12px; display: flex; justify-content: space-around; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid var(--primary); }
         #game-map { flex-grow: 1; position: relative; background: #222; background-image: linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px); background-size: 40px 40px; }
-        .finish-line { position: absolute; right: 0; top: 0; bottom: 0; width: 45px; background: repeating-linear-gradient(45deg, #ffd700, #ffd700 10px, #000 10px, #000 20px); box-shadow: -5px 0 15px rgba(255, 215, 0, 0.3); }
-        .player-avatar { position: absolute; width: 35px; height: 35px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.5s linear; font-size: 1.2rem; z-index: 5; }
+        .finish-line { position: absolute; right: 0; top: 0; bottom: 0; width: 45px; background: repeating-linear-gradient(45deg, #ffd700, #ffd700 10px, #000 10px, #000 20px); }
+        .player-avatar { position: absolute; width: 35px; height: 35px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.5s linear; font-size: 1.2rem; }
         .player-name-tag { position: absolute; top: -18px; font-size: 0.65rem; background: rgba(0,0,0,0.8); padding: 2px 5px; border-radius: 4px; white-space: nowrap; }
 
         /* PREGUNTAS */
         #quiz-area { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; z-index: 100; }
-        .q-card { background: var(--secondary); padding: 20px; border-radius: 15px; border: 2px solid var(--primary); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .opt-btn { display: block; width: 100%; padding: 12px; margin: 8px 0; background: #16213e; color: white; border: 1px solid #444; border-radius: 10px; cursor: pointer; font-size: 1rem; transition: 0.2s; }
-        .opt-btn:hover { background: var(--primary); }
+        .q-card { background: var(--secondary); padding: 20px; border-radius: 15px; border: 2px solid var(--primary); text-align: center; }
+        .opt-btn { display: block; width: 100%; padding: 12px; margin: 8px 0; background: #16213e; color: white; border: 1px solid #444; border-radius: 10px; cursor: pointer; font-size: 1rem; }
 
         /* TIENDA */
         #shop { background: #111; padding: 15px; display: flex; justify-content: center; gap: 10px; border-top: 1px solid #333; }
@@ -48,25 +50,26 @@
 </head>
 <body>
 
+    <div id="admin-lock" onclick="unlockAdmin()">🔒</div>
+    <button id="admin-btn-open" onclick="openAdminPanel()">⚙️ Panel Admin</button>
+
     <div id="admin-panel">
-        <span class="admin-close" onclick="location.reload()">×</span>
+        <span class="admin-close" onclick="closeAdminPanel()">×</span>
         <h2 style="color:var(--accent)">🔧 Admin: Juego Spain</h2>
-        <button onclick="resetGame()" style="background:orange; padding:15px; width:100%; border:none; font-weight:bold; cursor:pointer; margin-bottom:20px">⚠️ REINICIAR POSICIONES DE TODOS</button>
-        
+        <button onclick="resetGame()" style="background:orange; padding:15px; width:100%; border:none; font-weight:bold; cursor:pointer; margin-bottom:20px">⚠️ REINICIAR POSICIONES</button>
         <div id="admin-questions-list"></div>
         <hr>
         <h3>Nueva Pregunta</h3>
-        <input type="text" id="new-q" placeholder="Pregunta (ej: ¿2+2?)">
+        <input type="text" id="new-q" placeholder="Pregunta">
         <input type="text" id="new-a1" placeholder="Respuesta Correcta">
         <input type="text" id="new-a2" placeholder="Respuesta Incorrecta">
-        <button onclick="addQuestion()" style="padding:15px; background:green; color:white; border:none; border-radius:8px; width:100%; font-weight:bold">GUARDAR EN FIREBASE</button>
+        <button onclick="addQuestion()" style="padding:15px; background:green; color:white; border:none; border-radius:8px; width:100%; font-weight:bold">GUARDAR PREGUNTA</button>
     </div>
 
     <div id="lobby">
         <div class="lobby-card">
             <h1 style="color:var(--primary); margin:0">SABOTAGE</h1>
-            <p style="font-size:0.8rem; color:#aaa">Juego Spain Edition</p>
-            <input type="text" id="name-in" placeholder="Nombre... (Admin para editar)">
+            <input type="text" id="name-in" placeholder="Tu Nombre...">
             <div class="char-grid">
                 <div class="char-box" onclick="pick('Tank','🛡️','#3498db')">🛡️<br>TANK</div>
                 <div class="char-box" onclick="pick('Flash','⚡','#f1c40f')">⚡<br>FLASH</div>
@@ -84,7 +87,7 @@
             <span>🛡️ <span id="u-shield">OFF</span></span>
         </div>
         <div id="game-map"><div class="finish-line"></div><div id="players-layer"></div></div>
-        <div id="quiz-area"><div class="q-card"><h3 id="q-text" style="margin:0">Esperando preguntas...</h3><div id="opts"></div></div></div>
+        <div id="quiz-area"><div class="q-card"><h3 id="q-text" style="margin:0">Cargando...</h3><div id="opts"></div></div></div>
         <div id="shop">
             <button class="shop-btn" id="s-inv" onclick="buy('invert', 50)">🌀 Invertir ($50)</button>
             <button class="shop-btn" id="s-shk" onclick="buy('shake', 30)">🫨 Terremoto ($30)</button>
@@ -96,7 +99,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
         import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 
-        // CONFIGURACIÓN INTEGRADA (Juego Spain)
         const firebaseConfig = {
             apiKey: "AIzaSyB5_FRkGDHgtZxEIUYua_nqaDCmt4_dsto",
             authDomain: "juego-spain.firebaseapp.com",
@@ -114,7 +116,7 @@
         let questions = [];
         let qIdx = 0;
 
-        // SELECCIÓN DE PERSONAJE
+        // SELECCIÓN
         window.pick = (c, i, col) => {
             my.char = c; my.icon = i; my.color = col;
             document.querySelectorAll('.char-box').forEach(b => b.classList.remove('selected'));
@@ -123,11 +125,6 @@
 
         window.checkStart = () => {
             const name = document.getElementById('name-in').value;
-            if(name.toLowerCase() === 'admin') {
-                document.getElementById('admin-panel').style.display = 'block';
-                loadAdminPanel();
-                return;
-            }
             if(!name || !my.char) return alert("Escribe tu nombre y elige personaje");
             my.name = name;
             document.getElementById('lobby').style.display = 'none';
@@ -136,7 +133,26 @@
             startGame();
         };
 
-        // LÓGICA DE ADMINISTRADOR
+        // LÓGICA DE ADMIN OCULTO
+        window.unlockAdmin = () => {
+            const pass = prompt("Contraseña de Admin:");
+            if(pass === "4321") {
+                document.getElementById('admin-btn-open').style.display = 'block';
+                alert("Modo Admin Activado");
+            } else {
+                alert("Incorrecto");
+            }
+        };
+
+        window.openAdminPanel = () => {
+            document.getElementById('admin-panel').style.display = 'block';
+            loadAdminPanel();
+        };
+
+        window.closeAdminPanel = () => {
+            document.getElementById('admin-panel').style.display = 'none';
+        };
+
         function loadAdminPanel() {
             onValue(ref(db, 'questions'), (snap) => {
                 const list = document.getElementById('admin-questions-list');
@@ -145,8 +161,7 @@
                 for(let id in data) {
                     const item = document.createElement('div');
                     item.className = 'admin-q-item';
-                    item.innerHTML = `<b>${data[id].q}</b> <br> Correcta: ${data[id].a[0]} 
-                                      <button style="float:right; background:red; color:white; border:none; padding:5px" onclick="window.delQ('${id}')">X</button>`;
+                    item.innerHTML = `<b>${data[id].q}</b> <button style="float:right; background:red; color:white; border:none;" onclick="window.delQ('${id}')">X</button>`;
                     list.appendChild(item);
                 }
             });
@@ -156,11 +171,9 @@
             const q = document.getElementById('new-q').value;
             const a1 = document.getElementById('new-a1').value;
             const a2 = document.getElementById('new-a2').value;
-            if(!q || !a1 || !a2) return alert("Faltan campos");
+            if(!q || !a1 || !a2) return;
             push(ref(db, 'questions'), { q: q, a: [a1, a2], c: 0 });
-            document.getElementById('new-q').value = "";
-            document.getElementById('new-a1').value = "";
-            document.getElementById('new-a2').value = "";
+            document.getElementById('new-q').value = ""; document.getElementById('new-a1').value = ""; document.getElementById('new-a2').value = "";
         };
 
         window.delQ = (id) => remove(ref(db, 'questions/' + id));
@@ -172,23 +185,16 @@
                     update(ref(db, 'players/' + id), { pos: 0, score: 0 });
                 }
             }, { onlyOnce: true });
-            alert("Posiciones reiniciadas");
+            alert("Reset completado");
         };
 
         // LÓGICA DE JUEGO
         function startGame() {
-            // Cargar preguntas desde Firebase
             onValue(ref(db, 'questions'), (snap) => {
                 const data = snap.val();
-                if(data) {
-                    questions = Object.values(data);
-                    renderQuestion();
-                } else {
-                    document.getElementById('q-text').innerText = "El Admin no ha puesto preguntas aún.";
-                }
+                if(data) { questions = Object.values(data); renderQuestion(); }
             });
 
-            // Dibujar jugadores
             onValue(ref(db, 'players'), (snap) => {
                 const players = snap.val();
                 const layer = document.getElementById('players-layer');
@@ -203,15 +209,10 @@
                     }
                     el.style.left = (p.pos * (mapWidth/100)) + "px";
                     el.style.top = (20 + (parseInt(id.slice(-1), 36) % 8) * 45) + "px";
-                    
-                    if(id === my.id) { // Sincronizar mis datos locales si el admin resetea
-                        my.pos = p.pos; my.score = p.score;
-                        document.getElementById('u-score').innerText = my.score;
-                    }
+                    if(id === my.id) { my.pos = p.pos; my.score = p.score; document.getElementById('u-score').innerText = my.score; }
                 }
             });
 
-            // Escuchar Sabotajes
             onValue(ref(db, 'atk'), (snap) => {
                 const a = snap.val();
                 if(a && a.s !== my.id && !shield) {
@@ -227,21 +228,14 @@
             document.getElementById('q-text').innerText = q.q;
             const cont = document.getElementById('opts');
             cont.innerHTML = "";
-            
-            // Mezclar opciones
-            let ops = [...q.a];
             q.a.forEach((o, i) => {
                 const b = document.createElement("button"); b.className = "opt-btn"; b.innerText = o;
                 b.onclick = () => {
                     if(i === q.c) { 
                         my.score += 10; 
                         my.pos = Math.min(100, my.pos + (my.char === 'Flash' ? 8 : 5));
-                    } else { 
-                        my.score = Math.max(0, my.score - 5); 
-                    }
-                    qIdx++;
-                    updateDB();
-                    renderQuestion();
+                    } else { my.score = Math.max(0, my.score - 5); }
+                    qIdx++; updateDB(); renderQuestion();
                 };
                 cont.appendChild(b);
             });
