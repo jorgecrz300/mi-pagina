@@ -3,35 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sabotage Royale Ultra</title>
+    <title>Sabotage Royale: Classes</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-container">
+    <div id="lobby">
+        <div class="lobby-card">
+            <h1>SABOTAGE ROYALE</h1>
+            <input type="text" id="username-input" placeholder="Tu nombre aquí..." maxlength="12">
+            
+            <h3>Selecciona tu Personaje</h3>
+            <div id="character-selection">
+                <div class="char-option" onclick="selectChar('Tank', '#3498db')">
+                    <div class="char-icon" style="background: #3498db;">🛡️</div>
+                    <p>TANK<br><small>Escudo Gratis</small></p>
+                </div>
+                <div class="char-option" onclick="selectChar('Hacker', '#9b59b6')">
+                    <div class="char-icon" style="background: #9b59b6;">💻</div>
+                    <p>HACKER<br><small>Tienda Barata</small></p>
+                </div>
+                <div class="char-option" onclick="selectChar('Flash', '#f1c40f')">
+                    <div class="char-icon" style="background: #f1c40f;">⚡</div>
+                    <p>FLASH<br><small>Más Velocidad</small></p>
+                </div>
+                <div class="char-option" onclick="selectChar('Mage', '#e74c3c')">
+                    <div class="char-icon" style="background: #e74c3c;">🔥</div>
+                    <p>MAGO<br><small>Ataque Largo</small></p>
+                </div>
+            </div>
+            <button id="start-btn" onclick="startGame()">ENTRAR AL JUEGO</button>
+        </div>
+    </div>
+
+    <div id="game-ui" style="display: none;">
         <div id="status-bar">
-            <span>Puntos: $<span id="score">0</span></span>
-            <span>Escudo: <span id="shield-status">OFF</span></span>
-            <span>Usuarios Online: <span id="user-count">0</span></span>
+            <span>👤 <span id="display-name">---</span> (<span id="display-class">---</span>)</span>
+            <span>💰 $<span id="score">0</span></span>
+            <span>🛡️ <span id="shield-status">OFF</span></span>
         </div>
 
         <div id="game-map">
             <div class="finish-line">META</div>
-            <div id="players-layer">
-                </div>
+            <div id="players-layer"></div>
         </div>
 
         <div id="quiz-overlay">
             <div id="question-card">
-                <h2 id="question-text">Cargando preguntas...</h2>
-                <div id="options-container">
-                    </div>
+                <h2 id="question-text">Preparando...</h2>
+                <div id="options-container"></div>
             </div>
         </div>
 
         <div id="shop-bar">
-            <button class="btn-buy" onclick="buyItem('invert', 50)">🌀 Invertir Rival ($50)</button>
-            <button class="btn-buy" onclick="buyItem('shake', 30)">🫨 Terremoto ($30)</button>
-            <button class="btn-buy" onclick="buyItem('shield', 40)">🛡️ Escudo ($40)</button>
+            <button class="btn-buy" id="btn-invert" onclick="buyItem('invert', 50)">🌀 Invertir ($50)</button>
+            <button class="btn-buy" id="btn-shake" onclick="buyItem('shake', 30)">🫨 Terremoto ($30)</button>
+            <button class="btn-buy" id="btn-shield" onclick="buyItem('shield', 40)">🛡️ Escudo ($40)</button>
         </div>
     </div>
 
