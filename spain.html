@@ -3,64 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sabotage Royale: Classes</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Sabotage Royale: Multi-Class Edition</title>
+    <style>
+        /* --- TODO EL CSS AQUÍ --- */
+        :root {
+            --primary: #e94560;
+            --secondary: #0f3460;
+            --dark: #1a1a2e;
+            --accent: #00f2ff;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            background: var(--dark); color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; user-select: none;
+        }
+
+        /* LOBBY / INICIO */
+        #lobby {
+            position: fixed; inset: 0; background: radial-gradient(circle, #16213e, #0f3460);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+        }
+
+        .lobby-card {
+            background: rgba(22, 33, 62, 0.95); padding: 30px; border-radius: 20px;
+            text-align: center; border: 2px solid var(--primary); width: 400px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        input {
+            width: 80%; padding: 12px; margin: 15px 0; border-radius: 8px;
+            border: none; font-size: 1rem; outline: none;
+        }
+
+        .char-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;
+        }
+
+        .char-box {
+            background: #1a1a2e; padding: 10px; border-radius: 10px;
+            cursor: pointer; border: 2px solid transparent; transition: 0.3s;
+        }
+
+        .char-box:hover, .char-box.selected { border-color: var(--accent); background: #16213e; }
+        .char-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        .char-box p { margin: 0; font-weight: bold; font-size: 0.8rem; }
+        .char-box small { font-size: 0.7rem; color: #aaa; }
+
+        #start-btn {
+            background: var(--primary); color: white; border: none;
+            padding: 15px; border-radius: 10px; cursor: pointer;
+            font-weight: bold; width: 100%; font-size: 1.1rem;
+        }
+
+        /* UI JUEGO */
+        #game-ui { display: none; flex-direction: column; height: 100vh; }
+
+        #status-bar {
+            background: rgba(0,0,0,0.8); padding: 15px;
+            display: flex; justify-content: space-around; font-weight: bold;
+        }
+
+        #game-map {
+            flex-grow: 1; position: relative; background: #222;
+            background-image: linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .finish-line {
+            position: absolute; right: 0; top: 0; bottom: 0; width: 50px;
+            background: repeating-linear-gradient(45deg, #ffd700, #ffd700 10px, #000 10px, #000 20px);
+            writing-mode: vertical-rl; text-align: center; font-weight: bold; color: black;
+        }
+
+        /* PERSONAJES */
+        .player-avatar {
+            position: absolute; width: 40px; height: 40px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.5s linear; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-weight: bold; font-size: 1.2rem;
+        }
+
+        .player-name-tag {
+            position: absolute; top: -20px; font-size: 0.7rem; white-space: nowrap;
+            background: rgba(0,0,0,0.6); padding: 2px 5px; border-radius: 4px;
+        }
+
+        /* PREGUNTAS */
+        #quiz-overlay {
+            position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 500px; z-index: 50;
+        }
+
+        .q-card {
+            background: var(--secondary); padding: 20px; border-radius: 15px;
+            border: 2px solid var(--primary); text-align: center;
+        }
+
+        .opt-btn {
+            display: block; width: 100%; padding: 10px; margin: 8px 0;
+            background: #16213e; color: white; border: 1px solid #444;
+            border-radius: 8px; cursor: pointer;
+        }
+
+        /* TIENDA */
+        #shop {
+            background: #111; padding: 10px; display: flex; justify-content: center; gap: 10px;
+        }
+
+        .shop-btn {
+            background: #333; color: white; border: 1px solid var(--accent);
+            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;
+        }
+
+        /* EFECTOS */
+        .effect-invert { filter: invert(1) hue-rotate(180deg); }
+        .effect-shake { animation: shake 0.2s infinite; }
+        @keyframes shake { 0%{transform: translate(2px,2px)} 50%{transform: translate(-2px,-2px)} }
+    </style>
 </head>
 <body>
+
     <div id="lobby">
         <div class="lobby-card">
-            <h1>SABOTAGE ROYALE</h1>
-            <input type="text" id="username-input" placeholder="Tu nombre aquí..." maxlength="12">
+            <h1 style="margin-top:0; color:var(--primary)">SABOTAGE ROYALE</h1>
+            <input type="text" id="name-in" placeholder="Tu Nombre..." maxlength="10">
             
-            <h3>Selecciona tu Personaje</h3>
-            <div id="character-selection">
-                <div class="char-option" onclick="selectChar('Tank', '#3498db')">
-                    <div class="char-icon" style="background: #3498db;">🛡️</div>
-                    <p>TANK<br><small>Escudo Gratis</small></p>
+            <div class="char-grid">
+                <div class="char-box" onclick="pick('Tank', '🛡️', '#3498db')">
+                    <div class="char-icon">🛡️</div>
+                    <p>TANK</p><small>Escudo Extra</small>
                 </div>
-                <div class="char-option" onclick="selectChar('Hacker', '#9b59b6')">
-                    <div class="char-icon" style="background: #9b59b6;">💻</div>
-                    <p>HACKER<br><small>Tienda Barata</small></p>
+                <div class="char-box" onclick="pick('Flash', '⚡', '#f1c40f')">
+                    <div class="char-icon">⚡</div>
+                    <p>FLASH</p><small>Corre más</small>
                 </div>
-                <div class="char-option" onclick="selectChar('Flash', '#f1c40f')">
-                    <div class="char-icon" style="background: #f1c40f;">⚡</div>
-                    <p>FLASH<br><small>Más Velocidad</small></p>
+                <div class="char-box" onclick="pick('Hacker', '💻', '#9b59b6')">
+                    <div class="char-icon">💻</div>
+                    <p>HACKER</p><small>Tienda barata</small>
                 </div>
-                <div class="char-option" onclick="selectChar('Mage', '#e74c3c')">
-                    <div class="char-icon" style="background: #e74c3c;">🔥</div>
-                    <p>MAGO<br><small>Ataque Largo</small></p>
+                <div class="char-box" onclick="pick('Mago', '🧙', '#e74c3c')">
+                    <div class="char-icon">🧙</div>
+                    <p>MAGO</p><small>Ataque largo</small>
                 </div>
             </div>
-            <button id="start-btn" onclick="startGame()">ENTRAR AL JUEGO</button>
+            <button id="start-btn" onclick="joinGame()">¡EMPEZAR!</button>
         </div>
     </div>
 
-    <div id="game-ui" style="display: none;">
+    <div id="game-ui">
         <div id="status-bar">
-            <span>👤 <span id="display-name">---</span> (<span id="display-class">---</span>)</span>
-            <span>💰 $<span id="score">0</span></span>
-            <span>🛡️ <span id="shield-status">OFF</span></span>
+            <span>👤 <span id="u-name"></span></span>
+            <span>💰 $<span id="u-score">0</span></span>
+            <span>🛡️ <span id="u-shield">OFF</span></span>
         </div>
 
         <div id="game-map">
-            <div class="finish-line">META</div>
+            <div class="finish-line">GOAL</div>
             <div id="players-layer"></div>
         </div>
 
         <div id="quiz-overlay">
-            <div id="question-card">
-                <h2 id="question-text">Preparando...</h2>
-                <div id="options-container"></div>
+            <div class="q-card">
+                <h3 id="q-text" style="margin-top:0">Cargando...</h3>
+                <div id="opts"></div>
             </div>
         </div>
 
-        <div id="shop-bar">
-            <button class="btn-buy" id="btn-invert" onclick="buyItem('invert', 50)">🌀 Invertir ($50)</button>
-            <button class="btn-buy" id="btn-shake" onclick="buyItem('shake', 30)">🫨 Terremoto ($30)</button>
-            <button class="btn-buy" id="btn-shield" onclick="buyItem('shield', 40)">🛡️ Escudo ($40)</button>
+        <div id="shop">
+            <button class="shop-btn" id="s-inv" onclick="shop('invert', 50)">🌀 Invertir ($50)</button>
+            <button class="shop-btn" id="s-shk" onclick="shop('shake', 30)">🫨 Terremoto ($30)</button>
+            <button class="shop-btn" onclick="shop('shield', 40)">🛡️ Escudo ($40)</button>
         </div>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getDatabase, ref, set, onValue, update, onChildAdded, onChildChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+
+        // --- CONFIGURACIÓN FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_PROYECTO.firebaseapp.com",
+            databaseURL: "https://TU_PROYECTO.firebaseio.com",
+            projectId: "TU_PROYECTO",
+            storageBucket: "TU_PROYECTO.appspot.com",
+            messagingSenderId: "ID",
+            appId: "ID_APP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Variables de Estado
+        let my = { id: "P_"+Math.random().toString(36).substr(7), name: "", char: "", icon: "", color: "", score: 0, pos: 0 };
+        let shieldActive = false;
+        let questions = [
+            {q: "¿Cuánto es 5 + 5?", a: ["10", "15", "8"], c: 0},
+            {q: "¿Color del cielo?", a: ["Verde", "Azul", "Rojo"], c: 1},
+            {q: "¿Animal que maúlla?", a: ["Perro", "Gato", "Vaca"], c: 1},
+            {q: "¿GitHub es para...?", a: ["Código", "Comida"], c: 0}
+        ];
+        let qIdx = 0;
+
+        // Lobby Logic
+        window.pick = (c, i, col) => {
+            my.char = c; my.icon = i; my.color = col;
+            document.querySelectorAll('.char-box').forEach(b => b.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            if(c === 'Hacker') {
+                document.getElementById('s-inv').innerText = "🌀 Invertir ($35)";
+                document.getElementById('s-shk').innerText = "🫨 Terremoto ($20)";
+            }
+        };
+
+        window.joinGame = () => {
+            my.name = document.getElementById('name-in').value;
+            if(!my.name || !my.char) return alert("Completa tus datos");
+            document.getElementById('lobby').style.display = 'none';
+            document.getElementById('game-ui').style.display = 'flex';
+            document.getElementById('u-name').innerText = my.name + " (" + my.char + ")";
+            if(my.char === 'Tank') activateShield(8000); // Habilidad Tank: Escudo inicial
+            renderQ();
+            sync();
+            listen();
+        };
+
+        // Game Logic
+        function renderQ() {
+            const q = questions[qIdx];
+            document.getElementById('q-text').innerText = q.q;
+            const container = document.getElementById('opts');
+            container.innerHTML = "";
+            q.a.forEach((o, i) => {
+                const b = document.createElement("button");
+                b.className = "opt-btn";
+                b.innerText = o;
+                b.onclick = () => {
+                    if(i === q.c) {
+                        my.score += 10;
+                        my.pos += (my.char === 'Flash' ? 10 : 6); // Habilidad Flash
+                    } else {
+                        my.score = Math.max(0, my.score - 5);
+                    }
+                    qIdx = (qIdx + 1) % questions.length;
+                    sync(); renderQ();
+                };
+                container.appendChild(b);
+            });
+        }
+
+        window.shop = (type, cost) => {
+            let finalCost = (my.char === 'Hacker' ? Math.floor(cost * 0.7) : cost);
+            if(my.score >= finalCost) {
+                my.score -= finalCost;
+                if(type === 'shield') activateShield(12000);
+                else {
+                    let dur = (my.char === 'Mago' ? 8000 : 5000); // Habilidad Mago
+                    set(ref(db, 'atk'), { t: type, s: my.id, d: dur, ts: Date.now() });
+                }
+                sync();
+            }
+        };
+
+        function activateShield(ms) {
+            shieldActive = true;
+            document.getElementById('u-shield').innerText = "ON";
+            setTimeout(() => {
+                shieldActive = false;
+                document.getElementById('u-shield').innerText = "OFF";
+            }, ms);
+        }
+
+        // Firebase Sync
+        function sync() {
+            set(ref(db, 'players/' + my.id), my);
+            document.getElementById('u-score').innerText = my.score;
+        }
+
+        function listen() {
+            // Dibujar jugadores
+            onValue(ref(db, 'players'), (snap) => {
+                const players = snap.val();
+                const layer = document.getElementById('players-layer');
+                const w = document.getElementById('game-map').offsetWidth - 80;
+                for(let id in players) {
+                    let p = players[id];
+                    let div = document.getElementById("av_"+id);
+                    if(!div) {
+                        div = document.createElement("div");
+                        div.id = "av_"+id;
+                        div.className = "player-avatar";
+                        div.innerHTML = `<span class="player-name-tag">${p.name}</span>${p.icon}`;
+                        div.style.background = p.color;
+                        layer.appendChild(div);
+                    }
+                    div.style.left = (p.pos * (w/100)) + "px";
+                    // Fila fija basada en el ID
+                    div.style.top = (20 + (parseInt(id.slice(-1), 36) % 8) * 45) + "px";
+                }
+            });
+
+            // Escuchar ataques
+            onValue(ref(db, 'atk'), (snap) => {
+                const a = snap.val();
+                if(a && a.s !== my.id && !shieldActive) {
+                    document.body.classList.add('effect-' + a.t);
+                    setTimeout(() => document.body.classList.remove('effect-' + a.t), a.d);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
