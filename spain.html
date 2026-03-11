@@ -17,10 +17,13 @@
         .char-box.selected { border-color: var(--accent); background: #1f1f3a; }
         #start-btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; }
 
+        /* RANKING TOP 3 */
+        #leaderboard { position: fixed; top: 60px; left: 10px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 10px; font-size: 0.8rem; z-index: 100; border: 1px solid var(--primary); min-width: 120px; }
+        .rank-item { margin: 3px 0; display: flex; justify-content: space-between; }
+
         /* ADMIN PANEL Y CANDADO */
         #admin-lock { position: fixed; bottom: 5px; right: 5px; font-size: 0.8rem; cursor: pointer; opacity: 0.3; z-index: 500; }
-        #admin-lock:hover { opacity: 1; }
-        #admin-btn-open { display: none; position: fixed; bottom: 70px; right: 20px; background: #f39c12; color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; z-index: 501; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        #admin-btn-open { display: none; position: fixed; bottom: 70px; right: 20px; background: #f39c12; color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; z-index: 501; font-weight: bold; }
         #admin-panel { display: none; position: fixed; inset: 0; background: #111; z-index: 2000; padding: 20px; overflow-y: auto; }
         .admin-q-item { background: #222; padding: 10px; margin-bottom: 10px; border-radius: 8px; border-left: 5px solid var(--primary); }
         .admin-close { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; }
@@ -50,20 +53,20 @@
 </head>
 <body>
 
+    <div id="leaderboard">🏆 Top 3: <div id="rank-list"></div></div>
     <div id="admin-lock" onclick="unlockAdmin()">🔒</div>
     <button id="admin-btn-open" onclick="openAdminPanel()">⚙️ Panel Admin</button>
 
     <div id="admin-panel">
         <span class="admin-close" onclick="closeAdminPanel()">×</span>
         <h2 style="color:var(--accent)">🔧 Admin: Juego Spain</h2>
-        <button onclick="resetGame()" style="background:orange; padding:15px; width:100%; border:none; font-weight:bold; cursor:pointer; margin-bottom:20px">⚠️ REINICIAR POSICIONES</button>
+        <button onclick="resetGame()" style="background:orange; padding:15px; width:100%; border:none; font-weight:bold; cursor:pointer; margin-bottom:20px">⚠️ REINICIAR TODOS</button>
         <div id="admin-questions-list"></div>
         <hr>
-        <h3>Nueva Pregunta</h3>
         <input type="text" id="new-q" placeholder="Pregunta">
         <input type="text" id="new-a1" placeholder="Respuesta Correcta">
         <input type="text" id="new-a2" placeholder="Respuesta Incorrecta">
-        <button onclick="addQuestion()" style="padding:15px; background:green; color:white; border:none; border-radius:8px; width:100%; font-weight:bold">GUARDAR PREGUNTA</button>
+        <button onclick="addQuestion()" style="padding:15px; background:green; color:white; border:none; width:100%; font-weight:bold">GUARDAR</button>
     </div>
 
     <div id="lobby">
@@ -97,12 +100,13 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-        import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+        import { getDatabase, ref, set, onValue, push, remove, update, onDisconnect } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB5_FRkGDHgtZxEIUYua_nqaDCmt4_dsto",
             authDomain: "juego-spain.firebaseapp.com",
             projectId: "juego-spain",
+            databaseURL: "https://juego-spain-default-rtdb.firebaseio.com/", // Ajustado según tu proyecto
             storageBucket: "juego-spain.firebasestorage.app",
             messagingSenderId: "954474605300",
             appId: "1:954474605300:web:82321ff7733531e7148ca1"
@@ -111,12 +115,13 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        let my = { id: "P_"+Math.random().toString(36).substr(7), name: "", char: "", icon: "", color: "", score: 0, pos: 0 };
+        // Generar ID nuevo siempre para evitar el error de "misma persona"
+        let myID = "P_" + Math.random().toString(36).substr(2, 9);
+        let my = { id: myID, name: "", char: "", icon: "", color: "", score: 0, pos: 0 };
         let shield = false;
         let questions = [];
         let qIdx = 0;
 
-        // SELECCIÓN
         window.pick = (c, i, col) => {
             my.char = c; my.icon = i; my.color = col;
             document.querySelectorAll('.char-box').forEach(b => b.classList.remove('selected'));
@@ -130,111 +135,97 @@
             document.getElementById('lobby').style.display = 'none';
             document.getElementById('game-ui').style.display = 'flex';
             document.getElementById('u-name').innerText = my.name;
+            
+            // Al desconectarse, borrar mi muñequito de la DB
+            onDisconnect(ref(db, 'players/' + my.id)).remove();
+            
             startGame();
         };
 
-        // LÓGICA DE ADMIN OCULTO
-        window.unlockAdmin = () => {
-            const pass = prompt("Contraseña de Admin:");
-            if(pass === "4321") {
-                document.getElementById('admin-btn-open').style.display = 'block';
-                alert("Modo Admin Activado");
-            } else {
-                alert("Incorrecto");
-            }
-        };
-
-        window.openAdminPanel = () => {
-            document.getElementById('admin-panel').style.display = 'block';
-            loadAdminPanel();
-        };
-
-        window.closeAdminPanel = () => {
-            document.getElementById('admin-panel').style.display = 'none';
-        };
-
+        // ADMIN
+        window.unlockAdmin = () => { if(prompt("Contraseña:") === "4321") document.getElementById('admin-btn-open').style.display = 'block'; };
+        window.openAdminPanel = () => { document.getElementById('admin-panel').style.display = 'block'; loadAdminPanel(); };
+        window.closeAdminPanel = () => { document.getElementById('admin-panel').style.display = 'none'; };
         function loadAdminPanel() {
             onValue(ref(db, 'questions'), (snap) => {
-                const list = document.getElementById('admin-questions-list');
-                list.innerHTML = "";
+                const list = document.getElementById('admin-questions-list'); list.innerHTML = "";
                 const data = snap.val();
                 for(let id in data) {
-                    const item = document.createElement('div');
-                    item.className = 'admin-q-item';
-                    item.innerHTML = `<b>${data[id].q}</b> <button style="float:right; background:red; color:white; border:none;" onclick="window.delQ('${id}')">X</button>`;
-                    list.appendChild(item);
+                    list.innerHTML += `<div class="admin-q-item"><b>${data[id].q}</b> <button style="float:right" onclick="window.delQ('${id}')">X</button></div>`;
                 }
             });
         }
-
         window.addQuestion = () => {
             const q = document.getElementById('new-q').value;
             const a1 = document.getElementById('new-a1').value;
             const a2 = document.getElementById('new-a2').value;
             if(!q || !a1 || !a2) return;
             push(ref(db, 'questions'), { q: q, a: [a1, a2], c: 0 });
-            document.getElementById('new-q').value = ""; document.getElementById('new-a1').value = ""; document.getElementById('new-a2').value = "";
+            document.getElementById('new-q').value=""; document.getElementById('new-a1').value=""; document.getElementById('new-a2').value="";
         };
-
         window.delQ = (id) => remove(ref(db, 'questions/' + id));
-
         window.resetGame = () => {
             onValue(ref(db, 'players'), (snap) => {
-                const players = snap.val();
-                for(let id in players) {
-                    update(ref(db, 'players/' + id), { pos: 0, score: 0 });
-                }
-            }, { onlyOnce: true });
-            alert("Reset completado");
+                const p = snap.val();
+                for(let id in p) update(ref(db, 'players/' + id), { pos: 0, score: 0 });
+            }, {onlyOnce: true});
         };
 
-        // LÓGICA DE JUEGO
+        // GAME
         function startGame() {
-            onValue(ref(db, 'questions'), (snap) => {
-                const data = snap.val();
-                if(data) { questions = Object.values(data); renderQuestion(); }
-            });
+            onValue(ref(db, 'questions'), (snap) => { if(snap.val()){ questions = Object.values(snap.val()); renderQuestion(); } });
 
             onValue(ref(db, 'players'), (snap) => {
-                const players = snap.val();
+                const players = snap.val() || {};
                 const layer = document.getElementById('players-layer');
                 const mapWidth = document.getElementById('game-map').offsetWidth - 60;
+                
+                // Limpiar visualmente lo que no está en la DB
+                layer.innerHTML = ""; 
+
+                // Ordenar para el Ranking
+                let sorted = Object.values(players).sort((a,b) => b.pos - a.pos).slice(0,3);
+                let rankHTML = "";
+                sorted.forEach((p, i) => rankHTML += `<div class="rank-item"><span>${i+1}. ${p.name}</span> <b>${p.pos}%</b></div>`);
+                document.getElementById('rank-list').innerHTML = rankHTML;
+
                 for(let id in players) {
                     let p = players[id];
-                    let el = document.getElementById("av_"+id);
-                    if(!el) {
-                        el = document.createElement("div"); el.id = "av_"+id; el.className = "player-avatar";
-                        el.innerHTML = `<span class="player-name-tag">${p.name}</span>${p.icon}`;
-                        el.style.background = p.color; layer.appendChild(el);
-                    }
+                    let el = document.createElement("div");
+                    el.className = "player-avatar";
+                    el.innerHTML = `<span class="player-name-tag">${p.name}</span>${p.icon}`;
+                    el.style.background = p.color;
                     el.style.left = (p.pos * (mapWidth/100)) + "px";
                     el.style.top = (20 + (parseInt(id.slice(-1), 36) % 8) * 45) + "px";
-                    if(id === my.id) { my.pos = p.pos; my.score = p.score; document.getElementById('u-score').innerText = my.score; }
+                    layer.appendChild(el);
+                    
+                    if(id === my.id) { 
+                        my.pos = p.pos; my.score = p.score; 
+                        document.getElementById('u-score').innerText = my.score; 
+                    }
                 }
             });
 
             onValue(ref(db, 'atk'), (snap) => {
                 const a = snap.val();
-                if(a && a.s !== my.id && !shield) {
+                if(a && a.s !== my.id && !shield && (Date.now() - a.ts < 2000)) {
                     document.body.classList.add('effect-' + a.t);
                     setTimeout(() => document.body.classList.remove('effect-' + a.t), a.d);
                 }
             });
+            updateDB();
         }
 
         function renderQuestion() {
             if(questions.length === 0) return;
             const q = questions[qIdx % questions.length];
             document.getElementById('q-text').innerText = q.q;
-            const cont = document.getElementById('opts');
-            cont.innerHTML = "";
+            const cont = document.getElementById('opts'); cont.innerHTML = "";
             q.a.forEach((o, i) => {
                 const b = document.createElement("button"); b.className = "opt-btn"; b.innerText = o;
                 b.onclick = () => {
-                    if(i === q.c) { 
-                        my.score += 10; 
-                        my.pos = Math.min(100, my.pos + (my.char === 'Flash' ? 8 : 5));
-                    } else { my.score = Math.max(0, my.score - 5); }
+                    if(i === q.c) { my.score += 10; my.pos = Math.min(100, my.pos + (my.char === 'Flash' ? 8 : 5)); }
+                    else { my.score = Math.max(0, my.score - 5); }
                     qIdx++; updateDB(); renderQuestion();
                 };
                 cont.appendChild(b);
@@ -255,10 +246,7 @@
             }
         };
 
-        function updateDB() {
-            set(ref(db, 'players/' + my.id), my);
-            document.getElementById('u-score').innerText = my.score;
-        }
+        function updateDB() { set(ref(db, 'players/' + my.id), my); }
     </script>
 </body>
 </html>
