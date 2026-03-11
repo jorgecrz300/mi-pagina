@@ -52,7 +52,11 @@
     </style>
 </head>
 <body>
-
+    <div style="text-align: center; margin-top: 10px;">
+    <button id="btn-reiniciar" style="background-color: #ff4c4c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: sans-serif; font-weight: bold;">
+        Reiniciar Tabla
+    </button>
+</div>
     <div id="leaderboard">🏆 Top 3: <div id="rank-list"></div></div>
     <div id="admin-lock" onclick="unlockAdmin()">🔒</div>
     <button id="admin-btn-open" onclick="openAdminPanel()">⚙️ Panel Admin</button>
@@ -99,6 +103,43 @@
     </div>
 
     <script type="module">
+        // --- LÓGICA DE REINICIO TOTAL ---
+
+const btnReiniciar = document.getElementById('btn-reiniciar');
+
+btnReiniciar.addEventListener('click', () => {
+    // Pedimos confirmación para no borrar por error
+    if (confirm("¿Estás seguro? Esto eliminará a TODOS los jugadores de la pantalla.")) {
+        
+        // 1. Referencia al nodo donde guardas los personajes
+        // Si en tu base de datos el nodo se llama diferente a 'jugadores', cámbialo aquí
+        const refJugadores = firebase.database().ref('jugadores');
+
+        // 2. Eliminamos todo el contenido de ese nodo
+        refJugadores.remove()
+            .then(() => {
+                console.log("Base de datos limpiada con éxito.");
+                // 3. Forzamos la recarga de la página para limpiar el Canvas/DOM
+                location.reload(); 
+            })
+            .catch((error) => {
+                alert("Error al intentar reiniciar: " + error.message);
+            });
+    }
+});
+
+// --- MEJORA: BORRADO AUTOMÁTICO AL SALIR ---
+// Busca la parte de tu código donde creas al jugador (cuando se loguean)
+// y asegúrate de añadir esta línea a la referencia de ese usuario:
+
+/* Ejemplo de cómo debería verse donde creas al usuario:
+   
+   let miUsuarioRef = firebase.database().ref('jugadores/' + nombre);
+   miUsuarioRef.set({ ... });
+   
+   // ESTA LÍNEA ES CLAVE:
+   miUsuarioRef.onDisconnect().remove(); 
+*/
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
         import { getDatabase, ref, set, onValue, push, remove, update, onDisconnect } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 
