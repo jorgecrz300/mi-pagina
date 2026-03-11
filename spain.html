@@ -3,152 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sabotage Royale: Multi-Class Edition</title>
+    <title>Sabotage Royale - Juego Spain</title>
     <style>
-        /* --- TODO EL CSS AQUÍ --- */
-        :root {
-            --primary: #e94560;
-            --secondary: #0f3460;
-            --dark: #1a1a2e;
-            --accent: #00f2ff;
-        }
+        :root { --primary: #e94560; --secondary: #0f3460; --dark: #1a1a2e; --accent: #00f2ff; }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--dark); color: white; font-family: sans-serif; overflow: hidden; user-select: none; }
+        
+        /* LOBBY */
+        #lobby { position: fixed; inset: 0; background: #0f3460; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .lobby-card { background: #16213e; padding: 25px; border-radius: 20px; text-align: center; border: 2px solid var(--primary); width: 350px; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; font-size: 1rem; }
+        .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; }
+        .char-box { background: #1a1a2e; padding: 10px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; font-size: 0.8rem; }
+        .char-box.selected { border-color: var(--accent); background: #1f1f3a; }
+        #start-btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; }
 
-        body, html {
-            margin: 0; padding: 0; height: 100%;
-            background: var(--dark); color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; user-select: none;
-        }
+        /* ADMIN PANEL */
+        #admin-panel { display: none; position: fixed; inset: 0; background: #111; z-index: 2000; padding: 20px; overflow-y: auto; }
+        .admin-q-item { background: #222; padding: 10px; margin-bottom: 10px; border-radius: 8px; border-left: 5px solid var(--primary); }
+        .admin-close { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; }
 
-        /* LOBBY / INICIO */
-        #lobby {
-            position: fixed; inset: 0; background: radial-gradient(circle, #16213e, #0f3460);
-            display: flex; align-items: center; justify-content: center; z-index: 1000;
-        }
-
-        .lobby-card {
-            background: rgba(22, 33, 62, 0.95); padding: 30px; border-radius: 20px;
-            text-align: center; border: 2px solid var(--primary); width: 400px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-        }
-
-        input {
-            width: 80%; padding: 12px; margin: 15px 0; border-radius: 8px;
-            border: none; font-size: 1rem; outline: none;
-        }
-
-        .char-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;
-        }
-
-        .char-box {
-            background: #1a1a2e; padding: 10px; border-radius: 10px;
-            cursor: pointer; border: 2px solid transparent; transition: 0.3s;
-        }
-
-        .char-box:hover, .char-box.selected { border-color: var(--accent); background: #16213e; }
-        .char-icon { font-size: 1.5rem; margin-bottom: 5px; }
-        .char-box p { margin: 0; font-weight: bold; font-size: 0.8rem; }
-        .char-box small { font-size: 0.7rem; color: #aaa; }
-
-        #start-btn {
-            background: var(--primary); color: white; border: none;
-            padding: 15px; border-radius: 10px; cursor: pointer;
-            font-weight: bold; width: 100%; font-size: 1.1rem;
-        }
-
-        /* UI JUEGO */
+        /* JUEGO UI */
         #game-ui { display: none; flex-direction: column; height: 100vh; }
-
-        #status-bar {
-            background: rgba(0,0,0,0.8); padding: 15px;
-            display: flex; justify-content: space-around; font-weight: bold;
-        }
-
-        #game-map {
-            flex-grow: 1; position: relative; background: #222;
-            background-image: linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
-        .finish-line {
-            position: absolute; right: 0; top: 0; bottom: 0; width: 50px;
-            background: repeating-linear-gradient(45deg, #ffd700, #ffd700 10px, #000 10px, #000 20px);
-            writing-mode: vertical-rl; text-align: center; font-weight: bold; color: black;
-        }
-
-        /* PERSONAJES */
-        .player-avatar {
-            position: absolute; width: 40px; height: 40px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.5s linear; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            font-weight: bold; font-size: 1.2rem;
-        }
-
-        .player-name-tag {
-            position: absolute; top: -20px; font-size: 0.7rem; white-space: nowrap;
-            background: rgba(0,0,0,0.6); padding: 2px 5px; border-radius: 4px;
-        }
+        #status-bar { background: rgba(0,0,0,0.8); padding: 12px; display: flex; justify-content: space-around; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid var(--primary); }
+        #game-map { flex-grow: 1; position: relative; background: #222; background-image: linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px); background-size: 40px 40px; }
+        .finish-line { position: absolute; right: 0; top: 0; bottom: 0; width: 45px; background: repeating-linear-gradient(45deg, #ffd700, #ffd700 10px, #000 10px, #000 20px); box-shadow: -5px 0 15px rgba(255, 215, 0, 0.3); }
+        .player-avatar { position: absolute; width: 35px; height: 35px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.5s linear; font-size: 1.2rem; z-index: 5; }
+        .player-name-tag { position: absolute; top: -18px; font-size: 0.65rem; background: rgba(0,0,0,0.8); padding: 2px 5px; border-radius: 4px; white-space: nowrap; }
 
         /* PREGUNTAS */
-        #quiz-overlay {
-            position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 500px; z-index: 50;
-        }
-
-        .q-card {
-            background: var(--secondary); padding: 20px; border-radius: 15px;
-            border: 2px solid var(--primary); text-align: center;
-        }
-
-        .opt-btn {
-            display: block; width: 100%; padding: 10px; margin: 8px 0;
-            background: #16213e; color: white; border: 1px solid #444;
-            border-radius: 8px; cursor: pointer;
-        }
+        #quiz-area { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; z-index: 100; }
+        .q-card { background: var(--secondary); padding: 20px; border-radius: 15px; border: 2px solid var(--primary); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .opt-btn { display: block; width: 100%; padding: 12px; margin: 8px 0; background: #16213e; color: white; border: 1px solid #444; border-radius: 10px; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .opt-btn:hover { background: var(--primary); }
 
         /* TIENDA */
-        #shop {
-            background: #111; padding: 10px; display: flex; justify-content: center; gap: 10px;
-        }
+        #shop { background: #111; padding: 15px; display: flex; justify-content: center; gap: 10px; border-top: 1px solid #333; }
+        .shop-btn { background: #222; color: white; border: 1px solid var(--accent); padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; }
 
-        .shop-btn {
-            background: #333; color: white; border: 1px solid var(--accent);
-            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;
-        }
-
-        /* EFECTOS */
+        /* ATAQUES */
         .effect-invert { filter: invert(1) hue-rotate(180deg); }
         .effect-shake { animation: shake 0.2s infinite; }
-        @keyframes shake { 0%{transform: translate(2px,2px)} 50%{transform: translate(-2px,-2px)} }
+        @keyframes shake { 0%{transform: translate(2px,2px)} 50%{transform: translate(-2px,-2px)} 100%{transform: translate(2px,-2px)} }
     </style>
 </head>
 <body>
 
+    <div id="admin-panel">
+        <span class="admin-close" onclick="location.reload()">×</span>
+        <h2 style="color:var(--accent)">🔧 Admin: Juego Spain</h2>
+        <button onclick="resetGame()" style="background:orange; padding:15px; width:100%; border:none; font-weight:bold; cursor:pointer; margin-bottom:20px">⚠️ REINICIAR POSICIONES DE TODOS</button>
+        
+        <div id="admin-questions-list"></div>
+        <hr>
+        <h3>Nueva Pregunta</h3>
+        <input type="text" id="new-q" placeholder="Pregunta (ej: ¿2+2?)">
+        <input type="text" id="new-a1" placeholder="Respuesta Correcta">
+        <input type="text" id="new-a2" placeholder="Respuesta Incorrecta">
+        <button onclick="addQuestion()" style="padding:15px; background:green; color:white; border:none; border-radius:8px; width:100%; font-weight:bold">GUARDAR EN FIREBASE</button>
+    </div>
+
     <div id="lobby">
         <div class="lobby-card">
-            <h1 style="margin-top:0; color:var(--primary)">SABOTAGE ROYALE</h1>
-            <input type="text" id="name-in" placeholder="Tu Nombre..." maxlength="10">
-            
+            <h1 style="color:var(--primary); margin:0">SABOTAGE</h1>
+            <p style="font-size:0.8rem; color:#aaa">Juego Spain Edition</p>
+            <input type="text" id="name-in" placeholder="Nombre... (Admin para editar)">
             <div class="char-grid">
-                <div class="char-box" onclick="pick('Tank', '🛡️', '#3498db')">
-                    <div class="char-icon">🛡️</div>
-                    <p>TANK</p><small>Escudo Extra</small>
-                </div>
-                <div class="char-box" onclick="pick('Flash', '⚡', '#f1c40f')">
-                    <div class="char-icon">⚡</div>
-                    <p>FLASH</p><small>Corre más</small>
-                </div>
-                <div class="char-box" onclick="pick('Hacker', '💻', '#9b59b6')">
-                    <div class="char-icon">💻</div>
-                    <p>HACKER</p><small>Tienda barata</small>
-                </div>
-                <div class="char-box" onclick="pick('Mago', '🧙', '#e74c3c')">
-                    <div class="char-icon">🧙</div>
-                    <p>MAGO</p><small>Ataque largo</small>
-                </div>
+                <div class="char-box" onclick="pick('Tank','🛡️','#3498db')">🛡️<br>TANK</div>
+                <div class="char-box" onclick="pick('Flash','⚡','#f1c40f')">⚡<br>FLASH</div>
+                <div class="char-box" onclick="pick('Hacker','💻','#9b59b6')">💻<br>HACKER</div>
+                <div class="char-box" onclick="pick('Mago','🧙','#e74c3c')">🧙<br>MAGO</div>
             </div>
-            <button id="start-btn" onclick="joinGame()">¡EMPEZAR!</button>
+            <button id="start-btn" onclick="checkStart()">¡JUGAR!</button>
         </div>
     </div>
 
@@ -158,161 +83,187 @@
             <span>💰 $<span id="u-score">0</span></span>
             <span>🛡️ <span id="u-shield">OFF</span></span>
         </div>
-
-        <div id="game-map">
-            <div class="finish-line">GOAL</div>
-            <div id="players-layer"></div>
-        </div>
-
-        <div id="quiz-overlay">
-            <div class="q-card">
-                <h3 id="q-text" style="margin-top:0">Cargando...</h3>
-                <div id="opts"></div>
-            </div>
-        </div>
-
+        <div id="game-map"><div class="finish-line"></div><div id="players-layer"></div></div>
+        <div id="quiz-area"><div class="q-card"><h3 id="q-text" style="margin:0">Esperando preguntas...</h3><div id="opts"></div></div></div>
         <div id="shop">
-            <button class="shop-btn" id="s-inv" onclick="shop('invert', 50)">🌀 Invertir ($50)</button>
-            <button class="shop-btn" id="s-shk" onclick="shop('shake', 30)">🫨 Terremoto ($30)</button>
-            <button class="shop-btn" onclick="shop('shield', 40)">🛡️ Escudo ($40)</button>
+            <button class="shop-btn" id="s-inv" onclick="buy('invert', 50)">🌀 Invertir ($50)</button>
+            <button class="shop-btn" id="s-shk" onclick="buy('shake', 30)">🫨 Terremoto ($30)</button>
+            <button class="shop-btn" onclick="buy('shield', 40)">🛡️ Escudo ($40)</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update, onChildAdded, onChildChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+        import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 
-        // --- CONFIGURACIÓN FIREBASE ---
+        // CONFIGURACIÓN INTEGRADA (Juego Spain)
         const firebaseConfig = {
-            apiKey: "TU_API_KEY",
-            authDomain: "TU_PROYECTO.firebaseapp.com",
-            databaseURL: "https://TU_PROYECTO.firebaseio.com",
-            projectId: "TU_PROYECTO",
-            storageBucket: "TU_PROYECTO.appspot.com",
-            messagingSenderId: "ID",
-            appId: "ID_APP"
+            apiKey: "AIzaSyB5_FRkGDHgtZxEIUYua_nqaDCmt4_dsto",
+            authDomain: "juego-spain.firebaseapp.com",
+            projectId: "juego-spain",
+            storageBucket: "juego-spain.firebasestorage.app",
+            messagingSenderId: "954474605300",
+            appId: "1:954474605300:web:82321ff7733531e7148ca1"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Variables de Estado
         let my = { id: "P_"+Math.random().toString(36).substr(7), name: "", char: "", icon: "", color: "", score: 0, pos: 0 };
-        let shieldActive = false;
-        let questions = [
-            {q: "¿Cuánto es 5 + 5?", a: ["10", "15", "8"], c: 0},
-            {q: "¿Color del cielo?", a: ["Verde", "Azul", "Rojo"], c: 1},
-            {q: "¿Animal que maúlla?", a: ["Perro", "Gato", "Vaca"], c: 1},
-            {q: "¿GitHub es para...?", a: ["Código", "Comida"], c: 0}
-        ];
+        let shield = false;
+        let questions = [];
         let qIdx = 0;
 
-        // Lobby Logic
+        // SELECCIÓN DE PERSONAJE
         window.pick = (c, i, col) => {
             my.char = c; my.icon = i; my.color = col;
             document.querySelectorAll('.char-box').forEach(b => b.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
-            if(c === 'Hacker') {
-                document.getElementById('s-inv').innerText = "🌀 Invertir ($35)";
-                document.getElementById('s-shk').innerText = "🫨 Terremoto ($20)";
-            }
         };
 
-        window.joinGame = () => {
-            my.name = document.getElementById('name-in').value;
-            if(!my.name || !my.char) return alert("Completa tus datos");
+        window.checkStart = () => {
+            const name = document.getElementById('name-in').value;
+            if(name.toLowerCase() === 'admin') {
+                document.getElementById('admin-panel').style.display = 'block';
+                loadAdminPanel();
+                return;
+            }
+            if(!name || !my.char) return alert("Escribe tu nombre y elige personaje");
+            my.name = name;
             document.getElementById('lobby').style.display = 'none';
             document.getElementById('game-ui').style.display = 'flex';
-            document.getElementById('u-name').innerText = my.name + " (" + my.char + ")";
-            if(my.char === 'Tank') activateShield(8000); // Habilidad Tank: Escudo inicial
-            renderQ();
-            sync();
-            listen();
+            document.getElementById('u-name').innerText = my.name;
+            startGame();
         };
 
-        // Game Logic
-        function renderQ() {
-            const q = questions[qIdx];
-            document.getElementById('q-text').innerText = q.q;
-            const container = document.getElementById('opts');
-            container.innerHTML = "";
-            q.a.forEach((o, i) => {
-                const b = document.createElement("button");
-                b.className = "opt-btn";
-                b.innerText = o;
-                b.onclick = () => {
-                    if(i === q.c) {
-                        my.score += 10;
-                        my.pos += (my.char === 'Flash' ? 10 : 6); // Habilidad Flash
-                    } else {
-                        my.score = Math.max(0, my.score - 5);
-                    }
-                    qIdx = (qIdx + 1) % questions.length;
-                    sync(); renderQ();
-                };
-                container.appendChild(b);
+        // LÓGICA DE ADMINISTRADOR
+        function loadAdminPanel() {
+            onValue(ref(db, 'questions'), (snap) => {
+                const list = document.getElementById('admin-questions-list');
+                list.innerHTML = "";
+                const data = snap.val();
+                for(let id in data) {
+                    const item = document.createElement('div');
+                    item.className = 'admin-q-item';
+                    item.innerHTML = `<b>${data[id].q}</b> <br> Correcta: ${data[id].a[0]} 
+                                      <button style="float:right; background:red; color:white; border:none; padding:5px" onclick="window.delQ('${id}')">X</button>`;
+                    list.appendChild(item);
+                }
             });
         }
 
-        window.shop = (type, cost) => {
-            let finalCost = (my.char === 'Hacker' ? Math.floor(cost * 0.7) : cost);
-            if(my.score >= finalCost) {
-                my.score -= finalCost;
-                if(type === 'shield') activateShield(12000);
-                else {
-                    let dur = (my.char === 'Mago' ? 8000 : 5000); // Habilidad Mago
-                    set(ref(db, 'atk'), { t: type, s: my.id, d: dur, ts: Date.now() });
-                }
-                sync();
-            }
+        window.addQuestion = () => {
+            const q = document.getElementById('new-q').value;
+            const a1 = document.getElementById('new-a1').value;
+            const a2 = document.getElementById('new-a2').value;
+            if(!q || !a1 || !a2) return alert("Faltan campos");
+            push(ref(db, 'questions'), { q: q, a: [a1, a2], c: 0 });
+            document.getElementById('new-q').value = "";
+            document.getElementById('new-a1').value = "";
+            document.getElementById('new-a2').value = "";
         };
 
-        function activateShield(ms) {
-            shieldActive = true;
-            document.getElementById('u-shield').innerText = "ON";
-            setTimeout(() => {
-                shieldActive = false;
-                document.getElementById('u-shield').innerText = "OFF";
-            }, ms);
-        }
+        window.delQ = (id) => remove(ref(db, 'questions/' + id));
 
-        // Firebase Sync
-        function sync() {
-            set(ref(db, 'players/' + my.id), my);
-            document.getElementById('u-score').innerText = my.score;
-        }
+        window.resetGame = () => {
+            onValue(ref(db, 'players'), (snap) => {
+                const players = snap.val();
+                for(let id in players) {
+                    update(ref(db, 'players/' + id), { pos: 0, score: 0 });
+                }
+            }, { onlyOnce: true });
+            alert("Posiciones reiniciadas");
+        };
 
-        function listen() {
+        // LÓGICA DE JUEGO
+        function startGame() {
+            // Cargar preguntas desde Firebase
+            onValue(ref(db, 'questions'), (snap) => {
+                const data = snap.val();
+                if(data) {
+                    questions = Object.values(data);
+                    renderQuestion();
+                } else {
+                    document.getElementById('q-text').innerText = "El Admin no ha puesto preguntas aún.";
+                }
+            });
+
             // Dibujar jugadores
             onValue(ref(db, 'players'), (snap) => {
                 const players = snap.val();
                 const layer = document.getElementById('players-layer');
-                const w = document.getElementById('game-map').offsetWidth - 80;
+                const mapWidth = document.getElementById('game-map').offsetWidth - 60;
                 for(let id in players) {
                     let p = players[id];
-                    let div = document.getElementById("av_"+id);
-                    if(!div) {
-                        div = document.createElement("div");
-                        div.id = "av_"+id;
-                        div.className = "player-avatar";
-                        div.innerHTML = `<span class="player-name-tag">${p.name}</span>${p.icon}`;
-                        div.style.background = p.color;
-                        layer.appendChild(div);
+                    let el = document.getElementById("av_"+id);
+                    if(!el) {
+                        el = document.createElement("div"); el.id = "av_"+id; el.className = "player-avatar";
+                        el.innerHTML = `<span class="player-name-tag">${p.name}</span>${p.icon}`;
+                        el.style.background = p.color; layer.appendChild(el);
                     }
-                    div.style.left = (p.pos * (w/100)) + "px";
-                    // Fila fija basada en el ID
-                    div.style.top = (20 + (parseInt(id.slice(-1), 36) % 8) * 45) + "px";
+                    el.style.left = (p.pos * (mapWidth/100)) + "px";
+                    el.style.top = (20 + (parseInt(id.slice(-1), 36) % 8) * 45) + "px";
+                    
+                    if(id === my.id) { // Sincronizar mis datos locales si el admin resetea
+                        my.pos = p.pos; my.score = p.score;
+                        document.getElementById('u-score').innerText = my.score;
+                    }
                 }
             });
 
-            // Escuchar ataques
+            // Escuchar Sabotajes
             onValue(ref(db, 'atk'), (snap) => {
                 const a = snap.val();
-                if(a && a.s !== my.id && !shieldActive) {
+                if(a && a.s !== my.id && !shield) {
                     document.body.classList.add('effect-' + a.t);
                     setTimeout(() => document.body.classList.remove('effect-' + a.t), a.d);
                 }
             });
+        }
+
+        function renderQuestion() {
+            if(questions.length === 0) return;
+            const q = questions[qIdx % questions.length];
+            document.getElementById('q-text').innerText = q.q;
+            const cont = document.getElementById('opts');
+            cont.innerHTML = "";
+            
+            // Mezclar opciones
+            let ops = [...q.a];
+            q.a.forEach((o, i) => {
+                const b = document.createElement("button"); b.className = "opt-btn"; b.innerText = o;
+                b.onclick = () => {
+                    if(i === q.c) { 
+                        my.score += 10; 
+                        my.pos = Math.min(100, my.pos + (my.char === 'Flash' ? 8 : 5));
+                    } else { 
+                        my.score = Math.max(0, my.score - 5); 
+                    }
+                    qIdx++;
+                    updateDB();
+                    renderQuestion();
+                };
+                cont.appendChild(b);
+            });
+        }
+
+        window.buy = (t, cost) => {
+            let realCost = (my.char === 'Hacker' ? Math.floor(cost * 0.7) : cost);
+            if(my.score >= realCost) {
+                my.score -= realCost;
+                if(t === 'shield') {
+                    shield = true; document.getElementById('u-shield').innerText = "ON";
+                    setTimeout(() => { shield = false; document.getElementById('u-shield').innerText = "OFF"; }, 10000);
+                } else {
+                    set(ref(db, 'atk'), { t: t, s: my.id, d: (my.char === 'Mago' ? 8000 : 5000), ts: Date.now() });
+                }
+                updateDB();
+            }
+        };
+
+        function updateDB() {
+            set(ref(db, 'players/' + my.id), my);
+            document.getElementById('u-score').innerText = my.score;
         }
     </script>
 </body>
