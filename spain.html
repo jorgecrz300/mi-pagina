@@ -3,291 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sabotage Royale - Juego Spain</title>
+    <title>Juego Spain - Admin</title>
     <style>
-        :root { --primary: #e94560; --secondary: #0f3460; --dark: #1a1a2e; --accent: #00f2ff; }
-        body, html { margin: 0; padding: 0; height: 100%; background: var(--dark); color: white; font-family: sans-serif; overflow: hidden; user-select: none; }
-        
-        /* LOBBY */
-        #lobby { position: fixed; inset: 0; background: #0f3460; display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .lobby-card { background: #16213e; padding: 25px; border-radius: 20px; text-align: center; border: 2px solid var(--primary); width: 350px; }
-        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; font-size: 1rem; }
-        .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; }
-        .char-box { background: #1a1a2e; padding: 10px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; font-size: 0.8rem; }
-        .char-box.selected { border-color: var(--accent); background: #1f1f3a; }
-        #start-btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; }
+        /* Estilos base para que se vea como en tu captura */
+        body {
+            background-color: #1a1a2e;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
 
-        /* RANKING TOP 3 */
-        #leaderboard { position: fixed; top: 60px; left: 10px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 10px; font-size: 0.8rem; z-index: 100; border: 1px solid var(--primary); min-width: 120px; }
-        .rank-item { margin: 3px 0; display: flex; justify-content: space-between; }
+        #btn-reiniciar {
+            background-color: #ff4c4c;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.3s;
+            display: block;
+            margin: 10px auto;
+        }
 
-        /* ADMIN PANEL Y CANDADO */
-        #admin-lock { position: fixed; bottom: 5px; right: 5px; font-size: 0.8rem; cursor: pointer; opacity: 0.3; z-index: 500; }
-        #admin-btn-open { display: none; position: fixed; bottom: 70px; right: 20px; background: #f39c12; color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; z-index: 501; font-weight: bold; }
-        #admin-panel { display: none; position: fixed; inset: 0; background: #111; z-index: 2000; padding: 20px; overflow-y: auto; }
-        .admin-q-item { background: #222; padding: 10px; margin-bottom: 10px; border-radius: 8px; border-left: 5px solid var(--primary); }
-        .admin-close { position: absolute; top: 10px; right: 20px; font-size: 2rem; cursor: pointer; }
+        #btn-reiniciar:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
 
-        /* JUEGO UI */
-        #game-ui { display: none; flex-direction: column; height: 100vh; }
-        #status-bar { background: rgba(0,0,0,0.8); padding: 12px; display: flex; justify-content: space-around; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid var(--primary); }
-        #game-map { flex-grow: 1; position: relative; background: #222; background-image: linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px); background-size: 40px 40px; }
-        .finish-line { position: absolute; right: 0; top: 0; bottom: 0; width: 45px; background: repeating-linear-gradient(45deg, #ffd700, #ffd700 10px, #000 10px, #000 20px); }
-        .player-avatar { position: absolute; width: 35px; height: 35px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.5s linear; font-size: 1.2rem; }
-        .player-name-tag { position: absolute; top: -18px; font-size: 0.65rem; background: rgba(0,0,0,0.8); padding: 2px 5px; border-radius: 4px; white-space: nowrap; }
-
-        /* PREGUNTAS */
-        #quiz-area { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; z-index: 100; }
-        .q-card { background: var(--secondary); padding: 20px; border-radius: 15px; border: 2px solid var(--primary); text-align: center; }
-        .opt-btn { display: block; width: 100%; padding: 12px; margin: 8px 0; background: #16213e; color: white; border: 1px solid #444; border-radius: 10px; cursor: pointer; font-size: 1rem; }
-
-        /* TIENDA */
-        #shop { background: #111; padding: 15px; display: flex; justify-content: center; gap: 10px; border-top: 1px solid #333; }
-        .shop-btn { background: #222; color: white; border: 1px solid var(--accent); padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; }
-
-        /* ATAQUES */
-        .effect-invert { filter: invert(1) hue-rotate(180deg); }
+        /* Efecto de vibración que tenías en tu código */
         .effect-shake { animation: shake 0.2s infinite; }
-        @keyframes shake { 0%{transform: translate(2px,2px)} 50%{transform: translate(-2px,-2px)} 100%{transform: translate(2px,-2px)} }
+        @keyframes shake {
+            0% { transform: translate(2px, 2px); }
+            50% { transform: translate(-2px, -2px); }
+            100% { transform: translate(2px, -2px); }
+        }
+
+        /* Estilos simples para los paneles que se ven en tu imagen */
+        #admin-panel {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <div style="text-align: center; margin-top: 10px;">
-    <button id="btn-reiniciar" style="background-color: #ff4c4c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-family: sans-serif; font-weight: bold;">
-        Reiniciar Tabla
-    </button>
-</div>
+
+    <div style="text-align: center;">
+        <button id="btn-reiniciar">Reiniciar Tabla</button>
+    </div>
+
     <div id="leaderboard">🏆 Top 3: <div id="rank-list"></div></div>
-    <div id="admin-lock" onclick="unlockAdmin()">🔒</div>
-    <button id="admin-btn-open" onclick="openAdminPanel()">⚙️ Panel Admin</button>
-
+    
     <div id="admin-panel">
-        <span class="admin-close" onclick="closeAdminPanel()">×</span>
-        <h2 style="color:var(--accent)">🔧 Admin: Juego Spain</h2>
-        <button onclick="resetGame()" style="background:orange; padding:15px; width:100%; border:none; font-weight:bold; cursor:pointer; margin-bottom:20px">⚠️ REINICIAR TODOS</button>
-        <div id="admin-questions-list"></div>
-        <hr>
-        <input type="text" id="new-q" placeholder="Pregunta">
-        <input type="text" id="new-a1" placeholder="Respuesta Correcta">
-        <input type="text" id="new-a2" placeholder="Respuesta Incorrecta">
-        <button onclick="addQuestion()" style="padding:15px; background:green; color:white; border:none; width:100%; font-weight:bold">GUARDAR</button>
-    </div>
-
-    <div id="lobby">
-        <div class="lobby-card">
-            <h1 style="color:var(--primary); margin:0">SABOTAGE</h1>
-            <input type="text" id="name-in" placeholder="Tu Nombre...">
-            <div class="char-grid">
-                <div class="char-box" onclick="pick('Tank','🛡️','#3498db')">🛡️<br>TANK</div>
-                <div class="char-box" onclick="pick('Flash','⚡','#f1c40f')">⚡<br>FLASH</div>
-                <div class="char-box" onclick="pick('Hacker','💻','#9b59b6')">💻<br>HACKER</div>
-                <div class="char-box" onclick="pick('Mago','🧙','#e74c3c')">🧙<br>MAGO</div>
-            </div>
-            <button id="start-btn" onclick="checkStart()">¡JUGAR!</button>
+        <h2 style="color: #4cc9f0;">🛠 Admin: Juego Spain</h2>
         </div>
-    </div>
-
-    <div id="game-ui">
-        <div id="status-bar">
-            <span>👤 <span id="u-name"></span></span>
-            <span>💰 $<span id="u-score">0</span></span>
-            <span>🛡️ <span id="u-shield">OFF</span></span>
-        </div>
-        <div id="game-map"><div class="finish-line"></div><div id="players-layer"></div></div>
-        <div id="quiz-area"><div class="q-card"><h3 id="q-text" style="margin:0">Cargando...</h3><div id="opts"></div></div></div>
-        <div id="shop">
-            <button class="shop-btn" id="s-inv" onclick="buy('invert', 50)">🌀 Invertir ($50)</button>
-            <button class="shop-btn" id="s-shk" onclick="buy('shake', 30)">🫨 Terremoto ($30)</button>
-            <button class="shop-btn" onclick="buy('shield', 40)">🛡️ Escudo ($40)</button>
-        </div>
-    </div>
 
     <script type="module">
-        // --- LÓGICA DE REINICIO TOTAL ---
-
-const btnReiniciar = document.getElementById('btn-reiniciar');
-
-btnReiniciar.addEventListener('click', () => {
-    // Pedimos confirmación para no borrar por error
-    if (confirm("¿Estás seguro? Esto eliminará a TODOS los jugadores de la pantalla.")) {
-        
-        // 1. Referencia al nodo donde guardas los personajes
-        // Si en tu base de datos el nodo se llama diferente a 'jugadores', cámbialo aquí
-        const refJugadores = firebase.database().ref('jugadores');
-
-        // 2. Eliminamos todo el contenido de ese nodo
-        refJugadores.remove()
-            .then(() => {
-                console.log("Base de datos limpiada con éxito.");
-                // 3. Forzamos la recarga de la página para limpiar el Canvas/DOM
-                location.reload(); 
-            })
-            .catch((error) => {
-                alert("Error al intentar reiniciar: " + error.message);
-            });
-    }
-});
-
-// --- MEJORA: BORRADO AUTOMÁTICO AL SALIR ---
-// Busca la parte de tu código donde creas al jugador (cuando se loguean)
-// y asegúrate de añadir esta línea a la referencia de ese usuario:
-
-/* Ejemplo de cómo debería verse donde creas al usuario:
-   
-   let miUsuarioRef = firebase.database().ref('jugadores/' + nombre);
-   miUsuarioRef.set({ ... });
-   
-   // ESTA LÍNEA ES CLAVE:
-   miUsuarioRef.onDisconnect().remove(); 
-*/
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-        import { getDatabase, ref, set, onValue, push, remove, update, onDisconnect } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+        import { getDatabase, ref, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
 
+        // Tu configuración exacta
         const firebaseConfig = {
-            apiKey: "AIzaSyB5_FRkGDHgtZxEIUYua_nqaDCmt4_dsto",
+            apiKey: "AIzaSyB5_FRkGDHgtZxEiUYua_nqaDCmt4_dsto",
             authDomain: "juego-spain.firebaseapp.com",
             projectId: "juego-spain",
-            databaseURL: "https://juego-spain-default-rtdb.firebaseio.com/", // Ajustado según tu proyecto
-            storageBucket: "juego-spain.firebasestorage.app",
-            messagingSenderId: "954474605300",
-            appId: "1:954474605300:web:82321ff7733531e7148ca1"
+            databaseURL: "https://juego-spain-default-rtdb.firebaseio.com/",
+            storageBucket: "juego-spain.appspot.com",
         };
 
+        // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Generar ID nuevo siempre para evitar el error de "misma persona"
-        let myID = "P_" + Math.random().toString(36).substr(2, 9);
-        let my = { id: myID, name: "", char: "", icon: "", color: "", score: 0, pos: 0 };
-        let shield = false;
-        let questions = [];
-        let qIdx = 0;
+        // --- LÓGICA DEL BOTÓN REINICIAR ---
+        const btnReiniciar = document.getElementById('btn-reiniciar');
 
-        window.pick = (c, i, col) => {
-            my.char = c; my.icon = i; my.color = col;
-            document.querySelectorAll('.char-box').forEach(b => b.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-        };
-
-        window.checkStart = () => {
-            const name = document.getElementById('name-in').value;
-            if(!name || !my.char) return alert("Escribe tu nombre y elige personaje");
-            my.name = name;
-            document.getElementById('lobby').style.display = 'none';
-            document.getElementById('game-ui').style.display = 'flex';
-            document.getElementById('u-name').innerText = my.name;
-            
-            // Al desconectarse, borrar mi muñequito de la DB
-            onDisconnect(ref(db, 'players/' + my.id)).remove();
-            
-            startGame();
-        };
-
-        // ADMIN
-        window.unlockAdmin = () => { if(prompt("Contraseña:") === "4321") document.getElementById('admin-btn-open').style.display = 'block'; };
-        window.openAdminPanel = () => { document.getElementById('admin-panel').style.display = 'block'; loadAdminPanel(); };
-        window.closeAdminPanel = () => { document.getElementById('admin-panel').style.display = 'none'; };
-        function loadAdminPanel() {
-            onValue(ref(db, 'questions'), (snap) => {
-                const list = document.getElementById('admin-questions-list'); list.innerHTML = "";
-                const data = snap.val();
-                for(let id in data) {
-                    list.innerHTML += `<div class="admin-q-item"><b>${data[id].q}</b> <button style="float:right" onclick="window.delQ('${id}')">X</button></div>`;
-                }
-            });
-        }
-        window.addQuestion = () => {
-            const q = document.getElementById('new-q').value;
-            const a1 = document.getElementById('new-a1').value;
-            const a2 = document.getElementById('new-a2').value;
-            if(!q || !a1 || !a2) return;
-            push(ref(db, 'questions'), { q: q, a: [a1, a2], c: 0 });
-            document.getElementById('new-q').value=""; document.getElementById('new-a1').value=""; document.getElementById('new-a2').value="";
-        };
-        window.delQ = (id) => remove(ref(db, 'questions/' + id));
-        window.resetGame = () => {
-            onValue(ref(db, 'players'), (snap) => {
-                const p = snap.val();
-                for(let id in p) update(ref(db, 'players/' + id), { pos: 0, score: 0 });
-            }, {onlyOnce: true});
-        };
-
-        // GAME
-        function startGame() {
-            onValue(ref(db, 'questions'), (snap) => { if(snap.val()){ questions = Object.values(snap.val()); renderQuestion(); } });
-
-            onValue(ref(db, 'players'), (snap) => {
-                const players = snap.val() || {};
-                const layer = document.getElementById('players-layer');
-                const mapWidth = document.getElementById('game-map').offsetWidth - 60;
+        btnReiniciar.addEventListener('click', () => {
+            if (confirm("¿Estás seguro? Esto eliminará a TODOS los personajes de la pantalla.")) {
                 
-                // Limpiar visualmente lo que no está en la DB
-                layer.innerHTML = ""; 
+                // Referencia al nodo de jugadores
+                const refJugadores = ref(db, 'jugadores');
 
-                // Ordenar para el Ranking
-                let sorted = Object.values(players).sort((a,b) => b.pos - a.pos).slice(0,3);
-                let rankHTML = "";
-                sorted.forEach((p, i) => rankHTML += `<div class="rank-item"><span>${i+1}. ${p.name}</span> <b>${p.pos}%</b></div>`);
-                document.getElementById('rank-list').innerHTML = rankHTML;
-
-                for(let id in players) {
-                    let p = players[id];
-                    let el = document.createElement("div");
-                    el.className = "player-avatar";
-                    el.innerHTML = `<span class="player-name-tag">${p.name}</span>${p.icon}`;
-                    el.style.background = p.color;
-                    el.style.left = (p.pos * (mapWidth/100)) + "px";
-                    el.style.top = (20 + (parseInt(id.slice(-1), 36) % 8) * 45) + "px";
-                    layer.appendChild(el);
-                    
-                    if(id === my.id) { 
-                        my.pos = p.pos; my.score = p.score; 
-                        document.getElementById('u-score').innerText = my.score; 
-                    }
-                }
-            });
-
-            onValue(ref(db, 'atk'), (snap) => {
-                const a = snap.val();
-                if(a && a.s !== my.id && !shield && (Date.now() - a.ts < 2000)) {
-                    document.body.classList.add('effect-' + a.t);
-                    setTimeout(() => document.body.classList.remove('effect-' + a.t), a.d);
-                }
-            });
-            updateDB();
-        }
-
-        function renderQuestion() {
-            if(questions.length === 0) return;
-            const q = questions[qIdx % questions.length];
-            document.getElementById('q-text').innerText = q.q;
-            const cont = document.getElementById('opts'); cont.innerHTML = "";
-            q.a.forEach((o, i) => {
-                const b = document.createElement("button"); b.className = "opt-btn"; b.innerText = o;
-                b.onclick = () => {
-                    if(i === q.c) { my.score += 10; my.pos = Math.min(100, my.pos + (my.char === 'Flash' ? 8 : 5)); }
-                    else { my.score = Math.max(0, my.score - 5); }
-                    qIdx++; updateDB(); renderQuestion();
-                };
-                cont.appendChild(b);
-            });
-        }
-
-        window.buy = (t, cost) => {
-            let realCost = (my.char === 'Hacker' ? Math.floor(cost * 0.7) : cost);
-            if(my.score >= realCost) {
-                my.score -= realCost;
-                if(t === 'shield') {
-                    shield = true; document.getElementById('u-shield').innerText = "ON";
-                    setTimeout(() => { shield = false; document.getElementById('u-shield').innerText = "OFF"; }, 10000);
-                } else {
-                    set(ref(db, 'atk'), { t: t, s: my.id, d: (my.char === 'Mago' ? 8000 : 5000), ts: Date.now() });
-                }
-                updateDB();
+                // Borrar datos en Firebase
+                remove(refJugadores)
+                    .then(() => {
+                        console.log("Base de datos limpia.");
+                        // Recargamos para limpiar el canvas local
+                        location.reload(); 
+                    })
+                    .catch((error) => {
+                        alert("Error al reiniciar: " + error.message);
+                    });
             }
-        };
+        });
 
-        function updateDB() { set(ref(db, 'players/' + my.id), my); }
+        // NOTA: Para que los personajes se borren solos al salir, 
+        // recuerda usar: onDisconnect(ref(db, 'jugadores/' + nombre)).remove();
+        // dentro de tu función de inicio de jugador.
+
     </script>
 </body>
 </html>
