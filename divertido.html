@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Super Game Challenge</title>
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        #game-ui, #setup-ui {
+            z-index: 10;
+        }
+
+        input {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #0f0;
+            color: #000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #matrix-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: black;
+            color: #0f0;
+            padding: 20px;
+            text-align: left;
+            font-size: 14px;
+            overflow: hidden;
+            box-sizing: border-box;
+            z-index: 999;
+        }
+
+        .red-text { color: red; font-weight: bold; }
+        
+        #timer { font-size: 2rem; color: white; }
+    </style>
+</head>
+<body>
+
+    <div id="setup-ui">
+        <h2>INGRESA TU NOMBRE PARA JUGAR</h2>
+        <input type="text" id="username" placeholder="Nombre..."> <br>
+        <button onclick="startGame()">EMPEZAR RETO</button>
+    </div>
+
+    <div id="game-ui" style="display:none;">
+        <h2 id="welcome"></h2>
+        <p>¡Toca el botón rápido! Tienes 20 segundos</p>
+        <div id="timer">20</div>
+        <button id="clickBtn" style="margin-top:20px; padding: 40px;">¡CLICK!</button>
+    </div>
+
+    <div id="matrix-screen">
+        <div id="console-output"></div>
+    </div>
+
+    <script>
+        let timeLeft = 20;
+        let consoleDiv = document.getElementById('console-output');
+
+        function startGame() {
+            const name = document.getElementById('username').value;
+            if(!name) return alert("Pon tu nombre");
+            
+            document.getElementById('setup-ui').style.display = 'none';
+            document.getElementById('game-ui').style.display = 'block';
+            document.getElementById('welcome').textContent = "Jugador: " + name;
+
+            // Intentar poner pantalla completa (esto asusta más)
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            }
+
+            let countdown = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(countdown);
+                    triggerPrank();
+                }
+            }, 1000);
+        }
+
+        function triggerPrank() {
+            document.getElementById('game-ui').style.display = 'none';
+            document.getElementById('matrix-screen').style.display = 'block';
+            
+            const lines = [
+                "> SYSTEM_ERROR: Unauthorized access...",
+                "> Iniciando protocolo de extracción...",
+                "> <span class='red-text'>SACANDO DATOS, IP Y CONTRASEÑA...</span>",
+                "> <span class='red-text'>TAKING DATA, IP AND PASSWORD...</span>",
+                "> Localizando coordenadas GPS...",
+                "> IP: 192.168.1." + Math.floor(Math.random() * 255),
+                "> Accediendo a llavero de contraseñas de Google...",
+                "> Enviando paquetes a servidor remoto...",
+                "> Bloqueando salida del sistema...",
+                "> Cargando: ████████████ 100%",
+                "> <span class='red-text'>DISPOSITIVO COMPROMETIDO</span>",
+                "> Subiendo fotos de galería..."
+            ];
+
+            let i = 0;
+            function printLine() {
+                if (i < lines.length) {
+                    consoleDiv.innerHTML += lines[i] + "<br>";
+                    i++;
+                    setTimeout(printLine, 600);
+                }
+            }
+            printLine();
+        }
+    </script>
+</body>
+</html>
