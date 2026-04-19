@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Focus Space</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --accent-color: #6c5ce7;
+            --transition: all 0.5s ease;
+        }
+
+        body.dark-mode {
+            --bg-color: #1e1e2e;
+            --card-bg: #2d2d44;
+            --text-color: #f8f8f2;
+            --accent-color: #a29bfe;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+            transition: var(--transition);
+        }
+
+        h1 {
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .timer {
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            color: var(--accent-color);
+        }
+
+        .controls button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 5px;
+            transition: opacity 0.3s;
+        }
+
+        .controls button:hover {
+            opacity: 0.8;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .visualizer {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 2rem;
+            height: 40px;
+        }
+
+        .bar {
+            width: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+            animation: bounce 1s infinite alternate;
+            animation-play-state: paused;
+        }
+
+        @keyframes bounce {
+            from { height: 5px; }
+            to { height: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="theme-toggle" id="themeBtn">🌓</div>
+
+    <div class="container">
+        <h1 id="greeting">Enfoque</h1>
+        <div class="timer" id="display">25:00</div>
+        
+        <div class="controls">
+            <button id="startBtn">Iniciar</button>
+            <button id="resetBtn">Reiniciar</button>
+        </div>
+
+        <div class="visualizer" id="visualizer">
+            <div class="bar" style="animation-delay: 0.1s"></div>
+            <div class="bar" style="animation-delay: 0.3s"></div>
+            <div class="bar" style="animation-delay: 0.5s"></div>
+            <div class="bar" style="animation-delay: 0.2s"></div>
+            <div class="bar" style="animation-delay: 0.4s"></div>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = 25 * 60;
+        let timerId = null;
+        const display = document.getElementById('display');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const bars = document.querySelectorAll('.bar');
+        const themeBtn = document.getElementById('themeBtn');
+
+        // Lógica del Temporizador
+        function updateDisplay() {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            display.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (timerId === null) {
+                timerId = setInterval(() => {
+                    timeLeft--;
+                    updateDisplay();
+                    if (timeLeft === 0) clearInterval(timerId);
+                }, 1000);
+                startBtn.textContent = 'Pausar';
+                bars.forEach(b => b.style.animationPlayState = 'running');
+            } else {
+                clearInterval(timerId);
+                timerId = null;
+                startBtn.textContent = 'Iniciar';
+                bars.forEach(b => b.style.animationPlayState = 'paused');
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            clearInterval(timerId);
+            timerId = null;
+            timeLeft = 25 * 60;
+            updateDisplay();
+            startBtn.textContent = 'Iniciar';
+            bars.forEach(b => b.style.animationPlayState = 'paused');
+        });
+
+        // Cambio de Tema
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+
+        // Saludo dinámico
+        const hour = new Date().getHours();
+        const greeting = document.getElementById('greeting');
+        if (hour < 12) greeting.textContent = "Buenos días";
+        else if (hour < 18) greeting.textContent = "Buenas tardes";
+        else greeting.textContent = "Buenas noches";
+    </script>
+</body>
+</html>
