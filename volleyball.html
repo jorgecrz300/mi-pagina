@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VolleyJS - Arcade Edition</title>
+    <style>
+        /* --- ESTILOS (CSS) --- */
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #ui {
+            display: flex;
+            gap: 60px;
+            margin-bottom: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .score-box {
+            padding: 5px 15px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        canvas {
+            background: linear-gradient(#4facfe 0%, #00f2fe 100%); /* Cielo */
+            border: 4px solid #fff;
+            border-bottom: 12px solid #5d4037; /* Suelo/Tierra */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            border-radius: 4px;
+        }
+
+        .controls-info {
+            margin-top: 20px;
+            color: #bdc3c7;
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        b { color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div id="ui">
+        <div class="score-box">Jugador: <span id="p1-score">0</span></div>
+        <div class="score-box">IA: <span id="p2-score">0</span></div>
+    </div>
+
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+    <div class="controls-info">
+        Usa las <b>Flechas (Izquierda/Derecha)</b> para moverte y <b>Flecha Arriba</b> para saltar.<br>
+        Presiona <b>Espacio</b> para reiniciar el balón si se queda trabado.
+    </div>
+
+    <script>
+        /* --- LÓGICA DEL JUEGO (JavaScript) --- */
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Variables de estado
+        let p1Score = 0;
+        let p2Score = 0;
+        const gravity = 0.45;
+
+        // Configuración de los personajes
+        let player = { x: 120, y: 350, w: 35, h: 50, dy: 0, speed: 7, jumping: false, color: '#e74c3c' };
+        let enemy = { x: 645, y: 350, w: 35, h: 50, dy: 0, speed: 4.5, jumping: false, color: '#2ecc71' };
+        
+        // El balón
+        let ball = { x: 200, y: 100, radius: 12, dx: 4, dy: 2 };
+        
+        // La red
+        const net = { x: 396, y: 260, w: 8, h: 140 };
+
+        function resetBall(servingPlayer) {
+            ball.y = 100;
+            ball.dy = 0;
+            // El balón aparece en el lado del que anotó o perdió el punto
+            ball.x = servingPlayer === 'p1' ? 200 : 600;
+            ball.dx = servingPlayer === 'p1' ? 3 : -3;
+        }
+
+        function checkCollision(p) {
+            // Detección de colisión circular-rectangular básica
+            if (ball.x + ball.radius > p.x && 
+                ball.x - ball.radius < p.x + p.w && 
+                ball.y + ball.radius > p.y && 
+                ball.y - ball.radius < p.y + p.h) {
+                
+                ball.dy = -9; // Rebote hacia arriba
+                // Cambia la dirección horizontal según dónde golpee al jugador
+                let hitPoint = (ball.x - (p.x + p.w / 2)) / (p.w / 2);
+                ball.dx = hitPoint * 6;
+            }
+        }
+
+        function update() {
+            // Física del Jugador
+            player.dy += gravity;
+            player.y += player.dy;
+            if (player.y > 350) {
+                player.y = 350;
+                player.dy = 0;
+                player.jumping = false;
+            }
+
+            // Física e IA del Enemigo
+            enemy.dy += gravity;
+            enemy.y += enemy.dy;
+            if (enemy.y > 350) {
+                enemy.y = 350;
+                enemy.dy = 0;
+                enemy.jumping = false;
+            }
+
+            // IA: Seguir el balón si está en su lado
+            if (ball.x > canvas.width / 2) {
+                if (enemy.x + enemy.w/2 < ball.x - 10) enemy.x += enemy.speed;
+                if (enemy.x + enemy.w/2 > ball.x + 10) enemy.x -= enemy.speed;
+                
+                // Saltar si el balón viene alto
+                if (ball.y < 220 && !enemy.jumping && Math.random() > 0.95) {
+                    enemy.dy = -11;
+                    enemy.jumping = true;
+                }
+            }
+
+            // Movimiento del balón
+            ball.dy += 0.22; // Gravedad del balón
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            // Rebotes en paredes laterales
+            if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
+                ball.dx *= -1;
+            }
+
+            // Anotación (Toca el suelo)
+            if (ball.y + ball.radius > canvas.height) {
+                if (ball.x < canvas.width / 2) {
+                    p2Score++;
+                    document.getElementById('p2-score').innerText = p2Score;
+                    resetBall('p2');
+                } else {
+                    p1Score++;
+                    document.getElementById('p1-score').innerText = p1Score;
+                    resetBall('p1');
+                }
+            }
+
+            // Colisión con la red (Lógica simplificada)
+            if (ball.x + ball.radius > net.x && ball.x - ball.radius < net.x + net.w && ball.y > net.y) {
+                ball.dx *= -1.2; // Rebota hacia atrás
+                ball.x = ball.x < canvas.width/2 ? net.x - ball.radius : net.x + net.w + ball.radius;
+            }
+
+            checkCollision(player);
+            checkCollision(enemy);
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dibujar Red
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillRect(net.x, net.y, net.w, net.h);
+            // Borde superior de la red
+            ctx.fillStyle = '#f1c40f';
+            ctx.fillRect(net.x - 2, net.y, net.w + 4, 10);
+
+            // Dibujar Jugador
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.w, player.h);
+
+            // Dibujar IA
+            ctx.fillStyle = enemy.color;
+            ctx.fillRect(enemy.x, enemy.y, enemy.w, enemy.h);
+
+            // Dibujar Balón (con sombra)
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#f1c40f'; // Color de balón de voley
+            ctx.fill();
+            ctx.strokeStyle = '#34495e';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.closePath();
+
+            update();
+            requestAnimationFrame(draw);
+        }
+
+        // Control de teclado
+        const keys = {};
+        window.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+            if (e.key === ' ') resetBall('p1');
+        });
+        window.addEventListener('keyup', (e) => keys[e.key] = false);
+
+        function handleInput() {
+            if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+            if (keys['ArrowRight'] && player.x < net.x - player.w) player.x += player.speed;
+            if (keys['ArrowUp'] && !player.jumping) {
+                player.dy = -12;
+                player.jumping = true;
+            }
+        }
+
+        function gameLoop() {
+            handleInput();
+            draw();
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>
