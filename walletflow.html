@@ -8,8 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro - Móvil Ready</title>
-    
+    <title>FinanzasPro V2</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
@@ -23,46 +22,127 @@
             --border: #e9ecef;
         }
 
-        /* Ajustes globales para evitar comportamientos extraños en móviles */
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* Quita el flash azul al tocar en móviles */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom) 16px; /* Soporte para "Notch" de iPhone */
+            padding: 0;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
+            align-items: center;
         }
 
-        .container {
+        /* --- PANTALLA DE LOGUEO (GOOGLE SIMULADO) --- */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 500px; /* Tamaño ideal para simular comportamiento móvil incluso en PC */
+            height: 100%;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px 20px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .login-box h1 {
+            color: #fff;
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .login-box p {
+            color: #b0bec5;
+            font-size: 14px;
+            margin: 0 0 30px 0;
+        }
+
+        /* Botón de Google Estilo Oficial */
+        .btn-google {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            height: 50px;
+            background-color: #ffffff;
+            color: #757575;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+
+        .btn-google:active {
+            transform: scale(0.98);
+            background-color: #f1f1f1;
+        }
+
+        .btn-google img {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* --- INTERFAZ PRINCIPAL DE LA APP --- */
+        #app-screen {
+            display: none; /* Oculta la app hasta que se inicie sesión */
+            width: 100%;
+            max-width: 500px;
+            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom) 16px;
         }
 
         header {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin: 20px 0;
         }
 
         header h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 22px;
             color: var(--primary);
             font-weight: 800;
         }
 
-        header p {
-            margin: 5px 0 0 0;
-            font-size: 13px;
-            color: #6c757d;
+        .btn-logout {
+            background: #e9ecef;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #495057;
+            cursor: pointer;
         }
 
-        /* Dashboard de Balance (Scroll horizontal suave en móviles si fuera necesario) */
         .dashboard {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -84,7 +164,6 @@
             font-size: 10px;
             text-transform: uppercase;
             color: #6c757d;
-            letter-spacing: 0.5px;
         }
 
         .card p {
@@ -100,7 +179,6 @@
         .balance-income { color: var(--success); }
         .balance-expense { color: var(--danger); }
 
-        /* Estructura de paneles vertical para móviles */
         .main-content {
             display: flex;
             flex-direction: column;
@@ -121,10 +199,8 @@
             margin-bottom: 15px;
             font-size: 16px;
             font-weight: 700;
-            color: #343a40;
         }
 
-        /* Inputs optimizados para dedos (Zonas de toque de mínimo 44px de alto) */
         .form-group {
             margin-bottom: 12px;
         }
@@ -134,16 +210,15 @@
             margin-bottom: 6px;
             font-weight: 600;
             font-size: 13px;
-            color: #495057;
         }
 
         .form-group input, .form-group select {
             width: 100%;
-            height: 46px; /* Altura ideal para pantallas táctiles */
+            height: 46px;
             padding: 0 12px;
             border: 1px solid #ced4da;
             border-radius: 10px;
-            font-size: 16px; /* Evita que iOS haga zoom automático molesto al enfocar */
+            font-size: 16px;
             background-color: #fff;
         }
 
@@ -158,14 +233,8 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 5px;
-            transition: background 0.2s;
         }
 
-        button.btn-submit:active {
-            background: #2a44ca; /* Efecto visual al mantener presionado en pantalla táctil */
-        }
-
-        /* Historial optimizado */
         .transaction-list {
             list-style: none;
             padding: 0;
@@ -214,7 +283,6 @@
         .amount-income { color: var(--success); }
         .amount-expense { color: var(--danger); }
 
-        /* Botón eliminar gigante para que el dedo no falle */
         .btn-delete {
             background: #f8f9fa;
             border: none;
@@ -225,47 +293,42 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             font-size: 12px;
         }
 
-        .btn-delete:active {
-            color: var(--danger);
-            background: #ffe3e3;
-        }
-
-        /* Contenedor del Gráfico adaptable */
         .chart-container {
             position: relative;
             height: 200px;
             width: 100%;
         }
 
-        /* Ajustes para pantallas de escritorio (por si lo abren en PC) */
         @media (min-width: 769px) {
-            .container {
-                max-width: 900px;
-            }
-            .dashboard {
-                gap: 20px;
-            }
+            body { align-items: flex-start; padding-top: 40px; }
+            #app-screen { max-width: 900px; }
+            .dashboard { gap: 20px; }
             .card { padding: 20px; }
-            .card h3 { font-size: 12px; }
             .card p { font-size: 24px; }
-            .main-content {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 20px;
-            }
+            .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
+    <div id="login-screen">
+        <div class="login-box">
             <h1>FinanzasPro</h1>
-            <p>Control de Gastos Móvil</p>
+            <p>Gestiona tus ingresos y gastos de forma segura</p>
+            <button class="btn-google" id="btn-login-google">
+                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/web-24dp/logo_googleg_color_24dp.png" alt="Google Logo">
+                Iniciar sesión con Google
+            </button>
+        </div>
+    </div>
+
+    <div id="app-screen">
+        <header>
+            <h1 id="user-welcome">FinanzasPro</h1>
+            <button class="btn-logout" id="btn-logout">Salir</button>
         </header>
 
         <div class="dashboard">
@@ -289,7 +352,7 @@
                 <form id="transaction-form">
                     <div class="form-group">
                         <label for="description">Descripción</label>
-                        <input type="text" id="description" placeholder="Ej. Almuerzo, Uber, Sueldo" required>
+                        <input type="text" id="description" placeholder="Ej. Almuerzo, Sueldo" required>
                     </div>
                     <div class="form-group">
                         <label for="amount">Monto ($)</label>
@@ -331,7 +394,49 @@
     </div>
 
     <script>
-        // --- MOTOR LOGICO DE LA APP ---
+        // --- CONTROL DE SESIÓN ---
+        const loginScreen = document.getElementById('login-screen');
+        const appScreen = document.getElementById('app-screen');
+        const btnLoginGoogle = document.getElementById('btn-login-google');
+        const btnLogout = document.getElementById('btn-logout');
+        const userWelcome = document.getElementById('user-welcome');
+
+        // Revisar si ya había una sesión activa guardada
+        let userSession = localStorage.getItem('user_session');
+
+        if (userSession) {
+            showApp(userSession);
+        }
+
+        btnLoginGoogle.addEventListener('click', () => {
+            // Simulamos la ventana emergente de Google pidiendo el nombre la primera vez
+            let userName = localStorage.getItem('user_name');
+            if (!userName) {
+                userName = prompt("Para simular tu cuenta de Google, escribe tu nombre:", "Invitado");
+                if (!userName || userName.trim() === "") userName = "Usuario Pro";
+                localStorage.setItem('user_name', userName);
+            }
+            
+            localStorage.setItem('user_session', 'active');
+            showApp(userName);
+        });
+
+        btnLogout.addEventListener('click', () => {
+            localStorage.removeItem('user_session');
+            loginScreen.style.display = 'flex';
+            appScreen.style.display = 'none';
+            document.body.style.background = "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)";
+        });
+
+        function showApp(name) {
+            loginScreen.style.display = 'none';
+            appScreen.style.display = 'block';
+            document.body.style.background = "var(--bg-color)";
+            userWelcome.innerText = `Hola, ${localStorage.getItem('user_name') || 'Usuario'}`;
+            updateUI(); // Carga las finanzas del usuario
+        }
+
+        // --- MOTOR LÓGICO DE FINANZAS ---
         const balanceEl = document.getElementById('total-balance');
         const incomeEl = document.getElementById('total-income');
         const expenseEl = document.getElementById('total-expense');
@@ -392,6 +497,8 @@
         }
 
         function updateChart() {
+            if (appScreen.style.display === 'none') return; // Evita errores si el canvas no es visible
+
             const categories = ['Comida', 'Vivienda', 'Transporte', 'Entretenimiento', 'Otros'];
             const dataValues = categories.map(cat => {
                 return transactions
@@ -402,7 +509,6 @@
             const ctx = document.getElementById('expenseChart').getContext('2d');
             if (myChart) { myChart.destroy(); }
 
-            // Ajuste de leyenda según tamaño de pantalla
             const isMobile = window.innerWidth < 768;
 
             myChart = new Chart(ctx, {
@@ -448,7 +554,7 @@
             updateUI();
             descriptionEl.value = '';
             amountEl.value = '';
-            document.activeElement.blur(); // Oculta el teclado del móvil automáticamente
+            document.activeElement.blur();
         });
 
         function deleteTransaction(id) {
@@ -474,8 +580,7 @@
             }
         });
 
-        window.addEventListener('resize', updateChart); // Redibuja el gráfico si giras la pantalla
-        updateUI();
+        window.addEventListener('resize', updateChart);
     </script>
 </body>
 </html>
