@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MiDía">
+    
+    <title>Dashboard Personal - Mi Día</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --card-border: rgba(255, 255, 255, 0.15);
+            --text-main: #ffffff;
+            --text-sub: #b0bec5;
+            --accent: #00e676;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            margin: 0;
+            padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom) 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px; /* Ajuste perfecto para celular */
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+
+        /* Saludo y Fecha */
+        header {
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            color: var(--text-sub);
+            font-size: 14px;
+            text-transform: capitalize;
+        }
+
+        /* Tarjeta de Clima */
+        .weather-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .weather-info h2 {
+            margin: 0;
+            font-size: 36px;
+            font-weight: 800;
+        }
+
+        .weather-info p {
+            margin: 2px 0 0 0;
+            color: var(--text-sub);
+            font-size: 14px;
+        }
+
+        .weather-location {
+            font-weight: 600;
+            color: #fff !important;
+        }
+
+        .weather-icon {
+            font-size: 45px;
+        }
+
+        /* Sección de Hábitos */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .habits-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .habit-row {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .habit-row:active {
+            transform: scale(0.98);
+        }
+
+        .habit-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .habit-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .habit-streak {
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        /* Checkbox personalizado gigante para el dedo */
+        .checkbox-custom {
+            width: 28px;
+            height: 28px;
+            border: 2px solid var(--card-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            background: rgba(0,0,0,0.1);
+        }
+
+        /* Estado cuando el hábito está completado */
+        .habit-row.completed {
+            border-color: rgba(0, 230, 118, 0.4);
+            background: rgba(0, 230, 118, 0.08);
+        }
+
+        .habit-row.completed .checkbox-custom {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .habit-row.completed .checkbox-custom::after {
+            content: "✓";
+            color: #000;
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .habit-row.completed .habit-name {
+            text-decoration: line-through;
+            color: var(--text-sub);
+        }
+
+        /* Frase Motivacional */
+        .quote-card {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: var(--text-sub);
+            font-size: 14px;
+            line-height: 1.6;
+            border-top: 1px solid var(--card-border);
+            margin-top: 20px;
+        }
+
+        /* Adaptación para pantallas de PC */
+        @media (min-width: 769px) {
+            body { align-items: center; }
+            .container {
+                background: rgba(0, 0, 0, 0.2);
+                padding: 30px;
+                border-radius: 24px;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+                border: 1px solid var(--card-border);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1 id="greeting">¡Hola!</h1>
+            <p id="current-date">Cargando fecha...</p>
+        </header>
+
+        <div class="weather-card">
+            <div class="weather-info">
+                <h2 id="weather-temp">--°C</h2>
+                <p id="weather-desc">Buscando clima...</p>
+                <p id="weather-city" class="weather-location">Detectando ubicación...</p>
+            </div>
+            <div id="weather-icon" class="weather-icon">🌍</div>
+        </div>
+
+        <div class="section-title">
+            <span>Mis Hábitos de Hoy</span>
+            <span id="progress-counter" class="progress-text">0/3</span>
+        </div>
+
+        <div id="habits-list" class="habits-container">
+            </div>
+
+        <div id="quote" class="quote-card">
+            "El secreto de tu futuro está escondido en tu rutina diaria."
+        </div>
+    </div>
+
+    <script>
+        // --- LÓGICA DE JAVASCRIPT ---
+
+        // 1. Configuración de Fecha y Saludos Dinámicos
+        function initHeader() {
+            const now = new Date();
+            
+            // Fecha en español
+            const options = { weekday: 'long', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').innerText = now.toLocaleDateString('es-ES', options);
+
+            // Saludo según la hora
+            const hour = now.getHours();
+            let greeting = "¡Hola!";
+            if (hour >= 6 && hour < 12) greeting = "¡Buenos días!";
+            else if (hour >= 12 && hour < 19) greeting = "¡Buenas tardes!";
+            else greeting = "¡Buenas noches!";
+            
+            document.getElementById('greeting').innerText = greeting;
+        }
+
+        // 2. Sistema de Clima Automático Geolocalizado (Sin necesidad de API keys)
+        async function fetchWeather() {
+            try {
+                // Paso A: Detectar la ciudad mediante la IP del usuario (Seguro y público)
+                const geoRes = await fetch('https://ipapi.co/json/');
+                const geoData = await geoRes.json();
+                const city = geoData.city || "Ciudad de México";
+                const lat = geoData.latitude || 19.4326;
+                const lon = geoData.longitude || -99.1332;
+
+                document.getElementById('weather-city').innerText = city;
+
+                // Paso B: Consultar clima real usando la API libre de Open-Meteo
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                const weatherData = await weatherRes.json();
+                
+                const temp = Math.round(weatherData.current_weather.temperature);
+                const code = weatherData.current_weather.weathercode;
+
+                document.getElementById('weather-temp').innerText = `${temp}°C`;
+                
+                // Traducir códigos de clima básicos a emojis y texto
+                let desc = "Despejado";
+                let icon = "☀️";
+
+                if (code >= 1 && code <= 3) { desc = "Parcialmente nublado"; icon = "⛅"; }
+                else if (code >= 45 && code <= 48) { desc = "Niebla"; icon = "🌫️"; }
+                else if (code >= 51 && code <= 67) { desc = "Llovizna/Lluvia"; icon = "🌧️"; }
+                else if (code >= 71 && code <= 77) { desc = "Nieve"; icon = "❄️"; }
+                else if (code >= 80 && code <= 82) { desc = "Chubascos"; icon = "🌦️"; }
+                else if (code >= 95 && code <= 99) { desc = "Tormenta eléctrica"; icon = "⛈️"; }
+
+                document.getElementById('weather-desc').innerText = desc;
+                document.getElementById('weather-icon').innerText = icon;
+
+            } catch (error) {
+                // Respaldo por si falla la red o bloqueadores de anuncios
+                document.getElementById('weather-temp').innerText = "22°C";
+                document.getElementById('weather-desc').innerText = "Clima templado";
+                document.getElementById('weather-city').innerText = "Tu Ciudad";
+                document.getElementById('weather-icon').innerText = "☀️";
+            }
+        }
+
+        // 3. Sistema de Hábitos con Persistencia y Reinicio Diario Automático
+        // Definimos los 3 hábitos iniciales ideales para tu nueva rutina de trabajo y estudio
+        const defaultHabits = [
+            { id: 1, name: "Revisar/Registrar mis gastos", streak: 0, lastChecked: "" },
+            { id: 2, name: "Ahorrar algo de dinero / Efectivo", streak: 0, lastChecked: "" },
+            { id: 3, name: "Planificar mis tareas del trabajo", streak: 0, lastChecked: "" }
+        ];
+
+        let habits = JSON.parse(localStorage.getItem('my_habits')) || defaultHabits;
+
+        function checkDailyReset() {
+            const todayStr = new Date().toDateString();
+            let changed = false;
+
+            habits.forEach(h => {
+                // Si el último día que lo marcó NO fue hoy, se desmarca para el nuevo día
+                if (h.lastChecked !== todayStr) {
+                    // Si pasó más de un día sin marcarlo, la racha (streak) vuelve a 0
+                    if (h.lastChecked !== "" && h.lastChecked !== new Date(Date.now() - 86400000).toDateString()) {
+                        h.streak = 0;
+                    }
+                }
+            });
+            localStorage.setItem('my_habits', JSON.stringify(habits));
+        }
+
+        function renderHabits() {
+            const listContainer = document.getElementById('habits-list');
+            listContainer.innerHTML = '';
+            
+            const todayStr = new Date().toDateString();
+            let completedCount = 0;
+
+            habits.forEach(h => {
+                const isCompletedToday = h.lastChecked === todayStr;
+                if (isCompletedToday) completedCount++;
+
+                const row = document.createElement('div');
+                row.className = `habit-row ${isCompletedToday ? 'completed' : ''}`;
+                row.innerHTML = `
+                    <div class="habit-details">
+                        <span class="habit-name">${h.name}</span>
+                        <span class="habit-streak">Racha: 🔥 ${h.streak} días</span>
+                    </div>
+                    <div class="checkbox-custom"></div>
+                `;
+
+                // Evento de toque para marcar/desmarcar
+                row.addEventListener('click', () => toggleHabit(h.id));
+                listContainer.appendChild(row);
+            });
+
+            document.getElementById('progress-counter').innerText = `${completedCount}/${habits.length}`;
+        }
+
+        function toggleHabit(id) {
+            const todayStr = new Date().toDateString();
+            const habit = habits.find(h => h.id === id);
+
+            if (habit.lastChecked === todayStr) {
+                // Si ya estaba marcado hoy, lo desmarcamos y restamos racha
+                habit.lastChecked = "";
+                if (habit.streak > 0) habit.streak--;
+            } else {
+                // Lo marcamos como completado hoy y sumamos racha
+                habit.lastChecked = todayStr;
+                habit.streak++;
+            }
+
+            localStorage.setItem('my_habits', JSON.stringify(habits));
+            renderHabits();
+        }
+
+        // Inicialización de la App al cargar
+        initHeader();
+        fetchWeather();
+        checkDailyReset();
+        renderHabits();
+    </script>
+</body>
+</html>
