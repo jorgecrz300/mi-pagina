@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V5 - Calendario Permanente</title>
+    <title>FinanzasPro V5.1 - Smart Backup</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -110,7 +110,6 @@
         .cal-day.selected { background: var(--primary); color: white; }
         .chart-box { height: 220px; margin: 15px 0; }
         
-        /* Cabecera del panel de detalles en el calendario */
         .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .btn-reset-view { background: var(--bg-color); color: var(--primary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
@@ -273,7 +272,7 @@
             
             if(screenId === 'calendar-screen') {
                 renderCalendar();
-                resetCalendarFilter(); // Carga por defecto el mes completo al entrar
+                resetCalendarFilter();
             }
             updateUI();
         }
@@ -341,6 +340,7 @@
             downloadAnchor.remove();
         }
 
+        // MODIFICADO: Sistema Inteligente de Importación y Sincronización (Upsert)
         function importData(input) {
             const file = input.files[0];
             if (!file) return;
@@ -349,20 +349,36 @@
                 try {
                     const importedData = JSON.parse(e.target.result);
                     if (Array.isArray(importedData)) {
-                        if(confirm(`Se cargarán ${importedData.length} transacciones. ¿Deseas fusionarlas con tus datos actuales?`)) {
-                            transactions = [...transactions, ...importedData];
-                            const uniqueIds = new Set();
-                            transactions = transactions.filter(t => {
-                                if (uniqueIds.has(t.id)) return false;
-                                uniqueIds.add(t.id);
-                                return true;
+                        if(confirm(`Se procesarán ${importedData.length} transacciones. ¿Deseas sincronizar e importar estos datos en tu dispositivo?`)) {
+                            
+                            // Creamos un mapa de los datos actuales indexados por su ID único
+                            const txMap = new Map(transactions.map(t => [t.id, t]));
+                            
+                            // Sincronizamos: Si el ID existe lo actualiza, si no, lo inserta
+                            importedData.forEach(newTx => {
+                                txMap.set(newTx.id, newTx);
                             });
+                            
+                            // Convertimos el mapa de vuelta a nuestra lista global ordenada por ID
+                            transactions = Array.from(txMap.values()).sort((a,b) => a.id - b.id);
+                            
+                            // Guardamos en LocalStorage
                             localStorage.setItem('fpro_v4_data', JSON.stringify(transactions));
+                            
+                            // FORZAMOS LA ACTUALIZACIÓN EN VIVO DE TODAS LAS PANTALLAS
                             updateUI();
-                            alert("¡Datos importados con éxito!");
+                            if(document.getElementById('calendar-screen').classList.contains('active')) {
+                                renderCalendar();
+                                resetCalendarFilter();
+                            }
+                            
+                            // Limpiamos el valor del input para que deje volver a subir el mismo archivo consecutivamente si se desea
+                            input.value = "";
+                            
+                            alert("¡Datos sincronizados y actualizados con éxito!");
                         }
                     } else { alert("Formato no válido."); }
-                } catch (err) { alert("Error al leer archivo."); }
+                } catch (err) { alert("Error crítico al procesar el archivo."); }
             };
             reader.readAsText(file);
         }
@@ -374,7 +390,7 @@
             }
         }
 
-        // RENDEREADO DE CALENDARIO 
+        // CALENDARIO 
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
@@ -408,7 +424,6 @@
             }
         }
 
-        // FILTRADO POR DÍA
         function selectDay(dateStr, el) {
             document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
             el.classList.add('selected');
@@ -418,12 +433,11 @@
             const [y, m, d] = dateStr.split('-');
             document.getElementById('selected-date-text').innerText = `Día: ${d}/${m}/${y}`;
             document.getElementById('list-title-text').innerText = `Flujo de caja de este día`;
-            document.getElementById('btn-reset-view').style.display = 'block'; // Muestra botón para volver al mes completo
+            document.getElementById('btn-reset-view').style.display = 'block';
 
             renderDetailPanel(dayTrans);
         }
 
-        // NUEVO: Función para restablecer la vista al acumulado mensual completo
         function resetCalendarFilter() {
             document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
             
@@ -431,7 +445,6 @@
             document.getElementById('list-title-text').innerText = "Flujo de caja mensual";
             document.getElementById('btn-reset-view').style.display = 'none';
 
-            // Filtrar transacciones pertenecientes al mes en curso
             const now = new Date();
             const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
             const monthTrans = transactions.filter(t => t.date.startsWith(currentYearMonth));
@@ -439,7 +452,6 @@
             renderDetailPanel(monthTrans);
         }
 
-        // Renderiza de forma unificada la gráfica de barras y lista del panel inferior
         function renderDetailPanel(dataArray) {
             const listEl = document.getElementById('day-list');
             listEl.innerHTML = dataArray.length ? '' : '<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">No hay registros en este periodo.</li>';
