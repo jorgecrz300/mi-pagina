@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V4 - Backup & Currency</title>
+    <title>FinanzasPro V5 - Calendario Permanente</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -85,7 +85,6 @@
         .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
         .form-group input, .form-group select { width: 100%; height: 46px; padding: 0 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; background-color: var(--input-bg); color: var(--text-color); }
         
-        /* Contenedor especial para monto + moneda sin romper el diseño */
         .currency-input-group { display: grid; grid-template-columns: 1fr 90px; gap: 8px; }
 
         button.btn-submit { width: 100%; height: 48px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
@@ -110,6 +109,10 @@
         .cal-day.has-data::after { content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px; background: var(--success); border-radius: 50%; }
         .cal-day.selected { background: var(--primary); color: white; }
         .chart-box { height: 220px; margin: 15px 0; }
+        
+        /* Cabecera del panel de detalles en el calendario */
+        .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .btn-reset-view { background: var(--bg-color); color: var(--primary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
         @media (min-width: 769px) {
             body { align-items: flex-start; padding-top: 40px; }
@@ -202,15 +205,18 @@
                 <div class="calendar-grid" id="calendar-grid"></div>
             </div>
 
-            <div id="day-detail-panel" style="display: none;">
+            <div id="day-detail-panel" style="display: block;">
                 <div class="panel" style="margin-bottom: 20px;">
-                    <h2 id="selected-date-text" style="margin:0 0 10px 0;">Detalle Diario</h2>
+                    <div class="detail-header">
+                        <h2 id="selected-date-text" style="margin:0;">Resumen del Mes</h2>
+                        <button id="btn-reset-view" class="btn-reset-view" onclick="resetCalendarFilter()" style="display:none;">Ver mes completo</button>
+                    </div>
                     <div class="chart-box">
                         <canvas id="dayBarChart"></canvas>
                     </div>
                 </div>
                 <div class="panel">
-                    <h2>Flujo de caja de este día</h2>
+                    <h2 id="list-title-text">Flujo de caja mensual</h2>
                     <ul class="transaction-list" id="day-list"></ul>
                 </div>
             </div>
@@ -249,14 +255,7 @@
     </div>
 
     <script>
-        // Tasas fijas de conversión interna (Moneda Base: USD)
-        // Ejemplo: 1 USD = 17 MXN, 1 EUR = 1.08 USD
-        const EXCHANGE_RATES = {
-            USD: 1,
-            MXN: 0.059,  // Multiplicar MXN por esto para pasarlo a USD
-            EUR: 1.08    // Multiplicar EUR por esto para pasarlo a USD
-        };
-
+        const EXCHANGE_RATES = { USD: 1, MXN: 0.059, EUR: 1.08 };
         let transactions = JSON.parse(localStorage.getItem('fpro_v4_data')) || [];
         let myChart = null;  
         let barChart = null; 
@@ -274,7 +273,7 @@
             
             if(screenId === 'calendar-screen') {
                 renderCalendar();
-                document.getElementById('day-detail-panel').style.display = 'none';
+                resetCalendarFilter(); // Carga por defecto el mes completo al entrar
             }
             updateUI();
         }
@@ -289,9 +288,13 @@
             document.documentElement.setAttribute('data-theme', e.target.value);
             localStorage.setItem('fpro_theme', e.target.value);
             updateUI();
+            if(document.getElementById('calendar-screen').classList.contains('active')) {
+                renderCalendar();
+                resetCalendarFilter();
+            }
         });
 
-        // FORMULARIO GUARDAR MOVIMIENTO CON CONVERSIÓN DE DIVISA
+        // FORMULARIO GUARDAR MOVIMIENTO
         document.getElementById('transaction-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const date = new Date();
@@ -299,14 +302,12 @@
 
             const inputAmt = parseFloat(document.getElementById('amount').value);
             const selectedCurrency = document.getElementById('currency').value;
-            
-            // CONVERSIÓN MATEMÁTICA: Convertimos el monto ingresado a su equivalente en USD
             const convertedAmount = inputAmt * EXCHANGE_RATES[selectedCurrency];
 
             const t = {
                 id: Date.now(),
                 description: document.getElementById('description').value,
-                amount: convertedAmount, // Se almacena homogeneizado en USD
+                amount: convertedAmount, 
                 originalAmount: inputAmt, 
                 currency: selectedCurrency,
                 type: document.getElementById('type').value,
@@ -328,7 +329,7 @@
             updateUI();
         }
 
-        // --- EXPORTAR E IMPORTAR DATOS (FUNCIÓN RESPALDO) ---
+        // COPIAS DE SEGURIDAD
         function exportData() {
             if(transactions.length === 0) return alert("No hay datos para exportar.");
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transactions));
@@ -343,7 +344,6 @@
         function importData(input) {
             const file = input.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
@@ -351,7 +351,6 @@
                     if (Array.isArray(importedData)) {
                         if(confirm(`Se cargarán ${importedData.length} transacciones. ¿Deseas fusionarlas con tus datos actuales?`)) {
                             transactions = [...transactions, ...importedData];
-                            // Quitar duplicados por ID por si acaso resuben el mismo archivo
                             const uniqueIds = new Set();
                             transactions = transactions.filter(t => {
                                 if (uniqueIds.has(t.id)) return false;
@@ -362,12 +361,8 @@
                             updateUI();
                             alert("¡Datos importados con éxito!");
                         }
-                    } else {
-                        alert("El formato del archivo no es válido.");
-                    }
-                } catch (err) {
-                    alert("Error al leer el archivo. Asegúrate de usar un respaldo válido.");
-                }
+                    } else { alert("Formato no válido."); }
+                } catch (err) { alert("Error al leer archivo."); }
             };
             reader.readAsText(file);
         }
@@ -379,7 +374,7 @@
             }
         }
 
-        // CALENDARIO DIARIO
+        // RENDEREADO DE CALENDARIO 
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
@@ -413,23 +408,45 @@
             }
         }
 
+        // FILTRADO POR DÍA
         function selectDay(dateStr, el) {
             document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
             el.classList.add('selected');
 
             const dayTrans = transactions.filter(t => t.date === dateStr);
-            document.getElementById('day-detail-panel').style.display = 'block';
             
             const [y, m, d] = dateStr.split('-');
-            document.getElementById('selected-date-text').innerText = `Movimientos del: ${d}/${m}/${y}`;
+            document.getElementById('selected-date-text').innerText = `Día: ${d}/${m}/${y}`;
+            document.getElementById('list-title-text').innerText = `Flujo de caja de este día`;
+            document.getElementById('btn-reset-view').style.display = 'block'; // Muestra botón para volver al mes completo
 
-            const listEl = document.getElementById('day-list');
-            listEl.innerHTML = dayTrans.length ? '' : '<li style="text-align:center;color:#868e96;padding:10px;">No hay movimientos este día.</li>';
+            renderDetailPanel(dayTrans);
+        }
+
+        // NUEVO: Función para restablecer la vista al acumulado mensual completo
+        function resetCalendarFilter() {
+            document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
             
-            dayTrans.forEach(t => {
+            document.getElementById('selected-date-text').innerText = "Resumen del Mes";
+            document.getElementById('list-title-text').innerText = "Flujo de caja mensual";
+            document.getElementById('btn-reset-view').style.display = 'none';
+
+            // Filtrar transacciones pertenecientes al mes en curso
+            const now = new Date();
+            const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            const monthTrans = transactions.filter(t => t.date.startsWith(currentYearMonth));
+
+            renderDetailPanel(monthTrans);
+        }
+
+        // Renderiza de forma unificada la gráfica de barras y lista del panel inferior
+        function renderDetailPanel(dataArray) {
+            const listEl = document.getElementById('day-list');
+            listEl.innerHTML = dataArray.length ? '' : '<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">No hay registros en este periodo.</li>';
+            
+            dataArray.forEach(t => {
                 const sign = t.type === 'income' ? '+' : '-';
                 const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
-                // Si se guardó con otra moneda, la mostramos en su formato original en la lista para recordar el gasto real
                 const displayLabel = t.currency && t.currency !== 'USD' ? `$${t.originalAmount.toFixed(2)} ${t.currency}` : `$${t.amount.toFixed(2)}`;
                 
                 listEl.innerHTML += `
@@ -439,13 +456,13 @@
                     </li>`;
             });
 
-            updateBarChart(dayTrans);
+            updateBarChart(dataArray);
         }
 
-        function updateBarChart(dayData) {
+        function updateBarChart(filteredData) {
             const categories = ["Comida", "Vivienda", "Transporte", "Entretenimiento", "Otros"];
             const dataValues = categories.map(cat => {
-                return dayData.filter(t => t.category === cat && t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+                return filteredData.filter(t => t.category === cat && t.type === 'expense').reduce((s, t) => s + t.amount, 0);
             });
 
             const ctx = document.getElementById('dayBarChart').getContext('2d');
@@ -459,7 +476,7 @@
                 data: {
                     labels: categories,
                     datasets: [{
-                        label: 'Gastos por Categoría (USD)',
+                        label: 'Gastos ($ USD)',
                         data: dataValues,
                         backgroundColor: ['#a855f7', '#4cc9f0', '#22c55e', '#eab308', '#ec4899'],
                         borderRadius: 6
@@ -477,7 +494,7 @@
             });
         }
 
-        // PROCESAMIENTO E INTERFAZ ORIGINAL
+        // INTERFAZ GENERAL HOME
         function updateUI() {
             const amounts = transactions.map(t => t.type === 'income' ? t.amount : -t.amount);
             const total = amounts.reduce((acc, item) => (acc += item), 0);
@@ -502,8 +519,6 @@
                     li.className = 'transaction-item';
                     const sign = t.type === 'income' ? '+' : '-';
                     const cls = t.type === 'income' ? 'color:var(--success)' : 'color:var(--danger)';
-                    
-                    // Mostrar etiqueta de divisa extranjera si aplica
                     const originalTag = t.currency && t.currency !== 'USD' ? ` <small style="color:#868e96">(${t.originalAmount} ${t.currency})</small>` : '';
 
                     li.innerHTML = `
