@@ -8,12 +8,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V3 - Original</title>
+    <title>FinanzasPro V4 - Backup & Currency</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        /* --- VARIABLES DE TEMAS (MANTENIENDO COLORES ORIGINALES) --- */
+        /* --- VARIABLES DE TEMAS ORIGINALES --- */
         :root[data-theme="cyberpunk"] {
             --bg-color: #0b0f19; --card-bg: #151f32; --text-color: #f8fafc;
             --primary: #a855f7; --success: #22c55e; --danger: #ef4444; --border: #22314d; --input-bg: #0b0f19;
@@ -39,7 +39,6 @@
 
         #app-screen { width: 100%; max-width: 500px; padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom) 16px; position: relative; }
         
-        /* --- BOTÓN MENÚ FLOTANTE 3 LÍNEAS (Para no alterar tu cabecera original) --- */
         header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
         header h1 { margin: 0; font-size: 22px; color: var(--primary); font-weight: 800; }
         
@@ -49,7 +48,7 @@
             display: flex; align-items: center; justify-content: center; cursor: pointer; outline: none;
         }
 
-        /* --- MENÚ LATERAL (SIDEBAR) --- */
+        /* --- SIDEBAR --- */
         .sidebar {
             position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
             background: var(--card-bg); z-index: 200; box-shadow: 10px 0 30px rgba(0,0,0,0.5);
@@ -72,7 +71,7 @@
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- TU DISEÑO ORIGINAL DE PRIMERA PÁGINA --- */
+        /* --- DISEÑO ORIGINAL HOME --- */
         .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
         .card { background: var(--card-bg); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
         .card h3 { margin: 0 0 4px 0; font-size: 10px; text-transform: uppercase; color: #868e96; }
@@ -86,7 +85,11 @@
         .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
         .form-group input, .form-group select { width: 100%; height: 46px; padding: 0 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; background-color: var(--input-bg); color: var(--text-color); }
         
+        /* Contenedor especial para monto + moneda sin romper el diseño */
+        .currency-input-group { display: grid; grid-template-columns: 1fr 90px; gap: 8px; }
+
         button.btn-submit { width: 100%; height: 48px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        button.btn-secondary { width: 100%; height: 44px; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 10px; }
         
         .transaction-list { list-style: none; padding: 0; margin: 0; }
         .transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
@@ -98,7 +101,7 @@
         .btn-delete { background: var(--bg-color); border: none; color: #adb5bd; border-radius: 50%; width: 32px; height: 32px; font-size: 12px; cursor: pointer; }
         .chart-container { position: relative; height: 200px; width: 100%; }
 
-        /* --- DISEÑO DEL NUEVO CALENDARIO --- */
+        /* --- CALENDARIO --- */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; background: var(--card-bg); padding: 10px; border-radius: 12px; }
         .cal-day-name { text-align: center; font-size: 11px; font-weight: bold; color: var(--primary); padding-bottom: 8px; }
         .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 14px; position: relative; cursor: pointer; }
@@ -136,7 +139,7 @@
 
         <div id="home-screen" class="screen active">
             <div class="dashboard">
-                <div class="card"><h3>Balance</h3><p id="total-balance" style="color:var(--primary);">$0</p></div>
+                <div class="card"><h3>Balance (USD)</h3><p id="total-balance" style="color:var(--primary);">$0</p></div>
                 <div class="card"><h3>Ingresos</h3><p id="total-income" style="color:var(--success);">$0</p></div>
                 <div class="card"><h3>Gastos</h3><p id="total-expense" style="color:var(--danger);">$0</p></div>
             </div>
@@ -147,11 +150,18 @@
                     <form id="transaction-form">
                         <div class="form-group">
                             <label>Descripción</label>
-                            <input type="text" id="description" placeholder="Ej. Almuerzo, PlayStation" required>
+                            <input type="text" id="description" placeholder="Ej. Almuerzo, Vuelo, Netflix" required>
                         </div>
                         <div class="form-group">
-                            <label>Monto ($)</label>
-                            <input type="number" id="amount" step="0.01" inputmode="decimal" placeholder="0.00" required>
+                            <label>Monto e Importe</label>
+                            <div class="currency-input-group">
+                                <input type="number" id="amount" step="0.01" inputmode="decimal" placeholder="0.00" required>
+                                <select id="currency">
+                                    <option value="USD">USD ($)</option>
+                                    <option value="MXN">MXN ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Tipo</label>
@@ -218,6 +228,18 @@
                     </select>
                 </div>
             </div>
+
+            <div class="panel" style="margin-bottom: 20px;">
+                <h2>Copia de Seguridad (Backup)</h2>
+                <p style="font-size:13px; color:#868e96; margin-bottom: 15px;">Descarga tus datos en un archivo para pasarlos a otro celular o guardarlos de respaldo.</p>
+                <button onclick="exportData()" class="btn-submit" style="background-color: var(--success)"><i class="fa-solid fa-download"></i> Exportar Datos (JSON)</button>
+                
+                <label class="btn-secondary" style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-top: 12px; height: 44px;">
+                    <i class="fa-solid fa-upload" style="margin-right: 8px;"></i> Importar Archivo de Datos
+                    <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(this)">
+                </label>
+            </div>
+
             <div class="panel">
                 <h2>Mantenimiento</h2>
                 <p style="font-size:13px; color:#868e96;">Esta opción eliminará de forma irreversible todos los datos guardados en este dispositivo.</p>
@@ -227,12 +249,18 @@
     </div>
 
     <script>
-        // --- LOGICA DE HISTORIAL LOCAL ---
-        let transactions = JSON.parse(localStorage.getItem('fpro_v3_data')) || [];
-        let myChart = null;  // Dona (Home)
-        let barChart = null; // Barras (Calendario)
+        // Tasas fijas de conversión interna (Moneda Base: USD)
+        // Ejemplo: 1 USD = 17 MXN, 1 EUR = 1.08 USD
+        const EXCHANGE_RATES = {
+            USD: 1,
+            MXN: 0.059,  // Multiplicar MXN por esto para pasarlo a USD
+            EUR: 1.08    // Multiplicar EUR por esto para pasarlo a USD
+        };
 
-        // --- SISTEMA DE MANEJO DE MENÚS Y PANTALLAS ---
+        let transactions = JSON.parse(localStorage.getItem('fpro_v4_data')) || [];
+        let myChart = null;  
+        let barChart = null; 
+
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
@@ -251,7 +279,7 @@
             updateUI();
         }
 
-        // --- MANEJO DE TEMAS ---
+        // CONTROL DE TEMAS
         const themeSelect = document.getElementById('theme-select');
         const savedTheme = localStorage.getItem('fpro_theme') || 'cyberpunk';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -263,34 +291,85 @@
             updateUI();
         });
 
-        // Formulario Guardar Registro (Original)
+        // FORMULARIO GUARDAR MOVIMIENTO CON CONVERSIÓN DE DIVISA
         document.getElementById('transaction-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const date = new Date();
-            const dateStr = date.toISOString().split('T')[0]; // Guarda la fecha actual YYYY-MM-DD
+            const dateStr = date.toISOString().split('T')[0];
+
+            const inputAmt = parseFloat(document.getElementById('amount').value);
+            const selectedCurrency = document.getElementById('currency').value;
+            
+            // CONVERSIÓN MATEMÁTICA: Convertimos el monto ingresado a su equivalente en USD
+            const convertedAmount = inputAmt * EXCHANGE_RATES[selectedCurrency];
 
             const t = {
                 id: Date.now(),
                 description: document.getElementById('description').value,
-                amount: parseFloat(document.getElementById('amount').value),
+                amount: convertedAmount, // Se almacena homogeneizado en USD
+                originalAmount: inputAmt, 
+                currency: selectedCurrency,
                 type: document.getElementById('type').value,
                 category: document.getElementById('category').value,
                 date: dateStr
             };
 
             transactions.push(t);
-            localStorage.setItem('fpro_v3_data', JSON.stringify(transactions));
+            localStorage.setItem('fpro_v4_data', JSON.stringify(transactions));
             
             e.target.reset();
             document.activeElement.blur();
             updateUI();
         });
 
-        // Eliminar Registro
         function deleteTransaction(id) {
             transactions = transactions.filter(t => t.id !== id);
-            localStorage.setItem('fpro_v3_data', JSON.stringify(transactions));
+            localStorage.setItem('fpro_v4_data', JSON.stringify(transactions));
             updateUI();
+        }
+
+        // --- EXPORTAR E IMPORTAR DATOS (FUNCIÓN RESPALDO) ---
+        function exportData() {
+            if(transactions.length === 0) return alert("No hay datos para exportar.");
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transactions));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `FinanzasPro_Backup_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (Array.isArray(importedData)) {
+                        if(confirm(`Se cargarán ${importedData.length} transacciones. ¿Deseas fusionarlas con tus datos actuales?`)) {
+                            transactions = [...transactions, ...importedData];
+                            // Quitar duplicados por ID por si acaso resuben el mismo archivo
+                            const uniqueIds = new Set();
+                            transactions = transactions.filter(t => {
+                                if (uniqueIds.has(t.id)) return false;
+                                uniqueIds.add(t.id);
+                                return true;
+                            });
+                            localStorage.setItem('fpro_v4_data', JSON.stringify(transactions));
+                            updateUI();
+                            alert("¡Datos importados con éxito!");
+                        }
+                    } else {
+                        alert("El formato del archivo no es válido.");
+                    }
+                } catch (err) {
+                    alert("Error al leer el archivo. Asegúrate de usar un respaldo válido.");
+                }
+            };
+            reader.readAsText(file);
         }
 
         function resetData() {
@@ -300,7 +379,7 @@
             }
         }
 
-        // --- CONSTRUCTOR DE CALENDARIO ---
+        // CALENDARIO DIARIO
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
@@ -334,7 +413,6 @@
             }
         }
 
-        // Al presionar un día específico del calendario
         function selectDay(dateStr, el) {
             document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
             el.classList.add('selected');
@@ -342,25 +420,25 @@
             const dayTrans = transactions.filter(t => t.date === dateStr);
             document.getElementById('day-detail-panel').style.display = 'block';
             
-            // Ajustar fecha legible
             const [y, m, d] = dateStr.split('-');
             document.getElementById('selected-date-text').innerText = `Movimientos del: ${d}/${m}/${y}`;
 
-            // Renderizar la lista de abajo
             const listEl = document.getElementById('day-list');
             listEl.innerHTML = dayTrans.length ? '' : '<li style="text-align:center;color:#868e96;padding:10px;">No hay movimientos este día.</li>';
             
             dayTrans.forEach(t => {
                 const sign = t.type === 'income' ? '+' : '-';
                 const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
+                // Si se guardó con otra moneda, la mostramos en su formato original en la lista para recordar el gasto real
+                const displayLabel = t.currency && t.currency !== 'USD' ? `$${t.originalAmount.toFixed(2)} ${t.currency}` : `$${t.amount.toFixed(2)}`;
+                
                 listEl.innerHTML += `
                     <li class="transaction-item">
                         <div class="item-details"><strong>${t.description}</strong><span class="item-category">${t.category}</span></div>
-                        <div class="item-amount" style="color:${color}">${sign}$${t.amount.toFixed(2)}</div>
+                        <div class="item-amount" style="color:${color}">${sign}${displayLabel}</div>
                     </li>`;
             });
 
-            // Generar o actualizar Gráfico de Barras Diario
             updateBarChart(dayTrans);
         }
 
@@ -381,10 +459,9 @@
                 data: {
                     labels: categories,
                     datasets: [{
-                        label: 'Gastos por Categoría ($)',
+                        label: 'Gastos por Categoría (USD)',
                         data: dataValues,
                         backgroundColor: ['#a855f7', '#4cc9f0', '#22c55e', '#eab308', '#ec4899'],
-                        borderWidth: 0,
                         borderRadius: 6
                     }]
                 },
@@ -400,7 +477,7 @@
             });
         }
 
-        // --- SISTEMA DE PROCESAMIENTO GENERAL (PÁGINA ORIGINAL) ---
+        // PROCESAMIENTO E INTERFAZ ORIGINAL
         function updateUI() {
             const amounts = transactions.map(t => t.type === 'income' ? t.amount : -t.amount);
             const total = amounts.reduce((acc, item) => (acc += item), 0);
@@ -414,7 +491,6 @@
             document.getElementById('total-expense').innerText = format(expense);
             document.getElementById('total-balance').style.color = total < 0 ? 'var(--danger)' : 'var(--primary)';
 
-            // Renderizar Historial Completo
             const listEl = document.getElementById('transaction-list');
             listEl.innerHTML = '';
             
@@ -426,16 +502,19 @@
                     li.className = 'transaction-item';
                     const sign = t.type === 'income' ? '+' : '-';
                     const cls = t.type === 'income' ? 'color:var(--success)' : 'color:var(--danger)';
+                    
+                    // Mostrar etiqueta de divisa extranjera si aplica
+                    const originalTag = t.currency && t.currency !== 'USD' ? ` <small style="color:#868e96">(${t.originalAmount} ${t.currency})</small>` : '';
+
                     li.innerHTML = `
                         <div class="item-details"><strong>${t.description}</strong><span class="item-category">${t.category}</span></div>
-                        <div class="item-amount" style="${cls}">${sign}${format(t.amount)}
+                        <div class="item-amount" style="${cls}">${sign}${format(t.amount)}${originalTag}
                         <button class="btn-delete" onclick="deleteTransaction(${t.id})">✕</button></div>
                     `;
                     listEl.appendChild(li);
                 });
             }
 
-            // Renderizar Gráfica de Dona (Home)
             const currentTheme = document.documentElement.getAttribute('data-theme');
             let chartColors = [];
             let textChartColor = '#fff';
@@ -467,7 +546,6 @@
             });
         }
 
-        // Carga Inicial
         updateUI();
     </script>
 </body>
