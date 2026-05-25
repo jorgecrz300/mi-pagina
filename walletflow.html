@@ -3,46 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>FinanzasPro V3 - Full</title>
     
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FinanzasPro">
+    
+    <title>FinanzasPro V3 - Original</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        /* --- VARIABLES DE TEMAS --- */
+        /* --- VARIABLES DE TEMAS (MANTENIENDO COLORES ORIGINALES) --- */
         :root[data-theme="cyberpunk"] {
             --bg-color: #0b0f19; --card-bg: #151f32; --text-color: #f8fafc;
-            --primary: #a855f7; --success: #22c55e; --danger: #ef4444; --border: #22314d;
+            --primary: #a855f7; --success: #22c55e; --danger: #ef4444; --border: #22314d; --input-bg: #0b0f19;
         }
         :root[data-theme="light"] {
             --bg-color: #f8f9fa; --card-bg: #ffffff; --text-color: #212529;
-            --primary: #4361ee; --success: #2ec4b6; --danger: #e63946; --border: #e9ecef;
+            --primary: #4361ee; --success: #2ec4b6; --danger: #e63946; --border: #e9ecef; --input-bg: #ffffff;
         }
         :root[data-theme="space"] {
             --bg-color: #0d1b2a; --card-bg: #1b263b; --text-color: #e0e1dd;
-            --primary: #e0a96d; --success: #52b788; --danger: #f26419; --border: #415a77;
+            --primary: #e0a96d; --success: #52b788; --danger: #f26419; --border: #415a77; --input-bg: #0d1b2a;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: all 0.2s ease; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
         body {
-            font-family: -apple-system, system-ui, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color); color: var(--text-color);
-            margin: 0; overflow-x: hidden;
+            margin: 0; padding: 0; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* --- BARRA DE NAVEGACIÓN SUPERIOR --- */
-        .navbar {
-            height: 60px; background: var(--card-bg); display: flex; align-items: center;
-            padding: 0 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+        #app-screen { width: 100%; max-width: 500px; padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom) 16px; position: relative; }
+        
+        /* --- BOTÓN MENÚ FLOTANTE 3 LÍNEAS (Para no alterar tu cabecera original) --- */
+        header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+        header h1 { margin: 0; font-size: 22px; color: var(--primary); font-weight: 800; }
+        
+        .menu-btn {
+            background: var(--card-bg); border: 1px solid var(--border); color: var(--primary);
+            font-size: 20px; width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; outline: none;
         }
-        .menu-btn { font-size: 24px; cursor: pointer; color: var(--primary); background: none; border: none; }
-        .nav-title { margin-left: 20px; font-weight: 800; font-size: 18px; }
 
         /* --- MENÚ LATERAL (SIDEBAR) --- */
         .sidebar {
             position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
             background: var(--card-bg); z-index: 200; box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-            padding: 40px 20px; display: flex; flex-direction: column; gap: 20px;
+            padding: 40px 20px; display: flex; flex-direction: column; gap: 20px; transition: left 0.3s ease;
         }
         .sidebar.active { left: 0; }
         .sidebar-item {
@@ -56,190 +67,240 @@
         }
         .overlay.active { display: block; }
 
-        /* --- CONTENEDOR DE PANTALLAS --- */
-        .screen { display: none; padding: 20px; max-width: 600px; margin: 0 auto; animation: fadeIn 0.3s; }
+        /* --- CONTROL DE PANTALLAS --- */
+        .screen { display: none; animation: fadeIn 0.3s ease; }
         .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- DISEÑO DE CALENDARIO --- */
-        .calendar-grid {
-            display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;
-            background: var(--card-bg); padding: 15px; border-radius: 16px; border: 1px solid var(--border);
-        }
-        .cal-day-name { text-align: center; font-size: 10px; font-weight: bold; color: var(--primary); padding-bottom: 10px; }
-        .cal-day {
-            aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
-            border-radius: 10px; font-size: 14px; position: relative; cursor: pointer;
-        }
+        /* --- TU DISEÑO ORIGINAL DE PRIMERA PÁGINA --- */
+        .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+        .card { background: var(--card-bg); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
+        .card h3 { margin: 0 0 4px 0; font-size: 10px; text-transform: uppercase; color: #868e96; }
+        .card p { margin: 0; font-size: 14px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; }
+        
+        .main-content { display: flex; flex-direction: column; gap: 20px; padding-bottom: 40px; }
+        .panel { background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); }
+        .panel h2 { margin-top: 0; margin-bottom: 15px; font-size: 16px; font-weight: 700; }
+        
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
+        .form-group input, .form-group select { width: 100%; height: 46px; padding: 0 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; background-color: var(--input-bg); color: var(--text-color); }
+        
+        button.btn-submit { width: 100%; height: 48px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        
+        .transaction-list { list-style: none; padding: 0; margin: 0; }
+        .transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
+        .item-details { display: flex; flex-direction: column; max-width: 65%; }
+        .item-details strong { font-size: 15px; overflow: hidden; text-overflow: ellipsis; }
+        .item-category { font-size: 11px; color: #868e96; }
+        .item-amount { font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 12px; }
+        
+        .btn-delete { background: var(--bg-color); border: none; color: #adb5bd; border-radius: 50%; width: 32px; height: 32px; font-size: 12px; cursor: pointer; }
+        .chart-container { position: relative; height: 200px; width: 100%; }
+
+        /* --- DISEÑO DEL NUEVO CALENDARIO --- */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; background: var(--card-bg); padding: 10px; border-radius: 12px; }
+        .cal-day-name { text-align: center; font-size: 11px; font-weight: bold; color: var(--primary); padding-bottom: 8px; }
+        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 14px; position: relative; cursor: pointer; }
         .cal-day:hover { background: var(--border); }
         .cal-day.today { border: 2px solid var(--primary); font-weight: bold; }
-        .cal-day.has-data::after {
-            content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px;
-            background: var(--success); border-radius: 50%;
-        }
+        .cal-day.has-data::after { content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px; background: var(--success); border-radius: 50%; }
         .cal-day.selected { background: var(--primary); color: white; }
+        .chart-box { height: 220px; margin: 15px 0; }
 
-        /* --- CARDS Y PANELES --- */
-        .card { background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .num { font-size: 24px; font-weight: 800; }
-        .label { font-size: 12px; color: #868e96; text-transform: uppercase; }
-
-        /* --- LISTAS --- */
-        .list { list-style: none; padding: 0; margin: 0; }
-        .item {
-            display: flex; justify-content: space-between; padding: 15px 0;
-            border-bottom: 1px solid var(--border); align-items: center;
+        @media (min-width: 769px) {
+            body { align-items: flex-start; padding-top: 40px; }
+            #app-screen { max-width: 900px; }
+            .card p { font-size: 22px; }
+            .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+            #calendar-screen .main-content { display: flex; flex-direction: column; }
         }
-        .item:last-child { border-bottom: none; }
-
-        /* --- FORMULARIOS --- */
-        input, select, button {
-            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border);
-            background: var(--bg-color); color: var(--text-color); margin-top: 5px; font-size: 16px;
-        }
-        button { background: var(--primary); color: white; border: none; font-weight: bold; margin-top: 15px; }
-
-        .chart-box { height: 250px; margin: 20px 0; }
     </style>
 </head>
 <body>
 
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    
     <div class="sidebar" id="sidebar">
-        <h2 style="color:var(--primary)">FinanzasPro</h2>
-        <div class="sidebar-item" onclick="showScreen('home')"><i class="fa-solid fa-house"></i> Home</div>
-        <div class="sidebar-item" onclick="showScreen('calendar')"><i class="fa-solid fa-calendar"></i> Calendario</div>
-        <div class="sidebar-item" onclick="showScreen('settings')"><i class="fa-solid fa-gear"></i> Settings</div>
+        <h2 style="color:var(--primary); margin-bottom: 20px;">FinanzasPro</h2>
+        <div class="sidebar-item" onclick="showScreen('home-screen', 'FinanzasPro')"><i class="fa-solid fa-house"></i> Home</div>
+        <div class="sidebar-item" onclick="showScreen('calendar-screen', 'Calendario')"><i class="fa-solid fa-calendar"></i> Calendario</div>
+        <div class="sidebar-item" onclick="showScreen('settings-screen', 'Configuración')"><i class="fa-solid fa-gear"></i> Settings</div>
     </div>
 
-    <nav class="navbar">
-        <button class="menu-btn" onclick="toggleMenu()">☰</button>
-        <span class="nav-title" id="screen-title">Home</span>
-    </nav>
+    <div id="app-screen">
+        <header>
+            <h1 id="screen-title">FinanzasPro</h1>
+            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+        </header>
 
-    <div id="home" class="screen active">
-        <div class="card">
-            <span class="label">Balance Total</span>
-            <div class="num" id="h-balance">$0.00</div>
-        </div>
-        <div class="balance-grid">
-            <div class="card"><span class="label">Ingresos</span><div class="num" id="h-income" style="color:var(--success)">$0</div></div>
-            <div class="card"><span class="label">Gastos</span><div class="num" id="h-expense" style="color:var(--danger)">$0</div></div>
-        </div>
-        
-        <div class="card">
-            <h2>Nuevo Registro</h2>
-            <form id="trans-form">
-                <input type="text" id="desc" placeholder="¿Qué compraste?" required>
-                <input type="number" id="amt" step="0.01" placeholder="Monto" required>
-                <select id="type">
-                    <option value="expense">Gasto</option>
-                    <option value="income">Ingreso</option>
-                </select>
-                <select id="cat">
-                    <option value="Comida">Comida</option>
-                    <option value="Transporte">Transporte</option>
-                    <option value="Entretenimiento">Entretenimiento</option>
-                    <option value="Otros">Otros</option>
-                </select>
-                <button type="submit">Guardar</button>
-            </form>
-        </div>
-    </div>
+        <div id="home-screen" class="screen active">
+            <div class="dashboard">
+                <div class="card"><h3>Balance</h3><p id="total-balance" style="color:var(--primary);">$0</p></div>
+                <div class="card"><h3>Ingresos</h3><p id="total-income" style="color:var(--success);">$0</p></div>
+                <div class="card"><h3>Gastos</h3><p id="total-expense" style="color:var(--danger);">$0</p></div>
+            </div>
 
-    <div id="calendar" class="screen">
-        <div class="card">
-            <h2 id="month-name" style="margin-top:0">Mayo 2024</h2>
-            <div class="calendar-grid" id="calendar-grid">
+            <div class="main-content">
+                <div class="panel">
+                    <h2>Nuevo Movimiento</h2>
+                    <form id="transaction-form">
+                        <div class="form-group">
+                            <label>Descripción</label>
+                            <input type="text" id="description" placeholder="Ej. Almuerzo, PlayStation" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Monto ($)</label>
+                            <input type="number" id="amount" step="0.01" inputmode="decimal" placeholder="0.00" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <select id="type">
+                                <option value="expense">Gasto</option>
+                                <option value="income">Ingreso</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select id="category">
+                                <option value="Comida">Comida</option>
+                                <option value="Vivienda">Vivienda</option>
+                                <option value="Transporte">Transporte</option>
+                                <option value="Entretenimiento">Entretenimiento</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-submit">Guardar Movimiento</button>
+                    </form>
                 </div>
-        </div>
 
-        <div id="day-detail-panel" style="display: none;">
-            <div class="card">
-                <h2 id="selected-date-text">Detalle del día</h2>
-                <div class="chart-box">
-                    <canvas id="dayBarChart"></canvas>
+                <div class="panel">
+                    <h2>Distribución General</h2>
+                    <div class="chart-container"><canvas id="expenseChart"></canvas></div>
+                </div>
+
+                <div class="panel" style="grid-column: span 2;">
+                    <h2>Historial Local Completo</h2>
+                    <ul id="transaction-list" class="transaction-list"></ul>
                 </div>
             </div>
-            <div class="card">
-                <h3>Movimientos del día</h3>
-                <ul class="list" id="day-list"></ul>
+        </div>
+
+        <div id="calendar-screen" class="screen">
+            <div class="panel" style="margin-bottom: 20px;">
+                <h2 id="month-name" style="margin:0; color:var(--primary)">Mes</h2>
+                <div class="calendar-grid" id="calendar-grid"></div>
+            </div>
+
+            <div id="day-detail-panel" style="display: none;">
+                <div class="panel" style="margin-bottom: 20px;">
+                    <h2 id="selected-date-text" style="margin:0 0 10px 0;">Detalle Diario</h2>
+                    <div class="chart-box">
+                        <canvas id="dayBarChart"></canvas>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h2>Flujo de caja de este día</h2>
+                    <ul class="transaction-list" id="day-list"></ul>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="settings" class="screen">
-        <div class="card">
-            <h2>Personalización</h2>
-            <label class="label">Seleccionar Tema</label>
-            <select id="theme-select" style="margin-top:10px">
-                <option value="cyberpunk">🌑 Cyberpunk</option>
-                <option value="light">☀️ Claro Minimal</option>
-                <option value="space">🌌 Espacial</option>
-            </select>
-        </div>
-        <div class="card">
-            <h2>Datos</h2>
-            <p style="font-size:12px">Esto borrará todos tus registros del teléfono.</p>
-            <button onclick="resetData()" style="background:var(--danger)">Borrar todo</button>
+        <div id="settings-screen" class="screen">
+            <div class="panel" style="margin-bottom: 20px;">
+                <h2>Personalización</h2>
+                <div class="form-group">
+                    <label>Cambiar de Tema Visual</label>
+                    <select id="theme-select">
+                        <option value="cyberpunk">🌑 Cyberpunk</option>
+                        <option value="light">☀️ Claro Minimal</option>
+                        <option value="space">🌌 Espacial</option>
+                    </select>
+                </div>
+            </div>
+            <div class="panel">
+                <h2>Mantenimiento</h2>
+                <p style="font-size:13px; color:#868e96;">Esta opción eliminará de forma irreversible todos los datos guardados en este dispositivo.</p>
+                <button onclick="resetData()" style="background:var(--danger)" class="btn-submit">Limpiar Memoria Local</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- BASE DE DATOS LOCAL ---
+        // --- LOGICA DE HISTORIAL LOCAL ---
         let transactions = JSON.parse(localStorage.getItem('fpro_v3_data')) || [];
-        let currentScreen = 'home';
-        let barChart = null;
+        let myChart = null;  // Dona (Home)
+        let barChart = null; // Barras (Calendario)
 
-        // --- NAVEGACIÓN ---
+        // --- SISTEMA DE MANEJO DE MENÚS Y PANTALLAS ---
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
         }
 
-        function showScreen(screenId) {
+        function showScreen(screenId, titleText) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
-            document.getElementById('screen-title').innerText = screenId.toUpperCase();
+            document.getElementById('screen-title').innerText = titleText;
             toggleMenu();
-            if(screenId === 'calendar') renderCalendar();
-            updateHome();
+            
+            if(screenId === 'calendar-screen') {
+                renderCalendar();
+                document.getElementById('day-detail-panel').style.display = 'none';
+            }
+            updateUI();
         }
 
-        // --- LÓGICA DE HOME ---
-        document.getElementById('trans-form').addEventListener('submit', (e) => {
+        // --- MANEJO DE TEMAS ---
+        const themeSelect = document.getElementById('theme-select');
+        const savedTheme = localStorage.getItem('fpro_theme') || 'cyberpunk';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeSelect.value = savedTheme;
+
+        themeSelect.addEventListener('change', (e) => {
+            document.documentElement.setAttribute('data-theme', e.target.value);
+            localStorage.setItem('fpro_theme', e.target.value);
+            updateUI();
+        });
+
+        // Formulario Guardar Registro (Original)
+        document.getElementById('transaction-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const date = new Date();
-            const dateStr = date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            const dateStr = date.toISOString().split('T')[0]; // Guarda la fecha actual YYYY-MM-DD
 
             const t = {
                 id: Date.now(),
-                desc: document.getElementById('desc').value,
-                amt: parseFloat(document.getElementById('amt').value),
+                description: document.getElementById('description').value,
+                amount: parseFloat(document.getElementById('amount').value),
                 type: document.getElementById('type').value,
-                cat: document.getElementById('cat').value,
+                category: document.getElementById('category').value,
                 date: dateStr
             };
 
             transactions.push(t);
             localStorage.setItem('fpro_v3_data', JSON.stringify(transactions));
+            
             e.target.reset();
-            updateHome();
-            alert("¡Guardado!");
+            document.activeElement.blur();
+            updateUI();
         });
 
-        function updateHome() {
-            const income = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amt, 0);
-            const expense = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amt, 0);
-            const balance = income - expense;
-
-            document.getElementById('h-balance').innerText = `$${balance.toFixed(2)}`;
-            document.getElementById('h-income').innerText = `$${income.toFixed(2)}`;
-            document.getElementById('h-expense').innerText = `$${expense.toFixed(2)}`;
+        // Eliminar Registro
+        function deleteTransaction(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            localStorage.setItem('fpro_v3_data', JSON.stringify(transactions));
+            updateUI();
         }
 
-        // --- LÓGICA DE CALENDARIO ---
+        function resetData() {
+            if(confirm("¿Estás seguro de que quieres borrar todo el historial?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // --- CONSTRUCTOR DE CALENDARIO ---
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
@@ -250,7 +311,6 @@
             const monthNames = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
             document.getElementById('month-name').innerText = `${monthNames[month]} ${year}`;
 
-            // Cabecera días
             ['D','L','M','M','J','V','S'].forEach(d => {
                 grid.innerHTML += `<div class="cal-day-name">${d}</div>`;
             });
@@ -258,10 +318,8 @@
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            // Espacios vacíos
             for(let i=0; i<firstDay; i++) grid.innerHTML += `<div></div>`;
 
-            // Días del mes
             for(let d=1; d<=daysInMonth; d++) {
                 const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const hasData = transactions.some(t => t.date === dateStr);
@@ -276,73 +334,141 @@
             }
         }
 
+        // Al presionar un día específico del calendario
         function selectDay(dateStr, el) {
             document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
             el.classList.add('selected');
 
             const dayTrans = transactions.filter(t => t.date === dateStr);
             document.getElementById('day-detail-panel').style.display = 'block';
-            document.getElementById('selected-date-text').innerText = `Día: ${dateStr}`;
+            
+            // Ajustar fecha legible
+            const [y, m, d] = dateStr.split('-');
+            document.getElementById('selected-date-text').innerText = `Movimientos del: ${d}/${m}/${y}`;
 
-            // Listado
+            // Renderizar la lista de abajo
             const listEl = document.getElementById('day-list');
-            listEl.innerHTML = dayTrans.length ? '' : '<li>Sin gastos hoy</li>';
+            listEl.innerHTML = dayTrans.length ? '' : '<li style="text-align:center;color:#868e96;padding:10px;">No hay movimientos este día.</li>';
+            
             dayTrans.forEach(t => {
                 const sign = t.type === 'income' ? '+' : '-';
                 const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
-                listEl.innerHTML += `<li class="item"><span>${t.desc} (${t.cat})</span> <b style="color:${color}">${sign}$${t.amt}</b></li>`;
+                listEl.innerHTML += `
+                    <li class="transaction-item">
+                        <div class="item-details"><strong>${t.description}</strong><span class="item-category">${t.category}</span></div>
+                        <div class="item-amount" style="color:${color}">${sign}$${t.amount.toFixed(2)}</div>
+                    </li>`;
             });
 
-            // Gráfica de Barras
+            // Generar o actualizar Gráfico de Barras Diario
             updateBarChart(dayTrans);
         }
 
         function updateBarChart(dayData) {
-            const categories = ["Comida", "Transporte", "Entretenimiento", "Otros"];
+            const categories = ["Comida", "Vivienda", "Transporte", "Entretenimiento", "Otros"];
             const dataValues = categories.map(cat => {
-                return dayData.filter(t => t.cat === cat && t.type === 'expense').reduce((s, t) => s + t.amt, 0);
+                return dayData.filter(t => t.category === cat && t.type === 'expense').reduce((s, t) => s + t.amount, 0);
             });
 
             const ctx = document.getElementById('dayBarChart').getContext('2d');
             if(barChart) barChart.destroy();
+
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            let textColors = currentTheme === 'light' ? '#212529' : '#f8fafc';
 
             barChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: categories,
                     datasets: [{
-                        label: 'Gastos del día',
+                        label: 'Gastos por Categoría ($)',
                         data: dataValues,
-                        backgroundColor: ['#a855f7', '#3b82f6', '#22c55e', '#eab308']
+                        backgroundColor: ['#a855f7', '#4cc9f0', '#22c55e', '#eab308', '#ec4899'],
+                        borderWidth: 0,
+                        borderRadius: 6
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, grid: { color: '#333' } } }
+                    scales: { 
+                        y: { beginAtZero: true, grid: { color: 'rgba(128,128,128,0.1)' }, ticks: { color: textColors } },
+                        x: { ticks: { color: textColors } }
+                    }
                 }
             });
         }
 
-        // --- CONFIGURACIÓN ---
-        document.getElementById('theme-select').addEventListener('change', (e) => {
-            document.documentElement.setAttribute('data-theme', e.target.value);
-            localStorage.setItem('fpro_theme', e.target.value);
-        });
+        // --- SISTEMA DE PROCESAMIENTO GENERAL (PÁGINA ORIGINAL) ---
+        function updateUI() {
+            const amounts = transactions.map(t => t.type === 'income' ? t.amount : -t.amount);
+            const total = amounts.reduce((acc, item) => (acc += item), 0);
+            const income = transactions.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
+            const expense = transactions.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
 
-        function resetData() {
-            if(confirm("¿Estás seguro? Se borrará TODO.")) {
-                localStorage.clear();
-                location.reload();
+            const format = num => '$' + num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace('.00', '');
+            
+            document.getElementById('total-balance').innerText = format(total);
+            document.getElementById('total-income').innerText = format(income);
+            document.getElementById('total-expense').innerText = format(expense);
+            document.getElementById('total-balance').style.color = total < 0 ? 'var(--danger)' : 'var(--primary)';
+
+            // Renderizar Historial Completo
+            const listEl = document.getElementById('transaction-list');
+            listEl.innerHTML = '';
+            
+            if(transactions.length === 0) {
+                listEl.innerHTML = '<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">Lista vacía</li>';
+            } else {
+                [...transactions].reverse().forEach(t => {
+                    const li = document.createElement('li');
+                    li.className = 'transaction-item';
+                    const sign = t.type === 'income' ? '+' : '-';
+                    const cls = t.type === 'income' ? 'color:var(--success)' : 'color:var(--danger)';
+                    li.innerHTML = `
+                        <div class="item-details"><strong>${t.description}</strong><span class="item-category">${t.category}</span></div>
+                        <div class="item-amount" style="${cls}">${sign}${format(t.amount)}
+                        <button class="btn-delete" onclick="deleteTransaction(${t.id})">✕</button></div>
+                    `;
+                    listEl.appendChild(li);
+                });
             }
+
+            // Renderizar Gráfica de Dona (Home)
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            let chartColors = [];
+            let textChartColor = '#fff';
+
+            if(currentTheme === 'light') {
+                chartColors = ['#ff6b6b', '#4cc9f0', '#f77f00', '#4cc1a1', '#7209b7'];
+                textChartColor = '#212529';
+            } else if(currentTheme === 'space') {
+                chartColors = ['#f26419', '#e0a96d', '#84a59d', '#f72585', '#7209b7'];
+                textChartColor = '#e0e1dd';
+            } else {
+                chartColors = ['#a855f7', '#22c55e', '#3b82f6', '#eab308', '#ec4899'];
+                textChartColor = '#f8fafc';
+            }
+
+            const categories = ['Comida', 'Vivienda', 'Transporte', 'Entretenimiento', 'Otros'];
+            const dataValues = categories.map(cat => transactions.filter(t => t.type === 'expense' && t.category === cat).reduce((acc, t) => acc + t.amount, 0));
+            
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            if (myChart) myChart.destroy();
+            myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: { labels: categories, datasets: [{ data: dataValues, backgroundColor: chartColors, borderWidth: 1, borderColor: 'var(--card-bg)' }] },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 }, color: textChartColor } } } 
+                }
+            });
         }
 
-        // --- INICIO ---
-        const savedTheme = localStorage.getItem('fpro_theme') || 'cyberpunk';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        document.getElementById('theme-select').value = savedTheme;
-        updateHome();
+        // Carga Inicial
+        updateUI();
     </script>
 </body>
 </html>
