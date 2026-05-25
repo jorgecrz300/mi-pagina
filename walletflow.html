@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V5.1 - Smart Backup</title>
+    <title>FinanzasPro V5.1 - Versión Final</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -254,6 +254,7 @@
     </div>
 
     <script>
+        // Configuración de divisas internas fijas (Moneda Base: USD)
         const EXCHANGE_RATES = { USD: 1, MXN: 0.059, EUR: 1.08 };
         let transactions = JSON.parse(localStorage.getItem('fpro_v4_data')) || [];
         let myChart = null;  
@@ -277,7 +278,7 @@
             updateUI();
         }
 
-        // CONTROL DE TEMAS
+        // CONTROL DE TEMAS DE LA INTERFAZ
         const themeSelect = document.getElementById('theme-select');
         const savedTheme = localStorage.getItem('fpro_theme') || 'cyberpunk';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -293,7 +294,7 @@
             }
         });
 
-        // FORMULARIO GUARDAR MOVIMIENTO
+        // ENVÍO DE FORMULARIO CON CONVERSIÓN INTEGRADA
         document.getElementById('transaction-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const date = new Date();
@@ -328,19 +329,29 @@
             updateUI();
         }
 
-        // COPIAS DE SEGURIDAD
+        // CORREGIDO: Exportación usando Blobs de memoria (100% compatible con iPhone y Android)
         function exportData() {
             if(transactions.length === 0) return alert("No hay datos para exportar.");
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transactions));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `FinanzasPro_Backup_${new Date().toISOString().split('T')[0]}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
+            try {
+                const jsonString = JSON.stringify(transactions, null, 2);
+                const blob = new Blob([jsonString], { type: "application/json;charset=utf-8" });
+                const blobUrl = URL.createObjectURL(blob);
+                
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.href = blobUrl;
+                downloadAnchor.download = `FinanzasPro_Backup_${new Date().toISOString().split('T')[0]}.json`;
+                
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                
+                document.body.removeChild(downloadAnchor);
+                URL.revokeObjectURL(blobUrl); 
+            } catch (error) {
+                alert("Error al generar el respaldo: " + error.message);
+            }
         }
 
-        // MODIFICADO: Sistema Inteligente de Importación y Sincronización (Upsert)
+        // CORREGIDO: Importación Upsert inteligente (No duplica registros al presionar consecutivamente)
         function importData(input) {
             const file = input.files[0];
             if (!file) return;
@@ -349,36 +360,28 @@
                 try {
                     const importedData = JSON.parse(e.target.result);
                     if (Array.isArray(importedData)) {
-                        if(confirm(`Se procesarán ${importedData.length} transacciones. ¿Deseas sincronizar e importar estos datos en tu dispositivo?`)) {
+                        if(confirm(`Se procesarán ${importedData.length} transacciones. ¿Deseas sincronizar los datos?`)) {
                             
-                            // Creamos un mapa de los datos actuales indexados por su ID único
                             const txMap = new Map(transactions.map(t => [t.id, t]));
                             
-                            // Sincronizamos: Si el ID existe lo actualiza, si no, lo inserta
                             importedData.forEach(newTx => {
                                 txMap.set(newTx.id, newTx);
                             });
                             
-                            // Convertimos el mapa de vuelta a nuestra lista global ordenada por ID
                             transactions = Array.from(txMap.values()).sort((a,b) => a.id - b.id);
-                            
-                            // Guardamos en LocalStorage
                             localStorage.setItem('fpro_v4_data', JSON.stringify(transactions));
                             
-                            // FORZAMOS LA ACTUALIZACIÓN EN VIVO DE TODAS LAS PANTALLAS
                             updateUI();
                             if(document.getElementById('calendar-screen').classList.contains('active')) {
                                 renderCalendar();
                                 resetCalendarFilter();
                             }
                             
-                            // Limpiamos el valor del input para que deje volver a subir el mismo archivo consecutivamente si se desea
-                            input.value = "";
-                            
+                            input.value = ""; // Limpieza de input para re-ejecución inmediata masiva
                             alert("¡Datos sincronizados y actualizados con éxito!");
                         }
-                    } else { alert("Formato no válido."); }
-                } catch (err) { alert("Error crítico al procesar el archivo."); }
+                    } else { alert("Formato de archivo no válido."); }
+                } catch (err) { alert("Error crítico al procesar el archivo de respaldo."); }
             };
             reader.readAsText(file);
         }
@@ -390,7 +393,7 @@
             }
         }
 
-        // CALENDARIO 
+        // SISTEMA DE CALENDARIO 
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
@@ -506,7 +509,7 @@
             });
         }
 
-        // INTERFAZ GENERAL HOME
+        // ACTUALIZACIÓN DE INTERFAZ DEL HOME ORIGINAL
         function updateUI() {
             const amounts = transactions.map(t => t.type === 'income' ? t.amount : -t.amount);
             const total = amounts.reduce((acc, item) => (acc += item), 0);
