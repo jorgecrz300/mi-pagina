@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V6.0 - Gráficas de Línea</title>
+    <title>FinanzasPro V6.5 - Gamificación de Ahorro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -17,14 +17,17 @@
         :root[data-theme="cyberpunk"] {
             --bg-color: #0b0f19; --card-bg: #151f32; --text-color: #f8fafc;
             --primary: #a855f7; --success: #22c55e; --danger: #ef4444; --border: #22314d; --input-bg: #0b0f19;
+            --accent: #3b82f6;
         }
         :root[data-theme="light"] {
             --bg-color: #f8f9fa; --card-bg: #ffffff; --text-color: #212529;
             --primary: #4361ee; --success: #2ec4b6; --danger: #e63946; --border: #e9ecef; --input-bg: #ffffff;
+            --accent: #4cc9f0;
         }
         :root[data-theme="space"] {
             --bg-color: #0d1b2a; --card-bg: #1b263b; --text-color: #e0e1dd;
             --primary: #e0a96d; --success: #52b788; --danger: #f26419; --border: #415a77; --input-bg: #0d1b2a;
+            --accent: #84a59d;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -99,7 +102,6 @@
         
         .btn-delete { background: var(--bg-color); border: none; color: #adb5bd; border-radius: 50%; width: 32px; height: 32px; font-size: 12px; cursor: pointer; }
         .chart-container { position: relative; height: 200px; width: 100%; }
-        .line-chart-box { height: 240px; margin-bottom: 25px; position: relative; width: 100%; }
 
         /* --- CALENDARIO --- */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; background: var(--card-bg); padding: 10px; border-radius: 12px; }
@@ -113,6 +115,16 @@
         
         .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .btn-reset-view { background: var(--bg-color); color: var(--primary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+        /* --- COMPONENTES DE GAMIFICACIÓN / RACHAS --- */
+        .streak-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .streak-card { background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; }
+        .streak-number { font-size: 28px; font-weight: 800; display: block; margin-top: 5px; }
+        
+        .thermometer-container { background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-top: 10px; }
+        .thermometer-bar-bg { background: rgba(128,128,128,0.2); width: 100%; height: 20px; border-radius: 10px; margin: 10px 0; overflow: hidden; position: relative; }
+        .thermometer-bar-fill { height: 100%; width: 0%; border-radius: 10px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s; }
+        .thermometer-labels { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #868e96; }
 
         @media (min-width: 769px) {
             body { align-items: flex-start; padding-top: 40px; }
@@ -131,7 +143,7 @@
         <h2 style="color:var(--primary); margin-bottom: 15px; padding-left: 15px;">FinanzasPro</h2>
         <div class="sidebar-item" onclick="showScreen('home-screen', 'FinanzasPro')"><i class="fa-solid fa-house"></i> Home</div>
         <div class="sidebar-item" onclick="showScreen('calendar-screen', 'Calendario')"><i class="fa-solid fa-calendar"></i> Calendario</div>
-        <div class="sidebar-item" onclick="showScreen('analytics-screen', 'Análisis Temporal')"><i class="fa-solid fa-chart-line"></i> Gráficas</div>
+        <div class="sidebar-item" onclick="showScreen('analytics-screen', 'Modo Ahorro Pro')"><i class="fa-solid fa-trophy"></i> Gráficas</div>
         <div class="sidebar-item" onclick="showScreen('settings-screen', 'Configuración')"><i class="fa-solid fa-gear"></i> Settings</div>
     </div>
 
@@ -226,18 +238,45 @@
         <div id="analytics-screen" class="screen">
             <div class="main-content">
                 <div class="panel">
-                    <h2 style="color: var(--danger);"><i class="fa-solid fa-chart-line"></i> Historial de Gastos Diarios</h2>
-                    <p style="font-size: 12px; color:#868e96; margin-top:-10px; margin-bottom:15px;">Monitorea qué días del mes gastaste más dinero.</p>
-                    <div class="line-chart-box">
-                        <canvas id="lineExpenseChart"></canvas>
+                    <h2><i class="fa-solid fa-fire" style="color:#fd7e14;"></i> Tus Rachas de Ahorro</h2>
+                    <p style="font-size: 13px; color:#868e96; margin-top:-15px; margin-bottom:15px;">Días consecutivos en los que has logrado no registrar ningún gasto.</p>
+                    
+                    <div class="streak-container">
+                        <div class="streak-card">
+                            <span style="font-size:12px; color:#868e96; font-weight:700;">RACHA ACTUAL</span>
+                            <span id="current-streak" class="streak-number" style="color:#fd7e14;">0 Días</span>
+                        </div>
+                        <div class="streak-card">
+                            <span style="font-size:12px; color:#868e96; font-weight:700;">RÉCORD MENSUAL</span>
+                            <span id="max-streak" class="streak-number" style="color:var(--success);">0 Días</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="panel">
-                    <h2 style="color: var(--success);"><i class="fa-solid fa-chart-line"></i> Historial de Ingresos Diarios</h2>
-                    <p style="font-size: 12px; color:#868e96; margin-top:-10px; margin-bottom:15px;">Mira la tendencia de cuándo entra el dinero a tu cuenta.</p>
-                    <div class="line-chart-box">
-                        <canvas id="lineIncomeChart"></canvas>
+                    <h2><i class="fa-solid fa-temperature-half" style="color:var(--primary);"></i> Límite de Gasto Mensual</h2>
+                    <p style="font-size: 13px; color:#868e96; margin-top:-15px; margin-bottom:15px;">Mantén vigilado tu tope de gastos. La barra se llena de acuerdo a lo gastado en el mes.</p>
+                    
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="font-size: 12px;">Ajustar mi Presupuesto Límite ($ USD)</label>
+                        <input type="number" id="budget-limit-input" value="200" step="10" oninput="updateBudgetThermometer()" style="height:38px; font-size:14px; border-radius:8px;">
+                    </div>
+
+                    <div class="thermometer-container">
+                        <div style="display:flex; justify-content:space-between; font-weight:700; font-size:14px;">
+                            <span>Consumo actual:</span>
+                            <span id="thermometer-spent-text" style="color:var(--danger);">$0.00</span>
+                        </div>
+                        
+                        <div class="thermometer-bar-bg">
+                            <div id="thermometer-bar-fill" class="thermometer-bar-fill"></div>
+                        </div>
+
+                        <div class="thermometer-labels">
+                            <span>0% (Inicio)</span>
+                            <span id="thermometer-percentage">0%</span>
+                            <span>100% (Tope)</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -289,8 +328,6 @@
         let transactions = JSON.parse(localStorage.getItem('fpro_v4_data')) || [];
         let myChart = null;  
         let barChart = null; 
-        let lineExpenseChart = null;
-        let lineIncomeChart = null;
 
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('active');
@@ -308,7 +345,8 @@
                 resetCalendarFilter();
             }
             if(screenId === 'analytics-screen') {
-                renderLineCharts();
+                calculateStreaks();
+                updateBudgetThermometer();
             }
             updateUI();
         }
@@ -328,7 +366,8 @@
                 resetCalendarFilter();
             }
             if(document.getElementById('analytics-screen').classList.contains('active')) {
-                renderLineCharts();
+                calculateStreaks();
+                updateBudgetThermometer();
             }
         });
 
@@ -492,93 +531,81 @@
             });
         }
 
-        // ================= NUEVA LOGICA: DISPARADOR DE GRAFICAS DE LINEAS (SUBE Y BAJA) =================
-        function renderLineCharts() {
+        // ================= LÓGICA DE ACTUALIZACIÓN: CALCULO DE RACHAS (IDEA #2) =================
+        function calculateStreaks() {
             const now = new Date();
             const year = now.getFullYear();
             const month = now.getMonth();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const todayDom = now.getDate();
             
-            // Generamos etiquetas de los días del mes [1, 2, 3 ... 31]
-            const labels = Array.from({length: daysInMonth}, (_, i) => i + 1);
-            
-            // Inicializamos arreglos de acumulación en cero para cada día del mes
-            const dailyExpenses = Array(daysInMonth).fill(0);
-            const dailyIncomes = Array(daysInMonth).fill(0);
-
-            // Filtramos datos correspondientes únicamente al mes en curso
+            // Obtenemos un set con las fechas exactas de este mes donde SÍ hubo gastos
             const currentYearMonth = `${year}-${String(month + 1).padStart(2, '0')}`;
-            const currentMonthTransactions = transactions.filter(t => t.date.startsWith(currentYearMonth));
+            const expenseDates = new Set(
+                transactions
+                    .filter(t => t.type === 'expense' && t.date.startsWith(currentYearMonth))
+                    .map(t => parseInt(t.date.split('-')[2]))
+            );
 
-            currentMonthTransactions.forEach(t => {
-                const dayIndex = parseInt(t.date.split('-')[2]) - 1;
-                if(dayIndex >= 0 && dayIndex < daysInMonth) {
-                    if(t.type === 'expense') dailyExpenses[dayIndex] += t.amount;
-                    if(t.type === 'income') dailyIncomes[dayIndex] += t.amount;
+            let currentStreak = 0;
+            let maxStreak = 0;
+            let temporaryStreak = 0;
+
+            // Recorremos los días del mes para encontrar la racha máxima y la actual
+            for (let d = 1; d <= todayDom; d++) {
+                if (!expenseDates.has(d)) {
+                    temporaryStreak++;
+                    if (temporaryStreak > maxStreak) maxStreak = temporaryStreak;
+                } else {
+                    temporaryStreak = 0; // Se rompe la racha si hubo un gasto
                 }
-            });
-
-            const textColors = document.documentElement.getAttribute('data-theme') === 'light' ? '#212529' : '#f8fafc';
-
-            // 1. Renderizado Gráfica de Gastos (Línea Roja/Peligro)
-            const ctxExp = document.getElementById('lineExpenseChart').getContext('2d');
-            if(lineExpenseChart) lineExpenseChart.destroy();
-            lineExpenseChart = new Chart(ctxExp, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Gasto Diario ($ USD)',
-                        data: dailyExpenses,
-                        borderColor: '#ef4444',
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        borderWidth: 3,
-                        tension: 0.3, // Curvatura suave de la línea que sube y baja
-                        fill: true,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#ef4444'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { color: textColors }, grid: { color: 'rgba(128,128,128,0.1)' } },
-                        x: { title: { display: true, text: 'Día del Mes', color: textColors }, ticks: { color: textColors } }
-                    }
+            }
+            
+            // Calculamos la racha activa contando hacia atrás desde hoy
+            for (let d = todayDom; d >= 1; d--) {
+                if (!expenseDates.has(d)) {
+                    currentStreak++;
+                } else {
+                    break;
                 }
-            });
+            }
 
-            // 2. Renderizado Gráfica de Ingresos (Línea Verde/Éxito)
-            const ctxInc = document.getElementById('lineIncomeChart').getContext('2d');
-            if(lineIncomeChart) lineIncomeChart.destroy();
-            lineIncomeChart = new Chart(ctxInc, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Ingreso Diario ($ USD)',
-                        data: dailyIncomes,
-                        borderColor: '#22c55e',
-                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                        borderWidth: 3,
-                        tension: 0.3,
-                        fill: true,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#22c55e'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { color: textColors }, grid: { color: 'rgba(128,128,128,0.1)' } },
-                        x: { title: { display: true, text: 'Día del Mes', color: textColors }, ticks: { color: textColors } }
-                    }
-                }
-            });
+            document.getElementById('current-streak').innerText = `${currentStreak} ${currentStreak === 1 ? 'Día' : 'Días'}`;
+            document.getElementById('max-streak').innerText = `${maxStreak} ${maxStreak === 1 ? 'Día' : 'Días'}`;
+        }
+
+        // ================= LÓGICA DE ACTUALIZACIÓN: TERMÓMETRO (IDEA #3) =================
+        function updateBudgetThermometer() {
+            const now = new Date();
+            const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            
+            // Sumamos todos los gastos del mes corriente
+            const monthlyExpense = transactions
+                .filter(t => t.type === 'expense' && t.date.startsWith(currentYearMonth))
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            // Obtenemos el límite definido por el usuario
+            let limit = parseFloat(document.getElementById('budget-limit-input').value);
+            if (isNaN(limit) || limit <= 0) limit = 200; // Valor seguro por defecto
+
+            // Calculamos el porcentaje consumido
+            let percentage = (monthlyExpense / limit) * 100;
+            if (percentage > 100) percentage = 100; // Tope visual al 100%
+
+            // Actualizamos textos
+            document.getElementById('thermometer-spent-text').innerText = `$${monthlyExpense.toFixed(2)} USD`;
+            document.getElementById('thermometer-percentage').innerText = `${Math.round((monthlyExpense / limit) * 100)}%`;
+
+            // Renderizado y lógica de color dinámica de la barra de progreso
+            const barFill = document.getElementById('thermometer-bar-fill');
+            barFill.style.width = `${percentage}%`;
+
+            if (percentage < 60) {
+                barFill.style.backgroundColor = 'var(--success)'; // Verde: Todo seguro
+            } else if (percentage >= 60 && percentage < 90) {
+                barFill.style.backgroundColor = '#f77f00'; // Naranja: Precaución
+            } else {
+                barFill.style.backgroundColor = 'var(--danger)'; // Rojo: Límite excedido
+            }
         }
 
         // ACTUALIZACIÓN DE INTERFAZ GENERAL (HOME)
