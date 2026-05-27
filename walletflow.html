@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V7.0 - Secciones Separadas</title>
+    <title>FinanzasPro V7.5 - Llama Dinámica</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -114,10 +114,16 @@
         .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .btn-reset-view { background: var(--bg-color); color: var(--primary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-        /* --- METAS Y RACHAS --- */
-        .streak-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        .streak-card { background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; }
-        .streak-number { font-size: 28px; font-weight: 800; display: block; margin-top: 5px; }
+        /* --- METAS Y LLAMA DINÁMICA --- */
+        .gamification-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0; }
+        .flame-wrapper { width: 120px; height: 140px; position: relative; margin-bottom: 15px; }
+        
+        /* Contenedor SVG de la llama */
+        .flame-svg { width: 100%; height: 100%; }
+        
+        .streak-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 5px; width: 100%; }
+        .streak-card { background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
+        .streak-number { font-size: 24px; font-weight: 800; display: block; margin-top: 5px; }
         
         .thermometer-container { background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-top: 10px; }
         .thermometer-bar-bg { background: rgba(128,128,128,0.2); width: 100%; height: 20px; border-radius: 10px; margin: 10px 0; overflow: hidden; position: relative; }
@@ -256,17 +262,39 @@
 
         <div id="goals-screen" class="screen">
             <div class="main-content">
-                <div class="panel">
-                    <h2><i class="fa-solid fa-fire" style="color:#fd7e14;"></i> Tus Rachas de Ahorro</h2>
-                    <p style="font-size: 13px; color:#868e96; margin-top:-15px; margin-bottom:15px;">Días consecutivos en los que has logrado no registrar ningún gasto.</p>
+                <div class="panel" style="text-align: center;">
+                    <h2>La Llama del Ahorro</h2>
+                    <p style="font-size: 13px; color:#868e96; margin-top:-10px; margin-bottom:20px;">Entre más días pases sin gastar este mes, más se encenderá y llenará la llama de color.</p>
+                    
+                    <div class="gamification-box">
+                        <div class="flame-wrapper">
+                            <svg class="flame-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="flame-gradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                                        <stop offset="0%" stop-color="#f94144" />
+                                        <stop offset="50%" stop-color="#f3722c" />
+                                        <stop offset="100%" stop-color="#f9c74f" />
+                                    </linearGradient>
+                                    
+                                    <clipPath id="flame-clip">
+                                        <rect id="flame-clipper" x="0" y="120" width="100" height="120" transition="y 0.5s ease" />
+                                    </clipPath>
+                                </defs>
+                                
+                                <path d="M50 0 C75 40 90 70 90 95 C90 115 70 120 50 120 C30 120 10 115 10 95 C10 70 25 40 50 0 Z" fill="rgba(128, 128, 128, 0.15)" stroke="rgba(128, 128, 128, 0.3)" stroke-width="2" />
+                                
+                                <path d="M50 0 C75 40 90 70 90 95 C90 115 70 120 50 120 C30 120 10 115 10 95 C10 70 25 40 50 0 Z" fill="url(#flame-gradient)" clip-path="url(#flame-clip)" />
+                            </svg>
+                        </div>
+                    </div>
                     
                     <div class="streak-container">
                         <div class="streak-card">
-                            <span style="font-size:12px; color:#868e96; font-weight:700;">RACHA ACTUAL</span>
-                            <span id="current-streak" class="streak-number" style="color:#fd7e14;">0 Días</span>
+                            <span style="font-size:11px; color:#868e96; font-weight:700;">RACHA ACTUAL</span>
+                            <span id="current-streak" class="streak-number" style="color:#f3722c;">0 Días</span>
                         </div>
                         <div class="streak-card">
-                            <span style="font-size:12px; color:#868e96; font-weight:700;">RÉCORD MENSUAL</span>
+                            <span style="font-size:11px; color:#868e96; font-weight:700;">MÁXIMA DEL MES</span>
                             <span id="max-streak" class="streak-number" style="color:var(--success);">0 Días</span>
                         </div>
                     </div>
@@ -274,7 +302,7 @@
 
                 <div class="panel">
                     <h2><i class="fa-solid fa-temperature-half" style="color:var(--primary);"></i> Límite de Gasto Mensual</h2>
-                    <p style="font-size: 13px; color:#868e96; margin-top:-15px; margin-bottom:15px;">Mantén vigilado tu tope de gastos. La barra se llena de acuerdo a lo gastado en el mes.</p>
+                    <p style="font-size: 13px; color:#868e96; margin-top:-15px; margin-bottom:15px;">La barra se llena de acuerdo a lo gastado en el mes.</p>
                     
                     <div class="form-group" style="margin-bottom: 15px;">
                         <label style="font-size: 12px;">Ajustar mi Presupuesto Límite ($ USD)</label>
@@ -433,7 +461,7 @@
             updateUI();
         }
 
-        // EXPORTAR (BLOB MÓVIL)
+        // EXPORTAR Y RESPALDOS
         function exportData() {
             if(transactions.length === 0) return alert("No hay datos para exportar.");
             try {
@@ -452,7 +480,6 @@
             }
         }
 
-        // IMPORTAR UPSERT (EVITA DUPLICADOS)
         function importData(input) {
             const file = input.files[0];
             if (!file) return;
@@ -558,7 +585,7 @@
             });
         }
 
-        // ================= SECCIÓN: LÓGICA GRÁFICAS DE LINEAS (SUBE Y BAJA) =================
+        // GRÁFICAS DE LÍNEAS ORIGINALES
         function renderLineCharts() {
             const now = new Date();
             const year = now.getFullYear();
@@ -589,26 +616,16 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Gasto Diario ($ USD)',
+                        label: 'Gasto Diario',
                         data: dailyExpenses,
                         borderColor: '#ef4444',
                         backgroundColor: 'rgba(239, 68, 68, 0.1)',
                         borderWidth: 3,
                         tension: 0.3,
-                        fill: true,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#ef4444'
+                        fill: true
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { color: textColors }, grid: { color: 'rgba(128,128,128,0.1)' } },
-                        x: { title: { display: true, text: 'Día del Mes', color: textColors }, ticks: { color: textColors } }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: textColors } }, x: { ticks: { color: textColors } } } }
             });
 
             const ctxInc = document.getElementById('lineIncomeChart').getContext('2d');
@@ -618,35 +635,26 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Ingreso Diario ($ USD)',
+                        label: 'Ingreso Diario',
                         data: dailyIncomes,
                         borderColor: '#22c55e',
                         backgroundColor: 'rgba(34, 197, 94, 0.1)',
                         borderWidth: 3,
                         tension: 0.3,
-                        fill: true,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#22c55e'
+                        fill: true
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { color: textColors }, grid: { color: 'rgba(128,128,128,0.1)' } },
-                        x: { title: { display: true, text: 'Día del Mes', color: textColors }, ticks: { color: textColors } }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: textColors } }, x: { ticks: { color: textColors } } } }
             });
         }
 
-        // ================= SECCIÓN: LÓGICA DE METAS (RACHAS) =================
+        // ================= ACTUALIZACIÓN: LÓGICA DE LA LLAMA INTERACTIVA =================
         function calculateStreaks() {
             const now = new Date();
             const year = now.getFullYear();
             const month = now.getMonth();
             const todayDom = now.getDate();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
             
             const currentYearMonth = `${year}-${String(month + 1).padStart(2, '0')}`;
             const expenseDates = new Set(
@@ -678,9 +686,19 @@
 
             document.getElementById('current-streak').innerText = `${currentStreak} ${currentStreak === 1 ? 'Día' : 'Días'}`;
             document.getElementById('max-streak').innerText = `${maxStreak} ${maxStreak === 1 ? 'Día' : 'Días'}`;
+
+            // CONTROL DEL LIENZO SVG (MÁSCARA DEL LLENADO DE LA LLAMA)
+            // Calculamos qué porcentaje del mes actual representa tu racha activa actual
+            let streakPercentage = currentStreak / daysInMonth;
+            if(streakPercentage > 1) streakPercentage = 1;
+            if(currentStreak > 0 && streakPercentage < 0.15) streakPercentage = 0.15; // Llenado mínimo para que se note viva si llevas 1 día
+
+            // El SVG mide 120 de alto. Y=120 es totalmente vacío, Y=0 es totalmente llena.
+            const targetY = 120 - (streakPercentage * 120);
+            document.getElementById('flame-clipper').setAttribute('y', targetY);
         }
 
-        // ================= SECCIÓN: LÓGICA DE METAS (TERMÓMETRO) =================
+        // TERMÓMETRO
         function updateBudgetThermometer() {
             const now = new Date();
             const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -701,16 +719,12 @@
             const barFill = document.getElementById('thermometer-bar-fill');
             barFill.style.width = `${percentage}%`;
 
-            if (percentage < 60) {
-                barFill.style.backgroundColor = 'var(--success)'; 
-            } else if (percentage >= 60 && percentage < 90) {
-                barFill.style.backgroundColor = '#f77f00'; 
-            } else {
-                barFill.style.backgroundColor = 'var(--danger)'; 
-            }
+            if (percentage < 60) { barFill.style.backgroundColor = 'var(--success)'; } 
+            else if (percentage >= 60 && percentage < 90) { barFill.style.backgroundColor = '#f77f00'; } 
+            else { barFill.style.backgroundColor = 'var(--danger)'; }
         }
 
-        // ACTUALIZACIÓN DE INTERFAZ GENERAL (HOME)
+        // INTERFAZ GENERAL HOME
         function updateUI() {
             const amounts = transactions.map(t => t.type === 'income' ? t.amount : -t.amount);
             const total = amounts.reduce((acc, item) => (acc += item), 0);
@@ -721,7 +735,6 @@
             document.getElementById('total-balance').innerText = format(total);
             document.getElementById('total-income').innerText = format(income);
             document.getElementById('total-expense').innerText = format(expense);
-            document.getElementById('total-balance').style.color = total < 0 ? 'var(--danger)' : 'var(--primary)';
 
             const listEl = document.getElementById('transaction-list');
             listEl.innerHTML = transactions.length === 0 ? '<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">Lista vacía</li>' : '';
@@ -738,7 +751,7 @@
 
             const currentTheme = document.documentElement.getAttribute('data-theme');
             let chartColors = currentTheme === 'light' ? ['#ff6b6b', '#4cc9f0', '#f77f00', '#4cc1a1', '#7209b7'] : (currentTheme === 'space' ? ['#f26419', '#e0a96d', '#84a59d', '#f72585', '#7209b7'] : ['#a855f7', '#22c55e', '#3b82f6', '#eab308', '#ec4899']);
-            let textChartColor = currentTheme === 'light' ? '#212529' : (currentTheme === 'space' ? '#e0e1dd' : '#f8fafc');
+            let textChartColor = currentTheme === 'light' ? '#212529' : '#f8fafc';
 
             const categories = ['Comida', 'Vivienda', 'Transporte', 'Entretenimiento', 'Otros'];
             const dataValues = categories.map(cat => transactions.filter(t => t.type === 'expense' && t.category === cat).reduce((acc, t) => acc + t.amount, 0));
