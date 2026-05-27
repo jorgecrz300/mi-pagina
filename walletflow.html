@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V5.1 - Versión Final</title>
+    <title>FinanzasPro V6.0 - Gráficas de Línea</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -52,7 +52,7 @@
         .sidebar {
             position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
             background: var(--card-bg); z-index: 200; box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-            padding: 40px 20px; display: flex; flex-direction: column; gap: 20px; transition: left 0.3s ease;
+            padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; transition: left 0.3s ease;
         }
         .sidebar.active { left: 0; }
         .sidebar-item {
@@ -71,7 +71,7 @@
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- DISEÑO ORIGINAL HOME --- */
+        /* --- DISEÑO COMPONENTES --- */
         .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
         .card { background: var(--card-bg); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
         .card h3 { margin: 0 0 4px 0; font-size: 10px; text-transform: uppercase; color: #868e96; }
@@ -99,6 +99,7 @@
         
         .btn-delete { background: var(--bg-color); border: none; color: #adb5bd; border-radius: 50%; width: 32px; height: 32px; font-size: 12px; cursor: pointer; }
         .chart-container { position: relative; height: 200px; width: 100%; }
+        .line-chart-box { height: 240px; margin-bottom: 25px; position: relative; width: 100%; }
 
         /* --- CALENDARIO --- */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; background: var(--card-bg); padding: 10px; border-radius: 12px; }
@@ -118,7 +119,7 @@
             #app-screen { max-width: 900px; }
             .card p { font-size: 22px; }
             .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-            #calendar-screen .main-content { display: flex; flex-direction: column; }
+            #calendar-screen .main-content, #analytics-screen .main-content { display: flex; flex-direction: column; }
         }
     </style>
 </head>
@@ -127,9 +128,10 @@
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
     
     <div class="sidebar" id="sidebar">
-        <h2 style="color:var(--primary); margin-bottom: 20px;">FinanzasPro</h2>
+        <h2 style="color:var(--primary); margin-bottom: 15px; padding-left: 15px;">FinanzasPro</h2>
         <div class="sidebar-item" onclick="showScreen('home-screen', 'FinanzasPro')"><i class="fa-solid fa-house"></i> Home</div>
         <div class="sidebar-item" onclick="showScreen('calendar-screen', 'Calendario')"><i class="fa-solid fa-calendar"></i> Calendario</div>
+        <div class="sidebar-item" onclick="showScreen('analytics-screen', 'Análisis Temporal')"><i class="fa-solid fa-chart-line"></i> Gráficas</div>
         <div class="sidebar-item" onclick="showScreen('settings-screen', 'Configuración')"><i class="fa-solid fa-gear"></i> Settings</div>
     </div>
 
@@ -204,7 +206,7 @@
                 <div class="calendar-grid" id="calendar-grid"></div>
             </div>
 
-            <div id="day-detail-panel" style="display: block;">
+            <div id="day-detail-panel">
                 <div class="panel" style="margin-bottom: 20px;">
                     <div class="detail-header">
                         <h2 id="selected-date-text" style="margin:0;">Resumen del Mes</h2>
@@ -217,6 +219,26 @@
                 <div class="panel">
                     <h2 id="list-title-text">Flujo de caja mensual</h2>
                     <ul class="transaction-list" id="day-list"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="analytics-screen" class="screen">
+            <div class="main-content">
+                <div class="panel">
+                    <h2 style="color: var(--danger);"><i class="fa-solid fa-chart-line"></i> Historial de Gastos Diarios</h2>
+                    <p style="font-size: 12px; color:#868e96; margin-top:-10px; margin-bottom:15px;">Monitorea qué días del mes gastaste más dinero.</p>
+                    <div class="line-chart-box">
+                        <canvas id="lineExpenseChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2 style="color: var(--success);"><i class="fa-solid fa-chart-line"></i> Historial de Ingresos Diarios</h2>
+                    <p style="font-size: 12px; color:#868e96; margin-top:-10px; margin-bottom:15px;">Mira la tendencia de cuándo entra el dinero a tu cuenta.</p>
+                    <div class="line-chart-box">
+                        <canvas id="lineIncomeChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -253,12 +275,22 @@
         </div>
     </div>
 
+    <link rel="manifest" href="manifest.json">
     <script>
-        // Configuración de divisas internas fijas (Moneda Base: USD)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log(err));
+            });
+        }
+    </script>
+
+    <script>
         const EXCHANGE_RATES = { USD: 1, MXN: 0.059, EUR: 1.08 };
         let transactions = JSON.parse(localStorage.getItem('fpro_v4_data')) || [];
         let myChart = null;  
         let barChart = null; 
+        let lineExpenseChart = null;
+        let lineIncomeChart = null;
 
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('active');
@@ -275,10 +307,13 @@
                 renderCalendar();
                 resetCalendarFilter();
             }
+            if(screenId === 'analytics-screen') {
+                renderLineCharts();
+            }
             updateUI();
         }
 
-        // CONTROL DE TEMAS DE LA INTERFAZ
+        // CONTROL DE TEMAS
         const themeSelect = document.getElementById('theme-select');
         const savedTheme = localStorage.getItem('fpro_theme') || 'cyberpunk';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -292,9 +327,12 @@
                 renderCalendar();
                 resetCalendarFilter();
             }
+            if(document.getElementById('analytics-screen').classList.contains('active')) {
+                renderLineCharts();
+            }
         });
 
-        // ENVÍO DE FORMULARIO CON CONVERSIÓN INTEGRADA
+        // FORMULARIO GUARDAR MOVIMIENTO
         document.getElementById('transaction-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const date = new Date();
@@ -329,29 +367,26 @@
             updateUI();
         }
 
-        // CORREGIDO: Exportación usando Blobs de memoria (100% compatible con iPhone y Android)
+        // EXPORTAR (BLOB MÓVIL)
         function exportData() {
             if(transactions.length === 0) return alert("No hay datos para exportar.");
             try {
                 const jsonString = JSON.stringify(transactions, null, 2);
                 const blob = new Blob([jsonString], { type: "application/json;charset=utf-8" });
                 const blobUrl = URL.createObjectURL(blob);
-                
                 const downloadAnchor = document.createElement('a');
                 downloadAnchor.href = blobUrl;
                 downloadAnchor.download = `FinanzasPro_Backup_${new Date().toISOString().split('T')[0]}.json`;
-                
                 document.body.appendChild(downloadAnchor);
                 downloadAnchor.click();
-                
                 document.body.removeChild(downloadAnchor);
                 URL.revokeObjectURL(blobUrl); 
             } catch (error) {
-                alert("Error al generar el respaldo: " + error.message);
+                alert("Error al generar respaldo: " + error.message);
             }
         }
 
-        // CORREGIDO: Importación Upsert inteligente (No duplica registros al presionar consecutivamente)
+        // IMPORTAR UPSERT (EVITA DUPLICADOS)
         function importData(input) {
             const file = input.files[0];
             if (!file) return;
@@ -360,59 +395,43 @@
                 try {
                     const importedData = JSON.parse(e.target.result);
                     if (Array.isArray(importedData)) {
-                        if(confirm(`Se procesarán ${importedData.length} transacciones. ¿Deseas sincronizar los datos?`)) {
-                            
+                        if(confirm(`¿Deseas sincronizar ${importedData.length} transacciones?`)) {
                             const txMap = new Map(transactions.map(t => [t.id, t]));
-                            
-                            importedData.forEach(newTx => {
-                                txMap.set(newTx.id, newTx);
-                            });
-                            
+                            importedData.forEach(newTx => txMap.set(newTx.id, newTx));
                             transactions = Array.from(txMap.values()).sort((a,b) => a.id - b.id);
                             localStorage.setItem('fpro_v4_data', JSON.stringify(transactions));
-                            
                             updateUI();
-                            if(document.getElementById('calendar-screen').classList.contains('active')) {
-                                renderCalendar();
-                                resetCalendarFilter();
-                            }
-                            
-                            input.value = ""; // Limpieza de input para re-ejecución inmediata masiva
-                            alert("¡Datos sincronizados y actualizados con éxito!");
+                            input.value = "";
+                            alert("¡Sincronizado correctamente!");
                         }
-                    } else { alert("Formato de archivo no válido."); }
-                } catch (err) { alert("Error crítico al procesar el archivo de respaldo."); }
+                    } else { alert("Archivo no válido."); }
+                } catch (err) { alert("Error al procesar archivo."); }
             };
             reader.readAsText(file);
         }
 
         function resetData() {
-            if(confirm("¿Estás seguro de que quieres borrar todo el historial?")) {
+            if(confirm("¿Borrar todo el historial?")) {
                 localStorage.clear();
                 location.reload();
             }
         }
 
-        // SISTEMA DE CALENDARIO 
+        // CALENDARIO
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
             const now = new Date();
             const year = now.getFullYear();
             const month = now.getMonth();
-            
             const monthNames = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
             document.getElementById('month-name').innerText = `${monthNames[month]} ${year}`;
 
-            ['D','L','M','M','J','V','S'].forEach(d => {
-                grid.innerHTML += `<div class="cal-day-name">${d}</div>`;
-            });
-
+            ['D','L','M','M','J','V','S'].forEach(d => grid.innerHTML += `<div class="cal-day-name">${d}</div>`);
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
             for(let i=0; i<firstDay; i++) grid.innerHTML += `<div></div>`;
-
             for(let d=1; d<=daysInMonth; d++) {
                 const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const hasData = transactions.some(t => t.date === dateStr);
@@ -430,92 +449,144 @@
         function selectDay(dateStr, el) {
             document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
             el.classList.add('selected');
-
             const dayTrans = transactions.filter(t => t.date === dateStr);
-            
             const [y, m, d] = dateStr.split('-');
             document.getElementById('selected-date-text').innerText = `Día: ${d}/${m}/${y}`;
             document.getElementById('list-title-text').innerText = `Flujo de caja de este día`;
             document.getElementById('btn-reset-view').style.display = 'block';
-
             renderDetailPanel(dayTrans);
         }
 
         function resetCalendarFilter() {
             document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
-            
             document.getElementById('selected-date-text').innerText = "Resumen del Mes";
             document.getElementById('list-title-text').innerText = "Flujo de caja mensual";
             document.getElementById('btn-reset-view').style.display = 'none';
-
             const now = new Date();
             const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-            const monthTrans = transactions.filter(t => t.date.startsWith(currentYearMonth));
-
-            renderDetailPanel(monthTrans);
+            renderDetailPanel(transactions.filter(t => t.date.startsWith(currentYearMonth)));
         }
 
         function renderDetailPanel(dataArray) {
             const listEl = document.getElementById('day-list');
-            listEl.innerHTML = dataArray.length ? '' : '<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">No hay registros en este periodo.</li>';
-            
+            listEl.innerHTML = dataArray.length ? '' : '<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">No hay registros.</li>';
             dataArray.forEach(t => {
                 const sign = t.type === 'income' ? '+' : '-';
                 const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
                 const displayLabel = t.currency && t.currency !== 'USD' ? `$${t.originalAmount.toFixed(2)} ${t.currency}` : `$${t.amount.toFixed(2)}`;
-                
-                listEl.innerHTML += `
-                    <li class="transaction-item">
-                        <div class="item-details"><strong>${t.description}</strong><span class="item-category">${t.category}</span></div>
-                        <div class="item-amount" style="color:${color}">${sign}${displayLabel}</div>
-                    </li>`;
+                listEl.innerHTML += `<li class="transaction-item"><div class="item-details"><strong>${t.description}</strong><span class="item-category">${t.category}</span></div><div class="item-amount" style="color:${color}">${sign}${displayLabel}</div></li>`;
             });
-
             updateBarChart(dataArray);
         }
 
         function updateBarChart(filteredData) {
             const categories = ["Comida", "Vivienda", "Transporte", "Entretenimiento", "Otros"];
-            const dataValues = categories.map(cat => {
-                return filteredData.filter(t => t.category === cat && t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-            });
-
+            const dataValues = categories.map(cat => filteredData.filter(t => t.category === cat && t.type === 'expense').reduce((s, t) => s + t.amount, 0));
             const ctx = document.getElementById('dayBarChart').getContext('2d');
             if(barChart) barChart.destroy();
-
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            let textColors = currentTheme === 'light' ? '#212529' : '#f8fafc';
-
+            const textColors = document.documentElement.getAttribute('data-theme') === 'light' ? '#212529' : '#f8fafc';
             barChart = new Chart(ctx, {
                 type: 'bar',
+                data: { labels: categories, datasets: [{ data: dataValues, backgroundColor: ['#a855f7', '#4cc9f0', '#22c55e', '#eab308', '#ec4899'], borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: textColors } }, x: { ticks: { color: textColors } } } }
+            });
+        }
+
+        // ================= NUEVA LOGICA: DISPARADOR DE GRAFICAS DE LINEAS (SUBE Y BAJA) =================
+        function renderLineCharts() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Generamos etiquetas de los días del mes [1, 2, 3 ... 31]
+            const labels = Array.from({length: daysInMonth}, (_, i) => i + 1);
+            
+            // Inicializamos arreglos de acumulación en cero para cada día del mes
+            const dailyExpenses = Array(daysInMonth).fill(0);
+            const dailyIncomes = Array(daysInMonth).fill(0);
+
+            // Filtramos datos correspondientes únicamente al mes en curso
+            const currentYearMonth = `${year}-${String(month + 1).padStart(2, '0')}`;
+            const currentMonthTransactions = transactions.filter(t => t.date.startsWith(currentYearMonth));
+
+            currentMonthTransactions.forEach(t => {
+                const dayIndex = parseInt(t.date.split('-')[2]) - 1;
+                if(dayIndex >= 0 && dayIndex < daysInMonth) {
+                    if(t.type === 'expense') dailyExpenses[dayIndex] += t.amount;
+                    if(t.type === 'income') dailyIncomes[dayIndex] += t.amount;
+                }
+            });
+
+            const textColors = document.documentElement.getAttribute('data-theme') === 'light' ? '#212529' : '#f8fafc';
+
+            // 1. Renderizado Gráfica de Gastos (Línea Roja/Peligro)
+            const ctxExp = document.getElementById('lineExpenseChart').getContext('2d');
+            if(lineExpenseChart) lineExpenseChart.destroy();
+            lineExpenseChart = new Chart(ctxExp, {
+                type: 'line',
                 data: {
-                    labels: categories,
+                    labels: labels,
                     datasets: [{
-                        label: 'Gastos ($ USD)',
-                        data: dataValues,
-                        backgroundColor: ['#a855f7', '#4cc9f0', '#22c55e', '#eab308', '#ec4899'],
-                        borderRadius: 6
+                        label: 'Gasto Diario ($ USD)',
+                        data: dailyExpenses,
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3, // Curvatura suave de la línea que sube y baja
+                        fill: true,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#ef4444'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: { 
-                        y: { beginAtZero: true, grid: { color: 'rgba(128,128,128,0.1)' }, ticks: { color: textColors } },
-                        x: { ticks: { color: textColors } }
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: textColors }, grid: { color: 'rgba(128,128,128,0.1)' } },
+                        x: { title: { display: true, text: 'Día del Mes', color: textColors }, ticks: { color: textColors } }
+                    }
+                }
+            });
+
+            // 2. Renderizado Gráfica de Ingresos (Línea Verde/Éxito)
+            const ctxInc = document.getElementById('lineIncomeChart').getContext('2d');
+            if(lineIncomeChart) lineIncomeChart.destroy();
+            lineIncomeChart = new Chart(ctxInc, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ingreso Diario ($ USD)',
+                        data: dailyIncomes,
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#22c55e'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { color: textColors }, grid: { color: 'rgba(128,128,128,0.1)' } },
+                        x: { title: { display: true, text: 'Día del Mes', color: textColors }, ticks: { color: textColors } }
                     }
                 }
             });
         }
 
-        // ACTUALIZACIÓN DE INTERFAZ DEL HOME ORIGINAL
+        // ACTUALIZACIÓN DE INTERFAZ GENERAL (HOME)
         function updateUI() {
             const amounts = transactions.map(t => t.type === 'income' ? t.amount : -t.amount);
             const total = amounts.reduce((acc, item) => (acc += item), 0);
             const income = transactions.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
             const expense = transactions.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
-
             const format = num => '$' + num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace('.00', '');
             
             document.getElementById('total-balance').innerText = format(total);
@@ -524,41 +595,21 @@
             document.getElementById('total-balance').style.color = total < 0 ? 'var(--danger)' : 'var(--primary)';
 
             const listEl = document.getElementById('transaction-list');
-            listEl.innerHTML = '';
+            listEl.innerHTML = transactions.length === 0 ? '<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">Lista vacía</li>' : '';
             
-            if(transactions.length === 0) {
-                listEl.innerHTML = '<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">Lista vacía</li>';
-            } else {
-                [...transactions].reverse().forEach(t => {
-                    const li = document.createElement('li');
-                    li.className = 'transaction-item';
-                    const sign = t.type === 'income' ? '+' : '-';
-                    const cls = t.type === 'income' ? 'color:var(--success)' : 'color:var(--danger)';
-                    const originalTag = t.currency && t.currency !== 'USD' ? ` <small style="color:#868e96">(${t.originalAmount} ${t.currency})</small>` : '';
-
-                    li.innerHTML = `
-                        <div class="item-details"><strong>${t.description}</strong><span class="item-category">${t.category}</span></div>
-                        <div class="item-amount" style="${cls}">${sign}${format(t.amount)}${originalTag}
-                        <button class="btn-delete" onclick="deleteTransaction(${t.id})">✕</button></div>
-                    `;
-                    listEl.appendChild(li);
-                });
-            }
+            [...transactions].reverse().forEach(t => {
+                const li = document.createElement('li');
+                li.className = 'transaction-item';
+                const sign = t.type === 'income' ? '+' : '-';
+                const cls = t.type === 'income' ? 'color:var(--success)' : 'color:var(--danger)';
+                const originalTag = t.currency && t.currency !== 'USD' ? ` <small style="color:#868e96">(${t.originalAmount} ${t.currency})</small>` : '';
+                li.innerHTML = `<div class="item-details"><strong>${t.description}</strong><span class="item-category">${t.category}</span></div><div class="item-amount" style="${cls}">${sign}${format(t.amount)}${originalTag}<button class="btn-delete" onclick="deleteTransaction(${t.id})">✕</button></div>`;
+                listEl.appendChild(li);
+            });
 
             const currentTheme = document.documentElement.getAttribute('data-theme');
-            let chartColors = [];
-            let textChartColor = '#fff';
-
-            if(currentTheme === 'light') {
-                chartColors = ['#ff6b6b', '#4cc9f0', '#f77f00', '#4cc1a1', '#7209b7'];
-                textChartColor = '#212529';
-            } else if(currentTheme === 'space') {
-                chartColors = ['#f26419', '#e0a96d', '#84a59d', '#f72585', '#7209b7'];
-                textChartColor = '#e0e1dd';
-            } else {
-                chartColors = ['#a855f7', '#22c55e', '#3b82f6', '#eab308', '#ec4899'];
-                textChartColor = '#f8fafc';
-            }
+            let chartColors = currentTheme === 'light' ? ['#ff6b6b', '#4cc9f0', '#f77f00', '#4cc1a1', '#7209b7'] : (currentTheme === 'space' ? ['#f26419', '#e0a96d', '#84a59d', '#f72585', '#7209b7'] : ['#a855f7', '#22c55e', '#3b82f6', '#eab308', '#ec4899']);
+            let textChartColor = currentTheme === 'light' ? '#212529' : (currentTheme === 'space' ? '#e0e1dd' : '#f8fafc');
 
             const categories = ['Comida', 'Vivienda', 'Transporte', 'Entretenimiento', 'Otros'];
             const dataValues = categories.map(cat => transactions.filter(t => t.type === 'expense' && t.category === cat).reduce((acc, t) => acc + t.amount, 0));
@@ -568,11 +619,7 @@
             myChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: { labels: categories, datasets: [{ data: dataValues, backgroundColor: chartColors, borderWidth: 1, borderColor: 'var(--card-bg)' }] },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 }, color: textChartColor } } } 
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 }, color: textChartColor } } } }
             });
         }
 
