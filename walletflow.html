@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V10.2 - GitHub Monthly Reset Edition</title>
+    <title>FinanzasPro V11.0 - Smart Calendar Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -77,19 +77,10 @@
         /* --- DASHBOARD --- */
         .dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 25px; }
         
-        /* Tarjeta Premium de Cristal con Reinicio Mensual */
         .glass-card-wallet {
-            grid-column: span 2;
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 22px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-            background-image: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+            grid-column: span 2; background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border); border-radius: 20px; padding: 22px; position: relative; overflow: hidden;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); background-image: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
         }
         .glass-card-wallet::before {
             content: ''; position: absolute; top: -50%; right: -20%; width: 130px; height: 130px;
@@ -102,7 +93,6 @@
         .wallet-balance { margin: 0 0 10px 0; font-size: 26px; font-weight: 800; transition: all 0.2s ease; }
         .wallet-footer { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #868e96; font-weight: 600; margin-top: 5px; }
 
-        /* Tarjetas Secundarias Temporales */
         .card-sub { background: var(--card-bg); padding: 14px; border-radius: 14px; border: 1px solid var(--border); }
         .card-sub h4 { margin: 0 0 4px 0; font-size: 10px; text-transform: uppercase; color: #868e96; }
         .card-sub p { margin: 0; font-size: 15px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; transition: all 0.2s ease; }
@@ -137,14 +127,21 @@
         .chart-container { position: relative; height: 200px; width: 100%; }
         .line-chart-box { height: 240px; margin-bottom: 25px; position: relative; width: 100%; }
 
-        /* --- CALENDARIO --- */
+        /* --- NUEVA CABECERA DEL CALENDARIO NATIVO --- */
+        .calendar-nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .calendar-title-wrapper { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: background 0.2s; }
+        .calendar-title-wrapper:hover { background: var(--border); }
+        .calendar-arrows { display: flex; gap: 4px; }
+        .cal-nav-btn { background: var(--bg-color); border: 1px solid var(--border); color: var(--text-color); width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; }
+        .cal-nav-btn:hover { color: var(--primary); border-color: var(--primary); }
+
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; background: var(--card-bg); padding: 10px; border-radius: 12px; }
         .cal-day-name { text-align: center; font-size: 11px; font-weight: bold; color: var(--primary); padding-bottom: 8px; }
-        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 14px; position: relative; cursor: pointer; }
+        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 14px; position: relative; cursor: pointer; color: var(--text-color); }
         .cal-day:hover { background: var(--border); }
         .cal-day.today { border: 2px solid var(--primary); font-weight: bold; }
         .cal-day.has-data::after { content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px; background: var(--success); border-radius: 50%; }
-        .cal-day.selected { background: var(--primary); color: white; }
+        .cal-day.selected { background: var(--primary); color: white !important; }
         .chart-box { height: 220px; margin: 15px 0; }
         
         .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -239,6 +236,18 @@
         </form>
     </div>
 
+    <div class="bottom-sheet" id="month-picker-sheet">
+        <div class="sheet-header">
+            <h2>Seleccionar Mes</h2>
+            <button class="close-sheet-btn" onclick="closeMonthPicker()">✕</button>
+        </div>
+        <div class="form-group">
+            <label>Elige un período</label>
+            <select id="direct-calendar-month-select" onchange="jumpToSelectedMonth()" style="height: 50px; font-weight: bold; border-color: var(--primary);">
+                </select>
+        </div>
+    </div>
+
     <div id="app-screen">
         <header>
             <h1 id="screen-title">FinanzasPro</h1>
@@ -247,7 +256,6 @@
 
         <div id="home-screen" class="screen active">
             <div class="dashboard">
-                
                 <div class="glass-card-wallet">
                     <div class="wallet-header">
                         <h3>Flujo Neto del Período</h3>
@@ -261,7 +269,6 @@
                         <span>Filtro Activo</span>
                     </div>
                 </div>
-
                 <div class="card-sub"><h4>Ingresos Totales</h4><p id="total-income" style="color:var(--success);">$0.00</p></div>
                 <div class="card-sub"><h4>Gastos Totales</h4><p id="total-expense" style="color:var(--danger);">$0.00</p></div>
             </div>
@@ -284,7 +291,16 @@
 
         <div id="calendar-screen" class="screen">
             <div class="panel" style="margin-bottom: 20px;">
-                <h2 id="month-name" style="margin:0; color:var(--primary)">Mes</h2>
+                <div class="calendar-nav-header">
+                    <div class="calendar-title-wrapper" onclick="openMonthPicker()">
+                        <h2 id="month-name" style="margin:0; color:var(--primary); font-size:18px;">Mes Año</h2>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 12px; color: var(--primary); margin-left:2px;"></i>
+                    </div>
+                    <div class="calendar-arrows">
+                        <button class="cal-nav-btn" onclick="navigateCalendar(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="cal-nav-btn" onclick="navigateCalendar(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
                 <div class="calendar-grid" id="calendar-grid"></div>
             </div>
 
@@ -371,6 +387,9 @@
         let seasonalIncomeValue = 0;
         let seasonalExpenseValue = 0;
 
+        // ESTADO DE NAVEGACIÓN DEL CALENDARIO (Inicia en la fecha actual)
+        let calendarCurrentDate = new Date();
+
         const CATEGORY_META = {
             "Comida": { icon: "fa-hamburger", bg: "rgba(247, 127, 0, 0.15)", color: "#f77f00" },
             "Vivienda": { icon: "fa-house", bg: "rgba(76, 201, 240, 0.15)", color: "#4cc9f0" },
@@ -396,9 +415,24 @@
             }
         }
 
+        // FUNCIONES SELECTOR DE MES DIRECTO
+        function openMonthPicker() {
+            populateDirectMonthSelect();
+            document.getElementById('month-picker-sheet').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function closeMonthPicker() {
+            document.getElementById('month-picker-sheet').classList.remove('active');
+            if(!document.getElementById('sidebar').classList.contains('active')) {
+                document.getElementById('overlay').classList.remove('active');
+            }
+        }
+
         function closeAllModals() {
             document.getElementById('sidebar').classList.remove('active');
             document.getElementById('entry-sheet').classList.remove('active');
+            document.getElementById('month-picker-sheet').classList.remove('active');
             document.getElementById('overlay').classList.remove('active');
         }
 
@@ -505,6 +539,32 @@
             }
         }
 
+        // POBLAR EL SELECTOR DIRECTO DE MESES PARA EL CALENDARIO
+        function populateDirectMonthSelect() {
+            const sel = document.getElementById('direct-calendar-month-select');
+            sel.innerHTML = '';
+            
+            const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            const targetYear = calendarCurrentDate.getFullYear();
+            const currentMonthIdx = calendarCurrentDate.getMonth();
+
+            for(let i = 0; i < 12; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.innerText = `${monthNames[i]} ${targetYear}`;
+                if(i === currentMonthIdx) opt.selected = true;
+                sel.appendChild(opt);
+            }
+        }
+
+        function jumpToSelectedMonth() {
+            const selectedMonthIdx = parseInt(document.getElementById('direct-calendar-month-select').value);
+            calendarCurrentDate.setMonth(selectedMonthIdx);
+            closeMonthPicker();
+            renderCalendar();
+            resetCalendarFilter();
+        }
+
         document.getElementById('transaction-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const date = new Date();
@@ -591,25 +651,34 @@
             }
         }
 
-        // CALENDARIO
+        // CALENDARIO NATIVO DINÁMICO
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth();
+            
+            const year = calendarCurrentDate.getFullYear();
+            const month = calendarCurrentDate.getMonth();
             const monthNames = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+            
+            // Actualiza el marcador del mes activo
             document.getElementById('month-name').innerText = `${monthNames[month]} ${year}`;
 
+            // Cabecera de días
             ['D','L','M','M','J','V','S'].forEach(d => grid.innerHTML += `<div class="cal-day-name">${d}</div>`);
+            
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const realToday = new Date();
 
+            // Rellenar espacios vacíos al inicio del mes
             for(let i=0; i<firstDay; i++) grid.innerHTML += `<div></div>`;
+            
+            // Dibujar cada día del mes
             for(let d=1; d<=daysInMonth; d++) {
                 const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const hasData = transactions.some(t => t.date === dateStr);
-                const isToday = d === now.getDate() ? 'today' : '';
+                
+                const isToday = (d === realToday.getDate() && month === realToday.getMonth() && year === realToday.getFullYear()) ? 'today' : '';
                 const dataClass = hasData ? 'has-data' : '';
 
                 const dayEl = document.createElement('div');
@@ -618,6 +687,12 @@
                 dayEl.onclick = () => selectDay(dateStr, dayEl);
                 grid.appendChild(dayEl);
             }
+        }
+
+        function navigateCalendar(offset) {
+            calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + offset);
+            renderCalendar();
+            resetCalendarFilter();
         }
 
         function selectDay(dateStr, el) {
@@ -636,14 +711,17 @@
             document.getElementById('selected-date-text').innerText = "Resumen del Mes";
             document.getElementById('list-title-text').innerText = "Flujo de caja mensual";
             document.getElementById('btn-reset-view').style.display = 'none';
-            const now = new Date();
-            const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            
+            const targetYear = calendarCurrentDate.getFullYear();
+            const targetMonth = String(calendarCurrentDate.getMonth() + 1).padStart(2, '0');
+            const currentYearMonth = `${targetYear}-${targetMonth}`;
+            
             renderDetailPanel(transactions.filter(t => t.date.startsWith(currentYearMonth)));
         }
 
         function renderDetailPanel(dataArray) {
             const listEl = document.getElementById('day-list');
-            listEl.innerHTML = dataArray.length ? '' : '<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">No hay registros.</li>';
+            listEl.innerHTML = dataArray.length ? '' : '<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">No hay registros este periodo.</li>';
             dataArray.forEach(t => {
                 const sign = t.type === 'income' ? '+' : '-';
                 const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
@@ -729,21 +807,17 @@
             });
         }
 
-        // NUEVA LÓGICA DE ACTUALIZACIÓN: REINICIO MENSUAL ABSOLUTO
+        // INTERFAZ GENERAL HOME
         function updateUI() {
             const selectedPeriod = document.getElementById('month-filter')?.value || 'all';
             
-            // Filtrar transacciones basándonos únicamente en el período activo
             const filteredTransactions = transactions.filter(t => {
                 if (selectedPeriod === 'all') return true;
                 return t.date.startsWith(selectedPeriod);
             });
 
-            // NUEVA REGLA DE CÁLCULO: Todo el bloque superior responde y se reinicia según el mes seleccionado
             seasonalIncomeValue = filteredTransactions.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
             seasonalExpenseValue = filteredTransactions.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
-            
-            // El Balance General es el Flujo Neto del Período (Ingresos Mes - Gastos Mes)
             seasonalBalanceValue = seasonalIncomeValue - seasonalExpenseValue;
             
             const format = num => {
@@ -751,7 +825,6 @@
                 return sign + '$' + Math.abs(num).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace('.00', '');
             };
             
-            // Dibujar las tres tarjetas aplicando la lógica del enmascaramiento por privacidad
             renderDashboardNumbers();
 
             const listEl = document.getElementById('transaction-list');
