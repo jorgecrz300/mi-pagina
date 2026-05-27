@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V10.0 - Github Pro Edition</title>
+    <title>FinanzasPro V10.2 - GitHub Monthly Reset Edition</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -74,10 +74,10 @@
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- DASHBOARD Y EFECTO CRISTAL (PUNTO 2) --- */
+        /* --- DASHBOARD --- */
         .dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 25px; }
         
-        /* TARJETA PREMIUM DE CRISTAL COMPLETA */
+        /* Tarjeta Premium de Cristal con Reinicio Mensual */
         .glass-card-wallet {
             grid-column: span 2;
             background: var(--glass-bg);
@@ -98,14 +98,14 @@
         .wallet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .wallet-header h3 { margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #868e96; font-weight: 700; }
         
-        /* Botón de Ojo de Privacidad */
         .privacy-toggle-btn { background: transparent; border: none; color: var(--primary); font-size: 16px; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
-        .wallet-balance { margin: 0 0 10px 0; font-size: 26px; font-weight: 800; tracking: -0.5px; transition: all 0.2s ease; }
+        .wallet-balance { margin: 0 0 10px 0; font-size: 26px; font-weight: 800; transition: all 0.2s ease; }
         .wallet-footer { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #868e96; font-weight: 600; margin-top: 5px; }
 
+        /* Tarjetas Secundarias Temporales */
         .card-sub { background: var(--card-bg); padding: 14px; border-radius: 14px; border: 1px solid var(--border); }
         .card-sub h4 { margin: 0 0 4px 0; font-size: 10px; text-transform: uppercase; color: #868e96; }
-        .card-sub p { margin: 0; font-size: 15px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; }
+        .card-sub p { margin: 0; font-size: 15px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; transition: all 0.2s ease; }
         
         .main-content { display: flex; flex-direction: column; gap: 20px; padding-bottom: 40px; }
         .panel { background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); }
@@ -250,20 +250,20 @@
                 
                 <div class="glass-card-wallet">
                     <div class="wallet-header">
-                        <h3>Balance General (USD)</h3>
+                        <h3>Flujo Neto del Período</h3>
                         <button class="privacy-toggle-btn" onclick="togglePrivacyMode(event)">
                             <i id="privacy-eye-icon" class="fa-solid fa-eye"></i>
                         </button>
                     </div>
                     <p class="wallet-balance" id="total-balance">$0.00</p>
                     <div class="wallet-footer">
-                        <span>•••• 5689</span>
-                        <span>Billetera Local</span>
+                        <span>Balance Mensual</span>
+                        <span>Filtro Activo</span>
                     </div>
                 </div>
 
-                <div class="card-sub"><h4>Ingresos</h4><p id="total-income" style="color:var(--success);">$0</p></div>
-                <div class="card-sub"><h4>Gastos</h4><p id="total-expense" style="color:var(--danger);">$0</p></div>
+                <div class="card-sub"><h4>Ingresos Totales</h4><p id="total-income" style="color:var(--success);">$0.00</p></div>
+                <div class="card-sub"><h4>Gastos Totales</h4><p id="total-expense" style="color:var(--danger);">$0.00</p></div>
             </div>
 
             <div class="main-content">
@@ -365,9 +365,11 @@
         let lineExpenseChart = null;
         let lineIncomeChart = null;
         
-        // Estado del Modo Privacidad (Punto 2)
         let isPrivateMode = localStorage.getItem('fpro_privacy') === 'true';
-        let currentCalculatedBalance = 0; 
+        
+        let seasonalBalanceValue = 0;
+        let seasonalIncomeValue = 0;
+        let seasonalExpenseValue = 0;
 
         const CATEGORY_META = {
             "Comida": { icon: "fa-hamburger", bg: "rgba(247, 127, 0, 0.15)", color: "#f77f00" },
@@ -400,24 +402,33 @@
             document.getElementById('overlay').classList.remove('active');
         }
 
-        // LÓGICA DE INTERRUPTOR DEL MODO OCULTO (PUNTO 2)
         function togglePrivacyMode(event) {
             if(event) event.preventDefault();
             isPrivateMode = !isPrivateMode;
             localStorage.setItem('fpro_privacy', isPrivateMode);
-            renderBalanceUI();
+            renderDashboardNumbers();
         }
 
-        function renderBalanceUI() {
+        function renderDashboardNumbers() {
             const balanceEl = document.getElementById('total-balance');
+            const incomeEl = document.getElementById('total-income');
+            const expenseEl = document.getElementById('total-expense');
             const eyeIcon = document.getElementById('privacy-eye-icon');
-            const format = num => '$' + num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace('.00', '');
+            
+            const format = num => {
+                const sign = num < 0 ? '-' : '';
+                return sign + '$' + Math.abs(num).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace('.00', '');
+            };
 
             if(isPrivateMode) {
                 balanceEl.innerText = "$ ••••••";
+                incomeEl.innerText = "$ ••••";
+                expenseEl.innerText = "$ ••••";
                 eyeIcon.className = "fa-solid fa-eye-slash";
             } else {
-                balanceEl.innerText = format(currentCalculatedBalance);
+                balanceEl.innerText = format(seasonalBalanceValue);
+                incomeEl.innerText = format(seasonalIncomeValue);
+                expenseEl.innerText = format(seasonalExpenseValue);
                 eyeIcon.className = "fa-solid fa-eye";
             }
         }
@@ -718,30 +729,30 @@
             });
         }
 
-        // INTERFAZ GENERAL HOME
+        // NUEVA LÓGICA DE ACTUALIZACIÓN: REINICIO MENSUAL ABSOLUTO
         function updateUI() {
             const selectedPeriod = document.getElementById('month-filter')?.value || 'all';
             
+            // Filtrar transacciones basándonos únicamente en el período activo
             const filteredTransactions = transactions.filter(t => {
                 if (selectedPeriod === 'all') return true;
                 return t.date.startsWith(selectedPeriod);
             });
 
-            const amounts = filteredTransactions.map(t => t.type === 'income' ? t.amount : -t.amount);
+            // NUEVA REGLA DE CÁLCULO: Todo el bloque superior responde y se reinicia según el mes seleccionado
+            seasonalIncomeValue = filteredTransactions.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
+            seasonalExpenseValue = filteredTransactions.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
             
-            // Guardar cálculo de balance en la variable global compartida (Punto 2)
-            currentCalculatedBalance = amounts.reduce((acc, item) => (acc += item), 0);
+            // El Balance General es el Flujo Neto del Período (Ingresos Mes - Gastos Mes)
+            seasonalBalanceValue = seasonalIncomeValue - seasonalExpenseValue;
             
-            const income = filteredTransactions.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
-            const expense = filteredTransactions.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
+            const format = num => {
+                const sign = num < 0 ? '-' : '';
+                return sign + '$' + Math.abs(num).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace('.00', '');
+            };
             
-            const format = num => '$' + num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace('.00', '');
-            
-            // Renderizar la tarjeta del balance respetando el estado de privacidad
-            renderBalanceUI();
-            
-            document.getElementById('total-income').innerText = format(income);
-            document.getElementById('total-expense').innerText = format(expense);
+            // Dibujar las tres tarjetas aplicando la lógica del enmascaramiento por privacidad
+            renderDashboardNumbers();
 
             const listEl = document.getElementById('transaction-list');
             listEl.innerHTML = filteredTransactions.length === 0 ? '<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">Sin movimientos este mes</li>' : '';
