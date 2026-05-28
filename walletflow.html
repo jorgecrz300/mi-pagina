@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V12.1 - Multi-Language Global Pro</title>
+    <title>FinanzasPro V13.0 - AI Assistant & Visual Guide</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -18,16 +18,19 @@
             --bg-color: #0b0f19; --card-bg: #151f32; --text-color: #f8fafc;
             --primary: #a855f7; --success: #22c55e; --danger: #ef4444; --border: #22314d; --input-bg: #0b0f19;
             --glass-bg: rgba(21, 31, 50, 0.7); --glass-border: rgba(168, 85, 247, 0.4);
+            --ai-accent: #06b6d4;
         }
         :root[data-theme="light"] {
             --bg-color: #f8f9fa; --card-bg: #ffffff; --text-color: #212529;
             --primary: #4361ee; --success: #2ec4b6; --danger: #e63946; --border: #e9ecef; --input-bg: #ffffff;
             --glass-bg: rgba(255, 255, 255, 0.7); --glass-border: rgba(63, 97, 238, 0.4);
+            --ai-accent: #00f5d4;
         }
         :root[data-theme="space"] {
             --bg-color: #0d1b2a; --card-bg: #1b263b; --text-color: #e0e1dd;
             --primary: #e0a96d; --success: #52b788; --danger: #f26419; --border: #415a77; --input-bg: #0d1b2a;
             --glass-bg: rgba(27, 38, 59, 0.7); --glass-border: rgba(224, 169, 109, 0.4);
+            --ai-accent: #9b5de5;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -63,6 +66,7 @@
             text-decoration: none; color: var(--text-color); font-weight: 600; cursor: pointer;
         }
         .sidebar-item:hover { background: var(--bg-color); color: var(--primary); }
+        .sidebar-item.active-nav { background: var(--bg-color); color: var(--primary); border-left: 4px solid var(--primary); }
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); display: none; z-index: 150;
@@ -98,7 +102,7 @@
         .card-sub p { margin: 0; font-size: 15px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; transition: all 0.2s ease; }
         
         .main-content { display: flex; flex-direction: column; gap: 20px; padding-bottom: 40px; }
-        .panel { background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); }
+        .panel { background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); position: relative; }
         .panel h2 { margin-top: 0; margin-bottom: 15px; font-size: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
         
         .select-filter { background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border); border-radius: 8px; padding: 4px 8px; font-size: 13px; font-weight: 600; cursor: pointer; outline: none; }
@@ -127,6 +131,7 @@
         .chart-container { position: relative; height: 200px; width: 100%; }
         .line-chart-box { height: 240px; margin-bottom: 25px; position: relative; width: 100%; }
 
+        /* --- CALENDARIO --- */
         .calendar-nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-title-wrapper { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: background 0.2s; }
         .calendar-title-wrapper:hover { background: var(--border); }
@@ -146,6 +151,22 @@
         .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .btn-reset-view { background: var(--bg-color); color: var(--primary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
+        /* --- ASISTENTE PREMIUM --- */
+        .ai-header-card { background: linear-gradient(135deg, var(--card-bg) 0%, rgba(6,182,212,0.1) 100%); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
+        .ai-avatar-glow { width: 50px; height: 50px; border-radius: 50%; background: rgba(6,182,212,0.2); border: 2px solid var(--ai-accent); display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--ai-accent); box-shadow: 0 0 15px rgba(6,182,212,0.4); }
+        .ai-insight-card { background: var(--card-bg); border: 1px solid var(--border); border-left: 4px solid var(--ai-accent); border-radius: 12px; padding: 16px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .ai-insight-title { font-weight: 700; font-size: 14px; color: var(--ai-accent); display: flex; align-items: center; gap: 8px; }
+        .ai-insight-desc { font-size: 13px; color: var(--text-color); opacity: 0.9; line-height: 1.4; }
+        .ai-metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 25px; }
+
+        /* --- GUÍA VISUAL DENTRO DE SETTINGS --- */
+        .guide-box { display: flex; flex-direction: column; gap: 16px; margin-top: 15px; }
+        .guide-item { background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: grid; grid-template-columns: 75px 1fr; gap: 12px; align-items: center; }
+        .guide-visual-mock { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px; display: flex; justify-content: center; align-items: center; text-align: center; min-height: 55px; }
+        .guide-info h4 { margin: 0 0 4px 0; font-size: 13px; font-weight: 700; color: var(--primary); }
+        .guide-info p { margin: 0; font-size: 11px; color: #868e96; line-height: 1.3; }
+
+        /* --- ACCESORIOS DE UI --- */
         .fab-button {
             position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px;
             background: var(--primary); color: white; border: none; border-radius: 50%;
@@ -172,7 +193,7 @@
             #app-screen { max-width: 900px; }
             .card-sub p { font-size: 20px; }
             .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-            #calendar-screen .main-content, #analytics-screen .main-content { display: flex; flex-direction: column; }
+            #calendar-screen .main-content, #analytics-screen .main-content, #assistant-screen .main-content { display: flex; flex-direction: column; }
             .bottom-sheet { left: 50%; transform: translateX(-50%); max-width: 500px; border-radius: 24px; bottom: -100%; }
             .bottom-sheet.active { bottom: 40px; }
         }
@@ -184,10 +205,11 @@
     
     <div class="sidebar" id="sidebar">
         <h2 style="color:var(--primary); margin-bottom: 15px; padding-left: 15px;">FinanzasPro</h2>
-        <div class="sidebar-item" id="nav-home" onclick="showScreen('home-screen', 'FinanzasPro')"><i class="fa-solid fa-house"></i> Home</div>
-        <div class="sidebar-item" id="nav-cal" onclick="showScreen('calendar-screen', getWord('calendar'))"><i class="fa-solid fa-calendar"></i> Calendario</div>
-        <div class="sidebar-item" id="nav-graph" onclick="showScreen('analytics-screen', getWord('chartsTitle'))"><i class="fa-solid fa-chart-line"></i> Gráficas</div>
-        <div class="sidebar-item" id="nav-set" onclick="showScreen('settings-screen', getWord('settings'))"><i class="fa-solid fa-gear"></i> Settings</div>
+        <div class="sidebar-item active-nav" id="nav-home" onclick="showScreen('home-screen', 'FinanzasPro', this)"><i class="fa-solid fa-house"></i> Home</div>
+        <div class="sidebar-item" id="nav-cal" onclick="showScreen('calendar-screen', getWord('calendar'), this)"><i class="fa-solid fa-calendar"></i> Calendario</div>
+        <div class="sidebar-item" id="nav-assistant" onclick="showScreen('assistant-screen', getWord('aiAssistant'), this)"><i class="fa-solid fa-robot"></i> Asistente AI</div>
+        <div class="sidebar-item" id="nav-graph" onclick="showScreen('analytics-screen', getWord('chartsTitle'), this)"><i class="fa-solid fa-chart-line"></i> Gráficas</div>
+        <div class="sidebar-item" id="nav-set" onclick="showScreen('settings-screen', getWord('settings'), this)"><i class="fa-solid fa-gear"></i> Settings</div>
     </div>
 
     <button class="fab-button" id="fab-btn" onclick="openBottomSheet()"><i class="fa-solid fa-plus"></i></button>
@@ -314,6 +336,24 @@
             </div>
         </div>
 
+        <div id="assistant-screen" class="screen">
+            <div class="ai-header-card">
+                <div class="ai-avatar-glow"><i class="fa-solid fa-brain"></i></div>
+                <div>
+                    <h2 style="margin:0; font-size:16px;" id="lbl-ai-name">FinanzasPro Assistant</h2>
+                    <p style="margin:2px 0 0 0; font-size:11px; color:#868e96;" id="lbl-ai-status">Motor local activo y calculando...</p>
+                </div>
+            </div>
+
+            <div class="ai-metric-grid">
+                <div class="card-sub"><h4 id="lbl-ai-saving-rate">Tasa de Ahorro</h4><p id="ai-saving-value" style="color:var(--ai-accent);">0%</p></div>
+                <div class="card-sub"><h4 id="lbl-ai-projection">Proyección Fin de Mes</h4><p id="ai-projected-value">$0.00</p></div>
+            </div>
+
+            <div class="main-content" id="ai-insights-container">
+                </div>
+        </div>
+
         <div id="analytics-screen" class="screen">
             <div class="main-content">
                 <div class="panel">
@@ -335,9 +375,37 @@
         </div>
 
         <div id="settings-screen" class="screen">
+            <div class="panel" style="margin-bottom: 20px; border-color: var(--glass-border);">
+                <h2 id="lbl-guide-title">Manual de Uso Integrado</h2>
+                <p style="font-size:12px; color:#868e96; margin-top:-10px;" id="lbl-guide-desc">Aprende a dominar las funciones secretas y de seguridad de la aplicación.</p>
+                
+                <div class="guide-box">
+                    <div class="guide-item">
+                        <div class="guide-visual-mock" style="color:var(--primary); font-size:20px;"><i class="fa-solid fa-eye-slash"></i></div>
+                        <div class="guide-info">
+                            <h4 id="lbl-guide-t1">Modo Oculto (Incógnito)</h4>
+                            <p id="lbl-guide-d1">Toca el ojo en la tarjeta principal para tapar tus saldos reales con "••••" cuando estés en público.</p>
+                        </div>
+                    </div>
+                    <div class="guide-item">
+                        <div class="guide-visual-mock" style="color:var(--success); font-size:18px; font-weight:bold;">{.json}</div>
+                        <div class="guide-info">
+                            <h4 id="lbl-guide-t2">Respaldos Totales y Privacidad</h4>
+                            <p id="lbl-guide-d2">La app no usa servidores. Exporta tu archivo JSON periódicamente para no perder tu información si limpias el navegador.</p>
+                        </div>
+                    </div>
+                    <div class="guide-item">
+                        <div class="guide-visual-mock" style="color:var(--ai-accent); font-size:20px;"><i class="fa-solid fa-calendar-day"></i></div>
+                        <div class="guide-info">
+                            <h4 id="lbl-guide-t3">Navegación del Calendario</h4>
+                            <p id="lbl-guide-d3">Los días con un punto inferior contienen transacciones. Haz clic en cualquier día para aislar sus gastos en las barras.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="panel" style="margin-bottom: 20px;">
                 <h2 id="lbl-custom">Personalización</h2>
-                
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label id="lbl-lang-select">Idioma de la Aplicación (Language)</label>
                     <select id="lang-select">
@@ -345,7 +413,6 @@
                         <option value="en">🇺🇸 English</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label id="lbl-theme-select">Cambiar de Tema Visual</label>
                     <select id="theme-select">
@@ -360,7 +427,6 @@
                 <h2 id="lbl-backup">Copia de Seguridad (Backup)</h2>
                 <p style="font-size:13px; color:#868e96; margin-bottom: 15px;" id="lbl-backup-desc">Descarga tus datos en un archivo para pasarlos a otro celular.</p>
                 <button onclick="exportData()" class="btn-submit" style="background-color: var(--success)" id="btn-export"><i class="fa-solid fa-download"></i> Exportar Datos (JSON)</button>
-                
                 <label class="btn-secondary" style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-top: 12px; height: 44px;" id="lbl-import-zone">
                     <i class="fa-solid fa-upload" style="margin-right: 8px;"></i> Importar Archivo de Datos
                     <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(this)">
@@ -376,11 +442,11 @@
     </div>
 
     <script>
-        // --- DICCIONARIO DE TRADUCCIONES (i18n) ---
+        // --- DICCIONARIO DE TRADUCCIONES ACTUALIZADO V13.0 ---
         const I18N = {
             es: {
                 calendar: "Calendario", chartsTitle: "Gráficas Temporales", settings: "Configuración",
-                newMove: "Nuevo Movimiento", description: "Descripción", amount: "Monto e Importe",
+                aiAssistant: "Asistente AI", newMove: "Nuevo Movimiento", description: "Descripción", amount: "Monto e Importe",
                 type: "Tipo", category: "Categoría", expense: "Gasto", income: "Ingreso",
                 saveMove: "Guardar Movimiento", selectMonth: "Seleccionar Mes", choosePeriod: "Elige un período",
                 netFlow: "Flujo Neto del Período", monthlyBal: "Balance Mensual", activeFilter: "Filtro Activo",
@@ -399,11 +465,25 @@
                 alertResetConfirm: "¿Borrar todo el historial?", chartDailyExp: "Gasto Diario", chartDailyInc: "Ingreso Diario",
                 cats: ["Comida", "Vivienda", "Transporte", "Entretenimiento", "Otros"],
                 months: ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],
-                monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+                monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+                
+                // Nuevas llaves V13.0
+                aiName: "FinanzasPro Assistant", aiStatus: "Motor analítico ejecutándose localmente",
+                aiSavingRate: "Tasa de Ahorro", aiProjection: "Proyección Fin de Mes",
+                guideTitle: "Manual de Uso Integrado", guideDesc: "Aprende a dominar las funciones secretas y de seguridad de la aplicación.",
+                gt1: "Modo Oculto (Incógnito)", gd1: "Toca el ojo en la tarjeta principal para tapar tus saldos reales con '••••' cuando estés en público.",
+                gt2: "Respaldos Totales y Privacidad", gd2: "La app no usa servidores. Exporta tu archivo JSON periódicamente para no perder tu información si limpias el navegador.",
+                gt3: "Navegación del Calendario", gd3: "Los días con un punto inferior contienen transacciones. Haz clic en cualquier día para aislar sus gastos en las barras.",
+                aiHealthGood: "Salud Financiera Estable", aiHealthGoodDesc: "¡Excelente! Estás gastando menos de lo que ganas este mes. Conservas una tasa de ahorro positiva.",
+                aiHealthBad: "Alerta de Flujo Negativo", aiHealthBadDesc: "¡Atención! Tus gastos superan tus ingresos este mes. Te recomiendo recortar compras secundarias pronto.",
+                aiFuga: "Mayor Canal de Gastos", aiFugaDesc: "Tu mayor centro de consumo este mes está en la categoría de **{cat}** con un total de {amt}. Representa el {pct}% de tus egresos.",
+                aiDay: "Patrón Semanal Crítico", aiDayDesc: "Analizando tus patrones, el día **{day}** es estadísticamente tu jornada con más gastos acumulados. Ojo con los antojos.",
+                aiNoData: "Datos insuficientes para diagnóstico", aiNoDataDesc: "Agrega más transacciones de ingresos y gastos en este mes para que el asistente empiece a darte reportes estratégicos.",
+                daysOfWeek: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
             },
             en: {
                 calendar: "Calendar", chartsTitle: "Temporal Charts", settings: "Settings",
-                newMove: "New Transaction", description: "Description", amount: "Amount & Currency",
+                aiAssistant: "AI Assistant", newMove: "New Transaction", description: "Description", amount: "Amount & Currency",
                 type: "Type", category: "Category", expense: "Expense", income: "Income",
                 saveMove: "Save Transaction", selectMonth: "Select Month", choosePeriod: "Choose a period",
                 netFlow: "Net Flow of Period", monthlyBal: "Monthly Balance", activeFilter: "Active Filter",
@@ -422,7 +502,21 @@
                 alertResetConfirm: "Delete all financial history?", chartDailyExp: "Daily Expense", chartDailyInc: "Daily Income",
                 cats: ["Food", "Housing", "Transportation", "Entertainment", "Others"],
                 months: ["January","February","March","April","May","June","July","August","September","October","November","December"],
-                monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"]
+                monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+                
+                // Nuevas llaves V13.0
+                aiName: "FinanzasPro Assistant", aiStatus: "Analytical engine running locally",
+                aiSavingRate: "Saving Rate", aiProjection: "End of Month Forecast",
+                guideTitle: "Integrated User Manual", guideDesc: "Learn to master the secret features and safety systems of the app.",
+                gt1: "Hidden Privacy Mode", gd1: "Tap the eye icon on the main wallet to hide your balances behind '••••' when in public places.",
+                gt2: "Full Backups & Privacy", gd2: "The app does not use servers. Export your JSON file periodically to protect data if browser cache is cleared.",
+                gt3: "Calendar Navigation", gd3: "Days with a dot underneath contain data. Click on any day to isolate its expenses on the bar charts.",
+                aiHealthGood: "Stable Financial Health", aiHealthGoodDesc: "Excellent! You are spending less than you earn this period. Keeping a strong savings rate.",
+                aiHealthBad: "Negative Cash Flow Warning", aiHealthBadDesc: "Warning! Your expenses exceed your income this month. We recommend reviewing secondary purchases soon.",
+                aiFuga: "Top Expense Vector", aiFugaDesc: "Your largest consumer category this month is **{cat}** with a total of {amt}. This represents {pct}% of your total outflows.",
+                aiDay: "Critical Weekly Pattern", aiDayDesc: "Analyzing metrics, **{day}** is statistically your day with the highest accumulated spend. Beware of impulse buying.",
+                aiNoData: "Insufficient Diagnostic Data", aiNoDataDesc: "Add more income and expense records to this month so the assistant can build customized strategy reports.",
+                daysOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
             }
         };
 
@@ -458,7 +552,9 @@
 
         // --- TRADUCCIÓN DE LA INTERFAZ ---
         function applyLanguageStrings() {
+            document.getElementById('nav-home').innerHTML = `<i class="fa-solid fa-house"></i> Home`;
             document.getElementById('nav-cal').innerHTML = `<i class="fa-solid fa-calendar"></i> ${getWord('calendar')}`;
+            document.getElementById('nav-assistant').innerHTML = `<i class="fa-solid fa-robot"></i> ${getWord('aiAssistant')}`;
             document.getElementById('nav-graph').innerHTML = `<i class="fa-solid fa-chart-line"></i> ${getWord('chartsTitle')}`;
             document.getElementById('nav-set').innerHTML = `<i class="fa-solid fa-gear"></i> ${getWord('settings')}`;
             
@@ -483,6 +579,20 @@
             document.getElementById('lbl-dist').innerText = getWord('distribution');
             document.getElementById('lbl-history').innerText = getWord('history');
             
+            document.getElementById('lbl-ai-name').innerText = getWord('aiName');
+            document.getElementById('lbl-ai-status').innerText = getWord('aiStatus');
+            document.getElementById('lbl-ai-saving-rate').innerText = getWord('aiSavingRate');
+            document.getElementById('lbl-ai-projection').innerText = getWord('aiProjection');
+            
+            document.getElementById('lbl-guide-title').innerText = getWord('guideTitle');
+            document.getElementById('lbl-guide-desc').innerText = getWord('guideDesc');
+            document.getElementById('lbl-guide-t1').innerText = getWord('gt1');
+            document.getElementById('lbl-guide-d1').innerText = getWord('gd1');
+            document.getElementById('lbl-guide-t2').innerText = getWord('gt2');
+            document.getElementById('lbl-guide-d2').innerText = getWord('gd2');
+            document.getElementById('lbl-guide-t3').innerText = getWord('gt3');
+            document.getElementById('lbl-guide-d3').innerText = getWord('gd3');
+
             document.getElementById('lbl-chart-exp-title').innerHTML = `<i class="fa-solid fa-chart-line"></i> ${getWord('chartExpTitle')}`;
             document.getElementById('lbl-chart-exp-desc').innerText = getWord('chartExpDesc');
             document.getElementById('lbl-chart-inc-title').innerHTML = `<i class="fa-solid fa-chart-line"></i> ${getWord('chartIncTitle')}`;
@@ -500,13 +610,6 @@
             document.getElementById('btn-reset-all').innerText = getWord('resetBtn');
             
             localizeCategories();
-            
-            // Reajustar título de pantalla activa
-            const activeScreen = document.querySelector('.screen.active').id;
-            if(activeScreen === 'home-screen') document.getElementById('screen-title').innerText = 'FinanzasPro';
-            if(activeScreen === 'calendar-screen') document.getElementById('screen-title').innerText = getWord('calendar');
-            if(activeScreen === 'analytics-screen') document.getElementById('screen-title').innerText = getWord('chartsTitle');
-            if(activeScreen === 'settings-screen') document.getElementById('screen-title').innerText = getWord('settings');
         }
 
         function localizeCategories() {
@@ -553,6 +656,7 @@
             isPrivateMode = !isPrivateMode;
             localStorage.setItem('fpro_privacy', isPrivateMode);
             renderDashboardNumbers();
+            if(document.getElementById('assistant-screen').classList.contains('active')) { calculateAiInsights(); }
         }
 
         function renderDashboardNumbers() {
@@ -567,26 +671,33 @@
             };
 
             if(isPrivateMode) {
-                balanceEl.innerText = "$ ••••••"; incomeEl.innerText = "$ ••••"; expenseEl.innerText = "$ ••••";
-                eyeIcon.className = "fa-solid fa-eye-slash";
+                if(balanceEl) balanceEl.innerText = "$ ••••••"; 
+                if(incomeEl) incomeEl.innerText = "$ ••••"; 
+                if(expenseEl) expenseEl.innerText = "$ ••••";
+                if(eyeIcon) eyeIcon.className = "fa-solid fa-eye-slash";
             } else {
-                balanceEl.innerText = format(seasonalBalanceValue);
-                incomeEl.innerText = format(seasonalIncomeValue);
-                expenseEl.innerText = format(seasonalExpenseValue);
-                eyeIcon.className = "fa-solid fa-eye";
+                if(balanceEl) balanceEl.innerText = format(seasonalBalanceValue);
+                if(incomeEl) incomeEl.innerText = format(seasonalIncomeValue);
+                if(expenseEl) expenseEl.innerText = format(seasonalExpenseValue);
+                if(eyeIcon) eyeIcon.className = "fa-solid fa-eye";
             }
         }
 
-        function showScreen(screenId, titleText) {
+        function showScreen(screenId, titleText, menuElement) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
             document.getElementById('screen-title').innerText = titleText;
+            
+            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active-nav'));
+            if(menuElement) menuElement.classList.add('active-nav');
+            
             closeAllModals();
             
             document.getElementById('fab-btn').style.display = (screenId === 'home-screen') ? 'flex' : 'none';
 
             if(screenId === 'calendar-screen') { renderCalendar(); resetCalendarFilter(); }
             if(screenId === 'analytics-screen') { renderLineCharts(); }
+            if(screenId === 'assistant-screen') { calculateAiInsights(); }
             updateUI();
         }
 
@@ -602,6 +713,7 @@
             updateUI();
             if(document.getElementById('calendar-screen').classList.contains('active')) { renderCalendar(); resetCalendarFilter(); }
             if(document.getElementById('analytics-screen').classList.contains('active')) { renderLineCharts(); }
+            if(document.getElementById('assistant-screen').classList.contains('active')) { calculateAiInsights(); }
         });
 
         const langSelect = document.getElementById('lang-select');
@@ -614,10 +726,12 @@
             updateUI();
             if(document.getElementById('calendar-screen').classList.contains('active')) { renderCalendar(); resetCalendarFilter(); }
             if(document.getElementById('analytics-screen').classList.contains('active')) { renderLineCharts(); }
+            if(document.getElementById('assistant-screen').classList.contains('active')) { calculateAiInsights(); }
         });
 
         function populateMonthFilter() {
             const filter = document.getElementById('month-filter');
+            if(!filter) return;
             const previousSelection = filter.value;
             filter.innerHTML = `<option value="all">${getWord('allHistory')}</option>`;
             
@@ -667,7 +781,6 @@
             const selectedCurrency = document.getElementById('currency').value;
             const convertedAmount = inputAmt * EXCHANGE_RATES[selectedCurrency];
 
-            // Guardar categorías nativas de forma neutral en mapeos cruzados
             let cleanCat = document.getElementById('category').value;
             if(currentLang === 'en') {
                 const idx = I18N.en.cats.indexOf(cleanCat);
@@ -690,6 +803,114 @@
             transactions = transactions.filter(t => t.id !== id);
             localStorage.setItem('fpro_v4_data', JSON.stringify(transactions));
             populateMonthFilter(); updateUI();
+        }
+
+        // --- MOTOR LOGICO: ASISTENTE AI (INSIGHTS) ---
+        function calculateAiInsights() {
+            const container = document.getElementById('ai-insights-container');
+            const savingValEl = document.getElementById('ai-saving-value');
+            const projectedValEl = document.getElementById('ai-projected-value');
+            
+            const now = new Date();
+            const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            const monthTransactions = transactions.filter(t => t.date.startsWith(currentPeriod));
+            
+            if(monthTransactions.length === 0) {
+                savingValEl.innerText = "0%";
+                projectedValEl.innerText = isPrivateMode ? "$ ••••" : "$0.00";
+                container.innerHTML = `
+                    <div class="ai-insight-card" style="border-left-color:#868e96">
+                        <div class="ai-insight-title" style="color:#868e96"><i class="fa-solid fa-circle-info"></i> ${getWord('aiNoData')}</div>
+                        <div class="ai-insight-desc">${getWord('aiNoDataDesc')}</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const inc = monthTransactions.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
+            const exp = monthTransactions.filter(t => t.type === 'expense').reduce((s,t) => s + t.amount, 0);
+            
+            // 1. Tasa de ahorro
+            const savingRate = inc > 0 ? ((inc - exp) / inc) * 100 : 0;
+            savingValEl.innerText = `${savingRate > 0 ? '+' : ''}${savingRate.toFixed(0)}%`;
+            
+            // 2. Proyección fin de mes
+            const currentDay = now.getDate();
+            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const projectedExpense = (exp / currentDay) * daysInMonth;
+            projectedValEl.innerText = isPrivateMode ? "$ ••••••" : `$${projectedExpense.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+
+            let htmlOutput = "";
+
+            // INSIGHT 1: Salud General
+            if(inc >= exp) {
+                htmlOutput += `
+                    <div class="ai-insight-card" style="border-left-color:var(--success)">
+                        <div class="ai-insight-title" style="color:var(--success)"><i class="fa-solid fa-heart-pulse"></i> ${getWord('aiHealthGood')}</div>
+                        <div class="ai-insight-desc">${getWord('aiHealthGoodDesc')}</div>
+                    </div>
+                `;
+            } else {
+                htmlOutput += `
+                    <div class="ai-insight-card" style="border-left-color:var(--danger)">
+                        <div class="ai-insight-title" style="color:var(--danger)"><i class="fa-solid fa-triangle-exclamation"></i> ${getWord('aiHealthBad')}</div>
+                        <div class="ai-insight-desc">${getWord('aiHealthBadDesc')}</div>
+                    </div>
+                `;
+            }
+
+            // INSIGHT 2: Fuga de Dinero
+            const catsES = I18N.es.cats;
+            let maxCat = ""; let maxAmt = 0;
+            catsES.forEach(cat => {
+                const totalCat = monthTransactions.filter(t => t.type === 'expense' && t.category === cat).reduce((s,t) => s + t.amount, 0);
+                if(totalCat > maxAmt) { maxAmt = totalCat; maxCat = cat; }
+            });
+
+            if(maxAmt > 0) {
+                let localizedCat = maxCat;
+                if(currentLang === 'en') {
+                    const idx = I18N.es.cats.indexOf(maxCat);
+                    if(idx !== -1) localizedCat = I18N.en.cats[idx];
+                }
+                const percentage = exp > 0 ? ((maxAmt / exp) * 100).toFixed(0) : 0;
+                let fugaText = getWord('aiFuga')
+                    .replace('{cat}', localizedCat)
+                    .replace('{amt}', `$${maxAmt.toFixed(2)}`)
+                    .replace('{pct}', percentage);
+                
+                htmlOutput += `
+                    <div class="ai-insight-card" style="border-left-color:var(--primary)">
+                        <div class="ai-insight-title" style="color:var(--primary)"><i class="fa-solid fa-fire-burner"></i> ${getWord('aiFuga')}</div>
+                        <div class="ai-insight-desc">${fugaText}</div>
+                    </div>
+                `;
+            }
+
+            // INSIGHT 3: Análisis de patrones de días de la semana
+            const dayAmounts = Array(7).fill(0);
+            monthTransactions.filter(t => t.type === 'expense').forEach(t => {
+                const dayOfWeek = new Date(t.date + 'T00:00:00').getDay();
+                dayAmounts[dayOfWeek] += t.amount;
+            });
+            
+            let maxDayIdx = 0; let maxDayAmt = 0;
+            dayAmounts.forEach((amt, idx) => {
+                if(amt > maxDayAmt) { maxDayAmt = amt; maxDayIdx = idx; }
+            });
+
+            if(maxDayAmt > 0) {
+                const dayName = getWord('daysOfWeek')[maxDayIdx];
+                let dayText = getWord('aiDayDesc').replace('{day}', dayName);
+                htmlOutput += `
+                    <div class="ai-insight-card" style="border-left-color:var(--ai-accent)">
+                        <div class="ai-insight-title" style="color:var(--ai-accent)"><i class="fa-solid fa-calendar-clock"></i> ${getWord('aiDay')}</div>
+                        <div class="ai-insight-desc">${dayText}</div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = htmlOutput;
         }
 
         // --- BACKUPS ---
@@ -735,6 +956,7 @@
         // --- CALENDARIO ---
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
+            if(!grid) return;
             grid.innerHTML = '';
             
             const year = calendarCurrentDate.getFullYear();
@@ -792,6 +1014,7 @@
 
         function renderDetailPanel(dataArray) {
             const listEl = document.getElementById('day-list');
+            if(!listEl) return;
             listEl.innerHTML = dataArray.length ? '' : `<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">${getWord('noRecords')}</li>`;
             
             dataArray.forEach(t => {
@@ -799,7 +1022,6 @@
                 const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
                 const displayLabel = t.currency && t.currency !== 'USD' ? `$${t.originalAmount.toFixed(2)} ${t.currency}` : `$${t.amount.toFixed(2)}`;
                 
-                // Traducir categoría para renderizar visualmente en lista
                 let displayCat = t.category;
                 if(currentLang === 'en') {
                     const idx = I18N.es.cats.indexOf(t.category);
@@ -815,12 +1037,10 @@
             const catsES = I18N.es.cats;
             const labelsENorES = getWord('cats');
             
-            // 1. Mapeamos los datos de gastos por categoría
             const dataValues = catsES.map(catSpanish => {
                 return filteredData.filter(t => t.category === catSpanish && t.type === 'expense').reduce((s, t) => s + t.amount, 0);
             });
 
-            // 2. CORRECCIÓN SÚPER DETALLADA: Asignamos dinámicamente el color real de cada categoría
             const barColors = catsES.map(catSpanish => {
                 return CATEGORY_META[catSpanish]?.color || '#868e96';
             });
@@ -906,6 +1126,7 @@
             renderDashboardNumbers();
 
             const listEl = document.getElementById('transaction-list');
+            if(!listEl) return;
             listEl.innerHTML = filteredTransactions.length === 0 ? `<li style="text-align:center;color:#868e96;padding:20px;font-size:14px;">${getWord('noMoves')}</li>` : '';
             
             [...filteredTransactions].reverse().forEach(t => {
@@ -916,7 +1137,6 @@
                 const cls = t.type === 'income' ? 'color:var(--success)' : 'color:var(--danger)';
                 const originalTag = t.currency && t.currency !== 'USD' ? ` <small style="color:#868e96">(${t.originalAmount} ${t.currency})</small>` : '';
                 
-                // Mapeo seguro de categorías por idioma
                 let displayCat = t.category;
                 if(currentLang === 'en') {
                     const idx = I18N.es.cats.indexOf(t.category);
