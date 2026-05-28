@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V14.0 - Interactive Visual Guide</title>
+    <title>FinanzasPro V15.0 - AI Financial Chat</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -151,7 +151,7 @@
         .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .btn-reset-view { background: var(--bg-color); color: var(--primary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-        /* --- ASISTENTE PREMIUM --- */
+        /* --- ASISTENTE PREMIUM Y COMPONENTE DE CHAT --- */
         .ai-header-card { background: linear-gradient(135deg, var(--card-bg) 0%, rgba(6,182,212,0.1) 100%); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
         .ai-avatar-glow { width: 50px; height: 50px; border-radius: 50%; background: rgba(6,182,212,0.2); border: 2px solid var(--ai-accent); display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--ai-accent); box-shadow: 0 0 15px rgba(6,182,212,0.4); }
         .ai-insight-card { background: var(--card-bg); border: 1px solid var(--border); border-left: 4px solid var(--ai-accent); border-radius: 12px; padding: 16px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
@@ -159,21 +159,27 @@
         .ai-insight-desc { font-size: 13px; color: var(--text-color); opacity: 0.9; line-height: 1.4; }
         .ai-metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 25px; }
 
-        /* --- SISTEMA DE GUÍA INTERACTIVA (DESCRIPCIÓN IZQ - IMAGEN MOCK DER) --- */
+        /* Ventana interactiva del Chat AI */
+        .ai-chat-wrapper { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; height: 350px; margin-top: 20px; }
+        .ai-chat-header { background: rgba(6,182,212,0.1); border-bottom: 1px solid var(--border); padding: 12px 16px; font-size: 13px; font-weight: 700; color: var(--ai-accent); display: flex; align-items: center; gap: 8px; }
+        .ai-chat-log { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
+        
+        .chat-msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; line-height: 1.4; word-break: break-word; }
+        .chat-msg.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .chat-msg.bot { background: var(--bg-color); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-msg.bot-alert { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); color: #fca5a5; align-self: flex-start; border-bottom-left-radius: 2px; }
+        
+        .ai-chat-input-bar { display: grid; grid-template-columns: 1fr 50px; gap: 8px; padding: 10px; border-top: 1px solid var(--border); background: var(--bg-color); }
+        .ai-chat-input-bar input { height: 42px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-color); padding: 0 12px; font-size: 14px; outline: none; }
+        .ai-chat-input-bar input:focus { border-color: var(--ai-accent); }
+        .ai-chat-send-btn { background: var(--ai-accent); color: #0b0f19; border: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; font-weight: bold; }
+
+        /* --- GUÍA INTERACTIVA --- */
         .guide-screen-content { display: flex; flex-direction: column; gap: 20px; padding-bottom: 30px; }
-        .guide-card-row { 
-            background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 16px;
-            display: grid; grid-template-columns: 1fr 140px; gap: 16px; align-items: center;
-        }
+        .guide-card-row { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: grid; grid-template-columns: 1fr 140px; gap: 16px; align-items: center; }
         .guide-text-side h3 { margin: 0 0 6px 0; font-size: 14px; font-weight: 700; color: var(--primary); }
         .guide-text-side p { margin: 0; font-size: 12px; color: var(--text-color); opacity: 0.8; line-height: 1.4; }
-        
-        /* Maquetas Visuales Compactas de las Gráficas y Módulos */
-        .guide-visual-side { 
-            background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; 
-            padding: 10px; height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            position: relative; overflow: hidden; text-align: center;
-        }
+        .guide-visual-side { background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 10px; height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; text-align: center; }
         .mock-donut { width: 50px; height: 50px; border-radius: 50%; border: 8px solid var(--primary); border-right-color: var(--success); border-bottom-color: var(--danger); }
         .mock-wallet { border-radius: 6px; border: 1px solid var(--glass-border); padding: 6px; width: 100%; text-align: center; font-size: 11px; font-weight: bold; }
         .mock-bars { display: flex; align-items: flex-end; gap: 4px; height: 50px; width: 80px; }
@@ -186,22 +192,10 @@
         .mock-ai { width: 40px; height: 40px; border-radius: 50%; background: rgba(6,182,212,0.1); border: 1px solid var(--ai-accent); display: flex; align-items: center; justify-content: center; color: var(--ai-accent); box-shadow: 0 0 8px rgba(6,182,212,0.3); }
 
         /* --- ACCESORIOS DE UI --- */
-        .fab-button {
-            position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px;
-            background: var(--primary); color: white; border: none; border-radius: 50%;
-            font-size: 24px; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; z-index: 90;
-            transition: transform 0.2s ease;
-        }
+        .fab-button { position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px; background: var(--primary); color: white; border: none; border-radius: 50%; font-size: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; z-index: 90; transition: transform 0.2s ease; }
         .fab-button:active { transform: scale(0.9); }
         
-        .bottom-sheet {
-            position: fixed; bottom: -100%; left: 0; width: 100%; height: auto;
-            max-height: 85vh; background: var(--card-bg); border-radius: 24px 24px 0 0;
-            border-top: 1px solid var(--border); padding: 24px; z-index: 180;
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.3); transition: bottom 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            overflow-y: auto;
-        }
+        .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: auto; max-height: 85vh; background: var(--card-bg); border-radius: 24px 24px 0 0; border-top: 1px solid var(--border); padding: 24px; z-index: 180; box-shadow: 0 -5px 25px rgba(0,0,0,0.3); transition: bottom 0.4s cubic-bezier(0.25, 1, 0.5, 1); overflow-y: auto; }
         .bottom-sheet.active { bottom: 0; }
         .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .sheet-header h2 { margin: 0; font-size: 18px; }
@@ -372,6 +366,18 @@
 
             <div class="main-content" id="ai-insights-container">
                 </div>
+
+            <div class="ai-chat-wrapper">
+                <div class="ai-chat-header">
+                    <i class="fa-solid fa-comments"></i> <span id="lbl-chat-header-title">Consultas de Finanzas y Datos de la Web</span>
+                </div>
+                <div class="ai-chat-log" id="ai-chat-log">
+                    </div>
+                <div class="ai-chat-input-bar">
+                    <input type="text" id="ai-chat-input" placeholder="Pregúntame sobre tus gastos, categorías o dinero..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
+                    <button class="ai-chat-send-btn" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
         </div>
 
         <div id="analytics-screen" class="screen">
@@ -422,7 +428,7 @@
 
             <div class="panel" style="margin-bottom: 20px;">
                 <h2 id="lbl-backup">Copia de Seguridad (Backup)</h2>
-                <p style="font-size:13px; color:#868e96; margin-bottom: 15px;" id="lbl-backup-desc">Descarga tus datos en un archivo para pasarlos a otro celular.</p>
+                <p style="font-size:13px; color:#868e96;" id="lbl-backup-desc">Descarga tus datos en un archivo para guardarlos de respaldo.</p>
                 <button onclick="exportData()" class="btn-submit" style="background-color: var(--success)" id="btn-export"><i class="fa-solid fa-download"></i> Exportar Datos (JSON)</button>
                 <label class="btn-secondary" style="display: flex; align-items: center; justify-content: center; cursor: pointer; margin-top: 12px; height: 44px;" id="lbl-import-zone">
                     <i class="fa-solid fa-upload" style="margin-right: 8px;"></i> Importar Archivo de Datos
@@ -446,7 +452,7 @@
     </div>
 
     <script>
-        // --- DICCIONARIO DE TRADUCCIONES ACTUALIZADO V14.0 ---
+        // --- DICCIONARIO DE TRADUCCIONES ACTUALIZADO V15.0 ---
         const I18N = {
             es: {
                 calendar: "Calendario", chartsTitle: "Gráficas Temporales", settings: "Configuración",
@@ -481,9 +487,14 @@
                 aiNoData: "Datos insuficientes para diagnóstico", aiNoDataDesc: "Agrega más transacciones de ingresos y gastos en este mes para que el asistente empiece a darte reportes estratégicos.",
                 daysOfWeek: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
                 
-                // Textos para los botones de ayuda de settings
                 guideBtnTitle: "¿Necesitas ayuda?", guideBtnDesc: "Explora el manual interactivo de todas las gráficas y herramientas separadas.",
-                openGuide: "Abrir Guía de Usuario Visual"
+                openGuide: "Abrir Guía de Usuario Visual",
+                
+                // Nuevas variables de Chat
+                chatHeader: "Consultas de Finanzas y Datos de la Web",
+                chatPlaceholder: "Pregúntame sobre tus gastos, categorías o dinero...",
+                chatWelcome: "¡Hola! Soy tu asistente financiero integrado. Puedo decirte tu saldo real, analizar tus gastos del mes o darte consejos de ahorro. ¿Qué deseas consultar?",
+                chatBlocked: "No podemos dar información que no sea relacionado con la web o con finanzas."
             },
             en: {
                 calendar: "Calendar", chartsTitle: "Temporal Charts", settings: "Settings",
@@ -519,7 +530,12 @@
                 daysOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
                 
                 guideBtnTitle: "Need assistance?", guideBtnDesc: "Explore the interactive manual for all standalone graphs and functions.",
-                openGuide: "Open Visual User Guide"
+                openGuide: "Open Visual User Guide",
+                
+                chatHeader: "Financial Concerns & Web Data Core",
+                chatPlaceholder: "Ask me about your costs, tags, or balances...",
+                chatWelcome: "Hello! I am your integrated financial manager. I can breakdown your liquid balances, study your tags or advice on investments. How can I help you?",
+                chatBlocked: "We cannot provide information that is not related to this financial web platform."
             }
         };
 
@@ -606,13 +622,19 @@
             document.getElementById('lbl-guide-btn-title').innerText = getWord('guideBtnTitle');
             document.getElementById('lbl-guide-btn-desc').innerText = getWord('guideBtnDesc');
             document.getElementById('lbl-open-guide').innerText = getWord('openGuide');
+
+            // Traducir componentes del chat
+            document.getElementById('lbl-chat-header-title').innerText = getWord('chatHeader');
+            document.getElementById('ai-chat-input').placeholder = getWord('chatPlaceholder');
             
             localizeCategories();
             renderInteractiveGuide();
+            resetChatLog();
         }
 
         function localizeCategories() {
             const catSelect = document.getElementById('category');
+            if(!catSelect) return;
             catSelect.innerHTML = '';
             getWord('cats').forEach(c => {
                 const opt = document.createElement('option');
@@ -621,7 +643,88 @@
             });
         }
 
-        // --- SISTEMA DINÁMICO DE GUÍA DE USUARIO (IZQ: DESCRIPCIÓN, DER: IMAGEN/MOCK) ---
+        // --- SISTEMA RESTRICCIONADO DE CHAT CON INTELIGENCIA LOCAL V15.0 ---
+        function resetChatLog() {
+            const chatLog = document.getElementById('ai-chat-log');
+            if(!chatLog) return;
+            chatLog.innerHTML = `<div class="chat-msg bot">${getWord('chatWelcome')}</div>`;
+        }
+
+        function sendChatMessage() {
+            const inputEl = document.getElementById('ai-chat-input');
+            const chatLog = document.getElementById('ai-chat-log');
+            if(!inputEl || !chatLog || inputEl.value.trim() === "") return;
+
+            const userText = inputEl.value.trim();
+            inputEl.value = "";
+
+            // Inyectar mensaje de usuario
+            chatLog.innerHTML += `<div class="chat-msg user">${userText}</div>`;
+            chatLog.scrollTop = chatLog.scrollHeight;
+
+            // Procesamiento de seguridad (Guardarraíl solicitado)
+            setTimeout(() => {
+                const query = userText.toLowerCase();
+                
+                // Lista de términos válidos de finanzas o palabras relacionadas a la web
+                const financialKeywords = [
+                    'dinero', 'gasto', 'ingreso', 'saldo', 'balance', 'ahorro', 'comida', 'vivienda', 'transporte', 
+                    'entretenimiento', 'otros', 'gráfica', 'historial', 'proyección', 'tasa', 'calcular', 'cuánto', 'mes',
+                    'money', 'expense', 'income', 'balance', 'saving', 'food', 'housing', 'chart', 'total', 'spent'
+                ];
+
+                const matchesKeyword = financialKeywords.some(keyword => query.includes(keyword));
+
+                if (!matchesKeyword) {
+                    // Bloqueo estricto si no es de la app o dinero
+                    chatLog.innerHTML += `<div class="chat-msg bot-alert"><i class="fa-solid fa-hand"></i> ${getWord('chatBlocked')}</div>`;
+                } else {
+                    // Respuesta inteligente simulada basada en los DATOS REALES del LocalStorage
+                    const totalIncomesReal = transactions.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
+                    const totalExpensesReal = transactions.filter(t => t.type === 'expense').reduce((s,t) => s + t.amount, 0);
+                    const currentBalanceReal = totalIncomesReal - totalExpensesReal;
+
+                    let botResponse = "";
+
+                    if(query.includes('saldo') || query.includes('balance') || query.includes('tengo')) {
+                        botResponse = currentLang === 'es' 
+                            ? `Revisando los registros de la app, tu saldo acumulado neto actual es de **$${currentBalanceReal.toFixed(2)}**.` 
+                            : `Checking the web storage database, your current net liquid balance is **$${currentBalanceReal.toFixed(2)}**.`;
+                    } else if(query.includes('gasto') || query.includes('gastado') || query.includes('spent')) {
+                        botResponse = currentLang === 'es'
+                            ? `Has registrado un total global de **$${totalExpensesReal.toFixed(2)}** en gastos comerciales dentro de la plataforma.`
+                            : `You have loaded a global aggregated amount of **$${totalExpensesReal.toFixed(2)}** in outflows inside the system.`;
+                    } else if(query.includes('ingreso') || query.includes('ganado') || query.includes('income')) {
+                        botResponse = currentLang === 'es'
+                            ? `Tus fuentes de ingresos sumadas en la base de datos dan un acumulado de **$${totalIncomesReal.toFixed(2)}**.`
+                            : `Your loaded financial asset injections sum up to **$${totalIncomesReal.toFixed(2)}**.`;
+                    } else if(query.includes('comida') || query.includes('food')) {
+                        const foodAmt = transactions.filter(t => t.category === 'Comida' || t.category === 'Food').reduce((s,t) => s + t.amount, 0);
+                        botResponse = `El total histórico consumido exclusivamente en la categoría de Comida/Alimentación es de **$${foodAmt.toFixed(2)}**.`;
+                    } else if(query.includes('ahorro') || query.includes('consejo') || query.includes('saving')) {
+                        if(currentBalanceReal <= 0) {
+                            botResponse = currentLang === 'es'
+                                ? "Tu flujo actual es negativo. Te aconsejo congelar compras secundarias en la categoría 'Otros' y optimizar tus costos fijos de inmediato."
+                                : "Your current flow is tight. I advise freezing auxiliary costs under the 'Others' bracket to recover metrics.";
+                        } else {
+                            botResponse = currentLang === 'es'
+                                ? "¡Vas por buen camino! Mantienes un flujo neto positivo. Te sugiero destinar un 10% de tu saldo actual a un fondo de emergencias de alta liquidez."
+                                : "Excellent performance. You hold a solid positive margin. I highly suggest moving 10% towards an emergency backup fund.";
+                        }
+                    } else {
+                        botResponse = currentLang === 'es'
+                            ? `He recibido tu consulta sobre tus datos. Actualmente cuentas con ${transactions.length} transacciones validadas en esta sesión web, un balance de $${currentBalanceReal.toFixed(2)} y patrones estables.`
+                            : `I read your telemetry input. You currently hold ${transactions.length} loaded records on this device session, with a net value of $${currentBalanceReal.toFixed(2)}.`;
+                    }
+
+                    chatLog.innerHTML += `<div class="chat-msg bot">${botResponse}</div>`;
+                }
+
+                chatLog.scrollTop = chatLog.scrollHeight;
+            }, 600);
+        }
+
+        // --- SISTEMA DINÁMICO DE GUÍA DE USUARIO ---
         function renderInteractiveGuide() {
             const container = document.getElementById('guide-cards-container');
             if(!container) return;
@@ -632,7 +735,7 @@
                 { t: "3. Historial Cronológico", d: "Listado completo de movimientos con fecha, hora y opción de borrado rápido mediante la cruz.", m: `<div class="transaction-item" style="width:100%; font-size:10px; padding:0;"><span>Cena</span><span style="color:var(--danger)">-$25</span></div>` },
                 { t: "4. Calendario de Flujos", d: "Navegación mensual. Los días con un punto verde en la parte inferior indican que tienen transacciones anotadas.", m: `<div class="mock-cal"><div class="mock-cal-cell"></div><div class="mock-cal-cell dot"></div><div class="mock-cal-cell"></div><div class="mock-cal-cell"></div></div>` },
                 { t: "5. Gráfica de Barras por Día", d: "Aparece al seleccionar días en el calendario. Aísla y compara montos por categoría en barra vertical.", m: `<div class="mock-bars"><div class="mock-bar" style="height:25px;"></div><div class="mock-bar" style="height:45px; background:var(--success);"></div><div class="mock-bar" style="height:15px;"></div></div>` },
-                { t: "6. Asistente AI e Insights", d: "Analiza tu tasa de ahorro, proyecta tus gastos a fin de mes e identifica fugas críticas y patrones.", m: `<div class="mock-ai"><i class="fa-solid fa-brain"></i></div>` },
+                { t: "6. Asistente AI y Chat de la Web", d: "Analiza métricas fijas y ofrece una caja de texto interactiva exclusiva para consultar dinero y variables de tus registros.", m: `<div class="mock-ai"><i class="fa-solid fa-comments"></i></div>` },
                 { t: "7. Gráficas de Líneas Temporales", d: "Ubicadas en la pestaña Gráficas. Evalúan la tendencia diaria de subidas y bajadas de tus finanzas.", m: `<div class="mock-lines"></div>` },
                 { t: "8. Modo Incógnito Integrado", d: "Presiona el icono de ojo en la billetera del Home para enmascarar tus saldos como '••••' frente a terceros.", m: `<i class="fa-solid fa-eye-slash" style="font-size:20px; color:var(--primary);"></i>` },
                 { t: "9. Respaldos Cifrados (.json)", d: "Tus datos son 100% locales. Exporta e importa tu archivo JSON para migrar de celular sin servidores externos.", m: `<span style="font-family:monospace; color:var(--success); font-weight:bold;">{ JSON }</span>` }
@@ -642,7 +745,7 @@
                 { t: "3. Chronological Feed", d: "Complete historical timeline displaying descriptions, tags, and rapid delete capabilities.", m: `<div class="transaction-item" style="width:100%; font-size:10px; padding:0;"><span>Dinner</span><span style="color:var(--danger)">-$25</span></div>` },
                 { t: "4. Cashflow Calendar", d: "Monthly tracking view. Days embedded with a green dot indicate loaded financial activities.", m: `<div class="mock-cal"><div class="mock-cal-cell"></div><div class="mock-cal-cell dot"></div><div class="mock-cal-cell"></div><div class="mock-cal-cell"></div></div>` },
                 { t: "5. Daily Bar Standalone Chart", d: "Triggers inside calendar selection. Isolates and scales category expenditures inside vertical columns.", m: `<div class="mock-bars"><div class="mock-bar" style="height:25px;"></div><div class="mock-bar" style="height:45px; background:var(--success);"></div><div class="mock-bar" style="height:15px;"></div></div>` },
-                { t: "6. AI Assistant Engine", d: "Runs locally to monitor saving rates, predict end-of-month forecasts, and trigger pattern alerts.", m: `<div class="mock-ai"><i class="fa-solid fa-brain"></i></div>` },
+                { t: "6. AI Assistant Chat Box", d: "Combines classic analytical tracking blocks with a fully localized text interface restricted to financial telemetry queries.", m: `<div class="mock-ai"><i class="fa-solid fa-comments"></i></div>` },
                 { t: "7. Temporal Trend Timelines", d: "Located on Charts tab. Graphs historical daily trajectories for money injections or expenses.", m: `<div class="mock-lines"></div>` },
                 { t: "8. Incognito Privacy Toggle", d: "Tap the eye vector inside the main dashboard card to mask account balances under '••••' strings.", m: `<i class="fa-solid fa-eye-slash" style="font-size:20px; color:var(--primary);"></i>` },
                 { t: "9. Cryptographic Backups (.json)", d: "Data is 100% local. Export or import JSON files to shift phone historical data without database chains.", m: `<span style="font-family:monospace; color:var(--success); font-weight:bold;">{ JSON }</span>` }
@@ -741,7 +844,7 @@
 
             if(screenId === 'calendar-screen') { renderCalendar(); resetCalendarFilter(); }
             if(screenId === 'analytics-screen') { renderLineCharts(); }
-            if(screenId === 'assistant-screen') { calculateAiInsights(); }
+            if(screenId === 'assistant-screen') { calculateAiInsights(); resetChatLog(); }
             updateUI();
         }
 
@@ -800,6 +903,7 @@
 
         function populateDirectMonthSelect() {
             const sel = document.getElementById('direct-calendar-month-select');
+            if(!sel) return;
             sel.innerHTML = '';
             const names = getWord('months');
             const targetYear = calendarCurrentDate.getFullYear();
@@ -855,6 +959,8 @@
             const container = document.getElementById('ai-insights-container');
             const savingValEl = document.getElementById('ai-saving-value');
             const projectedValEl = document.getElementById('ai-projected-value');
+            
+            if(!container || !savingValEl || !projectedValEl) return;
             
             const now = new Date();
             const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -1086,6 +1192,7 @@
             });
 
             const ctx = document.getElementById('dayBarChart').getContext('2d');
+            if(!ctx) return;
             if(barChart) barChart.destroy();
             const textColors = document.documentElement.getAttribute('data-theme') === 'light' ? '#212529' : '#f8fafc';
             
@@ -1118,20 +1225,24 @@
             const textColors = document.documentElement.getAttribute('data-theme') === 'light' ? '#212529' : '#f8fafc';
 
             const ctxExp = document.getElementById('lineExpenseChart').getContext('2d');
-            if(lineExpenseChart) lineExpenseChart.destroy();
-            lineExpenseChart = new Chart(ctxExp, {
-                type: 'line',
-                data: { labels: labels, datasets: [{ label: getWord('chartDailyExp'), data: dailyExpenses, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', borderWidth: 3, tension: 0.3, fill: true }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: textColors } }, x: { ticks: { color: textColors } } } }
-            });
+            if(ctxExp) {
+                if(lineExpenseChart) lineExpenseChart.destroy();
+                lineExpenseChart = new Chart(ctxExp, {
+                    type: 'line',
+                    data: { labels: labels, datasets: [{ label: getWord('chartDailyExp'), data: dailyExpenses, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', borderWidth: 3, tension: 0.3, fill: true }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: textColors } }, x: { ticks: { color: textColors } } } }
+                });
+            }
 
             const ctxInc = document.getElementById('lineIncomeChart').getContext('2d');
-            if(lineIncomeChart) lineIncomeChart.destroy();
-            lineIncomeChart = new Chart(ctxInc, {
-                type: 'line',
-                data: { labels: labels, datasets: [{ label: getWord('chartDailyInc'), data: dailyIncomes, borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', borderWidth: 3, tension: 0.3, fill: true }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: textColors } }, x: { ticks: { color: textColors } } } }
-            });
+            if(ctxInc) {
+                if(lineIncomeChart) lineIncomeChart.destroy();
+                lineIncomeChart = new Chart(ctxInc, {
+                    type: 'line',
+                    data: { labels: labels, datasets: [{ label: getWord('chartDailyInc'), data: dailyIncomes, borderColor: '#22c55e', backgroundColor: 'rgba(34, 197, 94, 0.1)', borderWidth: 3, tension: 0.3, fill: true }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: textColors } }, x: { ticks: { color: textColors } } } }
+                });
+            }
         }
 
         // --- INTERFAZ HOME ---
@@ -1195,6 +1306,7 @@
             const dataValues = catsES.map(cat => filteredTransactions.filter(t => t.type === 'expense' && t.category === cat).reduce((acc, t) => acc + t.amount, 0));
             
             const ctx = document.getElementById('expenseChart').getContext('2d');
+            if(!ctx) return;
             if (myChart) myChart.destroy();
             myChart = new Chart(ctx, {
                 type: 'doughnut',
