@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V12.0 - Multi-Language Global Pro</title>
+    <title>FinanzasPro V12.1 - Multi-Language Global Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -422,7 +422,7 @@
                 alertResetConfirm: "Delete all financial history?", chartDailyExp: "Daily Expense", chartDailyInc: "Daily Income",
                 cats: ["Food", "Housing", "Transportation", "Entertainment", "Others"],
                 months: ["January","February","March","April","May","June","July","August","September","October","November","December"],
-                monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"]
             }
         };
 
@@ -815,8 +815,14 @@
             const catsES = I18N.es.cats;
             const labelsENorES = getWord('cats');
             
+            // 1. Mapeamos los datos de gastos por categoría
             const dataValues = catsES.map(catSpanish => {
                 return filteredData.filter(t => t.category === catSpanish && t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+            });
+
+            // 2. CORRECCIÓN SÚPER DETALLADA: Asignamos dinámicamente el color real de cada categoría
+            const barColors = catsES.map(catSpanish => {
+                return CATEGORY_META[catSpanish]?.color || '#868e96';
             });
 
             const ctx = document.getElementById('dayBarChart').getContext('2d');
@@ -825,8 +831,23 @@
             
             barChart = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: labelsENorES, datasets: [{ data: dataValues, backgroundColor: ['#a855f7', '#4cc9f0', '#22c55e', '#eab308', '#ec4899'], borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: textColors } }, x: { ticks: { color: textColors } } } }
+                data: { 
+                    labels: labelsENorES, 
+                    datasets: [{ 
+                        data: dataValues, 
+                        backgroundColor: barColors, 
+                        borderRadius: 6 
+                    }] 
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } }, 
+                    scales: { 
+                        y: { beginAtZero: true, ticks: { color: textColors } }, 
+                        x: { ticks: { color: textColors } } 
+                    } 
+                }
             });
         }
 
