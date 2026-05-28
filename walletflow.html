@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>FinanzasPro V13.0 - AI Assistant & Visual Guide</title>
+    <title>FinanzasPro V14.0 - Interactive Visual Guide</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -159,12 +159,31 @@
         .ai-insight-desc { font-size: 13px; color: var(--text-color); opacity: 0.9; line-height: 1.4; }
         .ai-metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 25px; }
 
-        /* --- GUÍA VISUAL DENTRO DE SETTINGS --- */
-        .guide-box { display: flex; flex-direction: column; gap: 16px; margin-top: 15px; }
-        .guide-item { background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: grid; grid-template-columns: 75px 1fr; gap: 12px; align-items: center; }
-        .guide-visual-mock { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px; display: flex; justify-content: center; align-items: center; text-align: center; min-height: 55px; }
-        .guide-info h4 { margin: 0 0 4px 0; font-size: 13px; font-weight: 700; color: var(--primary); }
-        .guide-info p { margin: 0; font-size: 11px; color: #868e96; line-height: 1.3; }
+        /* --- SISTEMA DE GUÍA INTERACTIVA (DESCRIPCIÓN IZQ - IMAGEN MOCK DER) --- */
+        .guide-screen-content { display: flex; flex-direction: column; gap: 20px; padding-bottom: 30px; }
+        .guide-card-row { 
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 16px;
+            display: grid; grid-template-columns: 1fr 140px; gap: 16px; align-items: center;
+        }
+        .guide-text-side h3 { margin: 0 0 6px 0; font-size: 14px; font-weight: 700; color: var(--primary); }
+        .guide-text-side p { margin: 0; font-size: 12px; color: var(--text-color); opacity: 0.8; line-height: 1.4; }
+        
+        /* Maquetas Visuales Compactas de las Gráficas y Módulos */
+        .guide-visual-side { 
+            background: var(--bg-color); border: 1px solid var(--border); border-radius: 12px; 
+            padding: 10px; height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            position: relative; overflow: hidden; text-align: center;
+        }
+        .mock-donut { width: 50px; height: 50px; border-radius: 50%; border: 8px solid var(--primary); border-right-color: var(--success); border-bottom-color: var(--danger); }
+        .mock-wallet { border-radius: 6px; border: 1px solid var(--glass-border); padding: 6px; width: 100%; text-align: center; font-size: 11px; font-weight: bold; }
+        .mock-bars { display: flex; align-items: flex-end; gap: 4px; height: 50px; width: 80px; }
+        .mock-bar { width: 12px; background: var(--primary); border-radius: 2px 2px 0 0; }
+        .mock-lines { width: 80px; height: 40px; border-bottom: 2px solid var(--border); border-left: 2px solid var(--border); position: relative; }
+        .mock-lines::after { content: ''; position: absolute; bottom: 10px; left: 0; width: 70px; height: 20px; border-top: 2px solid var(--danger); transform: rotate(-15deg); }
+        .mock-cal { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; width: 70px; }
+        .mock-cal-cell { width: 14px; height: 14px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 3px; position: relative; }
+        .mock-cal-cell.dot::after { content: ''; position: absolute; bottom: 2px; left: 5px; width: 3px; height: 3px; background: var(--success); border-radius: 50%; }
+        .mock-ai { width: 40px; height: 40px; border-radius: 50%; background: rgba(6,182,212,0.1); border: 1px solid var(--ai-accent); display: flex; align-items: center; justify-content: center; color: var(--ai-accent); box-shadow: 0 0 8px rgba(6,182,212,0.3); }
 
         /* --- ACCESORIOS DE UI --- */
         .fab-button {
@@ -192,8 +211,9 @@
             body { align-items: flex-start; padding-top: 40px; }
             #app-screen { max-width: 900px; }
             .card-sub p { font-size: 20px; }
-            .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-            #calendar-screen .main-content, #analytics-screen .main-content, #assistant-screen .main-content { display: flex; flex-direction: column; }
+            .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding-bottom: 40px; }
+            .guide-screen-content { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+            #calendar-screen .main-content, #analytics-screen .main-content, #assistant-screen .main-content, #guide-screen .main-content { display: flex; flex-direction: column; }
             .bottom-sheet { left: 50%; transform: translateX(-50%); max-width: 500px; border-radius: 24px; bottom: -100%; }
             .bottom-sheet.active { bottom: 40px; }
         }
@@ -375,33 +395,10 @@
         </div>
 
         <div id="settings-screen" class="screen">
-            <div class="panel" style="margin-bottom: 20px; border-color: var(--glass-border);">
-                <h2 id="lbl-guide-title">Manual de Uso Integrado</h2>
-                <p style="font-size:12px; color:#868e96; margin-top:-10px;" id="lbl-guide-desc">Aprende a dominar las funciones secretas y de seguridad de la aplicación.</p>
-                
-                <div class="guide-box">
-                    <div class="guide-item">
-                        <div class="guide-visual-mock" style="color:var(--primary); font-size:20px;"><i class="fa-solid fa-eye-slash"></i></div>
-                        <div class="guide-info">
-                            <h4 id="lbl-guide-t1">Modo Oculto (Incógnito)</h4>
-                            <p id="lbl-guide-d1">Toca el ojo en la tarjeta principal para tapar tus saldos reales con "••••" cuando estés en público.</p>
-                        </div>
-                    </div>
-                    <div class="guide-item">
-                        <div class="guide-visual-mock" style="color:var(--success); font-size:18px; font-weight:bold;">{.json}</div>
-                        <div class="guide-info">
-                            <h4 id="lbl-guide-t2">Respaldos Totales y Privacidad</h4>
-                            <p id="lbl-guide-d2">La app no usa servidores. Exporta tu archivo JSON periódicamente para no perder tu información si limpias el navegador.</p>
-                        </div>
-                    </div>
-                    <div class="guide-item">
-                        <div class="guide-visual-mock" style="color:var(--ai-accent); font-size:20px;"><i class="fa-solid fa-calendar-day"></i></div>
-                        <div class="guide-info">
-                            <h4 id="lbl-guide-t3">Navegación del Calendario</h4>
-                            <p id="lbl-guide-d3">Los días con un punto inferior contienen transacciones. Haz clic en cualquier día para aislar sus gastos en las barras.</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="panel" style="margin-bottom: 20px; border-color: var(--primary);">
+                <h2 id="lbl-guide-btn-title">¿Necesitas ayuda?</h2>
+                <p style="font-size: 13px; color:#868e96; margin-top: -10px; margin-bottom: 15px;" id="lbl-guide-btn-desc">Explora el manual interactivo de todas las gráficas y herramientas separadas.</p>
+                <button class="btn-submit" onclick="showScreen('guide-screen', getWord('guideTitle'))" style="background: linear-gradient(135deg, var(--primary) 0%, var(--ai-accent) 100%);"><i class="fa-solid fa-book-open" style="margin-right:8px;"></i> <span id="lbl-open-guide">Abrir Guía de Usuario Visual</span></button>
             </div>
 
             <div class="panel" style="margin-bottom: 20px;">
@@ -439,15 +436,22 @@
                 <button onclick="resetData()" style="background:var(--danger)" class="btn-submit" id="btn-reset-all">Limpiar Memoria Local</button>
             </div>
         </div>
+
+        <div id="guide-screen" class="screen">
+            <div class="guide-screen-content" id="guide-cards-container">
+                </div>
+            <button class="btn-secondary" onclick="showScreen('settings-screen', getWord('settings'))" style="margin-top:20px; margin-bottom:40px;"><i class="fa-solid fa-arrow-left" style="margin-right:8px;"></i> Volver a Settings</button>
+        </div>
+
     </div>
 
     <script>
-        // --- DICCIONARIO DE TRADUCCIONES ACTUALIZADO V13.0 ---
+        // --- DICCIONARIO DE TRADUCCIONES ACTUALIZADO V14.0 ---
         const I18N = {
             es: {
                 calendar: "Calendario", chartsTitle: "Gráficas Temporales", settings: "Configuración",
                 aiAssistant: "Asistente AI", newMove: "Nuevo Movimiento", description: "Descripción", amount: "Monto e Importe",
-                type: "Tipo", category: "Categoría", expense: "Gasto", income: "Ingreso",
+                type: "Type", category: "Categoría", expense: "Gasto", income: "Ingreso",
                 saveMove: "Guardar Movimiento", selectMonth: "Seleccionar Mes", choosePeriod: "Elige un período",
                 netFlow: "Flujo Neto del Período", monthlyBal: "Balance Mensual", activeFilter: "Filtro Activo",
                 totInc: "Ingresos Totales", totExp: "Gastos Totales", distribution: "Distribución del Período",
@@ -467,19 +471,19 @@
                 months: ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],
                 monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
                 
-                // Nuevas llaves V13.0
                 aiName: "FinanzasPro Assistant", aiStatus: "Motor analítico ejecutándose localmente",
                 aiSavingRate: "Tasa de Ahorro", aiProjection: "Proyección Fin de Mes",
-                guideTitle: "Manual de Uso Integrado", guideDesc: "Aprende a dominar las funciones secretas y de seguridad de la aplicación.",
-                gt1: "Modo Oculto (Incógnito)", gd1: "Toca el ojo en la tarjeta principal para tapar tus saldos reales con '••••' cuando estés en público.",
-                gt2: "Respaldos Totales y Privacidad", gd2: "La app no usa servidores. Exporta tu archivo JSON periódicamente para no perder tu información si limpias el navegador.",
-                gt3: "Navegación del Calendario", gd3: "Los días con un punto inferior contienen transacciones. Haz clic en cualquier día para aislar sus gastos en las barras.",
+                guideTitle: "Manual de Uso Visual", guideDesc: "Aprende a dominar cada función y gráfica de la aplicación.",
                 aiHealthGood: "Salud Financiera Estable", aiHealthGoodDesc: "¡Excelente! Estás gastando menos de lo que ganas este mes. Conservas una tasa de ahorro positiva.",
                 aiHealthBad: "Alerta de Flujo Negativo", aiHealthBadDesc: "¡Atención! Tus gastos superan tus ingresos este mes. Te recomiendo recortar compras secundarias pronto.",
                 aiFuga: "Mayor Canal de Gastos", aiFugaDesc: "Tu mayor centro de consumo este mes está en la categoría de **{cat}** con un total de {amt}. Representa el {pct}% de tus egresos.",
                 aiDay: "Patrón Semanal Crítico", aiDayDesc: "Analizando tus patrones, el día **{day}** es estadísticamente tu jornada con más gastos acumulados. Ojo con los antojos.",
                 aiNoData: "Datos insuficientes para diagnóstico", aiNoDataDesc: "Agrega más transacciones de ingresos y gastos en este mes para que el asistente empiece a darte reportes estratégicos.",
-                daysOfWeek: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]
+                daysOfWeek: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+                
+                // Textos para los botones de ayuda de settings
+                guideBtnTitle: "¿Necesitas ayuda?", guideBtnDesc: "Explora el manual interactivo de todas las gráficas y herramientas separadas.",
+                openGuide: "Abrir Guía de Usuario Visual"
             },
             en: {
                 calendar: "Calendar", chartsTitle: "Temporal Charts", settings: "Settings",
@@ -504,19 +508,18 @@
                 months: ["January","February","March","April","May","June","July","August","September","October","November","December"],
                 monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
                 
-                // Nuevas llaves V13.0
                 aiName: "FinanzasPro Assistant", aiStatus: "Analytical engine running locally",
                 aiSavingRate: "Saving Rate", aiProjection: "End of Month Forecast",
-                guideTitle: "Integrated User Manual", guideDesc: "Learn to master the secret features and safety systems of the app.",
-                gt1: "Hidden Privacy Mode", gd1: "Tap the eye icon on the main wallet to hide your balances behind '••••' when in public places.",
-                gt2: "Full Backups & Privacy", gd2: "The app does not use servers. Export your JSON file periodically to protect data if browser cache is cleared.",
-                gt3: "Calendar Navigation", gd3: "Days with a dot underneath contain data. Click on any day to isolate its expenses on the bar charts.",
+                guideTitle: "Visual User Manual", guideDesc: "Learn to master every feature and graph within the application.",
                 aiHealthGood: "Stable Financial Health", aiHealthGoodDesc: "Excellent! You are spending less than you earn this period. Keeping a strong savings rate.",
                 aiHealthBad: "Negative Cash Flow Warning", aiHealthBadDesc: "Warning! Your expenses exceed your income this month. We recommend reviewing secondary purchases soon.",
                 aiFuga: "Top Expense Vector", aiFugaDesc: "Your largest consumer category this month is **{cat}** with a total of {amt}. This represents {pct}% of your total outflows.",
                 aiDay: "Critical Weekly Pattern", aiDayDesc: "Analyzing metrics, **{day}** is statistically your day with the highest accumulated spend. Beware of impulse buying.",
                 aiNoData: "Insufficient Diagnostic Data", aiNoDataDesc: "Add more income and expense records to this month so the assistant can build customized strategy reports.",
-                daysOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                daysOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                
+                guideBtnTitle: "Need assistance?", guideBtnDesc: "Explore the interactive manual for all standalone graphs and functions.",
+                openGuide: "Open Visual User Guide"
             }
         };
 
@@ -583,15 +586,6 @@
             document.getElementById('lbl-ai-status').innerText = getWord('aiStatus');
             document.getElementById('lbl-ai-saving-rate').innerText = getWord('aiSavingRate');
             document.getElementById('lbl-ai-projection').innerText = getWord('aiProjection');
-            
-            document.getElementById('lbl-guide-title').innerText = getWord('guideTitle');
-            document.getElementById('lbl-guide-desc').innerText = getWord('guideDesc');
-            document.getElementById('lbl-guide-t1').innerText = getWord('gt1');
-            document.getElementById('lbl-guide-d1').innerText = getWord('gd1');
-            document.getElementById('lbl-guide-t2').innerText = getWord('gt2');
-            document.getElementById('lbl-guide-d2').innerText = getWord('gd2');
-            document.getElementById('lbl-guide-t3').innerText = getWord('gt3');
-            document.getElementById('lbl-guide-d3').innerText = getWord('gd3');
 
             document.getElementById('lbl-chart-exp-title').innerHTML = `<i class="fa-solid fa-chart-line"></i> ${getWord('chartExpTitle')}`;
             document.getElementById('lbl-chart-exp-desc').innerText = getWord('chartExpDesc');
@@ -608,8 +602,13 @@
             document.getElementById('lbl-maintenance').innerText = getWord('maintenance');
             document.getElementById('lbl-maintenance-desc').innerText = getWord('maintenanceDesc');
             document.getElementById('btn-reset-all').innerText = getWord('resetBtn');
+
+            document.getElementById('lbl-guide-btn-title').innerText = getWord('guideBtnTitle');
+            document.getElementById('lbl-guide-btn-desc').innerText = getWord('guideBtnDesc');
+            document.getElementById('lbl-open-guide').innerText = getWord('openGuide');
             
             localizeCategories();
+            renderInteractiveGuide();
         }
 
         function localizeCategories() {
@@ -619,6 +618,49 @@
                 const opt = document.createElement('option');
                 opt.value = c; opt.innerText = c;
                 catSelect.appendChild(opt);
+            });
+        }
+
+        // --- SISTEMA DINÁMICO DE GUÍA DE USUARIO (IZQ: DESCRIPCIÓN, DER: IMAGEN/MOCK) ---
+        function renderInteractiveGuide() {
+            const container = document.getElementById('guide-cards-container');
+            if(!container) return;
+
+            const cardsData = currentLang === 'es' ? [
+                { t: "1. Billetera y Flujo Neto", d: "Muestra tu dinero real disponible calculado entre ingresos y egresos del mes activo.", m: `<div class="mock-wallet">+$1,240.00</div>` },
+                { t: "2. Gráfica de Distribución (Dona)", d: "Divide tus gastos totales en porcentajes para saber exactamente en qué categorías se va más dinero.", m: `<div class="mock-donut"></div>` },
+                { t: "3. Historial Cronológico", d: "Listado completo de movimientos con fecha, hora y opción de borrado rápido mediante la cruz.", m: `<div class="transaction-item" style="width:100%; font-size:10px; padding:0;"><span>Cena</span><span style="color:var(--danger)">-$25</span></div>` },
+                { t: "4. Calendario de Flujos", d: "Navegación mensual. Los días con un punto verde en la parte inferior indican que tienen transacciones anotadas.", m: `<div class="mock-cal"><div class="mock-cal-cell"></div><div class="mock-cal-cell dot"></div><div class="mock-cal-cell"></div><div class="mock-cal-cell"></div></div>` },
+                { t: "5. Gráfica de Barras por Día", d: "Aparece al seleccionar días en el calendario. Aísla y compara montos por categoría en barra vertical.", m: `<div class="mock-bars"><div class="mock-bar" style="height:25px;"></div><div class="mock-bar" style="height:45px; background:var(--success);"></div><div class="mock-bar" style="height:15px;"></div></div>` },
+                { t: "6. Asistente AI e Insights", d: "Analiza tu tasa de ahorro, proyecta tus gastos a fin de mes e identifica fugas críticas y patrones.", m: `<div class="mock-ai"><i class="fa-solid fa-brain"></i></div>` },
+                { t: "7. Gráficas de Líneas Temporales", d: "Ubicadas en la pestaña Gráficas. Evalúan la tendencia diaria de subidas y bajadas de tus finanzas.", m: `<div class="mock-lines"></div>` },
+                { t: "8. Modo Incógnito Integrado", d: "Presiona el icono de ojo en la billetera del Home para enmascarar tus saldos como '••••' frente a terceros.", m: `<i class="fa-solid fa-eye-slash" style="font-size:20px; color:var(--primary);"></i>` },
+                { t: "9. Respaldos Cifrados (.json)", d: "Tus datos son 100% locales. Exporta e importa tu archivo JSON para migrar de celular sin servidores externos.", m: `<span style="font-family:monospace; color:var(--success); font-weight:bold;">{ JSON }</span>` }
+            ] : [
+                { t: "1. Wallet & Net Cashflow", d: "Displays real liquid balance instantly calculated between inflows and outflows of the selected period.", m: `<div class="mock-wallet">+$1,240.00</div>` },
+                { t: "2. Distribution Graph (Donut)", d: "Breaks down your expenditures into explicit category percentages to see major consumer channels.", m: `<div class="mock-donut"></div>` },
+                { t: "3. Chronological Feed", d: "Complete historical timeline displaying descriptions, tags, and rapid delete capabilities.", m: `<div class="transaction-item" style="width:100%; font-size:10px; padding:0;"><span>Dinner</span><span style="color:var(--danger)">-$25</span></div>` },
+                { t: "4. Cashflow Calendar", d: "Monthly tracking view. Days embedded with a green dot indicate loaded financial activities.", m: `<div class="mock-cal"><div class="mock-cal-cell"></div><div class="mock-cal-cell dot"></div><div class="mock-cal-cell"></div><div class="mock-cal-cell"></div></div>` },
+                { t: "5. Daily Bar Standalone Chart", d: "Triggers inside calendar selection. Isolates and scales category expenditures inside vertical columns.", m: `<div class="mock-bars"><div class="mock-bar" style="height:25px;"></div><div class="mock-bar" style="height:45px; background:var(--success);"></div><div class="mock-bar" style="height:15px;"></div></div>` },
+                { t: "6. AI Assistant Engine", d: "Runs locally to monitor saving rates, predict end-of-month forecasts, and trigger pattern alerts.", m: `<div class="mock-ai"><i class="fa-solid fa-brain"></i></div>` },
+                { t: "7. Temporal Trend Timelines", d: "Located on Charts tab. Graphs historical daily trajectories for money injections or expenses.", m: `<div class="mock-lines"></div>` },
+                { t: "8. Incognito Privacy Toggle", d: "Tap the eye vector inside the main dashboard card to mask account balances under '••••' strings.", m: `<i class="fa-solid fa-eye-slash" style="font-size:20px; color:var(--primary);"></i>` },
+                { t: "9. Cryptographic Backups (.json)", d: "Data is 100% local. Export or import JSON files to shift phone historical data without database chains.", m: `<span style="font-family:monospace; color:var(--success); font-weight:bold;">{ JSON }</span>` }
+            ];
+
+            container.innerHTML = "";
+            cardsData.forEach(c => {
+                container.innerHTML += `
+                    <div class="guide-card-row">
+                        <div class="guide-text-side">
+                            <h3>${c.t}</h3>
+                            <p>${c.d}</p>
+                        </div>
+                        <div class="guide-visual-side">
+                            ${c.m}
+                        </div>
+                    </div>
+                `;
             });
         }
 
@@ -688,8 +730,10 @@
             document.getElementById(screenId).classList.add('active');
             document.getElementById('screen-title').innerText = titleText;
             
-            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active-nav'));
-            if(menuElement) menuElement.classList.add('active-nav');
+            if(menuElement) {
+                document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active-nav'));
+                menuElement.classList.add('active-nav');
+            }
             
             closeAllModals();
             
@@ -714,6 +758,7 @@
             if(document.getElementById('calendar-screen').classList.contains('active')) { renderCalendar(); resetCalendarFilter(); }
             if(document.getElementById('analytics-screen').classList.contains('active')) { renderLineCharts(); }
             if(document.getElementById('assistant-screen').classList.contains('active')) { calculateAiInsights(); }
+            renderInteractiveGuide();
         });
 
         const langSelect = document.getElementById('lang-select');
@@ -805,7 +850,7 @@
             populateMonthFilter(); updateUI();
         }
 
-        // --- MOTOR LOGICO: ASISTENTE AI (INSIGHTS) ---
+        // --- ASISTENTE COGNITIVO ---
         function calculateAiInsights() {
             const container = document.getElementById('ai-insights-container');
             const savingValEl = document.getElementById('ai-saving-value');
@@ -830,11 +875,9 @@
             const inc = monthTransactions.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
             const exp = monthTransactions.filter(t => t.type === 'expense').reduce((s,t) => s + t.amount, 0);
             
-            // 1. Tasa de ahorro
             const savingRate = inc > 0 ? ((inc - exp) / inc) * 100 : 0;
             savingValEl.innerText = `${savingRate > 0 ? '+' : ''}${savingRate.toFixed(0)}%`;
             
-            // 2. Proyección fin de mes
             const currentDay = now.getDate();
             const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
             const projectedExpense = (exp / currentDay) * daysInMonth;
@@ -842,7 +885,6 @@
 
             let htmlOutput = "";
 
-            // INSIGHT 1: Salud General
             if(inc >= exp) {
                 htmlOutput += `
                     <div class="ai-insight-card" style="border-left-color:var(--success)">
@@ -859,7 +901,6 @@
                 `;
             }
 
-            // INSIGHT 2: Fuga de Dinero
             const catsES = I18N.es.cats;
             let maxCat = ""; let maxAmt = 0;
             catsES.forEach(cat => {
@@ -887,7 +928,6 @@
                 `;
             }
 
-            // INSIGHT 3: Análisis de patrones de días de la semana
             const dayAmounts = Array(7).fill(0);
             monthTransactions.filter(t => t.type === 'expense').forEach(t => {
                 const dayOfWeek = new Date(t.date + 'T00:00:00').getDay();
@@ -1051,23 +1091,8 @@
             
             barChart = new Chart(ctx, {
                 type: 'bar',
-                data: { 
-                    labels: labelsENorES, 
-                    datasets: [{ 
-                        data: dataValues, 
-                        backgroundColor: barColors, 
-                        borderRadius: 6 
-                    }] 
-                },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } }, 
-                    scales: { 
-                        y: { beginAtZero: true, ticks: { color: textColors } }, 
-                        x: { ticks: { color: textColors } } 
-                    } 
-                }
+                data: { labels: labelsENorES, datasets: [{ data: dataValues, backgroundColor: barColors, borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: textColors } }, x: { ticks: { color: textColors } } } }
             });
         }
 
