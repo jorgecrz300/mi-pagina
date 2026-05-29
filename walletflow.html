@@ -26,6 +26,26 @@
             --glass-bg: rgba(255, 255, 255, 0.7); --glass-border: rgba(63, 97, 238, 0.4);
             --ai-accent: #00f5d4;
         }
+        /* NUEVO TEMA: GLASSMORPHISM (PEGAR EN LA LÍNEA 28) */
+  :root[data-theme="glass"] {
+    /* Fondo con un degradado fluido azul profundo/púrpura */
+    --bg-color: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #2e1065 100%);
+    
+    /* El truco: tarjetas semi-transparentes */
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --text-color: #f8fafc;
+    
+    /* Colores de acento elegantes y refinados */
+    --primary: #38bdf8;       /* Celeste brillante estilo cristal */
+    --success: #34d399;       /* Verde suave */
+    --danger: #f87171;        /* Rojo suave */
+    --border: rgba(255, 255, 255, 0.1); /* Borde de cristal fino */
+    --input-bg: rgba(0, 0, 0, 0.2);
+    
+    /* Variables especiales para reforzar el efecto */
+    --glass-blur: blur(12px);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  }
         :root[data-theme="space"] {
             --bg-color: #0d1b2a; --card-bg: #1b263b; --text-color: #e0e1dd;
             --primary: #e0a96d; --success: #52b788; --danger: #f26419; --border: #415a77; --input-bg: #0d1b2a;
