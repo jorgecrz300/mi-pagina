@@ -373,10 +373,27 @@
                 </div>
                 <div class="ai-chat-log" id="ai-chat-log">
                     </div>
-                <div class="ai-chat-input-bar">
-                    <input type="text" id="ai-chat-input" placeholder="Pregúntame sobre tus gastos, categorías o dinero..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
-                    <button class="ai-chat-send-btn" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-                </div>
+                <div class="ai-chat-input-bar" style="position: relative; display: flex; gap: 6px; align-items: center;">
+        
+        <button id="btn-comandos" type="button" onclick="toggleMenuComandos(event)" style="background-color: #e2ba7d; color: #0b1329; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap;">
+          Comandos
+        </button>
+
+        <div id="menu-comandos" style="display: none; position: absolute; bottom: 45px; left: 0; background-color: #1c2541; border: 1px solid #a855f7; border-radius: 8px; width: 240px; z-index: 1000; box-shadow: 0px 4px 12px rgba(0,0,0,0.5); padding: 6px;">
+          <p style="color: #64748b; font-size: 11px; margin: 2px 0 6px 4px; font-weight: bold;">Selecciona un comando:</p>
+          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px;">
+            <li><button type="button" onclick="ejecutarComando('¿Cuánto dinero tengo en total?')" style="width: 100%; text-align: left; background: none; border: none; color: white; padding: 6px; font-size: 12px; cursor: pointer; border-radius: 4px;" onmouseover="this.style.backgroundColor='#334155'" onmouseout="this.style.backgroundColor='transparent'">💰 Balance Total</button></li>
+            <li><button type="button" onclick="ejecutarComando('¿Cuál es mi balance mensual actual?')" style="width: 100%; text-align: left; background: none; border: none; color: white; padding: 6px; font-size: 12px; cursor: pointer; border-radius: 4px;" onmouseover="this.style.backgroundColor='#334155'" onmouseout="this.style.backgroundColor='transparent'">📊 Balance Mensual</button></li>
+            <li><button type="button" onclick="ejecutarComando('¿Cuánto dinero gasté en comida?')" style="width: 100%; text-align: left; background: none; border: none; color: white; padding: 6px; font-size: 12px; cursor: pointer; border-radius: 4px;" onmouseover="this.style.backgroundColor='#334155'" onmouseout="this.style.backgroundColor='transparent'">🍔 Gasto en Comida</button></li>
+            <li><button type="button" onclick="ejecutarComando('¿Cuáles son mis gastos totales del mes?')" style="width: 100%; text-align: left; background: none; border: none; color: white; padding: 6px; font-size: 12px; cursor: pointer; border-radius: 4px;" onmouseover="this.style.backgroundColor='#334155'" onmouseout="this.style.backgroundColor='transparent'">📉 Gastos Totales</button></li>
+            <li><button type="button" onclick="ejecutarComando('¿Dime cuáles son mis ingresos totales?')" style="width: 100%; text-align: left; background: none; border: none; color: white; padding: 6px; font-size: 12px; cursor: pointer; border-radius: 4px;" onmouseover="this.style.backgroundColor='#334155'" onmouseout="this.style.backgroundColor='transparent'">📈 Ingresos Totales</button></li>
+          </ul>
+        </div>
+
+        <input type="text" id="ai-chat-input" placeholder="Pregúntame sobre tus gastos, categorías o dinero..." onkeydown="if(event.key==='Enter') sendChatMessage()" style="flex-grow: 1; background: transparent; border: none; color: white; outline: none;">
+        
+        <button class="ai-chat-send-btn" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
             </div>
         </div>
 
@@ -1319,6 +1336,30 @@
         applyLanguageStrings();
         populateMonthFilter();
         updateUI();
+// --- FUNCIONES PARA EL MENÚ DE COMANDOS RÁPIDOS ---
+  function toggleMenuComandos(event) {
+    event.stopPropagation();
+    const menu = document.getElementById('menu-comandos');
+    menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+  }
+
+  function ejecutarComando(texto) {
+    const input = document.getElementById('ai-chat-input');
+    if (input) {
+      input.value = texto;
+      document.getElementById('menu-comandos').style.display = 'none';
+      sendChatMessage(); // Llama a tu función original para enviar el mensaje
+    }
+  }
+
+  // Cerrar el menú si haces clic en cualquier otro lado de la pantalla
+  document.addEventListener('click', function(e) {
+    const menu = document.getElementById('menu-comandos');
+    const btn = document.getElementById('btn-comandos');
+    if (menu && menu.style.display === 'block' && e.target !== menu && e.target !== btn && !menu.contains(e.target)) {
+      menu.style.display = 'none';
+    }
+  });
     </script>
 </body>
 </html>
