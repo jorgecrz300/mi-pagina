@@ -25,26 +25,65 @@
             --primary: #4361ee; --success: #2ec4b6; --danger: #e63946; --border: #e9ecef; --input-bg: #ffffff;
             --glass-bg: rgba(255, 255, 255, 0.7); --glass-border: rgba(63, 97, 238, 0.4);
             --ai-accent: #00f5d4;
-        }
-        /* NUEVO TEMA: GLASSMORPHISM (PEGAR EN LA LÍNEA 28) */
+        }/* ==========================================================================
+     NUEVOS TEMAS INTEGRADOS (PEGAR EN LA LÍNEA 28)
+     ========================================================================== */
+
+  /* 1. TEMA GLASSMORPHISM (Vidrio Esmerilado Premium) */
   :root[data-theme="glass"] {
-    /* Fondo con un degradado fluido azul profundo/púrpura */
     --bg-color: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #2e1065 100%);
-    
-    /* El truco: tarjetas semi-transparentes */
     --card-bg: rgba(255, 255, 255, 0.05);
     --text-color: #f8fafc;
-    
-    /* Colores de acento elegantes y refinados */
-    --primary: #38bdf8;       /* Celeste brillante estilo cristal */
-    --success: #34d399;       /* Verde suave */
-    --danger: #f87171;        /* Rojo suave */
-    --border: rgba(255, 255, 255, 0.1); /* Borde de cristal fino */
+    --primary: #38bdf8;
+    --success: #34d399;
+    --danger: #f87171;
+    --border: rgba(255, 255, 255, 0.1);
     --input-bg: rgba(0, 0, 0, 0.2);
-    
-    /* Variables especiales para reforzar el efecto */
+    /* Propiedades exclusivas de este tema */
     --glass-blur: blur(12px);
     --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  /* 2. TEMA ESPACIAL (Cosmos Profundo) */
+  :root[data-theme="space"] {
+    --bg-color: #030712;
+    --card-bg: #111827;
+    --text-color: #f3f4f6;
+    --primary: #818cf8;       /* Azul galáctico */
+    --success: #10b981;
+    --danger: #ef4444;
+    --border: #1f2937;
+    --input-bg: #1f2937;
+    --glass-blur: none;
+    --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+  }
+
+  /* 3. TEMA MINIMALISTA (Enfoque limpio en los datos) */
+  :root[data-theme="minimal"] {
+    --bg-color: #f8fafc;       /* Fondo claro ultra-limpio */
+    --card-bg: #ffffff;       /* Tarjetas blancas puras */
+    --text-color: #0f172a;    /* Texto oscuro de alto contraste */
+    --primary: #0f172a;       /* Detalles en negro sólido */
+    --success: #16a34a;       /* Verde financiero estándar */
+    --danger: #dc2626;
+    --border: #e2e8f0;        /* Líneas divisorias muy finas */
+    --input-bg: #f1f5f9;
+    --glass-blur: none;
+    --glass-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  /* 4. TEMA CYBERPUNK ORIGINAL (Mantenido para tu estructura) */
+  :root[data-theme="cyberpunk"] {
+    --bg-color: #0b0f19;
+    --card-bg: #151f32;
+    --text-color: #f8fafc;
+    --primary: #a855f7;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --border: #22314d;
+    --input-bg: #0b0f19;
+    --glass-blur: none;
+    --glass-shadow: none;
   }
         :root[data-theme="space"] {
             --bg-color: #0d1b2a; --card-bg: #1b263b; --text-color: #e0e1dd;
@@ -55,13 +94,13 @@
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color); color: var(--text-color);
-            margin: 0; padding: 0; min-height: 100vh;
-            display: flex; justify-content: center; align-items: center;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
+       body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-color); color: var(--text-color);
+  margin: 0; padding: 0; min-height: 100vh;
+  display: flex; justify-content: center; align-items: center;
+  transition: background 0.3s ease, color 0.3s ease;
+       }
 
         #app-screen { width: 100%; max-width: 500px; padding: env(safe-area-inset-top) 16px 80px 16px; position: relative; }
         
@@ -122,7 +161,18 @@
         .card-sub p { margin: 0; font-size: 15px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; transition: all 0.2s ease; }
         
         .main-content { display: flex; flex-direction: column; gap: 20px; padding-bottom: 40px; }
-        .panel { background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); position: relative; }
+        .panel { 
+  background: var(--card-bg); 
+  padding: 20px; 
+  border-radius: 16px; 
+  border: 1px solid var(--border); 
+  position: relative; 
+  
+  /* Habilitan el efecto de vidrio difuminado si se activa el tema glass */
+  backdrop-filter: var(--glass-blur, none);
+  -webkit-backdrop-filter: var(--glass-blur, none);
+  box-shadow: var(--glass-shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+}
         .panel h2 { margin-top: 0; margin-bottom: 15px; font-size: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
         
         .select-filter { background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border); border-radius: 8px; padding: 4px 8px; font-size: 13px; font-weight: 600; cursor: pointer; outline: none; }
