@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor de Finanzas Personales</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+    <div class="max-w-md mx-auto my-10 p-6 bg-white rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">💰 Mi Monitor Financiero</h1>
+
+        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 rounded-xl text-white text-center mb-6 shadow-md">
+            <h2 class="text-sm uppercase tracking-wider opacity-80">Balance Total</h2>
+            <p id="balance" class="text-3xl font-extrabold mt-1">$0.00</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="bg-green-50 p-4 rounded-lg text-center border border-green-200">
+                <span class="text-xs text-green-600 font-bold uppercase">Ingresos</span>
+                <p id="money-plus" class="text-xl font-bold text-green-600">+$0.00</p>
+            </div>
+            <div class="bg-red-50 p-4 rounded-lg text-center border border-red-200">
+                <span class="text-xs text-red-600 font-bold uppercase">Gastos</span>
+                <p id="money-minus" class="text-xl font-bold text-red-600">-$0.00</p>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-1">Añadir Transacción</h3>
+            <form id="form" class="space-y-3">
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">Concepto</label>
+                    <input type="text" id="text" placeholder="Ej. Salario, Supermercado..." class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">Cantidad <span class="text-xs text-gray-400">(negativo para gastos)</span></label>
+                    <input type="number" step="0.01" id="amount" placeholder="Ej. 250, -15" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
+                </div>
+                <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 cursor-pointer">
+                    Guardar Transacción
+                </button>
+            </form>
+        </div>
+
+        <div>
+            <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-1">Historial de Movimientos</h3>
+            <ul id="list" class="space-y-2 max-h-60 overflow-y-auto">
+                </ul>
+        </div>
+    </div>
+
+    <script>
+        // Elementos del DOM
+        const balance = document.getElementById('balance');
+        const money_plus = document.getElementById('money-plus');
+        const money_minus = document.getElementById('money-minus');
+        const list = document.getElementById('list');
+        const form = document.getElementById('form');
+        const text = document.getElementById('text');
+        const amount = document.getElementById('amount');
+
+        // Obtener datos guardados en el navegador
+        const localStorageTransactions = JSON.parse(localStorage.getItem('transactions'));
+        let transactions = localStorage.getItem('transactions') !== null ? localStorageTransactions : [];
+
+        // Añadir nueva transacción
+        function addTransaction(e) {
+            e.preventDefault();
+
+            if (text.value.trim() === '' || amount.value.trim() === '') {
+                alert('Por favor, añade un concepto y una cantidad');
+                return;
+            }
+
+            const transaction = {
+                id: generateID(),
+                text: text.value,
+                amount: +amount.value // El signo '+' lo convierte a número decimal
+            };
+
+            transactions.push(transaction);
+            addTransactionDOM(transaction);
+            updateValues();
+            updateLocalStorage();
+
+            text.value = '';
+            amount.value = '';
+        }
+
+        // Generar ID único aleatorio
+        function generateID() {
+            return Math.floor(Math.random() * 100000000);
+        }
+
+        // Mostrar transacción en la interfaz de usuario
+        function addTransactionDOM(transaction) {
+            const sign = transaction.amount < 0 ? '-' : '+';
+            const item = document.createElement('li');
+            const isNegative = transaction.amount < 0;
+
+            // Diseño condicional: verde para ingresos, rojo para gastos
+            item.className = `flex justify-between items-center p-2.5 rounded-lg border-l-4 bg-gray-50 text-sm shadow-sm ${
+                isNegative ? 'border-red-500' : 'border-green-500'
+            }`;
+
+            item.innerHTML = `
+                <span class="font-medium text-gray-700">${transaction.text}</span>
+                <div class="flex items-center space-x-3">
+                    <span class="${isNegative ? 'text-red-600' : 'text-green-600'} font-bold">
+                        ${sign}$${Math.abs(transaction.amount).toFixed(2)}
+                    </span>
+                    <button onclick="removeTransaction(${transaction.id})" class="text-gray-400 hover:text-red-500 font-bold transition cursor-pointer">
+                        ✕
+                    </button>
+                </div>
+            `;
+
+            list.appendChild(item);
+        }
+
+        // Calcular y actualizar totales (Balance, Ingresos y Gastos)
+        function updateValues() {
+            const amounts = transactions.map(transaction => transaction.amount);
+
+            const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
+
+            const income = amounts
+                .filter(item => item > 0)
+                .reduce((acc, item) => (acc += item), 0)
+                .toFixed(2);
+
+            const expense = (
+                amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1
+            ).toFixed(2);
+
+            balance.innerText = `$${total}`;
+            money_plus.innerText = `+$${income}`;
+            money_minus.innerText = `-$${expense}`;
+        }
+
+        // Eliminar movimiento por su ID
+        function removeTransaction(id) {
+            transactions = transactions.filter(transaction => transaction.id !== id);
+            updateLocalStorage();
+            init();
+        }
+
+        // Guardar permanentemente en el navegador
+        void function updateLocalStorage() {
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+        }();
+
+        function updateLocalStorage() {
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+        }
+
+        // Iniciar la aplicación al cargar la página
+        function init() {
+            list.innerHTML = '';
+            transactions.forEach(addTransactionDOM);
+            updateValues();
+        }
+
+        init();
+
+        // Evento para escuchar cuando el usuario envía el formulario
+        form.addEventListener('submit', addTransaction);
+    </script>
+</body>
+</html>
