@@ -16,9 +16,9 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
         .glass-panel {
-            background: rgba(15, 23, 42, 0.75);
+            background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-b: 1px solid rgba(255, 255, 255, 0.08);
         }
         .neo-card {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
@@ -37,34 +37,34 @@
 </head>
 <body class="bg-[#0b0f19] text-slate-200 min-h-screen overflow-x-hidden selection:bg-cyan-500 selection:text-slate-950 antialiased">
 
-    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 px-4 lg:px-8 py-4 shadow-xl shadow-black/20">
-        <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+    <header class="sticky top-0 z-50 glass-panel px-4 lg:px-8 py-3.5 shadow-xl shadow-black/40">
+        <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             
-            <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
-                <div class="flex items-center gap-3">
-                    <div class="w-11 h-11 bg-gradient-to-br from-cyan-500 via-blue-600 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                        <span class="text-slate-950 font-extrabold text-2xl tracking-tighter">FP</span>
+            <div class="flex items-center justify-between w-full md:w-auto gap-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 bg-gradient-to-br from-cyan-500 via-blue-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0">
+                        <span class="text-slate-950 font-extrabold text-xl tracking-tighter">FP</span>
                     </div>
                     <div>
-                        <h1 class="text-xl font-extrabold tracking-tight text-white">
+                        <h1 class="text-lg font-extrabold tracking-tight text-white leading-tight">
                             Finanzas<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">Pro</span>
                         </h1>
-                        <p class="text-[9px] uppercase font-bold tracking-widest text-slate-500">Suite Modular • v4.0</p>
+                        <p class="text-[8px] uppercase font-bold tracking-widest text-slate-500">Suite v4.0</p>
                     </div>
                 </div>
                 
-                <div class="md:hidden">
-                    <select id="mobileModuleSelector" onchange="switchModule(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl p-2.5 text-cyan-400 outline-none cursor-pointer">
+                <div class="md:hidden shrink-0">
+                    <select id="mobileModuleSelector" onchange="switchModule(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-2 px-3 text-cyan-400 outline-none cursor-pointer focus:border-cyan-500">
                         <option value="mod-overview">🎛️ Vista Principal</option>
-                        <option value="mod-analytics">📊 Analíticas e Histograma</option>
-                        <option value="mod-simulator">🔮 Simulador de Riqueza</option>
+                        <option value="mod-analytics">📊 Analíticas</option>
+                        <option value="mod-simulator">🔮 Simulador</option>
                     </select>
                 </div>
             </div>
             
             <div class="hidden md:flex items-center bg-slate-950/60 p-1.5 rounded-2xl border border-slate-800/80">
                 <button onclick="switchModule('mod-overview')" id="btn-mod-overview" class="module-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md">
-                    🎛️ Resumen Geral
+                    🎛️ Resumen General
                 </button>
                 <button onclick="switchModule('mod-analytics')" id="btn-mod-analytics" class="module-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">
                     📊 Centro Analítico
@@ -74,10 +74,10 @@
                 </button>
             </div>
             
-            <div class="flex items-center justify-end gap-2.5 w-full md:w-auto border-t border-slate-800/60 md:border-0 pt-3 md:pt-0">
-                <div class="flex items-center bg-slate-900/90 rounded-xl p-1 border border-slate-800 text-xs font-mono">
-                    <span class="px-1.5 text-slate-500 text-[10px]">MONEDA:</span>
-                    <select id="globalCurrency" onchange="changeCurrency()" class="bg-transparent border-0 outline-none text-cyan-400 pr-1.5 font-bold cursor-pointer">
+            <div class="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto border-t border-slate-800/60 md:border-0 pt-2 md:pt-0">
+                <div class="flex items-center bg-slate-900/90 rounded-xl p-1 border border-slate-800 text-xs font-mono flex-1 md:flex-initial justify-center md:justify-start">
+                    <span class="px-1.5 text-slate-500 text-[9px] uppercase font-bold">Moneda:</span>
+                    <select id="globalCurrency" onchange="changeCurrency()" class="bg-transparent border-0 outline-none text-cyan-400 font-bold cursor-pointer text-xs pr-1">
                         <option value="USD">USD ($)</option>
                         <option value="EUR">EUR (€)</option>
                         <option value="MXN">MXN ($)</option>
@@ -86,12 +86,12 @@
                     </select>
                 </div>
 
-                <button onclick="togglePrivacyMode()" id="privacyToggleBtn" class="p-2.5 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 rounded-xl transition-all cursor-pointer text-slate-400" title="Modo Privacidad">
-                    <span id="privacyIcon">🔓</span>
+                <button onclick="togglePrivacyMode()" id="privacyToggleBtn" class="p-2.5 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 rounded-xl transition-all cursor-pointer text-slate-400 shrink-0 flex items-center justify-center aspect-square" title="Modo Privacidad">
+                    <span id="privacyIcon" class="text-xs">🔓</span>
                 </button>
 
-                <div class="dropdown relative">
-                    <button onclick="toggleDataMenu()" class="flex items-center gap-1.5 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-xs font-bold py-2.5 px-3 rounded-xl transition-all cursor-pointer">
+                <div class="dropdown relative flex-1 md:flex-initial">
+                    <button onclick="toggleDataMenu()" class="w-full md:w-auto flex items-center justify-center gap-1.5 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-xs font-bold py-2.5 px-3 rounded-xl transition-all cursor-pointer">
                         ⚙️ Sistema
                     </button>
                     <div id="dataMenu" class="hidden absolute right-0 mt-2 w-48 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl p-2 space-y-1 z-50">
@@ -107,22 +107,22 @@
         </div>
     </header>
 
-    <section class="max-w-[1600px] mx-auto px-4 lg:px-8 pt-6">
-        <div class="relative overflow-hidden rounded-3xl p-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-slate-800 shadow-2xl">
+    <section class="max-w-[1600px] mx-auto px-4 lg:px-8 pt-4">
+        <div class="relative overflow-hidden rounded-2xl p-5 sm:p-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-slate-800/80 shadow-2xl">
             <div class="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full blur-[70px] opacity-15"></div>
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h3 class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">Patrimonio Neto Consolidado</h3>
-                    <span class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mono money-display" id="netWealthText">$0.00</span>
+                <div class="min-w-0 w-full sm:w-auto">
+                    <h3 class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Patrimonio Neto Consolidado</h3>
+                    <div class="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mono money-display truncate break-all" id="netWealthText">$0.00</div>
                 </div>
-                <div class="flex gap-4 sm:gap-8 border-t sm:border-t-0 sm:border-l border-slate-800 pt-3 sm:pt-0 sm:pl-8 w-full sm:w-auto">
-                    <div>
-                        <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider mb-0.5">Ingresos Totales</p>
-                        <p id="totalIncomeText" class="text-base sm:text-lg font-bold text-white mono money-display">$0.00</p>
+                <div class="flex gap-4 sm:gap-8 border-t sm:border-t-0 sm:border-l border-slate-800/80 pt-3 sm:pt-0 sm:pl-8 w-full sm:w-auto">
+                    <div class="min-w-0 flex-1 sm:flex-none">
+                        <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider mb-0.5">Ingresos Totales</p>
+                        <p id="totalIncomeText" class="text-sm sm:text-lg font-bold text-white mono money-display truncate">$0.00</p>
                     </div>
-                    <div>
-                        <p class="text-[10px] font-bold text-rose-400 uppercase tracking-wider mb-0.5">Gastos Totales</p>
-                        <p id="totalExpenseText" class="text-base sm:text-lg font-bold text-white mono money-display">$0.00</p>
+                    <div class="min-w-0 flex-1 sm:flex-none">
+                        <p class="text-[9px] font-bold text-rose-400 uppercase tracking-wider mb-0.5">Gastos Totales</p>
+                        <p id="totalExpenseText" class="text-sm sm:text-lg font-bold text-white mono money-display truncate">$0.00</p>
                     </div>
                 </div>
             </div>
@@ -133,20 +133,20 @@
 
         <div id="mod-overview" class="module-view grid grid-cols-12 gap-6">
             <div class="col-span-12 lg:col-span-4 space-y-6">
-                <div class="neo-card p-6 rounded-3xl shadow-xl">
+                <div class="neo-card p-5 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xl">
                     <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
                         <span class="text-cyan-400">⚡</span> Procesador de Movimientos
                     </h3>
                     <form id="ledgerForm" class="space-y-4">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Concepto Comercial / Detalle</label>
-                            <input type="text" id="txDesc" placeholder="Ej. Pago de Sueldo, Compra Super..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 text-sm focus:ring-2 focus:ring-cyan-500 outline-none text-white placeholder-slate-600 transition" required />
+                            <input type="text" id="txDesc" placeholder="Ej. Pago de Sueldo, Compra Super..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm focus:ring-2 focus:ring-cyan-500 outline-none text-white placeholder-slate-600 transition" required />
                         </div>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Categoría Analítica</label>
-                                <select id="txCategory" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 text-sm text-slate-300 outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer">
+                                <select id="txCategory" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-300 outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer">
                                     <option value="Ingreso">💼 Ingresos Operativos</option>
                                     <option value="Inversiones">📈 Rendimiento / Inversión</option>
                                     <option value="Comida">🛒 Alimentación / Suministros</option>
@@ -159,33 +159,33 @@
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Importe Líquido</label>
-                                <input type="number" step="0.01" id="txAmount" placeholder="0.00" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 text-sm focus:ring-2 focus:ring-cyan-500 outline-none text-white placeholder-slate-600 font-mono" required />
+                                <input type="number" step="0.01" id="txAmount" placeholder="0.00" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm focus:ring-2 focus:ring-cyan-500 outline-none text-white placeholder-slate-600 font-mono" required />
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                            <div class="flex items-center gap-2 bg-slate-950/40 p-3.5 rounded-xl border border-slate-800/60">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                            <div class="flex items-center gap-2 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60">
                                 <input type="checkbox" id="txRecurring" class="w-4 h-4 accent-cyan-500 rounded cursor-pointer">
-                                <label for="txRecurring" class="text-xs text-slate-400 font-medium cursor-pointer select-none">Cobro/Gasto Fijo Mensual</label>
+                                <label for="txRecurring" class="text-xs text-slate-400 font-medium cursor-pointer select-none">Cobro/Gasto Fijo</label>
                             </div>
-                            <button type="submit" class="bg-gradient-to-r from-cyan-600 via-blue-600 to-emerald-600 py-3.5 text-white font-bold text-xs tracking-wider rounded-xl shadow-lg transition-all cursor-pointer">
+                            <button type="submit" class="bg-gradient-to-r from-cyan-600 via-blue-600 to-emerald-600 py-3 text-white font-bold text-xs tracking-wider rounded-xl shadow-lg transition-all cursor-pointer">
                                 EJECUTAR REGISTRO
                             </button>
                         </div>
                     </form>
                 </div>
                 
-                <div class="bg-slate-900/30 border border-slate-800 rounded-3xl p-5 flex justify-between items-center">
+                <div class="bg-slate-900/30 border border-slate-800 rounded-2xl p-4 flex justify-between items-center">
                     <div>
                         <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Estado Financiero</h4>
-                        <p class="text-[11px] text-slate-500 mt-0.5">Analizado por la suite</p>
+                        <p class="text-[10px] text-slate-500 mt-0.5">Analizado por la suite</p>
                     </div>
-                    <span id="healthBadge" class="text-xs font-black uppercase px-3 py-1.5 rounded-xl tracking-wider">Estable</span>
+                    <span id="healthBadge" class="text-xs font-black uppercase px-2.5 py-1.5 rounded-xl tracking-wider">Estable</span>
                 </div>
             </div>
 
             <div class="col-span-12 lg:col-span-8 space-y-6">
-                <div class="neo-card rounded-3xl shadow-xl overflow-hidden flex flex-col">
+                <div class="neo-card rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden flex flex-col">
                     <div class="p-5 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h3 class="font-bold text-white text-base">Auditoría Transaccional</h3>
@@ -239,21 +239,21 @@
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-800/60">
+                <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60">
                     <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Tasa de Ahorro</span>
-                    <p id="kpiSavingRate" class="text-2xl font-extrabold text-cyan-400 mono">0%</p>
+                    <p id="kpiSavingRate" class="text-xl font-extrabold text-cyan-400 mono">0%</p>
                 </div>
-                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-800/60">
+                <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60">
                     <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Fuga Crítica</span>
-                    <p id="kpiTopExpense" class="text-sm font-extrabold text-rose-400 truncate mt-1">Ninguno</p>
+                    <p id="kpiTopExpense" class="text-xs font-extrabold text-rose-400 truncate mt-1">Ninguno</p>
                 </div>
-                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-800/60">
+                <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60">
                     <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Contratos Fijos</span>
-                    <p id="kpiRecurringCount" class="text-2xl font-extrabold text-blue-400 mono">0</p>
+                    <p id="kpiRecurringCount" class="text-xl font-extrabold text-blue-400 mono">0</p>
                 </div>
-                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-800/60">
+                <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60">
                     <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Eficiencia Operativa</span>
-                    <p id="kpiEfficiency" class="text-2xl font-extrabold text-emerald-400 mono">0.0x</p>
+                    <p id="kpiEfficiency" class="text-xl font-extrabold text-emerald-400 mono">0.0x</p>
                 </div>
             </div>
         </div>
@@ -271,11 +271,11 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Aporte Mensual Continuo</label>
-                            <input type="number" id="simMonthly" value="250" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-sm font-mono text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+                            <input type="number" id="simMonthly" value="250" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-white focus:ring-2 focus:ring-cyan-500 outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tasa de Interés Anual Esperada (%)</label>
-                            <input type="number" id="simRate" value="9" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-sm font-mono text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+                            <input type="number" id="simRate" value="9" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-white focus:ring-2 focus:ring-cyan-500 outline-none">
                         </div>
                     </div>
                     
@@ -289,12 +289,12 @@
                         </div>
                     </div>
                     
-                    <div class="bg-slate-950 border border-slate-800/80 p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 shadow-inner">
+                    <div class="bg-slate-950 border border-slate-800/80 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 shadow-inner">
                         <div>
                             <h4 class="text-sm font-bold text-slate-300">Patrimonio Estimado Final:</h4>
                             <p class="text-[11px] text-slate-500 mt-0.5">Capital depositado más rendimientos acumulados</p>
                         </div>
-                        <span class="text-2xl sm:text-3xl font-black text-emerald-400 mono money-display" id="projectionResultText">$0.00</span>
+                        <span class="text-xl sm:text-2xl font-black text-emerald-400 mono money-display" id="projectionResultText">$0.00</span>
                     </div>
                 </div>
             </div>
@@ -324,16 +324,11 @@
 
         // FUNCIÓN DEL MENÚ DE DISTRIBUCIÓN: INTERCAMBIAR MÓDULOS (VISTAS)
         function switchModule(targetModuleId) {
-            // Ocultar todas las vistas modulares
             document.querySelectorAll('.module-view').forEach(view => view.classList.add('hidden'));
-            
-            // Mostrar el módulo objetivo seleccionado
             document.getElementById(targetModuleId).classList.remove('hidden');
 
-            // Sincronizar selectores del menú móvil
             document.getElementById('mobileModuleSelector').value = targetModuleId;
 
-            // Actualizar estilo visual de los botones del menú en escritorio
             document.querySelectorAll('.module-tab-btn').forEach(btn => {
                 btn.className = "module-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200";
             });
@@ -342,7 +337,6 @@
                 activeBtn.className = "module-tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md";
             }
 
-            // Redibujar gráficos si se ingresa al Centro Analítico para evitar bugs de tamaño de Chart.js
             if (targetModuleId === 'mod-analytics') {
                 setTimeout(refreshAnalyticalCharts, 5);
             }
@@ -359,7 +353,6 @@
 
             if (!description || isNaN(amount)) return;
 
-            // Gestión predictiva de signos monetarios
             if (category !== 'Ingreso' && category !== 'Inversiones' && amount > 0) {
                 amount = -amount;
             } else if ((category === 'Ingreso' || category === 'Inversiones') && amount < 0) {
@@ -380,7 +373,6 @@
             ledgerForm.reset();
         });
 
-        // REFRESCAR INTEGRAL DE COMPONENTES DEL COMPUESTO
         function syncStorage() {
             localStorage.setItem('finanzas_pro_v40_core', JSON.stringify(ledgerDatabase));
             refreshSuiteDashboard();
@@ -393,7 +385,6 @@
             calculateProjection();
         }
 
-        // CONSTRUCCIÓN DINÁMICA DE LA LISTA DE AUDITORÍA
         function renderLedgerList() {
             const query = searchBox.value.toLowerCase();
             const filter = filterBox.value;
@@ -410,7 +401,7 @@
                 return searchMatch && filterMatch;
             });
 
-            ledgerContainer.innerHTML = collection.length ? '' : `<p class="text-center text-slate-600 text-xs italic py-12">Cero registros concurrentes encontrados.</p>`;
+            ledgerContainer.innerHTML = collection.length ? '' : `<p class="text-center text-slate-600 text-xs italic py-12">Cero registros encontrados.</p>`;
 
             collection.forEach(tx => {
                 const isCredit = tx.amount > 0;
@@ -443,7 +434,6 @@
             });
         }
 
-        // EVALUACIÓN CONTINUA DE FÓRMULAS MATEMÁTICAS (KPIs)
         function evaluateFinancialMetrics() {
             const currentSymbol = currencySymbols[activeCurrency];
             
@@ -487,7 +477,6 @@
             });
         }
 
-        // CONTROLADOR DE LIENZOS GRÁFICOS (CHART.JS)
         function refreshAnalyticalCharts() {
             const categories = ['Comida', 'Vivienda', 'Transporte', 'Ocio', 'Salud', 'Otros'];
             const segmentValues = categories.map(cat => {
@@ -496,9 +485,12 @@
             });
 
             const validationCheck = segmentValues.some(val => val > 0);
-            document.getElementById('noPieDataText').style.display = validationCheck ? 'none' : 'flex';
+            const msgEl = document.getElementById('noPieDataText');
+            if (msgEl) msgEl.style.display = validationCheck ? 'none' : 'flex';
 
-            const pieCtx = document.getElementById('pieChartCanvas').getContext('2d');
+            const pieCanvas = document.getElementById('pieChartCanvas');
+            if (!pieCanvas) return;
+            const pieCtx = pieCanvas.getContext('2d');
             if (pieChartInstance) pieChartInstance.destroy();
 
             pieChartInstance = new Chart(pieCtx, {
@@ -516,7 +508,9 @@
                 options: { cutout: '76%', plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
             });
 
-            const barCtx = document.getElementById('barChartCanvas').getContext('2d');
+            const barCanvas = document.getElementById('barChartCanvas');
+            if (!barCanvas) return;
+            const barCtx = barCanvas.getContext('2d');
             if (barChartInstance) barChartInstance.destroy();
 
             barChartInstance = new Chart(barCtx, {
@@ -543,7 +537,6 @@
             });
         }
 
-        // SIMULADOR DE INTERÉS COMPUESTO ALGORÍTMICO
         function calculateProjection() {
             const monthlyContribution = parseFloat(document.getElementById('simMonthly').value) || 0;
             const annualRate = parseFloat(document.getElementById('simRate').value) || 0;
@@ -565,7 +558,6 @@
             document.getElementById('projectionResultText').innerText = `${currentSymbol}${finalValue.toLocaleString(undefined, {maximumFractionDigits: 2})}`;
         }
 
-        // MANTENIMIENTO OPERATIVO Y COPIAS DE RESPALDO (SISTEMA)
         function purgeSingleTx(targetId) {
             ledgerDatabase = ledgerDatabase.filter(t => t.id !== targetId);
             syncStorage();
@@ -625,13 +617,11 @@
             }
         }
 
-        // LISTENERS DE CONTROL CONTINUO
         searchBox.addEventListener('input', renderLedgerList);
         filterBox.addEventListener('change', renderLedgerList);
         document.getElementById('simMonthly').addEventListener('input', calculateProjection);
         document.getElementById('simRate').addEventListener('input', calculateProjection);
 
-        // INICIALIZACIÓN DE LA SUITE FINANCIERA
         refreshSuiteDashboard();
     </script>
 </body>
