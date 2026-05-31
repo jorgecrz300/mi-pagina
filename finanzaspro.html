@@ -3,170 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor de Finanzas Personales</title>
+    <title>Finanzas Pro - Monitor Financiero Inteligente</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-100 font-sans antialiased">
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen pb-12">
 
-    <div class="max-w-md mx-auto my-10 p-6 bg-white rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">💰 Mi Monitor Financiero</h1>
-
-        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 rounded-xl text-white text-center mb-6 shadow-md">
-            <h2 class="text-sm uppercase tracking-wider opacity-80">Balance Total</h2>
-            <p id="balance" class="text-3xl font-extrabold mt-1">$0.00</p>
+    <header class="bg-slate-800 border-b border-slate-700 shadow-lg mb-8">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                🚀 Finanzas Pro
+            </h1>
+            <span class="bg-slate-700 text-xs font-bold text-cyan-400 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                v2.0 Dashboard
+            </span>
         </div>
+    </header>
 
-        <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="bg-green-50 p-4 rounded-lg text-center border border-green-200">
-                <span class="text-xs text-green-600 font-bold uppercase">Ingresos</span>
-                <p id="money-plus" class="text-xl font-bold text-green-600">+$0.00</p>
-            </div>
-            <div class="bg-red-50 p-4 rounded-lg text-center border border-red-200">
-                <span class="text-xs text-red-600 font-bold uppercase">Gastos</span>
-                <p id="money-minus" class="text-xl font-bold text-red-600">-$0.00</p>
-            </div>
-        </div>
-
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-1">Añadir Transacción</h3>
-            <form id="form" class="space-y-3">
-                <div>
-                    <label class="block text-sm text-gray-600 mb-1">Concepto</label>
-                    <input type="text" id="text" placeholder="Ej. Salario, Supermercado..." class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
+    <main class="max-w-5xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="md:col-span-1 space-y-6">
+            
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
+                <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Balance Disponible</h2>
+                <p id="balance" class="text-4xl font-black mt-2 text-white">$0.00</p>
+                
+                <div class="grid grid-cols-2 gap-2 mt-6 pt-4 border-t border-slate-700/50">
+                    <div>
+                        <span class="text-[10px] uppercase font-bold text-slate-400">Ingresos</span>
+                        <p id="money-plus" class="text-base font-bold text-emerald-400">+$0.00</p>
+                    </div>
+                    <div>
+                        <span class="text-[10px] uppercase font-bold text-slate-400">Gastos</span>
+                        <p id="money-minus" class="text-base font-bold text-rose-400">-$0.00</p>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm text-gray-600 mb-1">Cantidad <span class="text-xs text-gray-400">(negativo para gastos)</span></label>
-                    <input type="number" step="0.01" id="amount" placeholder="Ej. 250, -15" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
-                </div>
-                <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 cursor-pointer">
-                    Guardar Transacción
-                </button>
-            </form>
+            </div>
+
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <span>📝</span> Nuevo Movimiento
+                </h3>
+                <form id="form" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Concepto o Descripción</label>
+                        <input type="text" id="text" placeholder="Ej. Nómina, Supermercado, Alquiler..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition" required />
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Categoría</label>
+                        <select id="category" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition" required>
+                            <option value="Ingreso">💰 Ingreso (Sueldo/Inversión)</option>
+                            <option value="Comida">🛒 Comida y Supermercado</option>
+                            <option value="Vivienda">🏠 Vivienda y Servicios</option>
+                            <option value="Transporte">🚗 Transporte y Gasolina</option>
+                            <option value="Ocio">🍿 Ocio y Entretenimiento</option>
+                            <option value="Otros">📦 Otros Gastos</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Monto ($)</label>
+                        <input type="number" step="0.01" id="amount" placeholder="Ej. 1200 o -45.50" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition" required />
+                        <p class="text-[10px] text-slate-400 mt-1">Usa números negativos (-) para tus gastos.</p>
+                    </div>
+
+                    <button class="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-slate-950 font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 cursor-pointer text-sm">
+                        Registrar en Finanzas Pro
+                    </button>
+                </form>
+            </div>
+
         </div>
 
-        <div>
-            <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-1">Historial de Movimientos</h3>
-            <ul id="list" class="space-y-2 max-h-60 overflow-y-auto">
-                </ul>
+        <div class="md:col-span-2 space-y-6">
+            
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">📊 Distribución de Gastos</h3>
+                    <p class="text-xs text-slate-400">Visualiza de forma automática en qué categorías estás gastando más dinero este mes.</p>
+                    <div id="no-chart-data" class="text-sm text-slate-500 mt-6 font-medium italic">
+                        No hay gastos registrados para generar el gráfico.
+                    </div>
+                </div>
+                <div class="relative max-w-[200px] sm:max-w-full mx-auto">
+                    <canvas id="expenseChart" width="200" height="200"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span>⏳</span> Historial de Actividad
+                    </h3>
+                    <div class="flex gap-1 bg-slate-900 p-1 rounded-lg border border-slate-700 text-xs">
+                        <button onclick="filterTransactions('all')" class="px-3 py-1 rounded-md bg-slate-700 text-white font-medium cursor-pointer">Todos</button>
+                        <button onclick="filterTransactions('income')" class="px-3 py-1 rounded-md text-slate-400 hover:text-white cursor-pointer">Ingresos</button>
+                        <button onclick="filterTransactions('expense')" class="px-3 py-1 rounded-md text-slate-400 hover:text-white cursor-pointer">Gastos</button>
+                    </div>
+                </div>
+
+                <ul id="list" class="space-y-2.5 max-h-[280px] overflow-y-auto pr-1">
+                    </ul>
+            </div>
+
         </div>
-    </div>
+
+    </main>
 
     <script>
-        // Elementos del DOM
         const balance = document.getElementById('balance');
         const money_plus = document.getElementById('money-plus');
         const money_minus = document.getElementById('money-minus');
         const list = document.getElementById('list');
         const form = document.getElementById('form');
         const text = document.getElementById('text');
+        const category = document.getElementById('category');
         const amount = document.getElementById('amount');
+        const noChartDataText = document.getElementById('no-chart-data');
 
-        // Obtener datos guardados en el navegador
+        let myChart = null;
+        let currentFilter = 'all';
+
+        // Base de datos local
         const localStorageTransactions = JSON.parse(localStorage.getItem('transactions'));
         let transactions = localStorage.getItem('transactions') !== null ? localStorageTransactions : [];
 
-        // Añadir nueva transacción
+        // Registrar Transacción
         function addTransaction(e) {
             e.preventDefault();
 
-            if (text.value.trim() === '' || amount.value.trim() === '') {
-                alert('Por favor, añade un concepto y una cantidad');
-                return;
+            let selectedCategory = category.value;
+            const numericAmount = +amount.value;
+
+            // Corrección inteligente si el usuario olvida el signo menos en categorías de gastos
+            let finalAmount = numericAmount;
+            if (selectedCategory !== 'Ingreso' && numericAmount > 0) {
+                finalAmount = -numericAmount;
+            } else if (selectedCategory === 'Ingreso' && numericAmount < 0) {
+                selectedCategory = 'Otros'; // Reajuste por incongruencia
             }
 
             const transaction = {
                 id: generateID(),
                 text: text.value,
-                amount: +amount.value // El signo '+' lo convierte a número decimal
+                category: selectedCategory,
+                amount: finalAmount
             };
 
             transactions.push(transaction);
-            addTransactionDOM(transaction);
-            updateValues();
-            updateLocalStorage();
-
-            text.value = '';
-            amount.value = '';
+            updateUI();
+            
+            form.reset();
         }
 
-        // Generar ID único aleatorio
         function generateID() {
             return Math.floor(Math.random() * 100000000);
         }
 
-        // Mostrar transacción en la interfaz de usuario
-        function addTransactionDOM(transaction) {
-            const sign = transaction.amount < 0 ? '-' : '+';
-            const item = document.createElement('li');
-            const isNegative = transaction.amount < 0;
+        // Renderizar la lista con filtros aplicados
+        function renderList() {
+            list.innerHTML = '';
+            
+            const filtered = transactions.filter(t => {
+                if (currentFilter === 'income') return t.amount > 0;
+                if (currentFilter === 'expense') return t.amount < 0;
+                return true;
+            });
 
-            // Diseño condicional: verde para ingresos, rojo para gastos
-            item.className = `flex justify-between items-center p-2.5 rounded-lg border-l-4 bg-gray-50 text-sm shadow-sm ${
-                isNegative ? 'border-red-500' : 'border-green-500'
-            }`;
+            if(filtered.length === 0) {
+                list.innerHTML = `<li class="text-center py-6 text-sm text-slate-500 italic">No se encontraron movimientos</li>`;
+                return;
+            }
 
-            item.innerHTML = `
-                <span class="font-medium text-gray-700">${transaction.text}</span>
-                <div class="flex items-center space-x-3">
-                    <span class="${isNegative ? 'text-red-600' : 'text-green-600'} font-bold">
-                        ${sign}$${Math.abs(transaction.amount).toFixed(2)}
-                    </span>
-                    <button onclick="removeTransaction(${transaction.id})" class="text-gray-400 hover:text-red-500 font-bold transition cursor-pointer">
-                        ✕
-                    </button>
-                </div>
-            `;
+            filtered.forEach(t => {
+                const isNegative = t.amount < 0;
+                const item = document.createElement('li');
+                
+                item.className = `flex justify-between items-center p-3 rounded-xl bg-slate-900/50 border-l-4 transition hover:bg-slate-900 ${
+                    isNegative ? 'border-rose-500' : 'border-emerald-500'
+                }`;
 
-            list.appendChild(item);
+                item.innerHTML = `
+                    <div>
+                        <p class="font-semibold text-sm text-slate-200">${t.text}</p>
+                        <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-mono">${t.category}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="${isNegative ? 'text-rose-400' : 'text-emerald-400'} font-bold text-sm">
+                            ${isNegative ? '' : '+'}$${t.amount.toFixed(2)}
+                        </span>
+                        <button onclick="removeTransaction(${t.id})" class="text-slate-500 hover:text-rose-400 transition text-xs cursor-pointer p-1">
+                            ✕
+                        </button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
         }
 
-        // Calcular y actualizar totales (Balance, Ingresos y Gastos)
-        function updateValues() {
-            const amounts = transactions.map(transaction => transaction.amount);
-
+        // Calcular balances financieros
+        function updateBalances() {
+            const amounts = transactions.map(t => t.amount);
             const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
-
-            const income = amounts
-                .filter(item => item > 0)
-                .reduce((acc, item) => (acc += item), 0)
-                .toFixed(2);
-
-            const expense = (
-                amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1
-            ).toFixed(2);
+            const income = amounts.filter(item => item > 0).reduce((acc, item) => (acc += item), 0).toFixed(2);
+            const expense = (amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1).toFixed(2);
 
             balance.innerText = `$${total}`;
             money_plus.innerText = `+$${income}`;
             money_minus.innerText = `-$${expense}`;
         }
 
-        // Eliminar movimiento por su ID
+        // RENDERIZAR LA GRÁFICA DE PASTEL (CHART.JS)
+        function updateChart() {
+            // Agrupar los gastos por categorías
+            const categories = ['Comida', 'Vivienda', 'Transporte', 'Ocio', 'Otros'];
+            const totals = categories.map(cat => {
+                return transactions
+                    .filter(t => t.category === cat && t.amount < 0)
+                    .reduce((acc, t) => acc + Math.abs(t.amount), 0);
+            });
+
+            const hasExpenses = totals.some(val => val > 0);
+
+            if (!hasExpenses) {
+                noChartDataText.classList.remove('hidden');
+                if (myChart) myChart.destroy();
+                return;
+            } else {
+                noChartDataText.classList.add('hidden');
+            }
+
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+
+            if (myChart) {
+                myChart.destroy(); // Destruye el gráfico anterior para que no se duplique
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        data: totals,
+                        backgroundColor: [
+                            '#f59e0b', // Comida -> Ámbar
+                            '#ef4444', // Vivienda -> Rojo
+                            '#3b82f6', // Transporte -> Azul
+                            '#a855f7', // Ocio -> Púrpura
+                            '#64748b'  // Otros -> Gris
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#1e293b'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { color: '#94a3b8', font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+        }
+
         function removeTransaction(id) {
-            transactions = transactions.filter(transaction => transaction.id !== id);
-            updateLocalStorage();
-            init();
+            transactions = transactions.filter(t => t.id !== id);
+            updateUI();
         }
 
-        // Guardar permanentemente en el navegador
-        void function updateLocalStorage() {
+        function filterTransactions(type) {
+            currentFilter = type;
+            // Cambiar estilos visuales de los botones de filtro
+            const buttons = event.target.parentElement.children;
+            for(let btn of buttons) {
+                btn.classList.remove('bg-slate-700', 'text-white');
+                btn.classList.add('text-slate-400');
+            }
+            event.target.classList.add('bg-slate-700', 'text-white');
+            renderList();
+        }
+
+        function updateUI() {
             localStorage.setItem('transactions', JSON.stringify(transactions));
-        }();
-
-        function updateLocalStorage() {
-            localStorage.setItem('transactions', JSON.stringify(transactions));
+            renderList();
+            updateBalances();
+            updateChart();
         }
 
-        // Iniciar la aplicación al cargar la página
-        function init() {
-            list.innerHTML = '';
-            transactions.forEach(addTransactionDOM);
-            updateValues();
-        }
-
-        init();
-
-        // Evento para escuchar cuando el usuario envía el formulario
+        // Iniciar App
         form.addEventListener('submit', addTransaction);
+        updateUI();
     </script>
 </body>
 </html>
