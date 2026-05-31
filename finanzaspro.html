@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Finanzas Pro Enterprise | Psych & Survival Dashboard</title>
+    <title>Finanzas Pro Enterprise | Zero-Scroll Mobile Dashboard</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,10 +35,10 @@
         }
     </style>
 </head>
-<body class="bg-[#0b0f19] text-slate-200 min-h-screen overflow-x-hidden selection:bg-cyan-500 selection:text-slate-950 antialiased">
+<body class="bg-[#0b0f19] text-slate-200 min-h-screen w-full overflow-x-hidden selection:bg-cyan-500 selection:text-slate-950 antialiased">
 
-    <header class="sticky top-0 z-50 glass-panel px-4 lg:px-8 py-3.5 shadow-xl shadow-black/40">
-        <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <header class="sticky top-0 z-50 glass-panel px-4 lg:px-8 py-3.5 shadow-xl shadow-black/40 w-full max-w-full overflow-hidden">
+        <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3 w-full">
             
             <div class="flex items-center justify-between w-full md:w-auto gap-4">
                 <div class="flex items-center gap-2.5">
@@ -49,7 +49,7 @@
                         <h1 class="text-lg font-extrabold tracking-tight text-white leading-tight">
                             Finanzas<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">Pro</span>
                         </h1>
-                        <p class="text-[8px] uppercase font-bold tracking-widest text-slate-500">Survival Suite • v4.2</p>
+                        <p class="text-[8px] uppercase font-bold tracking-widest text-slate-500">Survival Suite • v4.3</p>
                     </div>
                 </div>
                 
@@ -75,9 +75,9 @@
             </div>
             
             <div class="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto border-t border-slate-800/60 md:border-0 pt-2 md:pt-0">
-                <div class="flex items-center bg-slate-900/90 rounded-xl p-1 border border-slate-800 text-xs font-mono flex-1 md:flex-initial justify-center md:justify-start">
-                    <span class="px-1.5 text-slate-500 text-[9px] uppercase font-bold">Moneda:</span>
-                    <select id="globalCurrency" onchange="changeCurrency()" class="bg-transparent border-0 outline-none text-cyan-400 font-bold cursor-pointer text-xs pr-1">
+                <div class="flex items-center bg-slate-900/90 rounded-xl p-1 border border-slate-800 text-xs font-mono flex-1 md:flex-initial justify-center md:justify-start min-w-0">
+                    <span class="px-1.5 text-slate-500 text-[9px] uppercase font-bold shrink-0">Moneda:</span>
+                    <select id="globalCurrency" onchange="changeCurrency()" class="bg-transparent border-0 outline-none text-cyan-400 font-bold cursor-pointer text-xs pr-1 truncate">
                         <option value="USD">USD ($)</option>
                         <option value="EUR">EUR (€)</option>
                         <option value="MXN">MXN ($)</option>
@@ -107,22 +107,22 @@
         </div>
     </header>
 
-    <section class="max-w-[1600px] mx-auto px-4 lg:px-8 pt-4">
-        <div class="relative overflow-hidden rounded-2xl p-5 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-slate-800/80 shadow-2xl">
+    <section class="max-w-[1600px] mx-auto px-4 lg:px-8 pt-4 w-full max-w-full overflow-hidden">
+        <div class="relative overflow-hidden rounded-2xl p-5 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-slate-800/80 shadow-2xl w-full">
             <div class="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full blur-[70px] opacity-15"></div>
             
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center w-full">
                 <div class="col-span-12 md:col-span-5 min-w-0">
                     <h3 class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-0.5">Patrimonio Neto Consolidado</h3>
-                    <div class="text-3xl font-black text-white tracking-tight mono money-display truncate" id="netWealthText">$0.00</div>
+                    <div class="text-3xl font-black text-white tracking-tight mono money-display truncate break-all" id="netWealthText">$0.00</div>
                 </div>
                 
-                <div class="col-span-12 md:col-span-4 bg-slate-950/50 border border-slate-800/60 rounded-xl p-3 flex items-center justify-between shadow-inner">
-                    <div class="min-w-0">
-                        <h4 class="text-[9px] font-bold uppercase text-cyan-400 tracking-wider flex items-center gap-1">
-                            ⏱️ Tiempo de Supervivencia
+                <div class="col-span-12 md:col-span-4 bg-slate-950/50 border border-slate-800/60 rounded-xl p-3 flex items-center justify-between shadow-inner min-w-0">
+                    <div class="min-w-0 mr-2">
+                        <h4 class="text-[9px] font-bold uppercase text-cyan-400 tracking-wider flex items-center gap-1 truncate">
+                            ⏱️ Supervivencia
                         </h4>
-                        <p class="text-[10px] text-slate-500 truncate mt-0.5">Resistencia sin empleo actual</p>
+                        <p class="text-[10px] text-slate-500 truncate mt-0.5">Resistencia sin empleo</p>
                     </div>
                     <div class="text-right shrink-0">
                         <span id="survivalDaysText" class="text-xl font-black text-white mono block leading-none">0 días</span>
@@ -130,38 +130,38 @@
                     </div>
                 </div>
 
-                <div class="col-span-12 md:col-span-3 flex justify-between md:justify-end gap-6 border-t md:border-t-0 md:border-l border-slate-800/80 pt-2 md:pt-0 md:pl-6">
-                    <div>
+                <div class="col-span-12 md:col-span-3 flex justify-between md:justify-end gap-4 border-t md:border-t-0 md:border-l border-slate-800/80 pt-2 md:pt-0 md:pl-6 min-w-0">
+                    <div class="min-w-0 flex-1 md:flex-initial">
                         <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider mb-0.5">Ingresos</p>
-                        <p id="totalIncomeText" class="text-sm font-bold text-white mono money-display">$0.00</p>
+                        <p id="totalIncomeText" class="text-sm font-bold text-white mono money-display truncate">$0.00</p>
                     </div>
-                    <div>
+                    <div class="min-w-0 flex-1 md:flex-initial">
                         <p class="text-[9px] font-bold text-rose-400 uppercase tracking-wider mb-0.5">Gastos</p>
-                        <p id="totalExpenseText" class="text-sm font-bold text-white mono money-display">$0.00</p>
+                        <p id="totalExpenseText" class="text-sm font-bold text-white mono money-display truncate">$0.00</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <main class="max-w-[1600px] mx-auto p-4 lg:p-8">
+    <main class="max-w-[1600px] mx-auto p-4 lg:p-8 w-full max-w-full overflow-hidden">
 
-        <div id="mod-overview" class="module-view grid grid-cols-12 gap-6">
+        <div id="mod-overview" class="module-view grid grid-cols-12 gap-6 w-full">
             
-            <div class="col-span-12 lg:col-span-4 space-y-6">
-                <div class="neo-card p-5 rounded-2xl shadow-xl">
+            <div class="col-span-12 lg:col-span-4 space-y-6 min-w-0 w-full">
+                <div class="neo-card p-5 rounded-2xl shadow-xl w-full box-border">
                     <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
                         <span class="text-cyan-400">⚡</span> Registro Inteligente
                     </h3>
-                    <form id="ledgerForm" class="space-y-4">
+                    <form id="ledgerForm" class="space-y-4 w-full">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Concepto Comercial / Detalle</label>
-                            <input type="text" id="txDesc" placeholder="Ej. Almuerzo, Suscripción, Sueldo..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm focus:ring-2 focus:ring-cyan-500 outline-none text-white placeholder-slate-600 transition" required />
+                            <input type="text" id="txDesc" placeholder="Ej. Almuerzo, Suscripción..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm focus:ring-2 focus:ring-cyan-500 outline-none text-white placeholder-slate-600 transition" required />
                         </div>
                         
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Categoría Analítica</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                            <div class="min-w-0">
+                                <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Categoría</label>
                                 <select id="txCategory" onchange="togglePsychSelector(this.value)" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-300 outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer">
                                     <option value="Ingreso">💼 Ingresos Operativos</option>
                                     <option value="Inversiones">📈 Rendimiento / Inversión</option>
@@ -173,28 +173,28 @@
                                     <option value="Otros">📦 Gastos Diversos</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Importe Líquido</label>
+                            <div class="min-w-0">
+                                <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Importe</label>
                                 <input type="number" step="0.01" id="txAmount" placeholder="0.00" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm focus:ring-2 focus:ring-cyan-500 outline-none text-white placeholder-slate-600 font-mono" required />
                             </div>
                         </div>
 
-                        <div id="psychologicalBlock" class="hidden bg-slate-950/50 p-3 rounded-xl border border-slate-800/80 space-y-2">
+                        <div id="psychologicalBlock" class="hidden bg-slate-950/50 p-3 rounded-xl border border-slate-800/80 space-y-2 w-full">
                             <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Filtro de Intención de Gasto</label>
-                            <div class="grid grid-cols-2 gap-2">
+                            <div class="grid grid-cols-2 gap-2 w-full">
                                 <label class="flex items-center justify-center gap-1.5 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-xs font-bold text-slate-400 has-[:checked]:border-cyan-500 has-[:checked]:text-cyan-400 has-[:checked]:bg-cyan-950/20 transition-all select-none">
                                     <input type="radio" name="txIntent" value="necesidad" checked class="hidden"> 🛡️ Necesidad
                                 </label>
                                 <label class="flex items-center justify-center gap-1.5 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-xs font-bold text-slate-400 has-[:checked]:border-amber-500 has-[:checked]:text-amber-400 has-[:checked]:bg-amber-950/20 transition-all select-none">
-                                    <input type="radio" name="txIntent" value="deseo" class="hidden"> ✨ Antojo / Deseo
+                                    <input type="radio" name="txIntent" value="deseo" class="hidden"> ✨ Antojo
                                 </label>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 w-full">
                             <div class="flex items-center gap-2 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60">
                                 <input type="checkbox" id="txRecurring" class="w-4 h-4 accent-cyan-500 rounded cursor-pointer">
-                                <label for="txRecurring" class="text-xs text-slate-400 font-medium cursor-pointer select-none">Cobro/Gasto Fijo</label>
+                                <label for="txRecurring" class="text-xs text-slate-400 font-medium cursor-pointer select-none">Gasto Fijo</label>
                             </div>
                             <button type="submit" class="bg-gradient-to-r from-cyan-600 via-blue-600 to-emerald-600 py-3 text-white font-bold text-xs tracking-wider rounded-xl shadow-lg transition-all cursor-pointer">
                                 REGISTRAR FLUJO
@@ -204,20 +204,20 @@
                 </div>
             </div>
 
-            <div class="col-span-12 lg:col-span-8 space-y-6">
-                <div class="neo-card rounded-2xl shadow-xl overflow-hidden flex flex-col">
-                    <div class="p-5 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                            <h3 class="font-bold text-white text-base">Auditoría Transaccional</h3>
-                            <p class="text-[10px] text-slate-500">Registros validados en memoria local</p>
+            <div class="col-span-12 lg:col-span-8 space-y-6 min-w-0 w-full">
+                <div class="neo-card rounded-2xl shadow-xl overflow-hidden flex flex-col w-full">
+                    <div class="p-5 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
+                        <div class="min-w-0">
+                            <h3 class="font-bold text-white text-base truncate">Auditoría Transaccional</h3>
+                            <p class="text-[10px] text-slate-500">Registros validados localmente</p>
                         </div>
                         
-                        <div class="flex items-center gap-2 w-full sm:w-auto">
-                            <div class="relative flex-1 sm:flex-initial">
+                        <div class="flex items-center gap-2 w-full sm:w-auto min-w-0">
+                            <div class="relative flex-1 sm:flex-initial min-w-0">
                                 <input type="text" id="txSearch" placeholder="Filtrar..." class="bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 pl-9 text-xs focus:border-cyan-500 outline-none w-full sm:w-48 text-white placeholder-slate-600" />
                                 <span class="absolute left-3 top-2.5 text-slate-600 text-xs">🔍</span>
                             </div>
-                            <select id="txFilter" class="bg-slate-950 border border-slate-800 rounded-xl py-2 px-2.5 text-xs text-slate-400 outline-none cursor-pointer">
+                            <select id="txFilter" class="bg-slate-950 border border-slate-800 rounded-xl py-2 px-2.5 text-xs text-slate-400 outline-none cursor-pointer shrink-0">
                                 <option value="all">Todo</option>
                                 <option value="income">Créditos</option>
                                 <option value="expense">Débitos</option>
@@ -226,79 +226,79 @@
                         </div>
                     </div>
                     
-                    <div class="h-[360px] overflow-y-auto custom-scroll p-4 bg-slate-950/20">
-                        <ul id="ledgerContainer" class="space-y-2">
+                    <div class="h-[360px] overflow-y-auto overflow-x-hidden custom-scroll p-4 bg-slate-950/20 w-full">
+                        <ul id="ledgerContainer" class="space-y-2 w-full max-w-full">
                             </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="mod-analytics" class="module-view hidden space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-                <div class="neo-card p-6 rounded-3xl shadow-xl md:col-span-5 flex flex-col justify-between">
+        <div id="mod-analytics" class="module-view hidden space-y-6 w-full max-w-full">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
+                <div class="neo-card p-6 rounded-3xl shadow-xl md:col-span-5 flex flex-col justify-between w-full min-w-0">
                     <div class="flex justify-between items-center mb-4">
-                        <h4 class="font-bold text-white text-xs uppercase tracking-wider">Distribución por Categorías</h4>
+                        <h4 class="font-bold text-white text-xs uppercase tracking-wider">Categorías</h4>
                     </div>
-                    <div class="h-[230px] w-full flex items-center justify-center relative">
+                    <div class="h-[230px] w-[calc(100vw-4rem)] md:w-full max-w-full flex items-center justify-center relative mx-auto overflow-hidden">
                         <canvas id="pieChartCanvas"></canvas>
-                        <div id="noPieDataText" class="absolute inset-0 flex items-center justify-center text-slate-600 text-xs italic bg-[#151f32]/40 rounded-2xl">Sin flujos de egresos evaluables</div>
+                        <div id="noPieDataText" class="absolute inset-0 flex items-center justify-center text-slate-600 text-xs italic bg-[#151f32]/40 rounded-2xl">Sin egresos evaluables</div>
                     </div>
                 </div>
 
-                <div class="neo-card p-6 rounded-3xl shadow-xl md:col-span-7 flex flex-col justify-between">
+                <div class="neo-card p-6 rounded-3xl shadow-xl md:col-span-7 flex flex-col justify-between w-full min-w-0">
                     <div class="flex justify-between items-center mb-4">
-                        <h4 class="font-bold text-white text-xs uppercase tracking-wider">Histograma Comparativo Estructural</h4>
+                        <h4 class="font-bold text-white text-xs uppercase tracking-wider">Histograma Comparativo</h4>
                     </div>
-                    <div class="h-[230px] w-full flex items-center justify-center relative">
+                    <div class="h-[230px] w-[calc(100vw-4rem)] md:w-full max-w-full flex items-center justify-center relative mx-auto overflow-hidden">
                         <canvas id="barChartCanvas"></canvas>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Índice de Vanidad</span>
-                    <p id="kpiVanityRate" class="text-xl font-extrabold text-amber-400 mono">0% Deseos</p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full">
+                <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60 min-w-0">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1 truncate">Índice de Vanidad</span>
+                    <p id="kpiVanityRate" class="text-base sm:text-xl font-extrabold text-amber-400 mono truncate">0% Deseos</p>
                 </div>
-                <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Gasto Vital Real</span>
-                    <p id="kpiVitalExpense" class="text-xl font-extrabold text-cyan-400 mono money-display">$0.00</p>
+                <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60 min-w-0">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1 truncate">Gasto Vital Real</span>
+                    <p id="kpiVitalExpense" class="text-base sm:text-xl font-extrabold text-cyan-400 mono money-display truncate">$0.00</p>
                 </div>
-                <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Tasa de Ahorro</span>
-                    <p id="kpiSavingRate" class="text-xl font-extrabold text-emerald-400 mono">0%</p>
+                <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60 min-w-0">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1 truncate">Tasa de Ahorro</span>
+                    <p id="kpiSavingRate" class="text-base sm:text-xl font-extrabold text-emerald-400 mono truncate">0%</p>
                 </div>
-                <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Eficiencia Global</span>
-                    <p id="kpiEfficiency" class="text-xl font-extrabold text-blue-400 mono">0.0x</p>
+                <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/60 min-w-0">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1 truncate">Eficiencia Global</span>
+                    <p id="kpiEfficiency" class="text-base sm:text-xl font-extrabold text-blue-400 mono truncate">0.0x</p>
                 </div>
             </div>
         </div>
 
-        <div id="mod-simulator" class="module-view hidden max-w-3xl mx-auto">
-            <div class="neo-card p-6 sm:p-8 rounded-3xl shadow-xl space-y-6">
+        <div id="mod-simulator" class="module-view hidden max-w-3xl mx-auto w-full">
+            <div class="neo-card p-6 sm:p-8 rounded-3xl shadow-xl space-y-6 w-full box-border">
                 <div>
                     <h3 class="text-lg font-bold text-white flex items-center gap-2">
                         <span>🔮</span> Proyector Algorítmico de Capital Futuro
                     </h3>
-                    <p class="text-xs text-slate-500 mt-1">Calcula el efecto multiplicador del interés compuesto sobre tus ahorros.</p>
+                    <p class="text-xs text-slate-500 mt-1">Efecto multiplicador del interés compuesto sobre tus ahorros.</p>
                 </div>
                 
-                <div class="space-y-4 pt-2">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-4 pt-2 w-full">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Aporte Mensual Continuo</label>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Aporte Mensual</label>
                             <input type="number" id="simMonthly" value="250" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-white focus:ring-2 focus:ring-cyan-500 outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tasa de Interés Anual (%)</label>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tasa Anual (%)</label>
                             <input type="number" id="simRate" value="9" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-white focus:ring-2 focus:ring-cyan-500 outline-none">
                         </div>
                     </div>
                     
-                    <div class="pt-2">
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Horizonte Temporal de Inversión</label>
+                    <div class="pt-2 w-full">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Horizonte Temporal</label>
                         <input type="range" id="simYears" min="1" max="40" value="15" oninput="calculateProjection()" class="w-full accent-cyan-500 cursor-pointer h-2 bg-slate-950 rounded-lg">
                         <div class="flex justify-between text-[11px] font-mono text-slate-500 mt-2">
                             <span>1 Año</span>
@@ -307,12 +307,12 @@
                         </div>
                     </div>
                     
-                    <div class="bg-slate-950 border border-slate-800/80 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 shadow-inner">
-                        <div>
+                    <div class="bg-slate-950 border border-slate-800/80 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 shadow-inner w-full box-border">
+                        <div class="min-w-0 text-center sm:text-left">
                             <h4 class="text-sm font-bold text-slate-300">Patrimonio Estimado Final:</h4>
-                            <p class="text-[11px] text-slate-500 mt-0.5">Capital depositado más rendimientos acumulados</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Capital depositado más rendimientos</p>
                         </div>
-                        <span class="text-xl sm:text-2xl font-black text-emerald-400 mono money-display" id="projectionResultText">$0.00</span>
+                        <span class="text-xl sm:text-2xl font-black text-emerald-400 mono money-display truncate max-w-full" id="projectionResultText">$0.00</span>
                     </div>
                 </div>
             </div>
@@ -324,7 +324,6 @@
         const currencySymbols = { USD: '$', EUR: '€', MXN: 'MXN$', COP: 'COP$', ARS: 'ARS$' };
         let activeCurrency = 'USD';
 
-        // DATABASE CORE (Se mapea la intención para compatibilidad de la idea 6)
         let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_v42_core')) || [];
         let systemPrivacyActive = false;
         
@@ -337,7 +336,6 @@
         const filterBox = document.getElementById('txFilter');
         const currencySelect = document.getElementById('globalCurrency');
 
-        // Muestra u oculta el bloque psicológico dependiendo de la categoría elegida
         function togglePsychSelector(categoryValue) {
             const block = document.getElementById('psychologicalBlock');
             if(categoryValue === 'Ingreso' || categoryValue === 'Inversiones') {
@@ -366,7 +364,6 @@
             }
         }
 
-        // CONTROLADOR DE REGISTROS
         ledgerForm.addEventListener('submit', (event) => {
             event.preventDefault();
             
@@ -375,7 +372,6 @@
             let amount = parseFloat(document.getElementById('txAmount').value);
             const isRecurring = document.getElementById('txRecurring').checked;
             
-            // Capturar intención psicológica (Idea 6)
             let intent = 'necesidad'; 
             if(category !== 'Ingreso' && category !== 'Inversiones') {
                 intent = document.querySelector('input[name="txIntent"]:checked').value;
@@ -402,7 +398,7 @@
             ledgerDatabase.unshift(operation);
             syncStorage();
             ledgerForm.reset();
-            document.getElementById('psychologicalBlock').classList.add('hidden'); // reset visual
+            document.getElementById('psychologicalBlock').classList.add('hidden');
         });
 
         function syncStorage() {
@@ -439,34 +435,33 @@
                 const isCredit = tx.amount > 0;
                 const element = document.createElement('li');
                 
-                // Badge psicológico visual
                 let intentBadge = '';
                 if(!isCredit) {
                     intentBadge = tx.intent === 'deseo' 
-                        ? `<span class="text-[8px] bg-amber-500/10 text-amber-400 px-1 py-0.2 rounded font-bold">ANTOJO</span>`
-                        : `<span class="text-[8px] bg-cyan-500/10 text-cyan-400 px-1 py-0.2 rounded font-bold">VITAL</span>`;
+                        ? `<span class="text-[8px] bg-amber-500/10 text-amber-400 px-1 py-0.2 rounded font-bold shrink-0">ANTOJO</span>`
+                        : `<span class="text-[8px] bg-cyan-500/10 text-cyan-400 px-1 py-0.2 rounded font-bold shrink-0">VITAL</span>`;
                 }
 
-                element.className = "flex items-center justify-between p-3.5 rounded-xl bg-slate-900/50 border border-slate-800/80 hover:border-slate-700/60 transition-all group";
+                element.className = "flex items-center justify-between p-3.5 rounded-xl bg-slate-900/50 border border-slate-800/80 hover:border-slate-700/60 transition-all group w-full max-w-full min-w-0 gap-2";
                 element.innerHTML = `
-                    <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs shrink-0 ${isCredit ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}">
+                    <div class="flex items-center gap-2 min-w-0 flex-1">
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs shrink-0 ${isCredit ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}">
                             ${isCredit ? '▲' : '▼'}
                         </div>
-                        <div class="min-w-0">
-                            <p class="text-xs font-bold text-slate-200 truncate flex items-center gap-1.5">
-                                ${tx.description}
-                                ${tx.isRecurring ? '<span class="text-[8px] bg-blue-500/10 text-blue-400 px-1 py-0.2 rounded font-mono font-bold">FIJO</span>' : ''}
+                        <div class="min-w-0 flex-1">
+                            <p class="text-xs font-bold text-slate-200 flex items-center gap-1.5 w-full">
+                                <span class="truncate block max-w-[120px] sm:max-w-none break-all">${tx.description}</span>
+                                ${tx.isRecurring ? '<span class="text-[8px] bg-blue-500/10 text-blue-400 px-1 py-0.2 rounded font-mono font-bold shrink-0">FIJO</span>' : ''}
                                 ${intentBadge}
                             </p>
-                            <p class="text-[9px] text-slate-500 font-mono">${tx.category} • ${tx.timestamp}</p>
+                            <p class="text-[9px] text-slate-500 font-mono truncate">${tx.category} • ${tx.timestamp}</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3 shrink-0">
+                    <div class="flex items-center gap-2 shrink-0 justify-end">
                         <span class="text-xs font-bold font-mono money-display ${isCredit ? 'text-emerald-400' : 'text-rose-400'} ${systemPrivacyActive ? 'privacy-masked' : ''}">
                             ${isCredit ? '+' : ''}${currentSymbol}${tx.amount.toFixed(2)}
                         </span>
-                        <button onclick="purgeSingleTx('${tx.id}')" class="md:opacity-0 group-hover:opacity-100 text-slate-600 hover:text-rose-500 px-1.5 py-1 text-xs transition-all cursor-pointer rounded-lg">
+                        <button onclick="purgeSingleTx('${tx.id}')" class="opacity-100 md:opacity-0 group-hover:opacity-100 text-slate-600 hover:text-rose-500 px-1 py-1 text-xs transition-all cursor-pointer rounded-lg">
                             ✕
                         </button>
                     </div>
@@ -483,15 +478,13 @@
             const absoluteNet = incomePool + expensePool;
 
             document.getElementById('netWealthText').innerText = `${currentSymbol}${absoluteNet.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-            document.getElementById('totalIncomeText').innerText = `${currentSymbol}${incomePool.toLocaleString(undefined, {minimumFractionDigits:2})} `;
-            document.getElementById('totalExpenseText').innerText = `${currentSymbol}${Math.abs(expensePool).toLocaleString(undefined, {minimumFractionDigits:2})}`;
+            document.getElementById('totalIncomeText').innerText = `${currentSymbol}${incomePool.toLocaleString(undefined, {maximumFractionDigits:2})} `;
+            document.getElementById('totalExpenseText').innerText = `${currentSymbol}${Math.abs(expensePool).toLocaleString(undefined, {maximumFractionDigits:2})}`;
 
-            // --- LÓGICA DE LA IDEA 7: DÍAS DE SUPERVIVENCIA ---
             const survivalDaysText = document.getElementById('survivalDaysText');
             const survivalStatusLabel = document.getElementById('survivalStatusLabel');
             
             if (absoluteNet > 0 && Math.abs(expensePool) > 0) {
-                // Estimamos un promedio de gasto diario base usando el historial (asumiendo actividad de 30 días)
                 const dailyBurnRate = Math.abs(expensePool) / 30;
                 const daysAvailable = Math.floor(absoluteNet / dailyBurnRate);
                 
@@ -504,12 +497,12 @@
                     survivalStatusLabel.innerText = "⚡ Seguro";
                     survivalStatusLabel.className = "text-[9px] font-bold uppercase text-cyan-400";
                 } else {
-                    survivalStatusLabel.innerText = "🚨 Alerta Crítica";
+                    survivalStatusLabel.innerText = "🚨 Alerta";
                     survivalStatusLabel.className = "text-[9px] font-bold uppercase text-rose-400 animate-pulse";
                 }
             } else if (absoluteNet <= 0 && ledgerDatabase.length > 0) {
                 survivalDaysText.innerText = "0 días";
-                survivalStatusLabel.innerText = "💀 Sin Margen";
+                survivalStatusLabel.innerText = "💀 S.O.S";
                 survivalStatusLabel.className = "text-[9px] font-bold uppercase text-rose-500";
             } else {
                 survivalDaysText.innerText = "--";
@@ -517,7 +510,6 @@
                 survivalStatusLabel.className = "text-[9px] font-bold uppercase text-slate-600";
             }
 
-            // --- LÓGICA DE LA IDEA 6: MÉTRICAS PSICOLÓGICAS ---
             const totalExpensesArray = ledgerDatabase.filter(t => t.amount < 0);
             const totalExpenseVolume = totalExpensesArray.reduce((acc, t) => acc + Math.abs(t.amount), 0);
             const desireExpenseVolume = totalExpensesArray.filter(t => t.intent === 'deseo').reduce((acc, t) => acc + Math.abs(t.amount), 0);
