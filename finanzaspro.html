@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Finanzas Pro | Guided Interactive Suite</title>
+    <title>Finanzas Pro | Job Ready Suite</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2 family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -17,14 +17,6 @@
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         .privacy-masked { filter: blur(10px); pointer-events: none; user-select: none; }
-        
-        /* Animación para los botones de ayuda */
-        @keyframes pulse-cyan {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); }
-            50% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(34, 211, 238, 0); }
-        }
-        .help-trigger { animation: pulse-cyan 2s infinite; }
-        
         @media screen and (max-width: 768px) { input, select { font-size: 16px !important; } }
     </style>
 </head>
@@ -42,44 +34,41 @@
                         </div>
                         <div>
                             <h1 class="text-base font-bold text-white leading-tight">Finanzas<span class="text-cyan-400">Pro</span></h1>
-                            <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Guided Suite • v4.6</p>
+                            <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Laboral Suite • v5.0</p>
                         </div>
                     </div>
                     <div class="md:hidden shrink-0">
                         <select id="mobileModuleSelector" onchange="switchModule(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-1.5 px-2.5 text-cyan-400 outline-none">
-                            <option value="mod-overview">🎛️ Resumen</option>
-                            <option value="mod-analytics">📊 Analíticas</option>
-                            <option value="mod-simulator">🔮 Simulador</option>
+                            <option value="mod-overview">🎛️ 1. Vista Principal</option>
+                            <option value="mod-analytics">📊 2. Analíticas e Impacto</option>
+                            <option value="mod-shield">🛡️ 3. Blindaje Financiero</option>
                         </select>
                     </div>
                 </div>
                 
                 <div class="hidden md:flex items-center bg-slate-950/60 p-1 rounded-xl border border-slate-800/80">
-                    <button onclick="switchModule('mod-overview')" id="btn-mod-overview" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md">🎛️ Resumen General</button>
-                    <button onclick="switchModule('mod-analytics')" id="btn-mod-analytics" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">📊 Analíticas e Impacto</button>
-                    <button onclick="switchModule('mod-simulator')" id="btn-mod-simulator" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">🔮 Proyecciones</button>
+                    <button onclick="switchModule('mod-overview')" id="btn-mod-overview" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md">🎛️ 1. Vista Principal</button>
+                    <button onclick="switchModule('mod-analytics')" id="btn-mod-analytics" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">📊 2. Analíticas e Impacto</button>
+                    <button onclick="switchModule('mod-shield')" id="btn-mod-shield" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">🛡️ 3. Blindaje Financiero</button>
                 </div>
                 
                 <div class="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto border-t border-slate-800/50 md:border-0 pt-2 md:pt-0">
                     <div class="flex items-center bg-slate-900/90 rounded-xl p-1 border border-slate-800 text-xs font-mono min-w-0">
                         <select id="globalCurrency" onchange="changeCurrency()" class="bg-transparent border-0 outline-none text-cyan-400 font-bold text-xs px-1 truncate">
+                            <option value="MXN">MXN ($)</option>
                             <option value="USD">USD ($)</option>
                             <option value="EUR">EUR (€)</option>
-                            <option value="MXN">MXN ($)</option>
                             <option value="COP">COP ($)</option>
-                            <option value="ARS">ARS ($)</option>
                         </select>
                     </div>
-                    <button onclick="togglePrivacyMode()" id="privacyToggleBtn" class="p-2 bg-slate-900/80 border border-slate-800 rounded-xl text-slate-400 shrink-0 text-xs" title="Modo Privacidad">
+                    <button onclick="togglePrivacyMode()" id="privacyToggleBtn" class="p-2 bg-slate-900/80 border border-slate-800 rounded-xl text-slate-400 shrink-0 text-xs">
                         <span id="privacyIcon">🔓</span>
                     </button>
                     <div class="relative flex-1 md:flex-initial">
                         <button onclick="toggleDataMenu()" class="w-full md:w-auto flex items-center justify-center gap-1 bg-slate-900/80 border border-slate-800 text-xs font-bold py-2 px-3 rounded-xl">
                             ⚙️ Sistema
                         </button>
-                        <div id="dataMenu" class="hidden absolute right-0 md:right-0 mt-2 w-52 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl p-2 space-y-1 z-50 max-md:fixed max-md:top-36 max-md:left-4 max-md:right-4 max-md:w-auto">
-                            <button onclick="toggleSystemGuide()" id="guideToggleBtn" class="w-full text-left text-xs p-2 bg-cyan-950/30 hover:bg-cyan-900/50 text-cyan-400 rounded-lg font-bold transition-colors border border-cyan-800/30">📖 Activar Guía Dinámica</button>
-                            <div class="border-t border-slate-800 my-1"></div>
+                        <div id="dataMenu" class="hidden absolute right-0 md:right-0 mt-2 w-48 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl p-2 space-y-1 z-50 max-md:fixed max-md:top-36 max-md:left-4 max-md:right-4 max-md:w-auto">
                             <button onclick="exportToCSV()" class="w-full text-left text-xs p-2 hover:bg-slate-800 rounded-lg text-slate-200 font-medium">📥 Exportar CSV</button>
                             <button onclick="triggerImport()" class="w-full text-left text-xs p-2 hover:bg-slate-800 rounded-lg text-slate-200 font-medium">📤 Importar Respaldo</button>
                             <input type="file" id="importFile" class="hidden" accept=".json" onchange="importBackup(event)">
@@ -93,37 +82,32 @@
         </header>
 
         <section class="w-full max-w-full px-4 pt-4 box-border overflow-hidden">
-            <div class="relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-slate-800/80 shadow-2xl w-full box-border">
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center w-full">
-                    <div class="col-span-12 md:col-span-5 min-w-0">
-                        <div class="flex items-center gap-1.5">
-                            <h3 class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-0.5">Patrimonio Neto Consolidado</h3>
-                            <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('patrimonio')">?</span>
-                        </div>
-                        <div class="text-2xl sm:text-3xl font-black text-white tracking-tight mono money-display truncate break-all" id="netWealthText">$0.00</div>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 w-full">
+                <div class="col-span-12 md:col-span-4 rounded-xl p-4 bg-slate-900 border border-slate-800/80">
+                    <h3 class="text-slate-500 text-[9px] font-bold uppercase tracking-widest">Patrimonio Neto Total</h3>
+                    <div class="text-2xl font-black text-white tracking-tight mono money-display truncate" id="netWealthText">$0.00</div>
+                </div>
+                <div class="col-span-12 md:col-span-5 grid grid-cols-2 gap-2">
+                    <div class="bg-slate-950/40 border border-slate-850 rounded-xl p-3 flex flex-col justify-between">
+                        <span class="text-[9px] font-bold text-amber-500 uppercase">💵 Efectivo (Cartera)</span>
+                        <p id="walletCashText" class="text-sm font-bold text-white mono money-display truncate">$0.00</p>
                     </div>
-                    <div class="col-span-12 md:col-span-4 bg-slate-950/50 border border-slate-800/60 rounded-xl p-3 flex items-center justify-between shadow-inner min-w-0">
-                        <div class="min-w-0 mr-2">
-                            <div class="flex items-center gap-1.5">
-                                <h4 class="text-[9px] font-bold uppercase text-cyan-400 tracking-wider truncate">⏱️ Supervivencia</h4>
-                                <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('supervivencia')">?</span>
-                            </div>
-                            <p class="text-[10px] text-slate-500 truncate">Soporte sin empleo</p>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <span id="survivalDaysText" class="text-lg font-black text-white mono block leading-none">0 días</span>
-                            <span class="text-[8px] font-bold uppercase text-slate-400" id="survivalStatusLabel">---</span>
-                        </div>
+                    <div class="bg-slate-950/40 border border-slate-850 rounded-xl p-3 flex flex-col justify-between">
+                        <span class="text-[9px] font-bold text-cyan-400 uppercase">💳 Banco (Débito)</span>
+                        <p id="walletCardText" class="text-sm font-bold text-white mono money-display truncate">$0.00</p>
                     </div>
-                    <div class="col-span-12 md:col-span-3 flex justify-between md:justify-end gap-2 border-t md:border-t-0 md:border-l border-slate-800/80 pt-2 md:pt-0 md:pl-4 min-w-0">
-                        <div class="min-w-0 flex-1">
-                            <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">Ingresos</p>
-                            <p id="totalIncomeText" class="text-xs sm:text-sm font-bold text-white mono money-display truncate">$0.00</p>
-                        </div>
-                        <div class="min-w-0 flex-1 border-l border-slate-850 pl-2 md:border-0 md:pl-0">
-                            <p class="text-[9px] font-bold text-rose-400 uppercase tracking-wider">Gastos</p>
-                            <p id="totalExpenseText" class="text-xs sm:text-sm font-bold text-white mono money-display truncate">$0.00</p>
-                        </div>
+                </div>
+                <div class="col-span-12 md:col-span-3 bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
+                    <div>
+                        <h4 class="text-[9px] font-bold uppercase text-emerald-400 tracking-wider">⏱️ Modo Quincena</h4>
+                        <p class="text-[10px] text-slate-500">Próximo día de pago</p>
+                    </div>
+                    <div class="text-right">
+                        <select id="paydaySelector" onchange="updatePaydayCountdown()" class="bg-slate-950 border border-slate-800 rounded px-1 py-0.5 text-[10px] text-cyan-400 font-bold outline-none block mb-1">
+                            <option value="15">Día 15 del mes</option>
+                            <option value="30">Día 30 del mes</option>
+                        </select>
+                        <span id="paydayCountdownText" class="text-xs font-bold text-white mono">Faltan -- días</span>
                     </div>
                 </div>
             </div>
@@ -134,27 +118,21 @@
             <div id="mod-overview" class="module-view grid grid-cols-12 gap-4 w-full box-border">
                 <div class="col-span-12 lg:col-span-4 min-w-0 w-full">
                     <div class="neo-card p-4 rounded-2xl shadow-xl w-full box-border">
-                        <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-1.5">
-                            <span class="text-cyan-400">⚡</span> Registro Rápido
-                            <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('registro')">?</span>
-                        </h3>
+                        <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-1.5"><span class="text-cyan-400">⚡</span> Registro Rápido</h3>
                         <form id="ledgerForm" class="space-y-3 w-full box-border">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Concepto / Negocio</label>
-                                <input type="text" id="txDesc" placeholder="Ej. Almuerzo, Uber..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white transition" required />
+                                <input type="text" id="txDesc" placeholder="Ej. Sueldo, Almuerzo, Café..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white transition" required />
                             </div>
                             <div class="grid grid-cols-2 gap-2 w-full">
                                 <div class="min-w-0">
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Categoría</label>
                                     <select id="txCategory" onchange="togglePsychSelector(this.value)" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-300 outline-none focus:ring-1 focus:ring-cyan-500 cursor-pointer">
-                                        <option value="Ingreso">💼 Ingresos</option>
-                                        <option value="Inversiones">📈 Inversión</option>
+                                        <option value="Ingreso">💼 Ingreso Semanal/Quincenal</option>
                                         <option value="Comida">🛒 Alimentación</option>
-                                        <option value="Vivienda">🏠 Vivienda</option>
-                                        <option value="Transporte">🚗 Transporte</option>
-                                        <option value="Ocio">🎬 Ocio / Cine</option>
-                                        <option value="Salud">🏥 Bienestar</option>
-                                        <option value="Otros">📦 Otros Gastos</option>
+                                        <option value="Transporte">🚗 Transporte / Pasajes</option>
+                                        <option value="Ocio">🎬 Ocio / Cine / Salidas</option>
+                                        <option value="Otros">📦 Antojos / Snacks / Otros</option>
                                     </select>
                                 </div>
                                 <div class="min-w-0">
@@ -162,11 +140,21 @@
                                     <input type="number" step="0.01" id="txAmount" placeholder="0.00" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white font-mono" required />
                                 </div>
                             </div>
-                            <div id="psychologicalBlock" class="hidden bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80 space-y-1.5 w-full">
-                                <div class="flex items-center gap-1.5">
-                                    <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">¿Necesidad o Capricho?</label>
-                                    <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[8px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('psicologico')">?</span>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Método de Pago / Destino</label>
+                                <div class="grid grid-cols-2 gap-2 w-full">
+                                    <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-[11px] font-bold text-slate-400 has-[:checked]:border-amber-500 has-[:checked]:text-amber-400 has-[:checked]:bg-amber-950/20 transition-all select-none">
+                                        <input type="radio" name="txWallet" value="cash" checked class="hidden">💵 Efectivo
+                                    </label>
+                                    <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-[11px] font-bold text-slate-400 has-[:checked]:border-cyan-500 has-[:checked]:text-cyan-400 has-[:checked]:bg-cyan-950/20 transition-all select-none">
+                                        <input type="radio" name="txWallet" value="card" class="hidden">💳 Débito
+                                    </label>
                                 </div>
+                            </div>
+
+                            <div id="psychologicalBlock" class="hidden bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80 space-y-1.5 w-full">
+                                <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">¿Necesidad o Capricho?</label>
                                 <div class="grid grid-cols-2 gap-2 w-full">
                                     <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-[11px] font-bold text-slate-400 has-[:checked]:border-cyan-500 has-[:checked]:text-cyan-400 has-[:checked]:bg-cyan-950/20 transition-all select-none"><input type="radio" name="txIntent" value="necesidad" checked class="hidden">🛡️ Necesidad</label>
                                     <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-[11px] font-bold text-slate-400 has-[:checked]:border-amber-500 has-[:checked]:text-amber-400 has-[:checked]:bg-amber-950/20 transition-all select-none"><input type="radio" name="txIntent" value="deseo" class="hidden">✨ Antojo</label>
@@ -176,7 +164,6 @@
                                 <div class="flex items-center gap-1.5 bg-slate-950/40 p-2 rounded-xl border border-slate-800/60 justify-center">
                                     <input type="checkbox" id="txRecurring" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
                                     <label for="txRecurring" class="text-[10px] text-slate-400 font-medium cursor-pointer select-none">Gasto Fijo</label>
-                                    <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[8px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('gastofijo')">?</span>
                                 </div>
                                 <button type="submit" class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold text-xs tracking-wider rounded-xl cursor-pointer py-2.5 shadow-md">REGISTRAR</button>
                             </div>
@@ -186,7 +173,7 @@
                 <div class="col-span-12 lg:col-span-8 min-w-0 w-full">
                     <div class="neo-card rounded-2xl shadow-xl overflow-hidden flex flex-col w-full box-border">
                         <div class="p-4 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full box-border">
-                            <div class="min-w-0"><h3 class="font-bold text-white text-sm truncate">Historial Contable</h3></div>
+                            <div class="min-w-0"><h3 class="font-bold text-white text-sm truncate">Historial de Movimientos</h3></div>
                             <div class="flex items-center gap-2 w-full sm:w-auto min-w-0">
                                 <div class="relative flex-1 sm:flex-initial min-w-0">
                                     <input type="text" id="txSearch" placeholder="Buscar..." class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2.5 pl-8 text-xs focus:border-cyan-500 outline-none w-full sm:w-40 text-white placeholder-slate-600" />
@@ -194,9 +181,10 @@
                                 </div>
                                 <select id="txFilter" class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2 text-xs text-slate-400 outline-none cursor-pointer shrink-0">
                                     <option value="all">Todo</option>
-                                    <option value="income">Créditos</option>
-                                    <option value="expense">Débitos</option>
-                                    <option value="recurring">Fijos</option>
+                                    <option value="income">Ingresos</option>
+                                    <option value="expense">Gastos</option>
+                                    <option value="cash">Solo Efectivo</option>
+                                    <option value="card">Solo Débito</option>
                                 </select>
                             </div>
                         </div>
@@ -210,105 +198,79 @@
             <div id="mod-analytics" class="module-view hidden space-y-4 w-full box-border overflow-hidden">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 w-full">
                     <div class="neo-card p-4 rounded-2xl shadow-xl md:col-span-5 flex flex-col justify-between w-full min-w-0 box-border">
-                        <h4 class="font-bold text-white text-[11px] uppercase tracking-wider mb-2">Porcentajes de Categoría</h4>
+                        <h4 class="font-bold text-white text-[11px] uppercase tracking-wider mb-2">Estructura del Gasto</h4>
                         <div class="h-[200px] w-full max-w-full flex items-center justify-center relative overflow-hidden box-border">
                             <canvas id="pieChartCanvas" class="max-w-full max-h-full block"></canvas>
                             <div id="noPieDataText" class="hidden absolute inset-0 flex items-center justify-center text-slate-600 text-xs italic bg-[#151f32]/60 rounded-xl">Sin egresos registrados</div>
                         </div>
                     </div>
-                    <div class="neo-card p-4 rounded-2xl shadow-xl md:col-span-7 flex flex-col justify-between w-full min-w-0 box-border">
-                        <h4 class="font-bold text-white text-[11px] uppercase tracking-wider mb-2">Histograma de Consumo</h4>
-                        <div class="h-[200px] w-full max-w-full flex items-center justify-center relative overflow-hidden box-border">
-                            <canvas id="barChartCanvas" class="max-w-full max-h-full block"></canvas>
+                    <div class="neo-card p-4 rounded-2xl shadow-xl md:col-span-7 flex flex-col justify-start w-full min-w-0 box-border">
+                        <h4 class="font-bold text-amber-400 text-[11px] uppercase tracking-wider mb-2">🐜 Radar de Gastos Hormiga</h4>
+                        <div class="bg-slate-950/50 rounded-xl p-3 border border-slate-850 mb-3">
+                            <p class="text-xs text-slate-400">Suma total acumulada en micro-antojos (snacks, antojos, ocio menor):</p>
+                            <div class="text-xl font-bold text-white mono mt-1" id="hormigaTotalText">$0.00</div>
+                            <p class="text-[10px] text-amber-500 font-bold mt-1.5 italic" id="hormigaImpactAlert">¡Todo bajo control por ahora!</p>
                         </div>
+                        <h5 class="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Últimos caprichos anotados:</h5>
+                        <ul id="hormigaListContainer" class="text-xs space-y-1 overflow-y-auto max-h-24 custom-scroll text-slate-400 italic"></ul>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full">
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0">
-                        <div class="flex items-center justify-between mb-1 min-w-0"><span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Índice de Vanidad</span><span class="help-marker hidden w-3 h-3 rounded-full bg-cyan-500 text-slate-950 text-[8px] font-bold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('vanidad')">?</span></div>
-                        <p id="kpiVanityRate" class="text-sm sm:text-base font-extrabold text-amber-400 mono truncate">0% Deseos</p>
-                    </div>
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Gasto Vital Real</span>
-                        <p id="kpiVitalExpense" class="text-sm sm:text-base font-extrabold text-cyan-400 mono money-display truncate">$0.00</p>
-                    </div>
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Tasa de Ahorro</span>
-                        <p id="kpiSavingRate" class="text-sm sm:text-base font-extrabold text-emerald-400 mono truncate">0%</p>
-                    </div>
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Eficiencia Financiera</span>
-                        <p id="kpiEfficiency" class="text-sm sm:text-base font-extrabold text-blue-400 mono truncate">0.0x</p>
-                    </div>
+                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0"><span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Índice de Vanidad</span><p id="kpiVanityRate" class="text-sm sm:text-base font-extrabold text-amber-400 mono truncate">0% Deseos</p></div>
+                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0"><span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Gasto Vital Real</span><p id="kpiVitalExpense" class="text-sm sm:text-base font-extrabold text-cyan-400 mono money-display truncate">$0.00</p></div>
+                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0"><span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Tasa de Ahorro</span><p id="kpiSavingRate" class="text-sm sm:text-base font-extrabold text-emerald-400 mono truncate">0%</p></div>
+                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0"><span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Eficiencia General</span><p id="kpiEfficiency" class="text-sm sm:text-base font-extrabold text-blue-400 mono truncate">0.0x</p></div>
                 </div>
             </div>
 
-            <div id="mod-simulator" class="module-view hidden max-w-2xl mx-auto w-full box-border">
-                <div class="neo-card p-5 rounded-2xl shadow-xl space-y-4 w-full box-border">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h3 class="text-sm font-bold text-white flex items-center gap-1.5"><span>🔮</span> Interés Compuesto Futuro</h3>
-                            <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('interes')">?</span>
+            <div id="mod-shield" class="module-view hidden max-w-2xl mx-auto w-full box-border space-y-4">
+                
+                <div class="neo-card p-5 rounded-2xl shadow-xl w-full box-border">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-1.5">🚦 Semáforo de "Dinero Libre"</h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">Dinero disponible una vez separados tus Gastos Fijos obligatorios.</p>
+                    
+                    <div class="mt-4 space-y-3">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Tu Saldo Libre Actual:</span>
+                            <span id="freeCashText" class="font-bold text-white font-mono">$0.00</span>
                         </div>
-                        <p class="text-[11px] text-slate-500 mt-0.5">Calcula la multiplicación silenciosa de tu capital.</p>
-                    </div>
-                    <div class="space-y-3 w-full">
-                        <div class="grid grid-cols-2 gap-3 w-full">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Inversión Mensual</label>
-                                <input type="number" id="simMonthly" value="250" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-white outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tasa Anual (%)</label>
-                                <input type="number" id="simRate" value="9" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-white outline-none">
-                            </div>
+                        <div class="w-full h-3 bg-slate-950 rounded-full overflow-hidden border border-slate-800 p-0.5">
+                            <div id="semaphoreProgressBar" class="h-full rounded-full bg-emerald-500 transition-all duration-500" style="width: 100%"></div>
                         </div>
-                        <div class="w-full">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Horizonte Temporal</label>
-                            <input type="range" id="simYears" min="1" max="40" value="15" oninput="calculateProjection()" class="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-950 rounded-lg">
-                            <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-1"><span>1 Año</span><span class="text-cyan-400 font-bold" id="yearsLabel">15 Años</span><span>40 Años</span></div>
-                        </div>
-                        <div class="bg-slate-950 border border-slate-800/80 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-2 w-full box-border">
-                            <div class="text-center sm:text-left"><h4 class="text-xs font-bold text-slate-300">Capital Proyectado Final:</h4></div>
-                            <span class="text-lg font-black text-emerald-400 mono money-display truncate max-w-full" id="projectionResultText">$0.00</span>
+                        <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-850 flex items-center gap-2">
+                            <div id="semaphoreLightCircle" class="w-3 h-3 rounded-full bg-emerald-500 shrink-0"></div>
+                            <p id="semaphoreAdviceText" class="text-xs text-slate-300 font-medium">Cuentas limpias. Tienes margen seguro para tus gastos personales de la quincena.</p>
                         </div>
                     </div>
                 </div>
+
+                <div class="neo-card p-5 rounded-2xl shadow-xl w-full box-border">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-1.5">🛡️ Fondo de Paz Mental</h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">Tu primer escudo financiero contra emergencias del mundo real.</p>
+                    
+                    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-850">
+                            <span class="text-[9px] uppercase font-bold text-slate-500">Ahorro Acumulado</span>
+                            <div class="text-xl font-bold text-emerald-400 font-mono mt-0.5" id="emergencyFundText">$0.00</div>
+                        </div>
+                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-850">
+                            <span class="text-[9px] uppercase font-bold text-slate-500">Meta Básica Recomendada</span>
+                            <div class="text-sm font-bold text-slate-300 font-mono mt-1" id="emergencyGoalText">$2,000.00</div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </main>
     </div>
 
-    <div id="guideModal" class="hidden fixed inset-0 z-[200] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
-            <div class="flex items-center gap-2 border-b border-slate-800 pb-2.5">
-                <span class="text-lg text-cyan-400" id="guideModalIcon">💡</span>
-                <h4 class="text-sm font-bold text-white" id="guideModalTitle">Título de la sección</h4>
-            </div>
-            <p class="text-xs text-slate-400 leading-relaxed" id="guideModalDesc">Explicación del elemento.</p>
-            <button onclick="closeExplanation()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-2 rounded-xl cursor-pointer transition-colors">Entendido</button>
-        </div>
-    </div>
-
     <script>
-        const currencySymbols = { USD: '$', EUR: '€', MXN: 'MXN$', COP: 'COP$', ARS: 'ARS$' };
-        let activeCurrency = 'USD';
-        let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_v42_core')) || [];
+        const currencySymbols = { USD: '$', EUR: '€', MXN: '$', COP: 'COP$' };
+        let activeCurrency = 'MXN';
+        let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_v50_core')) || [];
         let systemPrivacyActive = false;
-        let systemGuideActive = false; // Estado de la guía
         let pieChartInstance = null;
-        let barChartInstance = null;
-
-        // Base de datos de explicaciones para la guía
-        const guideDictionary = {
-            patrimonio: { title: "Patrimonio Neto", icon: "💰", desc: "Es el dinero real que posees actualmente. Se calcula restando de forma matemática todos tus gastos acumulados a la suma de tus ingresos totales registrados." },
-            supervivencia: { title: "Días de Supervivencia", icon: "⏱️", desc: "Es un cálculo que te dice cuántos días podrías seguir viviendo manteniendo tu nivel de consumo actual si hoy mismo te quedaras sin tu fuente principal de ingresos." },
-            registro: { title: "Registro Rápido", icon: "⚡", desc: "Aquí inyectas los movimientos a tu historial. Los ingresos suman a tu patrimonio, mientras que los costos de comida, ocio u otros restan capital." },
-            psicologico: { title: "Filtro Psicológico", icon: "🛡️", desc: "Te obliga a clasificar tus gastos antes de hacerlos. Las 'Necesidades' son obligatorias para sobrevivir. Los 'Antojos' son deseos prescindibles que inflan tu Índice de Vanidad." },
-            gastofijo: { title: "Gasto Fijo", icon: "📦", desc: "Identifica salidas de dinero que se repiten periódicamente (como suscripciones, renta o seguros) para ayudar al algoritmo a mapear tu estilo de vida indispensable." },
-            vanidad: { title: "Índice de Vanidad", icon: "✨", desc: "Es un porcentaje que calcula cuánto de tu dinero total gastado se ha ido exclusivamente en caprichos o antojos en lugar de necesidades vitales." },
-            interes: { title: "Interés Compuesto", icon: "🔮", desc: "Es un simulador algorítmico que proyecta cuánto dinero acumularás a largo plazo si inviertes una cantidad fija al mes con una tasa de rendimiento constante." }
-        };
 
         const ledgerForm = document.getElementById('ledgerForm');
         const ledgerContainer = document.getElementById('ledgerContainer');
@@ -316,41 +278,9 @@
         const filterBox = document.getElementById('txFilter');
         const currencySelect = document.getElementById('globalCurrency');
 
-        function toggleSystemGuide() {
-            systemGuideActive = !systemGuideActive;
-            const btn = document.getElementById('guideToggleBtn');
-            const markers = document.querySelectorAll('.help-marker');
-            
-            if (systemGuideActive) {
-                btn.innerText = "❌ Desactivar Guía";
-                btn.className = "w-full text-left text-xs p-2 bg-rose-950/30 hover:bg-rose-900/50 text-rose-400 rounded-lg font-bold transition-colors border border-rose-800/30";
-                markers.forEach(m => m.classList.remove('hidden'));
-                toggleDataMenu(); // Cerrar menú
-                alert("¡Guía activada! Presiona los círculos de color '?' para ver qué significa cada elemento.");
-            } else {
-                btn.innerText = "📖 Activar Guía Dinámica";
-                btn.className = "w-full text-left text-xs p-2 bg-cyan-950/30 hover:bg-cyan-900/50 text-cyan-400 rounded-lg font-bold transition-colors border border-cyan-800/30";
-                markers.forEach(m => m.classList.add('hidden'));
-                toggleDataMenu();
-            }
-        }
-
-        function showExplanation(key) {
-            const data = guideDictionary[key];
-            if (!data) return;
-            document.getElementById('guideModalIcon').innerText = data.icon;
-            document.getElementById('guideModalTitle').innerText = data.title;
-            document.getElementById('guideModalDesc').innerText = data.desc;
-            document.getElementById('guideModal').classList.remove('hidden');
-        }
-
-        function closeExplanation() {
-            document.getElementById('guideModal').classList.add('hidden');
-        }
-
         function togglePsychSelector(categoryValue) {
             const block = document.getElementById('psychologicalBlock');
-            if(categoryValue === 'Ingreso' || categoryValue === 'Inversiones') block.classList.add('hidden');
+            if(categoryValue === 'Ingreso') block.classList.add('hidden');
             else block.classList.remove('hidden');
         }
 
@@ -372,16 +302,18 @@
             const category = document.getElementById('txCategory').value;
             let amount = parseFloat(document.getElementById('txAmount').value);
             const isRecurring = document.getElementById('txRecurring').checked;
+            const walletType = document.querySelector('input[name="txWallet"]:checked').value;
+            
             let intent = 'necesidad';
-            if(category !== 'Ingreso' && category !== 'Inversiones') intent = document.querySelector('input[name="txIntent"]:checked').value;
-            if (!description || isNaN(amount)) return;
+            if(category !== 'Ingreso') intent = document.querySelector('input[name="txIntent"]:checked').value;
+            if (isNaN(amount)) return;
 
-            if (category !== 'Ingreso' && category !== 'Inversiones' && amount > 0) amount = -amount;
-            else if ((category === 'Ingreso' || category === 'Inversiones') && amount < 0) amount = Math.abs(amount);
+            if (category !== 'Ingreso' && amount > 0) amount = -amount;
+            else if (category === 'Ingreso' && amount < 0) amount = Math.abs(amount);
 
             ledgerDatabase.unshift({
                 id: 'TX-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-                description, category, amount, isRecurring, intent,
+                description, category, amount, isRecurring, intent, walletType,
                 timestamp: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
             });
             syncStorage();
@@ -390,40 +322,42 @@
         });
 
         function syncStorage() {
-            localStorage.setItem('finanzas_pro_v42_core', JSON.stringify(ledgerDatabase));
+            localStorage.setItem('finanzas_pro_v50_core', JSON.stringify(ledgerDatabase));
             refreshSuiteDashboard();
         }
 
         function refreshSuiteDashboard() {
             renderLedgerList();
             evaluateFinancialMetrics();
-            refreshAnalyticalCharts();
-            calculateProjection();
+            updatePaydayCountdown();
         }
 
         function renderLedgerList() {
             const query = searchBox.value.toLowerCase();
             const filter = filterBox.value;
             const currentSymbol = currencySymbols[activeCurrency];
+            
             const collection = ledgerDatabase.filter(item => {
                 const searchMatch = item.description.toLowerCase().includes(query) || item.category.toLowerCase().includes(query);
                 let filterMatch = true;
                 if (filter === 'income') filterMatch = item.amount > 0;
                 if (filter === 'expense') filterMatch = item.amount < 0;
-                if (filter === 'recurring') filterMatch = item.isRecurring === true;
+                if (filter === 'cash') filterMatch = item.walletType === 'cash';
+                if (filter === 'card') filterMatch = item.walletType === 'card';
                 return searchMatch && filterMatch;
             });
 
-            ledgerContainer.innerHTML = collection.length ? '' : `<p class="text-center text-slate-600 text-xs italic py-8">Cero movimientos</p>`;
+            ledgerContainer.innerHTML = collection.length ? '' : `<p class="text-center text-slate-600 text-xs italic py-8">Cero movimientos en esta lista</p>`;
             collection.forEach(tx => {
                 const isCredit = tx.amount > 0;
                 const element = document.createElement('li');
+                let walletIcon = tx.walletType === 'cash' ? '💵' : '💳';
                 let intentBadge = !isCredit ? (tx.intent === 'deseo' ? `<span class="text-[7px] bg-amber-500/10 text-amber-400 px-1 py-0.2 rounded font-bold shrink-0">ANTOJO</span>` : `<span class="text-[7px] bg-cyan-500/10 text-cyan-400 px-1 py-0.2 rounded font-bold shrink-0">VITAL</span>`) : '';
 
                 element.className = "flex items-center justify-between p-3 rounded-xl bg-slate-900/40 border border-slate-800/60 w-full min-w-0 gap-2 box-border";
                 element.innerHTML = `
                     <div class="flex items-center gap-2 min-w-0 flex-1">
-                        <div class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] shrink-0 ${isCredit ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}">${isCredit ? '▲' : '▼'}</div>
+                        <div class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] shrink-0 ${isCredit ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}">${walletIcon}</div>
                         <div class="min-w-0 flex-1">
                             <p class="text-xs font-bold text-slate-200 flex items-center gap-1 w-full"><span class="truncate block max-w-[100px] sm:max-w-none break-all">${tx.description}</span>${tx.isRecurring ? '<span class="text-[7px] bg-blue-500/10 text-blue-400 px-1 rounded font-bold shrink-0">FIJO</span>' : ''}${intentBadge}</p>
                             <p class="text-[9px] text-slate-500 font-mono truncate">${tx.category} • ${tx.timestamp}</p>
@@ -440,49 +374,117 @@
 
         function evaluateFinancialMetrics() {
             const currentSymbol = currencySymbols[activeCurrency];
-            const incomePool = ledgerDatabase.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
-            const expensePool = ledgerDatabase.filter(t => t.amount < 0).reduce((sum, t) => sum + t.amount, 0);
-            const absoluteNet = incomePool + expensePool;
-
-            document.getElementById('netWealthText').innerText = `${currentSymbol}${absoluteNet.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-            document.getElementById('totalIncomeText').innerText = `${currentSymbol}${incomePool.toLocaleString(undefined, {maximumFractionDigits:2})}`;
-            document.getElementById('totalExpenseText').innerText = `${currentSymbol}${Math.abs(expensePool).toLocaleString(undefined, {maximumFractionDigits:2})}`;
-
-            const survivalDaysText = document.getElementById('survivalDaysText');
-            const survivalStatusLabel = document.getElementById('survivalStatusLabel');
             
-            if (absoluteNet > 0 && Math.abs(expensePool) > 0) {
-                const daysAvailable = Math.floor(absoluteNet / (Math.abs(expensePool) / 30));
-                survivalDaysText.innerText = `${daysAvailable} días`;
-                if(daysAvailable > 180) { survivalStatusLabel.innerText = "🛡️ Seguro"; survivalStatusLabel.className = "text-[8px] font-bold text-emerald-400"; }
-                else if(daysAvailable > 30) { survivalStatusLabel.innerText = "⚡ Estable"; survivalStatusLabel.className = "text-[8px] font-bold text-cyan-400"; }
-                else { survivalStatusLabel.innerText = "🚨 Alerta"; survivalStatusLabel.className = "text-[8px] font-bold text-rose-400 animate-pulse"; }
+            // Billetera Dual Cálculo
+            const cashIncome = ledgerDatabase.filter(t => t.amount > 0 && t.walletType === 'cash').reduce((sum, t) => sum + t.amount, 0);
+            const cashExpense = ledgerDatabase.filter(t => t.amount < 0 && t.walletType === 'cash').reduce((sum, t) => sum + t.amount, 0);
+            const totalCash = cashIncome + cashExpense;
+
+            const cardIncome = ledgerDatabase.filter(t => t.amount > 0 && t.walletType === 'card').reduce((sum, t) => sum + t.amount, 0);
+            const cardExpense = ledgerDatabase.filter(t => t.amount < 0 && t.walletType === 'card').reduce((sum, t) => sum + t.amount, 0);
+            const totalCard = cardIncome + cardExpense;
+
+            const absoluteNet = totalCash + totalCard;
+
+            document.getElementById('netWealthText').innerText = `${currentSymbol}${absoluteNet.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+            document.getElementById('walletCashText').innerText = `${currentSymbol}${totalCash.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+            document.getElementById('walletCardText').innerText = `${currentSymbol}${totalCard.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+
+            // Análisis de Gastos Hormiga
+            const hormigas = ledgerDatabase.filter(t => t.amount < 0 && (t.intent === 'deseo' || t.category === 'Otros'));
+            const totalHormiga = hormigas.reduce((acc, t) => acc + Math.abs(t.amount), 0);
+            document.getElementById('hormigaTotalText').innerText = `${currentSymbol}${totalHormiga.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+            
+            const alertEl = document.getElementById('hormigaImpactAlert');
+            const listEl = document.getElementById('hormigaListContainer');
+            listEl.innerHTML = '';
+            
+            if(totalHormiga > 150) {
+                alertEl.innerText = "🚨 Alerta: Tus micro-antojos están acumulando fugas severas de capital.";
+                alertEl.className = "text-[10px] text-rose-400 font-bold mt-1.5 animate-pulse";
+            } else if (totalHormiga > 50) {
+                alertEl.innerText = "⚠️ Cuidado: Los antojos hormiga empiezan a devorar tu sueldo libre.";
+                alertEl.className = "text-[10px] text-amber-400 font-bold mt-1.5";
             } else {
-                survivalDaysText.innerText = absoluteNet <= 0 && ledgerDatabase.length > 0 ? "0 días" : "--";
-                survivalStatusLabel.innerText = absoluteNet <= 0 && ledgerDatabase.length > 0 ? "💀 SOS" : "S/D";
-                survivalStatusLabel.className = "text-[8px] font-bold text-rose-500";
+                alertEl.innerText = "🟢 Nivel Seguro: Estás controlando perfectamente los impulsos.";
+                alertEl.className = "text-[10px] text-emerald-400 font-bold mt-1.5";
             }
 
-            const totalExpensesArray = ledgerDatabase.filter(t => t.amount < 0);
-            const totalExpenseVolume = totalExpensesArray.reduce((acc, t) => acc + Math.abs(t.amount), 0);
-            const desireExpenseVolume = totalExpensesArray.filter(t => t.intent === 'deseo').reduce((acc, t) => acc + Math.abs(t.amount), 0);
-            const vitalExpenseVolume = totalExpensesArray.filter(t => t.intent !== 'deseo').reduce((acc, t) => acc + Math.abs(t.amount), 0);
+            hormigas.slice(0, 4).forEach(h => {
+                listEl.innerHTML += `<li>• ${h.description} (${currentSymbol}${Math.abs(h.amount).toFixed(2)})</li>`;
+            });
+
+            // Lógica del Semáforo de Dinero Libre
+            const totalIncome = ledgerDatabase.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
+            const fixedExpenses = ledgerDatabase.filter(t => t.amount < 0 && t.isRecurring).reduce((sum, t) => sum + Math.abs(t.amount), 0);
+            const variableExpenses = ledgerDatabase.filter(t => t.amount < 0 && !t.isRecurring).reduce((sum, t) => sum + Math.abs(t.amount), 0);
+            
+            const freeCashPool = totalIncome - fixedExpenses;
+            const absoluteFreeRemaining = freeCashPool - variableExpenses;
+            document.getElementById('freeCashText').innerText = `${currentSymbol}${absoluteFreeRemaining.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+
+            const progressBar = document.getElementById('semaphoreProgressBar');
+            const lightCircle = document.getElementById('semaphoreLightCircle');
+            const adviceText = document.getElementById('semaphoreAdviceText');
+
+            if (freeCashPool > 0) {
+                const percentageLeft = Math.max(0, Math.min(100, (absoluteFreeRemaining / freeCashPool) * 100));
+                progressBar.style.width = `${percentageLeft}%`;
+
+                if(percentageLeft > 50) {
+                    progressBar.className = "h-full rounded-full bg-emerald-500 transition-all";
+                    lightCircle.className = "w-3 h-3 rounded-full bg-emerald-500 shrink-0 shadow-lg shadow-emerald-500/50";
+                    adviceText.innerText = "Semáforo Verde: Tus gastos fijos están cubiertos y mantienes suficiente capital para tus gustos.";
+                } else if (percentageLeft > 15) {
+                    progressBar.className = "h-full rounded-full bg-amber-500 transition-all";
+                    lightCircle.className = "w-3 h-3 rounded-full bg-amber-500 shrink-0 shadow-lg shadow-amber-500/50";
+                    adviceText.innerText = "Semáforo Amarillo: Has consumido más de la mitad del dinero libre. Modera las salidas y snacks.";
+                } else {
+                    progressBar.className = "h-full rounded-full bg-rose-500 transition-all";
+                    lightCircle.className = "w-3 h-3 rounded-full bg-rose-500 shrink-0 shadow-lg shadow-rose-500/50 animate-pulse";
+                    adviceText.innerText = "Semáforo Rojo: ¡Peligro! Te has gastado casi todo tu dinero libre. Si sigues gastando, comprometerás el efectivo de tus pasajes o renta.";
+                }
+            }
+
+            // Fondo de Emergencia Básico (Separando el 10% de los ingresos como simulación)
+            const simulatedFund = totalIncome * 0.10;
+            document.getElementById('emergencyFundText').innerText = `${currentSymbol}${simulatedFund.toLocaleString(undefined, {minimumFractionDigits:2})}`;
+
+            // KPIs Secundarios Analíticos
+            const totalExpenseVolume = ledgerDatabase.filter(t => t.amount < 0).reduce((acc, t) => acc + Math.abs(t.amount), 0);
+            const desireExpenseVolume = ledgerDatabase.filter(t => t.amount < 0 && t.intent === 'deseo').reduce((acc, t) => acc + Math.abs(t.amount), 0);
+            const vitalExpenseVolume = ledgerDatabase.filter(t => t.amount < 0 && t.intent !== 'deseo').reduce((acc, t) => acc + Math.abs(t.amount), 0);
 
             const vanityRate = totalExpenseVolume > 0 ? Math.floor((desireExpenseVolume / totalExpenseVolume) * 100) : 0;
             document.getElementById('kpiVanityRate').innerText = `${vanityRate}% Antojos`;
-            document.getElementById('kpiVitalExpense').innerText = `${currentSymbol}${vitalExpenseVolume.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+            document.getElementById('kpiVitalExpense').innerText = `${currentSymbol}${vitalExpenseVolume.toLocaleString(undefined, {minimumFractionDigits:2})}`;
 
-            const savingsRate = incomePool > 0 ? ((incomePool - Math.abs(expensePool)) / incomePool) * 100 : 0;
+            const savingsRate = totalIncome > 0 ? ((totalIncome - totalExpenseVolume) / totalIncome) * 100 : 0;
             document.getElementById('kpiSavingRate').innerText = savingsRate > 0 ? `${Math.floor(savingsRate)}%` : '0%';
-            document.getElementById('kpiEfficiency').innerText = `${Math.abs(expensePool) > 0 ? (incomePool / Math.abs(expensePool)).toFixed(1) : incomePool.toFixed(1)}x`;
+            document.getElementById('kpiEfficiency').innerText = `${totalExpenseVolume > 0 ? (totalIncome / totalExpenseVolume).toFixed(1) : totalIncome.toFixed(1)}x`;
 
             document.querySelectorAll('.money-display').forEach(node => {
                 systemPrivacyActive ? node.classList.add('privacy-masked') : node.classList.remove('privacy-masked');
             });
         }
 
+        function updatePaydayCountdown() {
+            const targetDay = parseInt(document.getElementById('paydaySelector').value);
+            const today = new Date();
+            const currentDay = today.getDate();
+            let daysLeft = 0;
+
+            if (currentDay <= targetDay) {
+                daysLeft = targetDay - currentDay;
+            } else {
+                const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                daysLeft = (nextMonth.getDate() - currentDay) + targetDay;
+            }
+            document.getElementById('paydayCountdownText').innerText = daysLeft === 0 ? "¡Hoy Cobras! 🎉" : `Faltan ${daysLeft} días`;
+        }
+
         function refreshAnalyticalCharts() {
-            const categories = ['Comida', 'Vivienda', 'Transporte', 'Ocio', 'Salud', 'Otros'];
+            const categories = ['Comida', 'Transporte', 'Ocio', 'Otros'];
             const segmentValues = categories.map(cat => ledgerDatabase.filter(t => t.category === cat && t.amount < 0).reduce((acc, t) => acc + Math.abs(t.amount), 0));
             const hasData = segmentValues.some(val => val > 0);
             
@@ -494,31 +496,10 @@
                 if (pieChartInstance) pieChartInstance.destroy();
                 pieChartInstance = new Chart(pieCtx, {
                     type: 'doughnut',
-                    data: { labels: categories, datasets: [{ data: segmentValues, backgroundColor: ['#f59e0b', '#ef4444', '#3b82f6', '#a855f7', '#10b981', '#64748b'], borderColor: '#0f172a', borderWidth: 2 }] },
+                    data: { labels: categories, datasets: [{ data: segmentValues, backgroundColor: ['#f59e0b', '#3b82f6', '#a855f7', '#ef4444'], borderColor: '#0f172a', borderWidth: 2 }] },
                     options: { cutout: '78%', plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
                 });
             }
-
-            const barCtx = document.getElementById('barChartCanvas')?.getContext('2d');
-            if (barCtx) {
-                if (barChartInstance) barChartInstance.destroy();
-                barChartInstance = new Chart(barCtx, {
-                    type: 'bar',
-                    data: { labels: categories.map(c => c.substring(0,4)), datasets: [{ data: segmentValues, backgroundColor: 'rgba(34, 211, 238, 0.2)', borderColor: '#22d3ee', borderWidth: 1.5, borderRadius: 4 }] },
-                    options: { plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { size: 8 } } }, x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 9 } } } }, responsive: true, maintainAspectRatio: false }
-                });
-            }
-        }
-
-        function calculateProjection() {
-            const monthlyContribution = parseFloat(document.getElementById('simMonthly').value) || 0;
-            const annualRate = parseFloat(document.getElementById('simRate').value) || 0;
-            const years = parseInt(document.getElementById('simYears').value) || 15;
-            document.getElementById('yearsLabel').innerText = `${years} Años`;
-            const monthlyRate = (annualRate / 100) / 12;
-            const monthsCount = years * 12;
-            const finalValue = monthlyRate > 0 ? monthlyContribution * ((Math.pow(1 + monthlyRate, monthsCount) - 1) / monthlyRate) : monthlyContribution * monthsCount;
-            document.getElementById('projectionResultText').innerText = `${currencySymbols[activeCurrency]}${finalValue.toLocaleString(undefined, {maximumFractionDigits: 2})}`;
         }
 
         function purgeSingleTx(targetId) { ledgerDatabase = ledgerDatabase.filter(t => t.id !== targetId); syncStorage(); }
@@ -530,11 +511,11 @@
 
         function exportToCSV() {
             if (!ledgerDatabase.length) return;
-            let csv = "ID,Concepto,Categoria,Importe,Intencion\n";
-            ledgerDatabase.forEach(tx => csv += `"${tx.id}","${tx.description}","${tx.category}",${tx.amount},"${tx.intent}"\n`);
+            let csv = "ID,Concepto,Categoria,Importe,Cartera,Intencion\n";
+            ledgerDatabase.forEach(tx => csv += `"${tx.id}","${tx.description}","${tx.category}",${tx.amount},"${tx.walletType}","${tx.intent}"\n`);
             const downloader = document.createElement('a');
             downloader.href = URL.createObjectURL(blob = new Blob([csv], { type: 'text/csv' }));
-            downloader.download = 'FinanzasPro.csv'; downloader.click();
+            downloader.download = 'FinanzasPro_Laboral.csv'; downloader.click();
         }
 
         function importBackup(e) {
@@ -548,9 +529,8 @@
 
         searchBox.addEventListener('input', renderLedgerList);
         filterBox.addEventListener('change', renderLedgerList);
-        document.getElementById('simMonthly').addEventListener('input', calculateProjection);
-        document.getElementById('simRate').addEventListener('input', calculateProjection);
 
+        // Inicializar suite
         refreshSuiteDashboard();
     </script>
 </body>
