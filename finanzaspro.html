@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Finanzas Pro | Professional Work Suite</title>
+    <title>Finanzas Pro | Guided Interactive Suite</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2 family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -18,6 +18,7 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         .privacy-masked { filter: blur(10px); pointer-events: none; user-select: none; }
         
+        /* Animación para los botones de ayuda */
         @keyframes pulse-cyan {
             0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); }
             50% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(34, 211, 238, 0); }
@@ -41,7 +42,7 @@
                         </div>
                         <div>
                             <h1 class="text-base font-bold text-white leading-tight">Finanzas<span class="text-cyan-400">Pro</span></h1>
-                            <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Laboral Edition • v5.0</p>
+                            <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Guided Suite • v4.6</p>
                         </div>
                     </div>
                     <div class="md:hidden shrink-0">
@@ -69,7 +70,7 @@
                             <option value="ARS">ARS ($)</option>
                         </select>
                     </div>
-                    <button onclick="togglePrivacyMode()" id="privacyToggleBtn" class="p-2 bg-slate-900/80 border border-slate-800 rounded-xl text-slate-400 shrink-0 text-xs">
+                    <button onclick="togglePrivacyMode()" id="privacyToggleBtn" class="p-2 bg-slate-900/80 border border-slate-800 rounded-xl text-slate-400 shrink-0 text-xs" title="Modo Privacidad">
                         <span id="privacyIcon">🔓</span>
                     </button>
                     <div class="relative flex-1 md:flex-initial">
@@ -94,40 +95,34 @@
         <section class="w-full max-w-full px-4 pt-4 box-border overflow-hidden">
             <div class="relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-slate-800/80 shadow-2xl w-full box-border">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center w-full">
-                    <div class="col-span-12 md:col-span-4 min-w-0">
+                    <div class="col-span-12 md:col-span-5 min-w-0">
                         <div class="flex items-center gap-1.5">
                             <h3 class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-0.5">Patrimonio Neto Consolidado</h3>
                             <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('patrimonio')">?</span>
                         </div>
                         <div class="text-2xl sm:text-3xl font-black text-white tracking-tight mono money-display truncate break-all" id="netWealthText">$0.00</div>
                     </div>
-                    
-                    <div class="col-span-12 md:col-span-5 grid grid-cols-2 gap-2">
-                        <div class="bg-slate-950/40 p-2 border border-slate-800/60 rounded-xl">
-                            <div class="flex items-center justify-between text-[9px] uppercase font-bold text-emerald-400 tracking-wider">
-                                <span>💵 En Efectivo</span>
-                                <span class="help-marker hidden w-2.5 h-2.5 rounded-full bg-cyan-500 text-slate-950 text-[7px] font-black flex items-center justify-center cursor-pointer" onclick="showExplanation('efectivo')">?</span>
-                            </div>
-                            <p id="walletCashText" class="text-sm font-bold text-white mono money-display truncate">$0.00</p>
-                        </div>
-                        <div class="bg-slate-950/40 p-2 border border-slate-800/60 rounded-xl">
-                            <div class="flex items-center justify-between text-[9px] uppercase font-bold text-blue-400 tracking-wider">
-                                <span>💳 En Débito</span>
-                                <span class="help-marker hidden w-2.5 h-2.5 rounded-full bg-cyan-500 text-slate-950 text-[7px] font-black flex items-center justify-center cursor-pointer" onclick="showExplanation('debito')">?</span>
-                            </div>
-                            <p id="walletCardText" class="text-sm font-bold text-white mono money-display truncate">$0.00</p>
-                        </div>
-                    </div>
-
-                    <div class="col-span-12 md:col-span-3 bg-slate-950/50 border border-slate-800/60 rounded-xl p-2.5 flex items-center justify-between shadow-inner min-w-0">
-                        <div class="min-w-0 mr-1">
-                            <div class="flex items-center gap-1">
+                    <div class="col-span-12 md:col-span-4 bg-slate-950/50 border border-slate-800/60 rounded-xl p-3 flex items-center justify-between shadow-inner min-w-0">
+                        <div class="min-w-0 mr-2">
+                            <div class="flex items-center gap-1.5">
                                 <h4 class="text-[9px] font-bold uppercase text-cyan-400 tracking-wider truncate">⏱️ Supervivencia</h4>
                                 <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('supervivencia')">?</span>
                             </div>
+                            <p class="text-[10px] text-slate-500 truncate">Soporte sin empleo</p>
                         </div>
                         <div class="text-right shrink-0">
-                            <span id="survivalDaysText" class="text-base font-black text-white mono block leading-none">0 días</span>
+                            <span id="survivalDaysText" class="text-lg font-black text-white mono block leading-none">0 días</span>
+                            <span class="text-[8px] font-bold uppercase text-slate-400" id="survivalStatusLabel">---</span>
+                        </div>
+                    </div>
+                    <div class="col-span-12 md:col-span-3 flex justify-between md:justify-end gap-2 border-t md:border-t-0 md:border-l border-slate-800/80 pt-2 md:pt-0 md:pl-4 min-w-0">
+                        <div class="min-w-0 flex-1">
+                            <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">Ingresos</p>
+                            <p id="totalIncomeText" class="text-xs sm:text-sm font-bold text-white mono money-display truncate">$0.00</p>
+                        </div>
+                        <div class="min-w-0 flex-1 border-l border-slate-850 pl-2 md:border-0 md:pl-0">
+                            <p class="text-[9px] font-bold text-rose-400 uppercase tracking-wider">Gastos</p>
+                            <p id="totalExpenseText" class="text-xs sm:text-sm font-bold text-white mono money-display truncate">$0.00</p>
                         </div>
                     </div>
                 </div>
@@ -140,25 +135,25 @@
                 <div class="col-span-12 lg:col-span-4 min-w-0 w-full">
                     <div class="neo-card p-4 rounded-2xl shadow-xl w-full box-border">
                         <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-1.5">
-                            <span class="text-cyan-400">⚡</span> Registro Profesional
+                            <span class="text-cyan-400">⚡</span> Registro Rápido
                             <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('registro')">?</span>
                         </h3>
                         <form id="ledgerForm" class="space-y-3 w-full box-border">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Concepto / Dónde o Qué</label>
-                                <input type="text" id="txDesc" placeholder="Ej. Sueldo quincenal, Comida Oxxo..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white transition" required />
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Concepto / Negocio</label>
+                                <input type="text" id="txDesc" placeholder="Ej. Almuerzo, Uber..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white transition" required />
                             </div>
                             <div class="grid grid-cols-2 gap-2 w-full">
                                 <div class="min-w-0">
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Categoría</label>
                                     <select id="txCategory" onchange="togglePsychSelector(this.value)" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-300 outline-none focus:ring-1 focus:ring-cyan-500 cursor-pointer">
-                                        <option value="Ingreso">💼 Sueldo / Ingresos</option>
-                                        <option value="Inversiones">📈 Ahorro / Inversión</option>
+                                        <option value="Ingreso">💼 Ingresos</option>
+                                        <option value="Inversiones">📈 Inversión</option>
                                         <option value="Comida">🛒 Alimentación</option>
-                                        <option value="Vivienda">🏠 Vivienda / Renta</option>
-                                        <option value="Transporte">🚗 Transporte / Uber</option>
-                                        <option value="Ocio">🎬 Ocio / Cine / Antojos</option>
-                                        <option value="Salud">🏥 Salud / Farmacia</option>
+                                        <option value="Vivienda">🏠 Vivienda</option>
+                                        <option value="Transporte">🚗 Transporte</option>
+                                        <option value="Ocio">🎬 Ocio / Cine</option>
+                                        <option value="Salud">🏥 Bienestar</option>
                                         <option value="Otros">📦 Otros Gastos</option>
                                     </select>
                                 </div>
@@ -167,19 +162,6 @@
                                     <input type="number" step="0.01" id="txAmount" placeholder="0.00" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white font-mono" required />
                                 </div>
                             </div>
-
-                            <div class="w-full">
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">¿Cómo pagaste / recibiste?</label>
-                                <div class="grid grid-cols-2 gap-2 w-full">
-                                    <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-xs font-medium text-slate-300 has-[:checked]:border-emerald-500 has-[:checked]:text-emerald-400 has-[:checked]:bg-emerald-950/10 transition-all select-none">
-                                        <input type="radio" name="txMethod" value="cash" checked class="hidden">💵 Cash (Efectivo)
-                                    </label>
-                                    <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-xs font-medium text-slate-300 has-[:checked]:border-blue-500 has-[:checked]:text-blue-400 has-[:checked]:bg-blue-950/10 transition-all select-none">
-                                        <input type="radio" name="txMethod" value="card" class="hidden">💳 Débito (Banco)
-                                    </label>
-                                </div>
-                            </div>
-
                             <div id="psychologicalBlock" class="hidden bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80 space-y-1.5 w-full">
                                 <div class="flex items-center gap-1.5">
                                     <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">¿Necesidad o Capricho?</label>
@@ -218,7 +200,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="h-[370px] overflow-y-auto overflow-x-hidden custom-scroll p-3 bg-slate-950/20 w-full box-border">
+                        <div class="h-[340px] overflow-y-auto overflow-x-hidden custom-scroll p-3 bg-slate-950/20 w-full box-border">
                             <ul id="ledgerContainer" class="space-y-1.5 w-full block max-w-full"></ul>
                         </div>
                     </div>
@@ -268,7 +250,7 @@
                             <h3 class="text-sm font-bold text-white flex items-center gap-1.5"><span>🔮</span> Interés Compuesto Futuro</h3>
                             <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('interes')">?</span>
                         </div>
-                        <p class="text-[11px] text-slate-500 mt-0.5">Calcula la multiplicación silenciosa de tu capital laboral.</p>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Calcula la multiplicación silenciosa de tu capital.</p>
                     </div>
                     <div class="space-y-3 w-full">
                         <div class="grid grid-cols-2 gap-3 w-full">
@@ -301,9 +283,9 @@
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
             <div class="flex items-center gap-2 border-b border-slate-800 pb-2.5">
                 <span class="text-lg text-cyan-400" id="guideModalIcon">💡</span>
-                <h4 class="text-sm font-bold text-white" id="guideModalTitle">Sección</h4>
+                <h4 class="text-sm font-bold text-white" id="guideModalTitle">Título de la sección</h4>
             </div>
-            <p class="text-xs text-slate-400 leading-relaxed" id="guideModalDesc">Contenido explicativo.</p>
+            <p class="text-xs text-slate-400 leading-relaxed" id="guideModalDesc">Explicación del elemento.</p>
             <button onclick="closeExplanation()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-2 rounded-xl cursor-pointer transition-colors">Entendido</button>
         </div>
     </div>
@@ -313,20 +295,19 @@
         let activeCurrency = 'USD';
         let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_v42_core')) || [];
         let systemPrivacyActive = false;
-        let systemGuideActive = false;
+        let systemGuideActive = false; // Estado de la guía
         let pieChartInstance = null;
         let barChartInstance = null;
 
+        // Base de datos de explicaciones para la guía
         const guideDictionary = {
-            patrimonio: { title: "Patrimonio Consolidado", icon: "💰", desc: "Es la suma total de tu dinero. Junta lo que traes en físico (Cash) con lo que tienes guardado en la tarjeta de débito." },
-            efectivo: { title: "Fondo en Efectivo (Cash)", icon: "💵", desc: "Representa el dinero físico que tienes en tu cartera. Útil para verificar que las monedas y billetes que traes coincidan exactamente con la app." },
-            debito: { title: "Saldo en Débito (Banco)", icon: "💳", desc: "El dinero digital que tienes disponible en tu cuenta de banco. La app te avisará si intentas gastar más dinero del que realmente tienes aquí." },
-            supervivencia: { title: "Indicador de Supervivencia", icon: "⏱️", desc: "Mide tu colchón financiero. Te dice cuántos días podrías cubrir tus deudas y alimentación si te quedaras sin trabajo temporalmente." },
-            registro: { title: "Ingreso de Movimientos", icon: "⚡", desc: "Registra cada sueldo, propina o gasto aquí. Al seleccionar 'Cash' o 'Débito' el sistema sabe automáticamente de dónde retirar o sumar el dinero." },
-            psicologico: { title: "Filtro Psicológico", icon: "🛡️", desc: "Evita compras impulsivas. Te ayuda a ver si tu sueldo se está yendo en cosas esenciales (Necesidades) o en caprichos que se pueden evitar." },
-            gastofijo: { title: "Gasto Fijo Obligatorio", icon: "📦", desc: "Cosas que pagas mes con mes sin falta (planes de teléfono, suscripciones, pasajes). Al marcarlo, proteges ese dinero para que no te lo gastes en salidas." },
-            vanidad: { title: "Análisis de Vanidad", icon: "✨", desc: "Muestra qué porcentaje de tus ingresos totales del trabajo estás gastando en antojos. Mantén este número bajo para ahorrar más rápido." },
-            interes: { title: "Simulador de Crecimiento", icon: "🔮", desc: "Te permite proyectar cuánto dinero tendrías si una parte de tu sueldo la pones a trabajar en una cuenta de inversión a largo plazo." }
+            patrimonio: { title: "Patrimonio Neto", icon: "💰", desc: "Es el dinero real que posees actualmente. Se calcula restando de forma matemática todos tus gastos acumulados a la suma de tus ingresos totales registrados." },
+            supervivencia: { title: "Días de Supervivencia", icon: "⏱️", desc: "Es un cálculo que te dice cuántos días podrías seguir viviendo manteniendo tu nivel de consumo actual si hoy mismo te quedaras sin tu fuente principal de ingresos." },
+            registro: { title: "Registro Rápido", icon: "⚡", desc: "Aquí inyectas los movimientos a tu historial. Los ingresos suman a tu patrimonio, mientras que los costos de comida, ocio u otros restan capital." },
+            psicologico: { title: "Filtro Psicológico", icon: "🛡️", desc: "Te obliga a clasificar tus gastos antes de hacerlos. Las 'Necesidades' son obligatorias para sobrevivir. Los 'Antojos' son deseos prescindibles que inflan tu Índice de Vanidad." },
+            gastofijo: { title: "Gasto Fijo", icon: "📦", desc: "Identifica salidas de dinero que se repiten periódicamente (como suscripciones, renta o seguros) para ayudar al algoritmo a mapear tu estilo de vida indispensable." },
+            vanidad: { title: "Índice de Vanidad", icon: "✨", desc: "Es un porcentaje que calcula cuánto de tu dinero total gastado se ha ido exclusivamente en caprichos o antojos en lugar de necesidades vitales." },
+            interes: { title: "Interés Compuesto", icon: "🔮", desc: "Es un simulador algorítmico que proyecta cuánto dinero acumularás a largo plazo si inviertes una cantidad fija al mes con una tasa de rendimiento constante." }
         };
 
         const ledgerForm = document.getElementById('ledgerForm');
@@ -339,14 +320,16 @@
             systemGuideActive = !systemGuideActive;
             const btn = document.getElementById('guideToggleBtn');
             const markers = document.querySelectorAll('.help-marker');
+            
             if (systemGuideActive) {
                 btn.innerText = "❌ Desactivar Guía";
-                btn.className = "w-full text-left text-xs p-2 bg-rose-950/30 hover:bg-rose-900/50 text-rose-400 rounded-lg font-bold border border-rose-800/30";
+                btn.className = "w-full text-left text-xs p-2 bg-rose-950/30 hover:bg-rose-900/50 text-rose-400 rounded-lg font-bold transition-colors border border-rose-800/30";
                 markers.forEach(m => m.classList.remove('hidden'));
-                toggleDataMenu();
+                toggleDataMenu(); // Cerrar menú
+                alert("¡Guía activada! Presiona los círculos de color '?' para ver qué significa cada elemento.");
             } else {
                 btn.innerText = "📖 Activar Guía Dinámica";
-                btn.className = "w-full text-left text-xs p-2 bg-cyan-950/30 hover:bg-cyan-900/50 text-cyan-400 rounded-lg font-bold border border-cyan-800/30";
+                btn.className = "w-full text-left text-xs p-2 bg-cyan-950/30 hover:bg-cyan-900/50 text-cyan-400 rounded-lg font-bold transition-colors border border-cyan-800/30";
                 markers.forEach(m => m.classList.add('hidden'));
                 toggleDataMenu();
             }
@@ -354,15 +337,16 @@
 
         function showExplanation(key) {
             const data = guideDictionary[key];
-            if (data) {
-                document.getElementById('guideModalIcon').innerText = data.icon;
-                document.getElementById('guideModalTitle').innerText = data.title;
-                document.getElementById('guideModalDesc').innerText = data.desc;
-                document.getElementById('guideModal').classList.remove('hidden');
-            }
+            if (!data) return;
+            document.getElementById('guideModalIcon').innerText = data.icon;
+            document.getElementById('guideModalTitle').innerText = data.title;
+            document.getElementById('guideModalDesc').innerText = data.desc;
+            document.getElementById('guideModal').classList.remove('hidden');
         }
 
-        function closeExplanation() { document.getElementById('guideModal').classList.add('hidden'); }
+        function closeExplanation() {
+            document.getElementById('guideModal').classList.add('hidden');
+        }
 
         function togglePsychSelector(categoryValue) {
             const block = document.getElementById('psychologicalBlock');
@@ -375,10 +359,10 @@
             document.getElementById(targetModuleId).classList.remove('hidden');
             document.getElementById('mobileModuleSelector').value = targetModuleId;
             document.querySelectorAll('.module-tab-btn').forEach(btn => {
-                btn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-slate-200";
+                btn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200";
             });
             const activeBtn = document.getElementById(`btn-${targetModuleId}`);
-            if (activeBtn) activeBtn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950 shadow-md";
+            if (activeBtn) activeBtn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md";
             if (targetModuleId === 'mod-analytics') setTimeout(refreshAnalyticalCharts, 5);
         }
 
@@ -388,28 +372,16 @@
             const category = document.getElementById('txCategory').value;
             let amount = parseFloat(document.getElementById('txAmount').value);
             const isRecurring = document.getElementById('txRecurring').checked;
-            const method = document.querySelector('input[name="txMethod"]:checked').value;
-            
             let intent = 'necesidad';
             if(category !== 'Ingreso' && category !== 'Inversiones') intent = document.querySelector('input[name="txIntent"]:checked').value;
             if (!description || isNaN(amount)) return;
 
-            // Validación de control de saldo negativo para débito
-            if (category !== 'Ingreso' && category !== 'Inversiones') {
-                if (method === 'card') {
-                    const currentCardBalance = ledgerDatabase.reduce((acc, t) => acc + (t.method === 'card' ? t.amount : 0), 0);
-                    if (currentCardBalance - amount < 0) {
-                        if (!confirm("⚠️ ¡Alerta de Presupuesto! Este gasto superará el dinero disponible en tu cuenta de Débito. ¿Quieres registrarlo de todos modos?")) return;
-                    }
-                }
-                amount = -amount;
-            } else if ((category === 'Ingreso' || category === 'Inversiones') && amount < 0) {
-                amount = Math.abs(amount);
-            }
+            if (category !== 'Ingreso' && category !== 'Inversiones' && amount > 0) amount = -amount;
+            else if ((category === 'Ingreso' || category === 'Inversiones') && amount < 0) amount = Math.abs(amount);
 
             ledgerDatabase.unshift({
                 id: 'TX-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-                description, category, amount, isRecurring, intent, method,
+                description, category, amount, isRecurring, intent,
                 timestamp: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
             });
             syncStorage();
@@ -447,7 +419,6 @@
                 const isCredit = tx.amount > 0;
                 const element = document.createElement('li');
                 let intentBadge = !isCredit ? (tx.intent === 'deseo' ? `<span class="text-[7px] bg-amber-500/10 text-amber-400 px-1 py-0.2 rounded font-bold shrink-0">ANTOJO</span>` : `<span class="text-[7px] bg-cyan-500/10 text-cyan-400 px-1 py-0.2 rounded font-bold shrink-0">VITAL</span>`) : '';
-                const methodIcon = tx.method === 'card' ? '💳' : '💵';
 
                 element.className = "flex items-center justify-between p-3 rounded-xl bg-slate-900/40 border border-slate-800/60 w-full min-w-0 gap-2 box-border";
                 element.innerHTML = `
@@ -455,7 +426,7 @@
                         <div class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] shrink-0 ${isCredit ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}">${isCredit ? '▲' : '▼'}</div>
                         <div class="min-w-0 flex-1">
                             <p class="text-xs font-bold text-slate-200 flex items-center gap-1 w-full"><span class="truncate block max-w-[100px] sm:max-w-none break-all">${tx.description}</span>${tx.isRecurring ? '<span class="text-[7px] bg-blue-500/10 text-blue-400 px-1 rounded font-bold shrink-0">FIJO</span>' : ''}${intentBadge}</p>
-                            <p class="text-[9px] text-slate-500 font-mono truncate">${methodIcon} ${tx.category} • ${tx.timestamp}</p>
+                            <p class="text-[9px] text-slate-500 font-mono truncate">${tx.category} • ${tx.timestamp}</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0 justify-end">
@@ -469,25 +440,27 @@
 
         function evaluateFinancialMetrics() {
             const currentSymbol = currencySymbols[activeCurrency];
-            
-            // Cálculos por método de pago para conciliación
-            const cashBalance = ledgerDatabase.filter(t => t.method !== 'card').reduce((sum, t) => sum + t.amount, 0);
-            const cardBalance = ledgerDatabase.filter(t => t.method === 'card').reduce((sum, t) => sum + t.amount, 0);
-            const absoluteNet = cashBalance + cardBalance;
-
-            // Inyectar en paneles de conciliación de cajas
-            document.getElementById('netWealthText').innerText = `${currentSymbol}${absoluteNet.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-            document.getElementById('walletCashText').innerText = `${currentSymbol}${cashBalance.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-            document.getElementById('walletCardText').innerText = `${currentSymbol}${cardBalance.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-
+            const incomePool = ledgerDatabase.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
             const expensePool = ledgerDatabase.filter(t => t.amount < 0).reduce((sum, t) => sum + t.amount, 0);
+            const absoluteNet = incomePool + expensePool;
+
+            document.getElementById('netWealthText').innerText = `${currentSymbol}${absoluteNet.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+            document.getElementById('totalIncomeText').innerText = `${currentSymbol}${incomePool.toLocaleString(undefined, {maximumFractionDigits:2})}`;
+            document.getElementById('totalExpenseText').innerText = `${currentSymbol}${Math.abs(expensePool).toLocaleString(undefined, {maximumFractionDigits:2})}`;
+
             const survivalDaysText = document.getElementById('survivalDaysText');
+            const survivalStatusLabel = document.getElementById('survivalStatusLabel');
             
             if (absoluteNet > 0 && Math.abs(expensePool) > 0) {
                 const daysAvailable = Math.floor(absoluteNet / (Math.abs(expensePool) / 30));
                 survivalDaysText.innerText = `${daysAvailable} días`;
+                if(daysAvailable > 180) { survivalStatusLabel.innerText = "🛡️ Seguro"; survivalStatusLabel.className = "text-[8px] font-bold text-emerald-400"; }
+                else if(daysAvailable > 30) { survivalStatusLabel.innerText = "⚡ Estable"; survivalStatusLabel.className = "text-[8px] font-bold text-cyan-400"; }
+                else { survivalStatusLabel.innerText = "🚨 Alerta"; survivalStatusLabel.className = "text-[8px] font-bold text-rose-400 animate-pulse"; }
             } else {
                 survivalDaysText.innerText = absoluteNet <= 0 && ledgerDatabase.length > 0 ? "0 días" : "--";
+                survivalStatusLabel.innerText = absoluteNet <= 0 && ledgerDatabase.length > 0 ? "💀 SOS" : "S/D";
+                survivalStatusLabel.className = "text-[8px] font-bold text-rose-500";
             }
 
             const totalExpensesArray = ledgerDatabase.filter(t => t.amount < 0);
@@ -499,7 +472,6 @@
             document.getElementById('kpiVanityRate').innerText = `${vanityRate}% Antojos`;
             document.getElementById('kpiVitalExpense').innerText = `${currentSymbol}${vitalExpenseVolume.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
 
-            const incomePool = ledgerDatabase.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
             const savingsRate = incomePool > 0 ? ((incomePool - Math.abs(expensePool)) / incomePool) * 100 : 0;
             document.getElementById('kpiSavingRate').innerText = savingsRate > 0 ? `${Math.floor(savingsRate)}%` : '0%';
             document.getElementById('kpiEfficiency').innerText = `${Math.abs(expensePool) > 0 ? (incomePool / Math.abs(expensePool)).toFixed(1) : incomePool.toFixed(1)}x`;
@@ -558,11 +530,11 @@
 
         function exportToCSV() {
             if (!ledgerDatabase.length) return;
-            let csv = "ID,Concepto,Categoria,Importe,Intencion,Metodo\n";
-            ledgerDatabase.forEach(tx => csv += `"${tx.id}","${tx.description}","${tx.category}",${tx.amount},"${tx.intent}","${tx.method}"\n`);
+            let csv = "ID,Concepto,Categoria,Importe,Intencion\n";
+            ledgerDatabase.forEach(tx => csv += `"${tx.id}","${tx.description}","${tx.category}",${tx.amount},"${tx.intent}"\n`);
             const downloader = document.createElement('a');
             downloader.href = URL.createObjectURL(blob = new Blob([csv], { type: 'text/csv' }));
-            downloader.download = 'FinanzasPro_Laboral.csv'; downloader.click();
+            downloader.download = 'FinanzasPro.csv'; downloader.click();
         }
 
         function importBackup(e) {
