@@ -26,7 +26,81 @@
         .help-trigger { animation: pulse-cyan 2s infinite; }
         
         @media screen and (max-width: 768px) { input, select { font-size: 16px !important; } }
-    </style>
+            /* Estilos del Módulo de Escáner Inteligente (Estilo Oscuro/Pro) */
+    .caja-escaner { 
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%); 
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 20px; 
+        border-radius: 15px; 
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); 
+        max-width: 500px; 
+        margin: 20px auto; 
+        text-align: center;
+        color: #cbd5e1;
+    }
+    .caja-escaner h1 { 
+        color: #ffffff; 
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 5px; 
+    }
+    .caja-escaner h1 span { color: #22d3ee; }
+    .caja-escaner p { 
+        font-size: 13px;
+        color: #94a3b8;
+        margin: 5px 0 15px 0; 
+    }
+    .btn-subir-ticket { 
+        background: linear-gradient(to right, #0891b2, #2563eb); 
+        color: white; 
+        padding: 14px; 
+        border-radius: 12px; 
+        cursor: pointer; 
+        display: block; 
+        margin: 20px 0; 
+        font-weight: bold; 
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+        transition: all 0.2s;
+    }
+    .btn-subir-ticket:hover { opacity: 0.9; }
+    #preview-ticket { 
+        width: 100%; 
+        max-height: 250px; 
+        object-fit: contain; 
+        margin-top: 15px; 
+        display: none; 
+        border: 1px solid rgba(255, 255, 255, 0.1); 
+        border-radius: 10px; 
+    }
+    .estado-escaner { font-weight: bold; color: #22d3ee; margin: 10px 0; font-size: 13px; }
+    .deteccion-ia-pro { 
+        background: rgba(15, 23, 42, 0.6); 
+        border: 2px dashed #06b6d4; 
+        border-radius: 12px; 
+        padding: 15px; 
+        margin-top: 20px; 
+        display: none; 
+    }
+    .total-detectado-pro { font-size: 28px; font-weight: 900; color: #34d399; margin: 8px 0; font-family: monospace; }
+    .btn-grupo-pro { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .btn-accion-pro { 
+        padding: 10px; 
+        border: 1px solid rgba(255, 255, 255, 0.05); 
+        border-radius: 8px; 
+        font-weight: bold; 
+        font-size: 12px;
+        color: white; 
+        cursor: pointer; 
+        transition: background 0.2s;
+    }
+    .btn-cash-pro { background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.3); }
+    .btn-cash-pro:hover { background: rgba(16, 185, 129, 0.3); }
+    .btn-card-pro { background: rgba(6, 182, 212, 0.2); color: #22d3ee; border-color: rgba(6, 182, 212, 0.3); }
+    .btn-card-pro:hover { background: rgba(6, 182, 212, 0.3); }
+
+       </style>
 </head>
 <body class="bg-[#0b0f19] text-slate-200 min-h-screen w-full overflow-x-hidden selection:bg-cyan-500 selection:text-slate-950 antialiased block">
 
