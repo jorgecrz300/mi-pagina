@@ -4,12 +4,11 @@
     <script src="https://unpkg.com/tesseract.js@2.1.4/dist/tesseract.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Finanzas Pro | Guided Interactive Suite</title>
+    <title>Finanzas Pro | Suite Contable con IA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-text-size-adjust: 100%; }
         .mono { font-family: 'JetBrains Mono', monospace; }
@@ -17,17 +16,9 @@
         .neo-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%); border: 1px solid rgba(255, 255, 255, 0.05); }
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        .privacy-masked { filter: blur(10px); pointer-events: none; user-select: none; }
-        
-        @keyframes pulse-cyan {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); }
-            50% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(34, 211, 238, 0); }
-        }
-        .help-trigger { animation: pulse-cyan 2s infinite; }
-        
         @media screen and (max-width: 768px) { input, select { font-size: 16px !important; } }
 
-        /* Estilos del Módulo de Escáner Inteligente (Estilo Oscuro/Pro) */
+        /* Estilos del Módulo de Escáner Inteligente */
         .caja-escaner { 
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -56,12 +47,6 @@
         .estado-escaner { font-weight: bold; color: #22d3ee; margin: 10px 0; font-size: 12px; }
         .deteccion-ia-pro { background: rgba(15, 23, 42, 0.6); border: 2px dashed #06b6d4; border-radius: 12px; padding: 15px; margin-top: 20px; display: none; }
         .total-detectado-pro { font-size: 28px; font-weight: 900; color: #34d399; margin: 8px 0; font-family: monospace; }
-        .btn-grupo-pro { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
-        .btn-accion-pro { padding: 10px; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; font-weight: bold; font-size: 11px; color: white; cursor: pointer; transition: background 0.2s; }
-        .btn-cash-pro { background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.3); }
-        .btn-cash-pro:hover { background: rgba(16, 185, 129, 0.3); }
-        .btn-card-pro { background: rgba(6, 182, 212, 0.2); color: #22d3ee; border-color: rgba(6, 182, 212, 0.3); }
-        .btn-card-pro:hover { background: rgba(6, 182, 212, 0.3); }
     </style>
 </head>
 <body class="bg-[#0b0f19] text-slate-200 min-h-screen w-full overflow-x-hidden selection:bg-cyan-500 selection:text-slate-950 antialiased block">
@@ -69,96 +54,40 @@
     <div class="w-full max-w-full overflow-x-hidden flex flex-col justify-start items-stretch project-wrapper">
 
         <header class="sticky top-0 z-40 glass-panel px-4 py-3 shadow-xl w-full box-border">
-            <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3 w-full">
-                
-                <div class="flex items-center justify-between w-full md:w-auto gap-4">
-                    <div class="flex items-center gap-2">
-                        <div class="w-9 h-9 bg-gradient-to-br from-cyan-500 via-blue-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shrink-0">
-                            <span class="text-slate-950 font-extrabold text-lg">FP</span>
-                        </div>
-                        <div>
-                            <h1 class="text-base font-bold text-white leading-tight">Finanzas<span class="text-cyan-400">Pro</span></h1>
-                            <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Guided Suite • v4.6</p>
-                        </div>
+            <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-3 w-full">
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 bg-gradient-to-br from-cyan-500 via-blue-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shrink-0">
+                        <span class="text-slate-950 font-extrabold text-lg">FP</span>
                     </div>
-                    <div class="md:hidden shrink-0">
-                        <select id="mobileModuleSelector" onchange="switchModule(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-1.5 px-2.5 text-cyan-400 outline-none">
-                            <option value="mod-overview">🎛️ Resumen</option>
-                            <option value="mod-analytics">📊 Analíticas</option>
-                            <option value="mod-simulator">🔮 Simulador</option>
-                        </select>
+                    <div>
+                        <h1 class="text-base font-bold text-white leading-tight">Finanzas<span class="text-cyan-400">Pro</span></h1>
+                        <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Suite Inteligente Automática</p>
                     </div>
                 </div>
                 
-                <div class="hidden md:flex items-center bg-slate-950/60 p-1 rounded-xl border border-slate-800/80">
-                    <button onclick="switchModule('mod-overview')" id="btn-mod-overview" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md">🎛️ Resumen General</button>
-                    <button onclick="switchModule('mod-analytics')" id="btn-mod-analytics" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">📊 Analíticas e Impacto</button>
-                    <button onclick="switchModule('mod-simulator')" id="btn-mod-simulator" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">🔮 Proyecciones</button>
-                </div>
-                
-                <div class="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto border-t border-slate-800/50 md:border-0 pt-2 md:pt-0">
-                    <div class="flex items-center bg-slate-900/90 rounded-xl p-1 border border-slate-800 text-xs font-mono min-w-0">
-                        <select id="globalCurrency" onchange="changeCurrency()" class="bg-transparent border-0 outline-none text-cyan-400 font-bold text-xs px-1 truncate">
-                            <option value="USD">USD ($)</option>
-                            <option value="EUR">EUR (€)</option>
-                            <option value="MXN">MXN ($)</option>
-                            <option value="COP">COP ($)</option>
-                            <option value="ARS">ARS ($)</option>
-                        </select>
-                    </div>
-                    <button onclick="togglePrivacyMode()" id="privacyToggleBtn" class="p-2 bg-slate-900/80 border border-slate-800 rounded-xl text-slate-400 shrink-0 text-xs" title="Modo Privacidad">
-                        <span id="privacyIcon">🔓</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="purgeDatabase()" class="text-xs py-1.5 px-3 bg-rose-950/40 text-rose-400 border border-rose-900/30 rounded-xl font-medium cursor-pointer transition-colors">
+                        ⚠️ Purgar Datos
                     </button>
-                    <div class="relative flex-1 md:flex-initial">
-                        <button onclick="toggleDataMenu()" class="w-full md:w-auto flex items-center justify-center gap-1 bg-slate-900/80 border border-slate-800 text-xs font-bold py-2 px-3 rounded-xl">
-                            ⚙️ Sistema
-                        </button>
-                        <div id="dataMenu" class="hidden absolute right-0 md:right-0 mt-2 w-52 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl p-2 space-y-1 z-50 max-md:fixed max-md:top-36 max-md:left-4 max-md:right-4 max-md:w-auto">
-                            <button onclick="toggleSystemGuide()" id="guideToggleBtn" class="w-full text-left text-xs p-2 bg-cyan-950/30 hover:bg-cyan-900/50 text-cyan-400 rounded-lg font-bold transition-colors border border-cyan-800/30">📖 Activar Guía Dinámica</button>
-                            <div class="border-t border-slate-800 my-1"></div>
-                            <button onclick="exportToCSV()" class="w-full text-left text-xs p-2 hover:bg-slate-800 rounded-lg text-slate-200 font-medium">📥 Exportar CSV</button>
-                            <button onclick="triggerImport()" class="w-full text-left text-xs p-2 hover:bg-slate-800 rounded-lg text-slate-200 font-medium">📤 Importar Respaldo</button>
-                            <input type="file" id="importFile" class="hidden" accept=".json" onchange="importBackup(event)">
-                            <div class="border-t border-slate-800 my-1"></div>
-                            <button onclick="purgeDatabase()" class="w-full text-left text-xs p-2 hover:bg-rose-950/40 text-rose-400 rounded-lg font-medium">⚠️ Purgar Datos</button>
-                        </div>
-                    </div>
                 </div>
-
             </div>
         </header>
 
         <section class="w-full max-w-full px-4 pt-4 box-border">
             <div class="relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-slate-800/80 shadow-2xl w-full box-border">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center w-full">
-                    <div class="col-span-12 md:col-span-5 min-w-0">
-                        <div class="flex items-center gap-1.5">
-                            <h3 class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-0.5">Patrimonio Neto Consolidado</h3>
-                            <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('patrimonio')">?</span>
-                        </div>
-                        <div class="text-2xl sm:text-3xl font-black text-white tracking-tight mono money-display truncate break-all" id="netWealthText">$0.00</div>
+                    <div class="col-span-12 md:col-span-6 min-w-0">
+                        <h3 class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-0.5">Patrimonio Neto Consolidado</h3>
+                        <div class="text-2xl sm:text-3xl font-black text-white tracking-tight mono truncate break-all" id="netWealthText">$0.00</div>
                     </div>
-                    <div class="col-span-12 md:col-span-4 bg-slate-950/50 border border-slate-800/60 rounded-xl p-3 flex items-center justify-between shadow-inner min-w-0">
-                        <div class="min-w-0 mr-2">
-                            <div class="flex items-center gap-1.5">
-                                <h4 class="text-[9px] font-bold uppercase text-cyan-400 tracking-wider truncate">⏱️ Supervivencia</h4>
-                                <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('supervivencia')">?</span>
-                            </div>
-                            <p class="text-[10px] text-slate-500 truncate">Soporte sin empleo</p>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <span id="survivalDaysText" class="text-lg font-black text-white mono block leading-none">0 días</span>
-                            <span class="text-[8px] font-bold uppercase text-slate-400" id="survivalStatusLabel">---</span>
-                        </div>
-                    </div>
-                    <div class="col-span-12 md:col-span-3 flex justify-between md:justify-end gap-2 border-t md:border-t-0 md:border-l border-slate-800/80 pt-2 md:pt-0 md:pl-4 min-w-0">
+                    <div class="col-span-12 md:col-span-6 flex justify-between md:justify-end gap-4 border-t md:border-t-0 md:border-l border-slate-800/80 pt-2 md:pt-0 md:pl-4 min-w-0">
                         <div class="min-w-0 flex-1">
-                            <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">Ingresos</p>
-                            <p id="totalIncomeText" class="text-xs sm:text-sm font-bold text-white mono money-display truncate">$0.00</p>
+                            <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">Ingresos Totales</p>
+                            <p id="totalIncomeText" class="text-base font-bold text-white mono truncate">$0.00</p>
                         </div>
-                        <div class="min-w-0 flex-1 border-l border-slate-850 pl-2 md:border-0 md:pl-0">
-                            <p class="text-[9px] font-bold text-rose-400 uppercase tracking-wider">Gastos</p>
-                            <p id="totalExpenseText" class="text-xs sm:text-sm font-bold text-white mono money-display truncate">$0.00</p>
+                        <div class="min-w-0 flex-1 border-l border-slate-800 pl-4">
+                            <p class="text-[9px] font-bold text-rose-400 uppercase tracking-wider">Gastos Totales</p>
+                            <p id="totalExpenseText" class="text-base font-bold text-white mono truncate">$0.00</p>
                         </div>
                     </div>
                 </div>
@@ -166,218 +95,103 @@
         </section>
 
         <main class="w-full max-w-full p-4 box-border flex-1">
-
-            <div id="mod-overview" class="module-view grid grid-cols-12 gap-4 w-full box-border">
-                <div class="col-span-12 lg:col-span-4 min-w-0 w-full">
+            <div class="grid grid-cols-12 gap-4 w-full box-border">
+                
+                <div class="col-span-12 lg:col-span-4 min-w-0 w-full space-y-4">
+                    
                     <div class="neo-card p-4 rounded-2xl shadow-xl w-full box-border">
                         <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-1.5">
-                            <span class="text-cyan-400">⚡</span> Registro Rápido
-                            <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('registro')">?</span>
+                            <span class="text-cyan-400">⚡</span> Registro Rápido Manual
                         </h3>
                         <form id="ledgerForm" class="space-y-3 w-full box-border">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Concepto / Negocio</label>
-                                <input type="text" id="txDesc" placeholder="Ej. Almuerzo, Uber..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white transition" required />
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Concepto / Descripción</label>
+                                <input type="text" id="txDesc" placeholder="Ej. Almuerzo, Gasolina, Pago..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white transition" required />
                             </div>
                             <div class="grid grid-cols-2 gap-2 w-full">
                                 <div class="min-w-0">
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Categoría</label>
-                                    <select id="txCategory" onchange="togglePsychSelector(this.value)" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-300 outline-none focus:ring-1 focus:ring-cyan-500 cursor-pointer">
-                                        <option value="Ingreso">💼 Ingresos</option>
-                                        <option value="Inversiones">📈 Inversión</option>
+                                    <select id="txCategory" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-300 outline-none focus:ring-1 focus:ring-cyan-500 cursor-pointer">
+                                        <option value="Ingreso">💼 Ingresos (Suma)</option>
                                         <option value="Comida">🛒 Alimentación</option>
                                         <option value="Vivienda">🏠 Vivienda</option>
                                         <option value="Transporte">🚗 Transporte</option>
-                                        <option value="Ocio">🎬 Ocio / Cine</option>
-                                        <option value="Salud">🏥 Bienestar</option>
+                                        <option value="Ocio">🎬 Ocio / Caprichos</option>
                                         <option value="Otros">📦 Otros Gastos</option>
                                     </select>
                                 </div>
                                 <div class="min-w-0">
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Importe</label>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Importe ($)</label>
                                     <input type="number" step="0.01" id="txAmount" placeholder="0.00" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white font-mono" required />
                                 </div>
                             </div>
-
-                            <div id="psychologicalBlock" class="hidden bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80 space-y-1.5 w-full">
-                                <div class="flex items-center gap-1.5">
-                                    <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">¿Necesidad o Capricho?</label>
-                                    <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[8px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('psicologico')">?</span>
-                                </div>
-                                <div class="grid grid-cols-2 gap-2 w-full">
-                                    <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-[11px] font-bold text-slate-400 has-[:checked]:border-cyan-500 has-[:checked]:text-cyan-400 has-[:checked]:bg-cyan-950/20 transition-all select-none"><input type="radio" name="txIntent" value="necesidad" checked class="hidden">🛡️ Necesidad</label>
-                                    <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-[11px] font-bold text-slate-400 has-[:checked]:border-amber-500 has-[:checked]:text-amber-400 has-[:checked]:bg-amber-950/20 transition-all select-none"><input type="radio" name="txIntent" value="deseo" class="hidden">✨ Antojo</label>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2 pt-1 w-full">
-                                <div class="flex items-center gap-1.5 bg-slate-950/40 p-2 rounded-xl border border-slate-800/60 justify-center">
-                                    <input type="checkbox" id="txRecurring" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
-                                    <label for="txRecurring" class="text-[10px] text-slate-400 font-medium cursor-pointer select-none">Gasto Fijo</label>
-                                    <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[8px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('gastofijo')">?</span>
-                                </div>
-                                <button type="submit" class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold text-xs tracking-wider rounded-xl cursor-pointer py-2.5 shadow-md">REGISTRAR</button>
-                            </div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold text-xs tracking-wider rounded-xl cursor-pointer py-2.5 shadow-md mt-2">
+                                AÑADIR REGISTRO
+                            </button>
                         </form>
+                    </div>
 
-                        <div class="caja-escaner">
-                            <h1>📸 Escáner de <span>Gastos</span></h1>
-                            <p>Sube la foto de tu ticket para procesar el total con IA.</p>
+                    <div class="caja-escaner">
+                        <h1>📸 Escáner de Gastos Automatizado</h1>
+                        <p>Sube la foto de tu ticket. La IA lo lee y lo registra al instante.</p>
 
-                            <label class="btn-subir-ticket">
-                                TOMAR FOTO O SUBIR TICKET
-                                <input type="file" id="archivo" accept="image/*" style="display:none">
-                            </label>
+                        <label class="btn-subir-ticket">
+                            TOMAR FOTO O SUBIR TICKET
+                            <input type="file" id="archivo" accept="image/*" style="display:none">
+                        </label>
 
-                            <canvas id="canvas-procesado" style="display:none;"></canvas>
-                            <img id="preview-ticket" alt="Vista previa del ticket">
-                            <div id="status" class="estado-escaner"></div>
+                        <canvas id="canvas-procesado" style="display:none;"></canvas>
+                        <img id="preview-ticket" alt="Vista previa del ticket">
+                        <div id="status" class="estado-escaner"></div>
 
-                            <div id="panelDeteccion" class="deteccion-ia-pro">
-                                <p style="font-weight: bold; margin: 0; text-align:center;">¡Lectura Exitosa! Total encontrado:</p>
-                                <div class="total-detectado-pro" id="montoDetectado">$0.00</div>
-                                <p style="font-size: 11px; color: #64748b; margin-bottom: 5px; text-align:center;">¿Cómo liquidaste este monto?</p>
-                                
-                                <div class="btn-grupo-pro">
-                                    <button class="btn-accion-pro btn-cash-pro" onclick="aplicarGasto('efectivo')">💵 En Cash</button>
-                                    <button class="btn-accion-pro btn-card-pro" onclick="aplicarGasto('tarjeta')">💳 Con Débito</button>
-                                </div>
-                            </div>
+                        <div id="panelDeteccion" class="deteccion-ia-pro">
+                            <p style="font-weight: bold; margin: 0; font-size: 13px;">¡Lectura Exitosa!</p>
+                            <div class="total-detectado-pro" id="montoDetectado">$0.00</div>
+                            
+                            <p style="font-size: 11px; color: #94a3b8; margin-bottom: 6px;">Selecciona la categoría del gasto:</p>
+                            <select id="escanerCategory" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-300 outline-none focus:ring-1 focus:ring-cyan-500 cursor-pointer mb-4">
+                                <option value="Comida">🛒 Alimentación</option>
+                                <option value="Vivienda">🏠 Vivienda</option>
+                                <option value="Transporte">🚗 Transporte</option>
+                                <option value="Ocio">🎬 Ocio / Caprichos</option>
+                                <option value="Otros" selected>📦 Otros Gastos</option>
+                            </select>
+
+                            <button class="w-full p-3 rounded-xl font-bold text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 cursor-pointer transition-all" onclick="aplicarGastoAutomatico()">
+                                ⚡ Cobrar y Registrar en Efectivo
+                            </button>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="col-span-12 lg:col-span-8 min-w-0 w-full">
                     <div class="neo-card rounded-2xl shadow-xl overflow-hidden flex flex-col w-full box-border">
-                        <div class="p-4 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full box-border">
-                            <div class="min-w-0"><h3 class="font-bold text-white text-sm truncate">Historial Contable</h3></div>
-                            <div class="flex items-center gap-2 w-full sm:w-auto min-w-0">
-                                <div class="relative flex-1 sm:flex-initial min-w-0">
-                                    <input type="text" id="txSearch" oninput="renderLedgerList()" placeholder="Buscar..." class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2.5 pl-8 text-xs focus:border-cyan-500 outline-none w-full sm:w-40 text-white placeholder-slate-600" />
-                                    <span class="absolute left-2.5 top-2 text-slate-600 text-xs">🔍</span>
-                                </div>
-                                <select id="txFilter" onchange="renderLedgerList()" class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2 text-xs text-slate-400 outline-none cursor-pointer shrink-0">
-                                    <option value="all">Todo</option>
-                                    <option value="income">Créditos</option>
-                                    <option value="expense">Débitos</option>
-                                    <option value="recurring">Fijos</option>
-                                </select>
-                            </div>
+                        <div class="p-4 border-b border-slate-800/80 flex items-center justify-between gap-3 w-full box-border">
+                            <h3 class="font-bold text-white text-sm truncate">Historial Contable de Movimientos</h3>
+                            <select id="txFilter" onchange="renderLedgerList()" class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2.5 text-xs text-slate-400 outline-none cursor-pointer shrink-0">
+                                <option value="all">Ver Todo</option>
+                                <option value="income">Solo Ingresos</option>
+                                <option value="expense">Solo Gastos</option>
+                            </select>
                         </div>
-                        <div class="h-[430px] overflow-y-auto overflow-x-hidden custom-scroll p-3 bg-slate-950/20 w-full box-border">
+                        <div class="h-[520px] overflow-y-auto overflow-x-hidden custom-scroll p-3 bg-slate-950/20 w-full box-border">
                             <ul id="ledgerContainer" class="space-y-1.5 w-full block max-w-full"></ul>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div id="mod-analytics" class="module-view hidden space-y-4 w-full box-border">
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 w-full">
-                    <div class="neo-card p-4 rounded-2xl shadow-xl md:col-span-5 flex flex-col justify-between w-full min-w-0 box-border">
-                        <h4 class="font-bold text-white text-[11px] uppercase tracking-wider mb-2">Porcentajes de Categoría</h4>
-                        <div class="h-[200px] w-full max-w-full flex items-center justify-center relative overflow-hidden box-border">
-                            <canvas id="pieChartCanvas" class="max-w-full max-h-full block"></canvas>
-                            <div id="noPieDataText" class="hidden absolute inset-0 flex items-center justify-center text-slate-600 text-xs italic bg-[#151f32]/60 rounded-xl">Sin egresos registrados</div>
-                        </div>
-                    </div>
-                    <div class="neo-card p-4 rounded-2xl shadow-xl md:col-span-7 flex flex-col justify-between w-full min-w-0 box-border">
-                        <h4 class="font-bold text-white text-[11px] uppercase tracking-wider mb-2">Histograma de Consumo</h4>
-                        <div class="h-[200px] w-full max-w-full flex items-center justify-center relative overflow-hidden box-border">
-                            <canvas id="barChartCanvas" class="max-w-full max-h-full block"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full">
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0">
-                        <div class="flex items-center justify-between mb-1 min-w-0"><span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Índice de Vanidad</span><span class="help-marker hidden w-3 h-3 rounded-full bg-cyan-500 text-slate-950 text-[8px] font-bold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('vanidad')">?</span></div>
-                        <p id="kpiVanityRate" class="text-sm sm:text-base font-extrabold text-amber-400 mono truncate">0% Deseos</p>
-                    </div>
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Gasto Vital Real</span>
-                        <p id="kpiVitalExpense" class="text-sm sm:text-base font-extrabold text-cyan-400 mono money-display truncate">$0.00</p>
-                    </div>
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Tasa de Ahorro</span>
-                        <p id="kpiSavingRate" class="text-sm sm:text-base font-extrabold text-emerald-400 mono truncate">0%</p>
-                    </div>
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Eficiencia Financiera</span>
-                        <p id="kpiEfficiency" class="text-sm sm:text-base font-extrabold text-blue-400 mono truncate">0.0x</p>
-                    </div>
-                </div>
             </div>
-
-            <div id="mod-simulator" class="module-view hidden max-w-2xl mx-auto w-full box-border">
-                <div class="neo-card p-5 rounded-2xl shadow-xl space-y-4 w-full box-border">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h3 class="text-sm font-bold text-white flex items-center gap-1.5"><span>🔮</span> Interés Compuesto Futuro</h3>
-                            <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('interes')">?</span>
-                        </div>
-                        <p class="text-[11px] text-slate-500 mt-0.5">Calcula la multiplicación silenciosa de tu capital.</p>
-                    </div>
-                    <div class="space-y-3 w-full">
-                        <div class="grid grid-cols-2 gap-3 w-full">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Inversión Mensual</label>
-                                <input type="number" id="simMonthly" value="250" oninput="calculateProjection()" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-white outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tasa Anual (%)</label>
-                                <input type="number" id="simRate" value="9" oninput="calculateProjection()" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-white outline-none">
-                            </div>
-                        </div>
-                        <div class="w-full">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Horizonte Temporal</label>
-                            <input type="range" id="simYears" min="1" max="40" value="15" oninput="calculateProjection()" class="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-950 rounded-lg">
-                            <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-1"><span>1 Año</span><span class="text-cyan-400 font-bold" id="yearsLabel">15 Años</span><span>40 Años</span></div>
-                        </div>
-                        <div class="bg-slate-950 border border-slate-800/80 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-2 w-full box-border">
-                            <div class="text-center sm:text-left"><h4 class="text-xs font-bold text-slate-300">Capital Proyectado Final:</h4></div>
-                            <span class="text-lg font-black text-emerald-400 mono money-display truncate max-w-full" id="projectionResultText">$0.00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </main>
     </div>
 
-    <div id="guideModal" class="hidden fixed inset-0 z-[200] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
-            <div class="flex items-center gap-2 border-b border-slate-800 pb-2.5">
-                <span class="text-lg text-cyan-400" id="guideModalIcon">💡</span>
-                <h4 class="text-sm font-bold text-white" id="guideModalTitle">Título de la sección</h4>
-            </div>
-            <p class="text-xs text-slate-400 leading-relaxed" id="guideModalDesc">Explicación del elemento.</p>
-            <button onclick="closeExplanation()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-2 rounded-xl cursor-pointer transition-colors">Entendido</button>
-        </div>
-    </div>
-
     <script>
-        const currencySymbols = { USD: '$', EUR: '€', MXN: 'MXN$', COP: 'COP$', ARS: 'ARS$' };
-        let activeCurrency = 'USD';
         let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_v42_core')) || [];
-        let systemPrivacyActive = false;
-        let systemGuideActive = false;
-        let pieChartInstance = null;
-        let barChartInstance = null;
         let montoEscaneadoGlobal = 0;
-
-        const guideDictionary = {
-            patrimonio: { title: "Patrimonio Neto", icon: "💰", desc: "Es el dinero real que posees actualmente. Se calcula restando todos tus gastos acumulados a la suma de tus ingresos totales registrados." },
-            supervivencia: { title: "Días de Supervivencia", icon: "⏱️", desc: "Te dice cuántos días podrías seguir viviendo manteniendo tu nivel de consumo actual si hoy mismo te quedaras sin ingresos." },
-            registro: { title: "Registro Rápido", icon: "⚡", desc: "Aquí inyectas los movimientos a tu historial. Los ingresos suman a tu patrimonio, mientras que los costos restan capital." },
-            psicologico: { title: "Filtro Psicológico", icon: "🛡️", desc: "Clasifica tus gastos. Las 'Necesidades' son obligatorias para sobrevivir. Los 'Antojos' son deseos prescindibles que inflan tu Índice de Vanidad." },
-            gastofijo: { title: "Gasto Fijo", icon: "📦", desc: "Identifica salidas de dinero que se repiten periódicamente (como suscripciones, renta o seguros)." },
-            vanidad: { title: "Índice de Vanidad", icon: "✨", desc: "Es un porcentaje que calcula cuánto de tu dinero total gastado se ha ido exclusivamente en caprichos o antojos." },
-            interes: { title: "Interés Compuesto", icon: "🔮", desc: "Simulador algorítmico que proyecta cuánto dinero acumularás a largo plazo si inviertes una cantidad fija al mes." }
-        };
 
         const ledgerForm = document.getElementById('ledgerForm');
         const ledgerContainer = document.getElementById('ledgerContainer');
-        const searchBox = document.getElementById('txSearch');
         const filterBox = document.getElementById('txFilter');
-        const currencySelect = document.getElementById('globalCurrency');
 
         const inputArchivo = document.getElementById('archivo');
         const vistaPrevia = document.getElementById('preview-ticket');
@@ -387,79 +201,10 @@
         const canvasProcesado = document.getElementById('canvas-procesado');
 
         function formatDisplayAmount(val) {
-            const currentSymbol = currencySymbols[activeCurrency];
-            if (systemPrivacyActive) return '••••••';
-            return `${val < 0 ? '-' : ''}${currentSymbol}${Math.abs(val).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            return `${val < 0 ? '-' : ''}$${Math.abs(val).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
 
-        function toggleSystemGuide() {
-            systemGuideActive = !systemGuideActive;
-            const btn = document.getElementById('guideToggleBtn');
-            const markers = document.querySelectorAll('.help-marker');
-            if (systemGuideActive) {
-                btn.innerText = "❌ Desactivar Guía";
-                btn.className = "w-full text-left text-xs p-2 bg-rose-950/30 hover:bg-rose-900/50 text-rose-400 rounded-lg font-bold transition-colors border border-rose-800/30";
-                markers.forEach(m => m.classList.remove('hidden'));
-                toggleDataMenu();
-            } else {
-                btn.innerText = "📖 Activar Guía Dinámica";
-                btn.className = "w-full text-left text-xs p-2 bg-cyan-950/30 hover:bg-cyan-900/50 text-cyan-400 rounded-lg font-bold transition-colors border border-cyan-800/30";
-                markers.forEach(m => m.classList.add('hidden'));
-                toggleDataMenu();
-            }
-        }
-
-        function showExplanation(key) {
-            const data = guideDictionary[key];
-            if (!data) return;
-            document.getElementById('guideModalIcon').innerText = data.icon;
-            document.getElementById('guideModalTitle').innerText = data.title;
-            document.getElementById('guideModalDesc').innerText = data.desc;
-            document.getElementById('guideModal').classList.remove('hidden');
-        }
-
-        function closeExplanation() {
-            document.getElementById('guideModal').classList.add('hidden');
-        }
-
-        function togglePsychSelector(categoryValue) {
-            const block = document.getElementById('psychologicalBlock');
-            if(categoryValue === 'Ingreso' || categoryValue === 'Inversiones') block.classList.add('hidden');
-            else block.classList.remove('hidden');
-        }
-
-        function switchModule(targetModuleId) {
-            document.querySelectorAll('.module-view').forEach(view => view.classList.add('hidden'));
-            document.getElementById(targetModuleId).classList.remove('hidden');
-            document.getElementById('mobileModuleSelector').value = targetModuleId;
-            document.querySelectorAll('.module-tab-btn').forEach(btn => {
-                btn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200";
-            });
-            const activeBtn = document.getElementById(`btn-${targetModuleId}`);
-            if (activeBtn) activeBtn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md";
-            if (targetModuleId === 'mod-analytics') setTimeout(refreshAnalyticalCharts, 5);
-            if (targetModuleId === 'mod-simulator') calculateProjection();
-        }
-
-        function togglePrivacyMode() {
-            systemPrivacyActive = !systemPrivacyActive;
-            const btn = document.getElementById('privacyToggleBtn');
-            const icon = document.getElementById('privacyIcon');
-            const targetDisplays = document.querySelectorAll('.money-display');
-            
-            if (systemPrivacyActive) {
-                icon.innerText = '🔒';
-                btn.classList.replace('text-slate-400', 'text-cyan-400');
-                targetDisplays.forEach(d => d.classList.add('privacy-masked'));
-            } else {
-                icon.innerText = '🔓';
-                btn.classList.replace('text-cyan-400', 'text-slate-400');
-                targetDisplays.forEach(d => d.classList.remove('privacy-masked'));
-            }
-            refreshSuiteDashboard();
-        }
-
-        // --- LÓGICA DEL ESCÁNER INTELIGENTE ---
+        // --- FLUJO DEL ESCÁNER AUTOMÁTICO ---
         inputArchivo.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -496,11 +241,11 @@
                     }
                     ctx.putImageData(imgData, 0, 0);
 
-                    const imagenLimpiaBase64 = canvasProcesado.toDataURL('image/jpeg', 0.8);
-                    vistaPrevia.src = imagenLimpiaBase64;
+                    const base64Limpia = canvasProcesado.toDataURL('image/jpeg', 0.8);
+                    vistaPrevia.src = base64Limpia;
                     vistaPrevia.style.display = 'block';
 
-                    procesarOcrTicket(imagenLimpiaBase64);
+                    procesarOcrTicket(base64Limpia);
                 };
                 img.src = event.target.result;
             };
@@ -508,7 +253,7 @@
         });
 
         function procesarOcrTicket(srcImagen) {
-            textoEstado.innerText = "🤖 Buscando bloque de totalizadores...";
+            textoEstado.innerText = "🤖 Buscando bloque de totales...";
             
             Tesseract.recognize(
                 srcImagen, 'spa',
@@ -519,15 +264,15 @@
                 if (totalDetectado && totalDetectado > 0) {
                     montoEscaneadoGlobal = totalDetectado;
                     textoEstado.innerText = "🔮 ¡Monto identificado de forma exitosa!";
-                    displayMontoDetectado.innerText = formatDisplayAmount(montoEscaneadoGlobal).replace('-', '');
+                    displayMontoDetectado.innerText = formatDisplayAmount(montoEscaneadoGlobal);
                     panelDeteccion.style.display = 'block';
                 } else {
-                    textoEstado.innerText = "❌ No encontré un campo de totalización claro.";
+                    textoEstado.innerText = "❌ No encontré un campo de totalización claro. Intenta con otra foto.";
                     panelDeteccion.style.display = 'none';
                 }
             }).catch(err => {
                 console.error(err);
-                textoEstado.innerText = "⚠️ Error en la librería OCR.";
+                textoEstado.innerText = "⚠️ Error en el motor de lectura OCR.";
             });
         }
 
@@ -538,7 +283,7 @@
 
             for (let i = 0; i < lineas.length; i++) {
                 let linea = lineas[i];
-                if (palabrasClave.some(palabra => linea.includes(palabra))) {
+                if (palabrasClave.some(p => linea.includes(p))) {
                     let match = linea.match(regexPrecio);
                     if (!match && lineas[i + 1]) match = lineas[i + 1].match(regexPrecio);
                     if (match) {
@@ -560,58 +305,51 @@
             return 0;
         }
 
-        window.aplicarGasto = function(metodoPago) {
+        // --- OPERACION: COBRAR SOLO AUTOMÁTICAMENTE ---
+        window.aplicarGastoAutomatico = function() {
             if (montoEscaneadoGlobal <= 0) return;
+
+            const categoriaSeleccionada = document.getElementById('escanerCategory').value;
+            const importeGasto = -parseFloat(montoEscaneadoGlobal.toFixed(2));
 
             ledgerDatabase.unshift({
                 id: 'TX-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-                description: `Ticket Escaneado [${metodoPago === 'efectivo' ? 'Cash' : 'Tarjeta'}] 📸`,
-                category: "Otros",
-                amount: -montoEscaneadoGlobal,
-                isRecurring: false,
-                intent: "necesidad",
+                description: "Ticket Escaneado 📸 (Efectivo)",
+                category: categoriaSeleccionada,
+                amount: importeGasto,
                 timestamp: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
             });
 
             syncStorage();
             panelDeteccion.style.display = 'none';
             vistaPrevia.style.display = 'none';
-            textoEstado.innerText = "🚀 ¡Inyectado correctamente al balance general!";
+            textoEstado.innerText = "🚀 ¡Cobrado y registrado en el historial!";
             montoEscaneadoGlobal = 0;
         };
 
-        // --- MANEJO CENTRAL DEL LEDGER FORM ---
+        // --- CAPTURA DEL FORMULARIO MANUAL ---
         ledgerForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const description = document.getElementById('txDesc').value.trim();
             const category = document.getElementById('txCategory').value;
             let amount = parseFloat(document.getElementById('txAmount').value);
-            const isRecurring = document.getElementById('txRecurring').checked;
-            let intent = 'necesidad';
-            
-            if(category !== 'Ingreso' && category !== 'Inversiones') {
-                const checkedIntent = document.querySelector('input[name="txIntent"]:checked');
-                intent = checkedIntent ? checkedIntent.value : 'necesidad';
-            }
             
             if (!description || isNaN(amount)) return;
 
-            if (category !== 'Ingreso' && category !== 'Inversiones' && amount > 0) amount = -amount;
-            else if ((category === 'Ingreso' || category === 'Inversiones') && amount < 0) amount = Math.abs(amount);
+            // Si no es un ingreso, forzar número negativo automáticamente
+            if (category !== 'Ingreso' && amount > 0) amount = -amount;
+            else if (category === 'Ingreso' && amount < 0) amount = Math.abs(amount);
 
             ledgerDatabase.unshift({
                 id: 'TX-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
                 description,
                 category,
                 amount,
-                isRecurring,
-                intent,
                 timestamp: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
             });
 
             syncStorage();
             ledgerForm.reset();
-            document.getElementById('psychologicalBlock').classList.add('hidden');
         });
 
         function syncStorage() {
@@ -625,30 +363,23 @@
         }
 
         function renderLedgerList() {
-            const query = searchBox.value ? searchBox.value.toLowerCase() : '';
             const filter = filterBox.value;
-
             const collection = ledgerDatabase.filter(item => {
-                const searchMatch = item.description.toLowerCase().includes(query) || item.category.toLowerCase().includes(query);
-                let filterMatch = true;
-                if (filter === 'income') filterMatch = item.amount > 0;
-                if (filter === 'expense') filterMatch = item.amount < 0;
-                if (filter === 'recurring') filterMatch = item.isRecurring === true;
-                return searchMatch && filterMatch;
+                if (filter === 'income') return item.amount > 0;
+                if (filter === 'expense') return item.amount < 0;
+                return true;
             });
 
-            ledgerContainer.innerHTML = collection.length ? '' : `<p class="text-center text-slate-600 text-xs italic py-8">Cero movimientos</p>`;
+            ledgerContainer.innerHTML = collection.length ? '' : `<p class="text-center text-slate-600 text-xs italic py-8">No hay movimientos registrados</p>`;
             
             collection.forEach(tx => {
                 const isCredit = tx.amount > 0;
                 const element = document.createElement('li');
-                let intentBadge = !isCredit ? (tx.intent === 'deseo' ? `<span class="text-[7px] bg-amber-500/10 text-amber-400 px-1 py-0.5 rounded font-bold shrink-0">ANTOJO</span>` : `<span class="text-[7px] bg-cyan-500/10 text-cyan-400 px-1 py-0.5 rounded font-bold shrink-0">VITAL</span>`) : '';
-
                 element.className = "flex items-center justify-between p-2.5 bg-slate-900/60 rounded-xl border border-slate-800/40 text-xs text-white";
                 element.innerHTML = `
                     <div class="flex flex-col">
                         <span class="font-bold">${tx.description}</span>
-                        <span class="text-[9px] text-slate-500">${tx.category} • ${tx.timestamp} ${intentBadge}</span>
+                        <span class="text-[9px] text-slate-500">${tx.category} • ${tx.timestamp}</span>
                     </div>
                     <span class="font-mono font-bold ${isCredit ? 'text-emerald-400' : 'text-rose-400'}">${formatDisplayAmount(tx.amount)}</span>
                 `;
@@ -659,16 +390,10 @@
         function evaluateFinancialMetrics() {
             let ingresos = 0;
             let gastos = 0;
-            let fijosMensuales = 0;
-            let caprichos = 0;
 
             ledgerDatabase.forEach(item => {
                 if (item.amount > 0) ingresos += item.amount;
-                else {
-                    gastos += Math.abs(item.amount);
-                    if (item.isRecurring) fijosMensuales += Math.abs(item.amount);
-                    if (item.intent === 'deseo') caprichos += Math.abs(item.amount);
-                }
+                else gastos += Math.abs(item.amount);
             });
 
             const neto = ingresos - gastos;
@@ -676,148 +401,10 @@
             document.getElementById('netWealthText').innerText = formatDisplayAmount(neto);
             document.getElementById('totalIncomeText').innerText = formatDisplayAmount(ingresos);
             document.getElementById('totalExpenseText').innerText = formatDisplayAmount(gastos);
-
-            // Métricas Analíticas
-            let vanityRate = gastos > 0 ? Math.round((caprichos / gastos) * 100) : 0;
-            let savingRate = ingresos > 0 ? Math.round((neto / ingresos) * 100) : 0;
-            if (savingRate < 0) savingRate = 0;
-            let vitalExpense = gastos - caprichos;
-            let efficiency = vitalExpense > 0 ? (ingresos / vitalExpense).toFixed(1) : '0.0';
-
-            document.getElementById('kpiVanityRate').innerText = `${vanityRate}% Antojos`;
-            document.getElementById('kpiVitalExpense').innerText = formatDisplayAmount(vitalExpense);
-            document.getElementById('kpiSavingRate').innerText = `${savingRate}%`;
-            document.getElementById('kpiEfficiency').innerText = `${efficiency}x`;
-
-            // Supervivencia Realista
-            let diasSupervivencia = 0;
-            let baseCost = fijosMensuales > 0 ? fijosMensuales / 30 : (gastos > 0 ? gastos / 30 : 0);
-            if (baseCost > 0 && neto > 0) {
-                diasSupervivencia = Math.round(neto / baseCost);
-            }
-            
-            document.getElementById('survivalDaysText').innerText = `${diasSupervivencia} días`;
-            const statusLabel = document.getElementById('survivalStatusLabel');
-            if (diasSupervivencia === 0) { statusLabel.innerText = "CRÍTICO"; statusLabel.style.color = "#f43f5e"; }
-            else if (diasSupervivencia < 90) { statusLabel.innerText = "VULNERABLE"; statusLabel.style.color = "#fbbf24"; }
-            else { statusLabel.innerText = "ESTABLE"; statusLabel.style.color = "#34d399"; }
-        }
-
-        // --- SISTEMA DE GRÁFICOS COMPLETO (REAL) ---
-        function refreshAnalyticalCharts() {
-            const ctxPie = document.getElementById('pieChartCanvas').getContext('2d');
-            const ctxBar = document.getElementById('barChartCanvas').getContext('2d');
-            
-            let categoriasMap = {};
-            let ingresosPorMes = 0;
-            let gastosPorMes = 0;
-
-            ledgerDatabase.forEach(item => {
-                if (item.amount < 0) {
-                    categoriasMap[item.category] = (categoriasMap[item.category] || 0) + Math.abs(item.amount);
-                    gastosPorMes += Math.abs(item.amount);
-                } else {
-                    ingresosPorMes += item.amount;
-                }
-            });
-
-            const pieLabels = Object.keys(categoriasMap);
-            const pieData = Object.values(categoriasMap);
-            const noDataText = document.getElementById('noPieDataText');
-
-            if(pieData.length === 0) noDataText.classList.remove('hidden');
-            else noDataText.classList.add('hidden');
-
-            if (pieChartInstance) pieChartInstance.destroy();
-            pieChartInstance = new Chart(ctxPie, {
-                type: 'doughnut',
-                data: {
-                    labels: pieLabels,
-                    datasets: [{
-                        data: pieData,
-                        backgroundColor: ['#22d3ee', '#ec4899', '#f59e0b', '#10b981', '#6366f1', '#a855f7', '#64748b'],
-                        borderWidth: 0
-                    }]
-                },
-                options: { plugins: { legend: { display: true, position: 'bottom', labels: { color: '#94a3b8', font: { size: 9 } } } }, responsive: true, maintainAspectRatio: false }
-            });
-
-            if (barChartInstance) barChartInstance.destroy();
-            barChartInstance = new Chart(ctxBar, {
-                type: 'bar',
-                data: {
-                    labels: ['Ingresos Totales', 'Gastos Totales'],
-                    datasets: [{
-                        data: [ingresosPorMes, gastosPorMes],
-                        backgroundColor: ['rgba(16, 185, 129, 0.2)', 'rgba(244, 63, 94, 0.2)'],
-                        borderColor: ['#10b981', '#f43f5e'],
-                        borderWidth: 2,
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    scales: { y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#64748b', font: { size: 9 } } }, x: { ticks: { color: '#64748b', font: { size: 10 } } } },
-                    plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false
-                }
-            });
-        }
-
-        // --- SISTEMA SIMULADOR COMPLETO (REAL) ---
-        function calculateProjection() {
-            const monthly = parseFloat(document.getElementById('simMonthly').value) || 0;
-            const annualRate = (parseFloat(document.getElementById('simRate').value) || 0) / 100;
-            const years = parseInt(document.getElementById('simYears').value) || 1;
-            
-            document.getElementById('yearsLabel').innerText = `${years} Años`;
-            
-            let total = 0;
-            const monthlyRate = annualRate / 12;
-            const totalMonths = years * 12;
-
-            for (let i = 0; i < totalMonths; i++) {
-                total = (total + monthly) * (1 + monthlyRate);
-            }
-
-            document.getElementById('projectionResultText').innerText = formatDisplayAmount(total);
-        }
-
-        function toggleDataMenu() { document.getElementById('dataMenu').classList.toggle('hidden'); }
-        function changeCurrency() { activeCurrency = currencySelect.value; refreshSuiteDashboard(); calculateProjection(); if(!document.getElementById('mod-analytics').classList.contains('hidden')) refreshAnalyticalCharts(); }
-        function triggerImport() { document.getElementById('importFile').click(); }
-        
-        function exportToCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,ID,Concepto,Categoria,Importe,Fijo,FiltroPsicologico,Fecha\n";
-            ledgerDatabase.forEach(r => {
-                csvContent += `${r.id},"${r.description}",${r.category},${r.amount},${r.isRecurring},${r.intent},${r.timestamp}\n`;
-            });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Finanzas_Pro_Respaldo_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function importBackup(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const parsed = JSON.parse(e.target.result);
-                    if (Array.isArray(parsed)) {
-                        ledgerDatabase = parsed;
-                        syncStorage();
-                        alert("¡Respaldo JSON restaurado con éxito!");
-                    }
-                } catch(err) { alert("Archivo JSON inválido."); }
-            };
-            reader.readAsText(file);
         }
 
         function purgeDatabase() {
-            if(confirm("⚠️ ¿Estás completamente seguro de purgar toda la base de datos local? Perderás todo el historial.")) {
+            if(confirm("⚠️ ¿Deseas borrar todo el historial local por completo?")) {
                 ledgerDatabase = [];
                 syncStorage();
             }
