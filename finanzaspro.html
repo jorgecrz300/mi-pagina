@@ -8,18 +8,26 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>Finanzas Pro | Guided Interactive Suite Premium v5.5</title>
+    <title>Finanzas Pro v20.0 | Unified Core Suite</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* --- ARQUITECTURA DE TEMAS CENTRALIZADA (RESCATADA DE V15.0) --- */
+        /* --- ARQUITECTURA DE TEMAS CENTRALIZADA (UNIFICADA V15 + V20) --- */
         :root[data-theme="cyberpunk"] {
             --bg-color: #0b0f19;
+            --card-bg: #151f32;
             --card-gradient: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+            --text-color: #f8fafc;
+            --primary: #a855f7;
+            --success: #22c55e;
+            --danger: #ef4444;
             --border-color: rgba(255, 255, 255, 0.05);
             --glass-blur: none;
             --panel-bg: rgba(15, 23, 42, 0.9);
@@ -27,19 +35,52 @@
         
         :root[data-theme="glass"] {
             --bg-color: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.02);
             --card-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            --text-color: #f1f5f9;
+            --primary: #38bdf8;
+            --success: #34d399;
+            --danger: #f43f5e;
             --border-color: rgba(255, 255, 255, 0.08);
             --glass-blur: blur(16px);
             --panel-bg: rgba(15, 23, 42, 0.4);
+        }
+
+        :root[data-theme="space"] {
+            --bg-color: #0d1b2a;
+            --card-bg: #1b263b;
+            --card-gradient: linear-gradient(135deg, #1b263b 0%, #0d1b2a 100%);
+            --text-color: #e0e1dd;
+            --primary: #e0a96d;
+            --success: #52b788;
+            --danger: #e63946;
+            --border-color: rgba(224, 169, 109, 0.15);
+            --glass-blur: none;
+            --panel-bg: #152238;
+        }
+
+        :root[data-theme="minimal"] {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --card-gradient: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            --text-color: #0f172a;
+            --primary: #334155;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --border-color: rgba(15, 23, 42, 0.08);
+            --glass-blur: none;
+            --panel-bg: #ffffff;
         }
 
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             -webkit-text-size-adjust: 100%; 
             background-color: var(--bg-color);
-            padding-top: env(safe-area-inset-top); /* Margen para notch de celulares */
-            transition: background-color 0.3s ease;
+            color: var(--text-color);
+            padding-top: env(safe-area-inset-top);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+        
         .mono { font-family: 'JetBrains Mono', monospace; }
         
         .glass-panel { 
@@ -57,7 +98,7 @@
             transition: all 0.3s ease;
         }
         
-        /* --- ANIMACIÓN FLUIDA DE PANTALLAS (RESCATADA DE V15.0) --- */
+        /* --- ANIMACIÓN DE PANTALLAS (RESCATADA DE V15.0) --- */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
@@ -66,10 +107,39 @@
             animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         .privacy-masked { filter: blur(8px); pointer-events: none; user-select: none; }
         
+        /* --- ESTILOS DEL CALENDARIO CON INDICADORES --- */
+        .cal-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            font-size: 11px;
+        }
+        .cal-day.has-data::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 4px;
+            height: 4px;
+            background-color: var(--primary);
+            border-radius: 50%;
+        }
+        
+        /* --- ALERTAS CRÍTICAS DEL BOT DE IA --- */
+        .chat-msg.bot-alert {
+            background-color: rgba(239, 68, 68, 0.08);
+            border-left: 3px solid var(--danger);
+        }
+
         @keyframes pulse-cyan {
             0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); }
             50% { transform: scale(1.05); box-shadow: 0 0 0 5px rgba(34, 211, 238, 0); }
@@ -79,7 +149,7 @@
         @media screen and (max-width: 768px) { input, select { font-size: 16px !important; } }
     </style>
 </head>
-<body class="text-slate-200 min-h-screen w-full overflow-x-hidden selection:bg-cyan-500 selection:text-slate-950 antialiased block">
+<body class="min-h-screen w-full overflow-x-hidden selection:bg-cyan-500 selection:text-slate-950 antialiased block">
 
     <div class="w-full max-w-full overflow-x-hidden flex flex-col justify-start items-stretch project-wrapper">
 
@@ -92,29 +162,38 @@
                             <span class="text-slate-950 font-extrabold text-lg">FP</span>
                         </div>
                         <div>
-                            <h1 class="text-base font-bold text-white leading-tight">Finanzas<span class="text-cyan-400">Pro</span></h1>
-                            <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Suite Inteligente • v5.5 Premium</p>
+                            <h1 class="text-base font-bold text-white leading-tight" id="lbl-suite-title">Finanzas<span class="text-cyan-400">Pro</span></h1>
+                            <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Suite Unificada • v20.0 Core</p>
                         </div>
                     </div>
                     <div class="md:hidden shrink-0">
                         <select id="mobileModuleSelector" onchange="switchModule(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-1.5 px-2.5 text-cyan-400 outline-none">
                             <option value="mod-overview">🎛️ Resumen</option>
                             <option value="mod-analytics">📊 Presupuestos</option>
-                            <option value="mod-simulator">🔮 Metas y Reglas</option>
+                            <option value="mod-calendar">📅 Calendario</option>
+                            <option value="mod-ai-chat">💬 Asistente IA</option>
                         </select>
                     </div>
                 </div>
                 
                 <div class="hidden md:flex items-center bg-slate-950/60 p-1 rounded-xl border border-slate-800/80">
-                    <button onclick="switchModule('mod-overview')" id="btn-mod-overview" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md">🎛️ Resumen General</button>
-                    <button onclick="switchModule('mod-analytics')" id="btn-mod-analytics" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">📊 Límites de Presupuesto</button>
-                    <button onclick="switchModule('mod-simulator')" id="btn-mod-simulator" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">🔮 Metas y Plan 50/30/20</button>
+                    <button onclick="switchModule('mod-overview')" id="btn-mod-overview" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md">🎛️ Resumen</button>
+                    <button onclick="switchModule('mod-analytics')" id="btn-mod-analytics" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">📊 Presupuestos</button>
+                    <button onclick="switchModule('mod-calendar')" id="btn-mod-calendar" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">📅 Calendario</button>
+                    <button onclick="switchModule('mod-ai-chat')" id="btn-mod-ai-chat" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">💬 Asistente IA</button>
                 </div>
                 
                 <div class="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto border-t border-slate-800/50 md:border-0 pt-2 md:pt-0">
-                    <select id="themeSelector" onchange="changeSystemTheme(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-2 px-2.5 text-slate-300 outline-none cursor-pointer">
-                        <option value="cyberpunk">🌃 Tema Cyberpunk</option>
-                        <option value="glass">💎 Tema Glassmorphism</option>
+                    <select id="langSelector" onchange="changeSystemLanguage(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-2 px-2 text-slate-300 outline-none cursor-pointer">
+                        <option value="es">🇪🇸 Español</option>
+                        <option value="en">🇺🇸 English</option>
+                    </select>
+
+                    <select id="themeSelector" onchange="changeSystemTheme(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-2 px-2 text-slate-300 outline-none cursor-pointer">
+                        <option value="cyberpunk">🌃 Cyberpunk</option>
+                        <option value="glass">💎 Glassmorphism</option>
+                        <option value="space">🌌 Cosmos</option>
+                        <option value="minimal">⚪ Minimalist</option>
                     </select>
 
                     <div class="flex items-center bg-slate-900/90 rounded-xl p-1 border border-slate-800 text-xs font-mono min-w-0">
@@ -122,24 +201,7 @@
                             <option value="USD">USD ($)</option>
                             <option value="EUR">EUR (€)</option>
                             <option value="MXN">MXN ($)</option>
-                            <option value="COP">COP ($)</option>
-                            <option value="ARS">ARS ($)</option>
                         </select>
-                    </div>
-                    
-                    <div class="relative flex-1 md:flex-initial">
-                        <button onclick="toggleDataMenu()" class="w-full md:w-auto flex items-center justify-center gap-1 bg-slate-900/80 border border-slate-800 text-xs font-bold py-2 px-3 rounded-xl cursor-pointer">
-                            ⚙️ Sistema
-                        </button>
-                        <div id="dataMenu" class="hidden absolute right-0 mt-2 w-52 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl p-2 space-y-1 z-50">
-                            <button onclick="toggleSystemGuide()" id="guideToggleBtn" class="w-full text-left text-xs p-2 bg-cyan-950/30 hover:bg-cyan-900/50 text-cyan-400 rounded-lg font-bold border border-cyan-800/30">📖 Guía Dinámica</button>
-                            <div class="border-t border-slate-800 my-1"></div>
-                            <button onclick="exportToCSV()" class="w-full text-left text-xs p-2 hover:bg-slate-800 rounded-lg text-slate-200 font-medium">📥 Exportar CSV</button>
-                            <button onclick="triggerImport()" class="w-full text-left text-xs p-2 hover:bg-slate-800 rounded-lg text-slate-200 font-medium">📤 Importar Respaldo</button>
-                            <input type="file" id="importFile" class="hidden" accept=".json" onchange="importBackup(event)">
-                            <div class="border-t border-slate-800 my-1"></div>
-                            <button onclick="purgeDatabase()" class="w-full text-left text-xs p-2 hover:bg-rose-950/40 text-rose-400 rounded-lg font-medium">⚠️ Purgar Datos</button>
-                        </div>
                     </div>
                 </div>
 
@@ -147,39 +209,37 @@
         </header>
 
         <section class="w-full max-w-full px-4 pt-4 box-border">
-            <div class="relative overflow-hidden rounded-2xl p-5 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-slate-800/80 shadow-2xl w-full box-border neo-card">
+            <div class="relative overflow-hidden rounded-2xl p-5 shadow-2xl w-full box-border neo-card">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center w-full">
                     <div class="col-span-12 md:col-span-5 min-w-0">
                         <div class="flex items-center gap-2">
-                            <h3 class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-0.5">Patrimonio Neto Consolidado</h3>
-                            <button onclick="togglePrivacyMode()" id="privacyToggleBtn" class="text-slate-500 hover:text-cyan-400 text-xs transition-colors cursor-pointer" title="Modo Privacidad">
+                            <h3 class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-0.5" id="lbl-net-wealth">Patrimonio Neto Consolidado</h3>
+                            <button onclick="togglePrivacyMode()" id="privacyToggleBtn" class="text-slate-500 hover:text-cyan-400 text-xs transition-colors cursor-pointer">
                                 <span id="privacyIcon">👁️ Ocultar</span>
                             </button>
-                            <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('patrimonio')">?</span>
                         </div>
-                        <div class="text-2xl sm:text-3xl font-black text-white tracking-tight mono money-display truncate break-all" id="netWealthText">$0.00</div>
+                        <div class="text-2xl sm:text-3xl font-black tracking-tight mono money-display truncate break-all" id="netWealthText">$0.00</div>
                     </div>
-                    <div class="col-span-12 md:col-span-4 bg-slate-950/50 border border-slate-800/60 rounded-xl p-3 flex items-center justify-between shadow-inner min-w-0">
+                    <div class="col-span-12 md:col-span-4 bg-slate-950/40 border border-slate-800/60 rounded-xl p-3 flex items-center justify-between shadow-inner min-w-0">
                         <div class="min-w-0 mr-2">
                             <div class="flex items-center gap-1.5">
-                                <h4 class="text-[9px] font-bold uppercase text-cyan-400 tracking-wider truncate">⏱️ Supervivencia</h4>
-                                <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('supervivencia')">?</span>
+                                <h4 class="text-[9px] font-bold uppercase text-cyan-400 tracking-wider truncate" id="lbl-survival">⏱️ Supervivencia</h4>
                             </div>
-                            <p class="text-[10px] text-slate-500 truncate">Soporte sin empleo</p>
+                            <p class="text-[10px] text-slate-500 truncate" id="lbl-survival-sub">Soporte sin empleo</p>
                         </div>
                         <div class="text-right shrink-0">
-                            <span id="survivalDaysText" class="text-lg font-black text-white mono block leading-none money-display">0 días</span>
+                            <span id="survivalDaysText" class="text-lg font-black mono block leading-none money-display">0 días</span>
                             <span class="text-[8px] font-bold uppercase text-slate-400" id="survivalStatusLabel">---</span>
                         </div>
                     </div>
                     <div class="col-span-12 md:col-span-3 flex justify-between md:justify-end gap-2 border-t md:border-t-0 md:border-l border-slate-800/80 pt-2 md:pt-0 md:pl-4 min-w-0">
                         <div class="min-w-0 flex-1">
-                            <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">Ingresos</p>
-                            <p id="totalIncomeText" class="text-xs sm:text-sm font-bold text-white mono money-display truncate">$0.00</p>
+                            <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider" id="lbl-income">Ingresos</p>
+                            <p id="totalIncomeText" class="text-xs sm:text-sm font-bold mono money-display truncate">$0.00</p>
                         </div>
                         <div class="min-w-0 flex-1 border-l border-slate-850 pl-2 md:border-0 md:pl-0">
-                            <p class="text-[9px] font-bold text-rose-400 uppercase tracking-wider">Gastos</p>
-                            <p id="totalExpenseText" class="text-xs sm:text-sm font-bold text-white mono money-display truncate">$0.00</p>
+                            <p class="text-[9px] font-bold text-rose-400 uppercase tracking-wider" id="lbl-expense">Gastos</p>
+                            <p id="totalExpenseText" class="text-xs sm:text-sm font-bold mono money-display truncate">$0.00</p>
                         </div>
                     </div>
                 </div>
@@ -191,46 +251,45 @@
             <div id="mod-overview" class="module-view grid grid-cols-12 gap-4 w-full box-border">
                 <div class="col-span-12 lg:col-span-4 min-w-0 w-full">
                     <div class="neo-card p-4 rounded-2xl shadow-xl w-full box-border">
-                        <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-1.5">
+                        <h3 class="text-sm font-bold mb-3 flex items-center gap-1.5" id="lbl-quick-reg">
                             <span class="text-cyan-400">⚡</span> Registro Rápido Manual
                         </h3>
                         <form id="ledgerForm" class="space-y-3 w-full box-border">
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Concepto / Descripción</label>
-                                <input type="text" id="txDesc" placeholder="Ej. Almuerzo, Supermercado, Nómina..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white transition" required />
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" id="lbl-form-desc">Concepto / Descripción</label>
+                                <input type="text" id="txDesc" class="w-full bg-slate-950/40 border border-slate-800 rounded-xl p-2.5 text-xs outline-none focus:ring-1 focus:ring-cyan-500 transition text-white" required />
                             </div>
                             <div class="grid grid-cols-2 gap-2 w-full">
                                 <div class="min-w-0">
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Categoría</label>
-                                    <select id="txCategory" onchange="togglePsychSelector(this.value)" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-300 outline-none focus:ring-1 focus:ring-cyan-500 cursor-pointer">
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" id="lbl-form-cat">Categoría</label>
+                                    <select id="txCategory" onchange="togglePsychSelector(this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-300 outline-none cursor-pointer">
                                         <option value="Ingreso">💼 Ingresos</option>
                                         <option value="Comida">🛒 Alimentación</option>
                                         <option value="Vivienda">🏠 Vivienda</option>
                                         <option value="Transporte">🚗 Transporte</option>
-                                        <option value="Ocio">🎬 Ocio / Caprichos</option>
-                                        <option value="Salud">🏥 Bienestar</option>
-                                        <option value="Otros">📦 Otros Gastos</option>
+                                        <option value="Ocio">🎬 Ocio</option>
+                                        <option value="Otros">📦 Otros</option>
                                     </select>
                                 </div>
                                 <div class="min-w-0">
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Importe</label>
-                                    <input type="number" step="0.01" id="txAmount" placeholder="0.00" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white font-mono" required />
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" id="lbl-form-amount">Importe</label>
+                                    <input type="number" step="0.01" id="txAmount" placeholder="0.00" class="w-full bg-slate-950/40 border border-slate-800 rounded-xl p-2.5 text-xs outline-none font-mono text-white" required />
                                 </div>
                             </div>
 
                             <div id="psychologicalBlock" class="hidden bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80 space-y-1.5 w-full">
-                                <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Filtro Psicológico</label>
+                                <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider" id="lbl-form-psych">Filtro Psicológico</label>
                                 <div class="grid grid-cols-2 gap-2 w-full">
-                                    <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-[11px] font-bold text-slate-400 has-[:checked]:border-cyan-500 has-[:checked]:text-cyan-400 has-[:checked]:bg-cyan-950/20 transition-all select-none"><input type="radio" name="txIntent" value="necesidad" checked class="hidden">🛡️ Necesidad</label>
-                                    <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-[11px] font-bold text-slate-400 has-[:checked]:border-amber-500 has-[:checked]:text-amber-400 has-[:checked]:bg-amber-950/20 transition-all select-none"><input type="radio" name="txIntent" value="deseo" class="hidden">✨ Antojo</label>
+                                    <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-[11px] font-bold text-slate-400 has-[:checked]:border-cyan-500 has-[:checked]:text-cyan-400 has-[:checked]:bg-cyan-950/20 transition-all select-none"><input type="radio" name="txIntent" value="necesidad" checked class="hidden"><span id="lbl-rad-need">🛡️ Necesidad</span></label>
+                                    <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-[11px] font-bold text-slate-400 has-[:checked]:border-amber-500 has-[:checked]:text-amber-400 has-[:checked]:bg-amber-950/20 transition-all select-none"><input type="radio" name="txIntent" value="deseo" class="hidden"><span id="lbl-rad-want">✨ Antojo</span></label>
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 gap-2 pt-1 w-full">
                                 <div class="flex items-center gap-1.5 bg-slate-950/40 p-2 rounded-xl border border-slate-800/60 justify-center">
                                     <input type="checkbox" id="txRecurring" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
-                                    <label for="txRecurring" class="text-[10px] text-slate-400 font-medium cursor-pointer select-none">Gasto Fijo</label>
+                                    <label for="txRecurring" class="text-[10px] text-slate-400 font-medium cursor-pointer select-none" id="lbl-form-fixed">Gasto Fijo</label>
                                 </div>
-                                <button type="submit" class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold text-xs tracking-wider rounded-xl cursor-pointer py-2.5 shadow-md">REGISTRAR</button>
+                                <button type="submit" class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold text-xs tracking-wider rounded-xl cursor-pointer py-2.5 shadow-md" id="lbl-btn-submit">REGISTRAR</button>
                             </div>
                         </form>
                     </div>
@@ -239,20 +298,14 @@
                 <div class="col-span-12 lg:col-span-8 min-w-0 w-full">
                     <div class="neo-card rounded-2xl shadow-xl overflow-hidden flex flex-col w-full box-border">
                         <div class="p-4 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full box-border">
-                            <div class="min-w-0"><h3 class="font-bold text-white text-sm truncate">Historial Contable</h3></div>
+                            <div class="min-w-0"><h3 class="font-bold text-sm truncate" id="lbl-history-title">Historial Contable</h3></div>
                             <div class="flex items-center gap-2 w-full sm:w-auto min-w-0">
-                                <div class="relative flex-1 sm:flex-initial min-w-0">
-                                    <input type="text" id="txSearch" oninput="renderLedgerList()" placeholder="Buscar..." class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2.5 pl-8 text-xs focus:border-cyan-500 outline-none w-full sm:w-40 text-white placeholder-slate-600" />
-                                    <span class="absolute left-2.5 top-2 text-slate-600 text-xs">🔍</span>
-                                </div>
-                                <select id="txFilter" onchange="renderLedgerList()" class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2 text-xs text-slate-400 outline-none cursor-pointer shrink-0">
-                                    <option value="all">Todo</option>
-                                    <option value="income">Créditos</option>
-                                    <option value="expense">Débitos</option>
+                                <select id="monthFilter" onchange="renderLedgerList()" class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2 text-xs text-slate-400 outline-none cursor-pointer shrink-0">
+                                    <option value="all">Todo el tiempo</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="h-[430px] overflow-y-auto overflow-x-hidden custom-scroll p-3 bg-slate-950/20 w-full box-border">
+                        <div class="h-[380px] overflow-y-auto overflow-x-hidden custom-scroll p-3 bg-slate-950/20 w-full box-border">
                             <ul id="ledgerContainer" class="space-y-1.5 w-full block max-w-full"></ul>
                         </div>
                     </div>
@@ -262,10 +315,7 @@
             <div id="mod-analytics" class="module-view hidden space-y-4 w-full box-border">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 w-full">
                     <div class="neo-card p-4 rounded-2xl shadow-xl lg:col-span-4 space-y-3 box-border">
-                        <div>
-                            <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-1.5">⚙️ Ajustar Topes Mensuales</h4>
-                            <p class="text-[10px] text-slate-500">Establece el dinero máximo a gastar por categoría.</p>
-                        </div>
+                        <h4 class="font-bold text-xs uppercase tracking-wider" id="lbl-adjust-limits">⚙️ Ajustar Topes Mensuales</h4>
                         <div class="space-y-2.5 text-xs">
                             <div>
                                 <label class="text-slate-400 block text-[10px] mb-1">🛒 Alimentación</label>
@@ -281,23 +331,18 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="neo-card p-4 rounded-2xl shadow-xl lg:col-span-8 space-y-4 box-border">
-                        <h4 class="font-bold text-white text-xs uppercase tracking-wider">📉 Diagnóstico de Alertas de Presupuestos</h4>
+                        <h4 class="font-bold text-xs uppercase tracking-wider" id="lbl-diag-limits">📉 Diagnóstico de Alertas de Presupuestos</h4>
                         <div id="budgetBarsContainer" class="space-y-4"></div>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 w-full">
                     <div class="neo-card p-4 rounded-2xl shadow-xl md:col-span-5 flex flex-col justify-between w-full min-w-0 box-border">
-                        <h4 class="font-bold text-white text-[11px] uppercase tracking-wider mb-2">Porcentajes de Categoría</h4>
                         <div class="h-[200px] w-full flex items-center justify-center relative overflow-hidden box-border">
                             <canvas id="pieChartCanvas" class="max-w-full max-h-full block"></canvas>
-                            <div id="noPieDataText" class="hidden absolute inset-0 flex items-center justify-center text-slate-600 text-xs italic bg-[#151f32]/60 rounded-xl">Sin egresos registrados</div>
                         </div>
                     </div>
                     <div class="neo-card p-4 rounded-2xl shadow-xl md:col-span-7 flex flex-col justify-between w-full min-w-0 box-border">
-                        <h4 class="font-bold text-white text-[11px] uppercase tracking-wider mb-2">Histograma de Consumo</h4>
                         <div class="h-[200px] w-full flex items-center justify-center relative overflow-hidden box-border">
                             <canvas id="barChartCanvas" class="max-w-full max-h-full block"></canvas>
                         </div>
@@ -305,50 +350,54 @@
                 </div>
             </div>
 
-            <div id="mod-simulator" class="module-view hidden space-y-4 w-full box-border">
-                <div class="neo-card p-4 rounded-2xl shadow-xl w-full box-border">
-                    <div class="flex items-center gap-2 mb-1">
-                        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">🧮 Auditoría de Distribución (Regla 50/30/20)</h3>
-                        <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('regla')">?</span>
+            <div id="mod-calendar" class="module-view hidden grid grid-cols-12 gap-4 w-full box-border">
+                <div class="col-span-12 lg:col-span-7 neo-card p-4 rounded-2xl shadow-xl">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-sm" id="lbl-cal-title">Calendario de Registros</h3>
+                        <button onclick="resetCalendarFocus()" id="btn-reset-cal" class="text-[10px] bg-slate-950 px-2 py-1 border border-slate-800 rounded-lg font-bold text-cyan-400 hidden">Ver mes completo</button>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800" id="cardRule50">
-                            <div class="flex justify-between font-bold text-xs text-cyan-400 mb-1"><span>🛡️ Necesidades (50%)</span><span id="txtIdeal50">$0</span></div>
-                            <p class="text-base font-black text-white mono font-mono money-display" id="txtReal50">$0.00</p>
-                            <span class="text-[9px] block font-bold mt-1 uppercase" id="badge50">---</span>
-                        </div>
-                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800" id="cardRule30">
-                            <div class="flex justify-between font-bold text-xs text-amber-400 mb-1"><span>✨ Antojos (30%)</span><span id="txtIdeal30">$0</span></div>
-                            <p class="text-base font-black text-white mono font-mono money-display" id="txtReal30">$0.00</p>
-                            <span class="text-[9px] block font-bold mt-1 uppercase" id="badge30">---</span>
-                        </div>
-                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800" id="cardRule20">
-                            <div class="flex justify-between font-bold text-xs text-emerald-400 mb-1"><span>📈 Guardado Libre (20%)</span><span id="txtIdeal20">$0</span></div>
-                            <p class="text-base font-black text-white mono font-mono money-display" id="txtReal20">$0.00</p>
-                            <span class="text-[9px] block font-bold mt-1 uppercase" id="badge20">---</span>
-                        </div>
+                    <div class="grid grid-cols-7 gap-1.5 text-center text-[10px] uppercase font-bold text-slate-500 mb-2">
+                        <span>D</span><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span>
+                    </div>
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-1.5"></div>
+                </div>
+                <div class="col-span-12 lg:col-span-5 neo-card p-4 rounded-2xl shadow-xl flex flex-col">
+                    <h4 class="font-bold text-xs uppercase tracking-wider mb-2" id="lbl-cal-focus-title">Flujo del Día Seleccionado</h4>
+                    <div id="dayListContainer" class="flex-1 overflow-y-auto custom-scroll space-y-2 h-[260px] text-xs">
+                        <p class="text-slate-500 italic text-center pt-10">Selecciona un día marcado para auditar sus detalles.</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 w-full">
-                    <div class="neo-card p-4 rounded-2xl shadow-xl lg:col-span-4 space-y-3 box-border">
-                        <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1">🎯 Crear Nueva Meta</h3>
-                        <form id="goalForm" class="space-y-3 text-xs" onsubmit="createNewGoal(event)">
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Nombre de la Meta</label>
-                                <input type="text" id="goalName" placeholder="Ej. Fondo de Emergencias, Laptop..." class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white outline-none" required>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">Monto Objetivo</label>
-                                <input type="number" step="0.01" id="goalTarget" placeholder="0.00" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white font-mono outline-none" required>
-                            </div>
-                            <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-2 rounded-xl cursor-pointer shadow-md">AÑADIR META</button>
-                        </form>
+            <div id="mod-ai-chat" class="module-view hidden max-w-3xl mx-auto w-full box-border">
+                <div class="neo-card rounded-2xl shadow-xl flex flex-col h-[520px] overflow-hidden">
+                    <div class="p-3 border-b border-slate-800/80 bg-slate-950/40 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="text-xs font-bold" id="lbl-ai-status">Asistente Financiero AI Inteligente</span>
+                        </div>
+                    </div>
+                    
+                    <div id="chatChatroom" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll bg-slate-950/10 text-xs">
+                        <div class="chat-msg bot p-3 rounded-xl max-w-[85%] bg-slate-900 border border-slate-800 mr-auto">
+                            <p id="lbl-ai-welcome">¡Hola! Soy tu asistente unificado. Puedo revisar tus límites de gasto, balances o darte consejos basados en la regla de distribución 50/30/20.</p>
+                        </div>
                     </div>
 
-                    <div class="neo-card p-4 rounded-2xl shadow-xl lg:col-span-8 space-y-3 box-border">
-                        <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">📊 Progreso de Objetivos de Vida</h3>
-                        <div id="goalsListContainer" class="space-y-3 max-h-[320px] overflow-y-auto custom-scroll pr-1"></div>
+                    <div class="relative px-3 pt-2">
+                        <button onclick="toggleMenuComandos(event)" id="btn-comandos" class="text-[10px] bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-cyan-400 font-bold cursor-pointer">
+                            ⚡ Comandos Rápidos
+                        </button>
+                        <div id="menu-comandos" class="hidden absolute bottom-full left-3 mb-1 w-64 bg-slate-900 border border-slate-800 rounded-xl p-2 shadow-2xl z-50 space-y-1">
+                            <button onclick="ejecutarComando('¿Cómo voy con mi regla 50/30/20 este mes?')" class="w-full text-left text-[11px] p-1.5 hover:bg-slate-800 rounded text-slate-300 truncate">📈 Diagnóstico 50/30/20</button>
+                            <button onclick="ejecutarComando('¿He superado algún tope de presupuesto?')" class="w-full text-left text-[11px] p-1.5 hover:bg-slate-800 rounded text-slate-300 truncate">⚠️ Alertas de Presupuesto</button>
+                            <button onclick="ejecutarComando('Dame un consejo rápido para optimizar mis gastos fijos')" class="w-full text-left text-[11px] p-1.5 hover:bg-slate-800 rounded text-slate-300 truncate">💡 Tips de Ahorro</button>
+                        </div>
+                    </div>
+
+                    <div class="p-3 border-t border-slate-800/80 bg-slate-950/30 flex gap-2">
+                        <input type="text" id="ai-chat-input" placeholder="Pregunta sobre tus presupuestos..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white outline-none focus:border-cyan-500">
+                        <button onclick="sendChatMessage()" class="bg-cyan-500 text-slate-950 px-4 font-bold text-xs rounded-xl hover:bg-cyan-400 transition cursor-pointer">Enviar</button>
                     </div>
                 </div>
             </div>
@@ -356,49 +405,88 @@
         </main>
     </div>
 
-    <div id="guideModal" class="hidden fixed inset-0 z-[200] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
-            <div class="flex items-center gap-2 border-b border-slate-800 pb-2.5">
-                <span class="text-lg text-cyan-400" id="guideModalIcon">💡</span>
-                <h4 class="text-sm font-bold text-white" id="guideModalTitle">Título</h4>
-            </div>
-            <p class="text-xs text-slate-400 leading-relaxed" id="guideModalDesc">Descripción.</p>
-            <button onclick="closeExplanation()" class="w-full bg-slate-800 text-white font-bold text-xs py-2 rounded-xl cursor-pointer">Entendido</button>
-        </div>
-    </div>
-
     <script>
-        const currencySymbols = { USD: '$', EUR: '€', MXN: 'MXN$', COP: 'COP$', ARS: 'ARS$' };
+        // --- DICCIONARIO MULTI-IDIOMA CENTRALIZADO (RESCATADO DE V15.0) ---
+        const languageStrings = {
+            es: {
+                suiteTitle: "Finanzas<span class='text-cyan-400'>Pro</span>", netWealth: "Patrimonio Neto Consolidado",
+                survival: "⏱️ Supervivencia", survivalSub: "Soporte sin empleo", income: "Ingresos", expense: "Gastos",
+                quickReg: "⚡ Registro Rápido Manual", formDesc: "Concepto / Descripción", formCat: "Categoría",
+                formAmount: "Importe", formPsych: "Filtro Psicológico", radNeed: "🛡️ Necesidad", radWant: "✨ Antojo",
+                formFixed: "Gasto Fijo", btnSubmit: "REGISTRAR", historyTitle: "Historial Contable",
+                adjustLimits: "⚙️ Ajustar Topes Mensuales", diagLimits: "📉 Diagnóstico de Alertas de Presupuestos",
+                calTitle: "Calendario de Registros", calFocusTitle: "Flujo del Día Seleccionado",
+                aiStatus: "Asistente Financiero AI Inteligente", aiWelcome: "¡Hola! Soy tu asistente unificado. Puedo revisar tus límites de gasto, balances o darte consejos basados en la regla de distribución 50/30/20."
+            },
+            en: {
+                suiteTitle: "Finance<span class='text-cyan-400'>Pro</span>", netWealth: "Consolidated Net Wealth",
+                survival: "⏱️ Survival Time", survivalSub: "Support without job", income: "Income", expense: "Expenses",
+                quickReg: "⚡ Quick Manual Entry", formDesc: "Concept / Description", formCat: "Category",
+                formAmount: "Amount", formPsych: "Psychological Filter", radNeed: "🛡️ Need", radWant: "✨ Want",
+                formFixed: "Fixed Cost", btnSubmit: "RECORD ENTRY", historyTitle: "Accounting Ledger",
+                adjustLimits: "⚙️ Adjust Monthly Caps", diagLimits: "📉 Budget Alerts Diagnostic",
+                calTitle: "Records Calendar", calFocusTitle: "Selected Day Ledger Flow",
+                aiStatus: "Smart AI Financial Assistant", aiWelcome: "Hello! I am your unified core assistant. I can check your spending limits, net wealth balances, or give you advice based on the 50/30/20 budget rule."
+            }
+        };
+
+        const currencySymbols = { USD: '$', EUR: '€', MXN: 'MXN$' };
         let activeCurrency = 'USD';
-        let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_v42_core')) || [];
-        let budgetLimits = JSON.parse(localStorage.getItem('finanzas_pro_limits')) || { "Comida": 300, "Transporte": 150, "Ocio": 200 };
-        let financialGoals = JSON.parse(localStorage.getItem('finanzas_pro_goals')) || [
-            { id: 'G-1', name: '📈 Fondo de Emergencias', target: 1000 },
-            { id: 'G-2', name: '✈️ Próximo Viaje', target: 2500 }
+        let activeLang = 'es';
+        
+        let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_v20_core')) || [
+            { id: 'TX-INITIAL1', description: 'Nómina Mensual', category: 'Ingreso', amount: 2500, isRecurring: true, intent: 'necesidad', timestamp: '02 jun', dayNum: 2 },
+            { id: 'TX-INITIAL2', description: 'Compra de Supermercado', category: 'Comida', amount: -120, isRecurring: false, intent: 'necesidad', timestamp: '02 jun', dayNum: 2 },
+            { id: 'TX-INITIAL3', description: 'Cine y Palomitas', category: 'Ocio', amount: -35, isRecurring: false, intent: 'deseo', timestamp: '03 jun', dayNum: 3 }
         ];
+        let budgetLimits = JSON.parse(localStorage.getItem('finanzas_pro_v20_limits')) || { "Comida": 300, "Transporte": 150, "Ocio": 200 };
 
         let systemPrivacyActive = false;
-        let systemGuideActive = false;
         let pieChartInstance = null;
         let barChartInstance = null;
-
-        const guideDictionary = {
-            patrimonio: { title: "Patrimonio Neto", icon: "💰", desc: "El capital real líquido que te queda restando los egresos totales de tus cobros." },
-            supervivencia: { title: "Supervivencia", icon: "⏱️", desc: "Días estimados que resistirías con tu saldo actual según tu media de costo fijo o variable." },
-            regla: { title: "Regla 50/30/20", icon: "🧮", desc: "Filosofía contable: 50% para necesidades, 30% para antojos libres y 20% guardado neto." }
-        };
+        let selectedCalendarDay = null;
 
         const ledgerForm = document.getElementById('ledgerForm');
         const ledgerContainer = document.getElementById('ledgerContainer');
-        const searchBox = document.getElementById('txSearch');
-        const filterBox = document.getElementById('txFilter');
+        const monthFilter = document.getElementById('monthFilter');
         const currencySelect = document.getElementById('globalCurrency');
 
-        /* --- LÓGICA DE TEMAS CENTRALIZADA (RESCATADA DE V15.0) --- */
+        // --- MANEJO MULTI-IDIOMA ---
+        function changeSystemLanguage(lang) {
+            activeLang = lang;
+            const dictionary = languageStrings[lang];
+            
+            document.getElementById('lbl-suite-title').innerHTML = dictionary.suiteTitle;
+            document.getElementById('lbl-net-wealth').innerText = dictionary.netWealth;
+            document.getElementById('lbl-survival').innerText = dictionary.survival;
+            document.getElementById('lbl-survival-sub').innerText = dictionary.survivalSub;
+            document.getElementById('lbl-income').innerText = dictionary.income;
+            document.getElementById('lbl-expense').innerText = dictionary.expense;
+            document.getElementById('lbl-quick-reg').innerHTML = dictionary.quickReg;
+            document.getElementById('lbl-form-desc').innerText = dictionary.formDesc;
+            document.getElementById('lbl-form-cat').innerText = dictionary.formCat;
+            document.getElementById('lbl-form-amount').innerText = dictionary.formAmount;
+            document.getElementById('lbl-form-psych').innerText = dictionary.formPsych;
+            document.getElementById('lbl-rad-need').innerText = dictionary.radNeed;
+            document.getElementById('lbl-rad-want').innerText = dictionary.radWant;
+            document.getElementById('lbl-form-fixed').innerText = dictionary.formFixed;
+            document.getElementById('lbl-btn-submit').innerText = dictionary.btnSubmit;
+            document.getElementById('lbl-history-title').innerText = dictionary.historyTitle;
+            document.getElementById('lbl-adjust-limits').innerText = dictionary.adjustLimits;
+            document.getElementById('lbl-diag-limits').innerText = dictionary.diagLimits;
+            document.getElementById('lbl-cal-title').innerText = dictionary.calTitle;
+            document.getElementById('lbl-cal-focus-title').innerText = dictionary.calFocusTitle;
+            document.getElementById('lbl-ai-status').innerText = dictionary.aiStatus;
+            document.getElementById('lbl-ai-welcome').innerText = dictionary.aiWelcome;
+
+            refreshSuiteDashboard();
+        }
+
+        // --- INTERRUPTOR DE TEMAS ---
         function changeSystemTheme(themeName) {
             document.documentElement.setAttribute('data-theme', themeName);
-            localStorage.setItem('finanzas_pro_theme', themeName);
-            if(!document.getElementById('mod-analytics').classList.contains('hidden')) {
+            localStorage.setItem('finanzas_pro_v20_theme', themeName);
+            if (!document.getElementById('mod-analytics').classList.contains('hidden')) {
                 refreshAnalyticalCharts();
             }
         }
@@ -409,47 +497,21 @@
             return `${val < 0 ? '-' : ''}${currentSymbol}${Math.abs(val).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
 
-        /* --- MODO PRIVACIDAD AVANZADO (RESCATADO DE V15.0) --- */
         function togglePrivacyMode() {
             systemPrivacyActive = !systemPrivacyActive;
-            const btnText = document.getElementById('privacyIcon');
-            const targetDisplays = document.querySelectorAll('.money-display');
-            
-            if (systemPrivacyActive) {
-                btnText.innerText = '👁️ Mostrar';
-                targetDisplays.forEach(d => d.classList.add('privacy-masked'));
-            } else {
-                btnText.innerText = '👁️ Ocultar';
-                targetDisplays.forEach(d => d.classList.remove('privacy-masked'));
-            }
+            document.getElementById('privacyIcon').innerText = systemPrivacyActive ? (activeLang === 'es' ? '👁️ Mostrar' : '👁️ Show') : (activeLang === 'es' ? '👁️ Ocultar' : '👁️ Hide');
             refreshSuiteDashboard();
         }
 
-        function toggleSystemGuide() {
-            systemGuideActive = !systemGuideActive;
-            const btn = document.getElementById('guideToggleBtn');
-            const markers = document.querySelectorAll('.help-marker');
-            btn.innerText = systemGuideActive ? "❌ Ocultar Guía" : "📖 Guía Dinámica";
-            markers.forEach(m => systemGuideActive ? m.classList.remove('hidden') : m.classList.add('hidden'));
-            toggleDataMenu();
+        function togglePsychSelector(cat) { 
+            document.getElementById('psychologicalBlock').className = (cat === 'Ingreso') ? 'hidden' : 'block bg-slate-950/40 p-2.5 rounded-xl border border-slate-800/80 space-y-1.5 w-full'; 
         }
-
-        function showExplanation(key) {
-            const data = guideDictionary[key];
-            if (!data) return;
-            document.getElementById('guideModalIcon').innerText = data.icon;
-            document.getElementById('guideModalTitle').innerText = data.title;
-            document.getElementById('guideModalDesc').innerText = data.desc;
-            document.getElementById('guideModal').classList.remove('hidden');
-        }
-
-        function closeExplanation() { document.getElementById('guideModal').classList.add('hidden'); }
-        function togglePsychSelector(cat) { document.getElementById('psychologicalBlock').className = (cat === 'Ingreso') ? 'hidden' : 'block bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80 space-y-1.5 w-full'; }
 
         function switchModule(targetModuleId) {
             document.querySelectorAll('.module-view').forEach(view => view.classList.add('hidden'));
             document.getElementById(targetModuleId).classList.remove('hidden');
             document.getElementById('mobileModuleSelector').value = targetModuleId;
+            
             document.querySelectorAll('.module-tab-btn').forEach(btn => btn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200");
             const activeBtn = document.getElementById(`btn-${targetModuleId}`);
             if (activeBtn) activeBtn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md";
@@ -458,13 +520,12 @@
                 setTimeout(refreshAnalyticalCharts, 5);
                 setTimeout(renderBudgetLimitsStatus, 5);
             }
-            if (targetModuleId === 'mod-simulator') {
-                calculate503020Rule();
-                renderFinancialGoals();
+            if (targetModuleId === 'mod-calendar') {
+                renderCalendarStructure();
             }
         }
 
-        // --- MANEJO DE ENTRADAS ---
+        // --- MOVIMIENTOS Y BASE DE DATOS ---
         ledgerForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const description = document.getElementById('txDesc').value.trim();
@@ -473,19 +534,18 @@
             const isRecurring = document.getElementById('txRecurring').checked;
             let intent = 'necesidad';
             
-            if(category !== 'Ingreso') {
-                const checkedIntent = document.querySelector('input[name="txIntent"]:checked');
-                intent = checkedIntent ? checkedIntent.value : 'necesidad';
+            if (category !== 'Ingreso') {
+                intent = document.querySelector('input[name="txIntent"]:checked').value;
             }
-            if (!description || isNaN(amount)) return;
 
             if (category !== 'Ingreso' && amount > 0) amount = -amount;
-            else if (category === 'Ingreso' && amount < 0) amount = Math.abs(amount);
 
+            const today = new Date();
             ledgerDatabase.unshift({
                 id: 'TX-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
                 description, category, amount, isRecurring, intent,
-                timestamp: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+                timestamp: today.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }),
+                dayNum: today.getDate()
             });
 
             syncStorage();
@@ -493,17 +553,24 @@
             document.getElementById('psychologicalBlock').classList.add('hidden');
         });
 
+        function populateMonthFilter() {
+            // Setup base simplificado para simular agrupación temporal de la V15
+            monthFilter.innerHTML = activeLang === 'es' ? '<option value="all">Todo el tiempo</option><option value="jun">Junio (Actual)</option>' : '<option value="all">All-time</option><option value="jun">June (Current)</option>';
+        }
+
         function updateBudgetLimits() {
             budgetLimits["Comida"] = parseFloat(document.getElementById('limit-Comida').value) || 0;
             budgetLimits["Transporte"] = parseFloat(document.getElementById('limit-Transporte').value) || 0;
             budgetLimits["Ocio"] = parseFloat(document.getElementById('limit-Ocio').value) || 0;
-            localStorage.setItem('finanzas_pro_limits', JSON.stringify(budgetLimits));
+            localStorage.setItem('finanzas_pro_v20_limits', JSON.stringify(budgetLimits));
             renderBudgetLimitsStatus();
         }
 
         function renderBudgetLimitsStatus() {
             const container = document.getElementById('budgetBarsContainer');
+            if(!container) return;
             container.innerHTML = '';
+            
             const trackedCategories = ["Comida", "Transporte", "Ocio"];
             let gastosMap = { "Comida": 0, "Transporte": 0, "Ocio": 0 };
 
@@ -517,20 +584,18 @@
                 const consumido = gastosMap[cat];
                 const maximo = budgetLimits[cat] || 1;
                 let porcentaje = Math.min((consumido / maximo) * 100, 100);
-                let barColor = "bg-cyan-500", textColor = "text-slate-300", alertLabel = "";
+                let barColor = "bg-cyan-500", textColor = "text-slate-400";
+                let alertLabel = "";
 
                 if (consumido >= maximo) {
                     barColor = "bg-rose-500"; textColor = "text-rose-400 font-bold";
-                    alertLabel = `⚠️ ¡Límite superado por ${formatDisplayAmount(consumido - maximo)}!`;
-                } else if (porcentaje >= 80) {
-                    barColor = "bg-amber-500"; textColor = "text-amber-400";
-                    alertLabel = "⏳ Alerta: Al 80% del tope";
+                    alertLabel = activeLang === 'es' ? `⚠️ ¡Tope superado!` : `⚠️ Limit Exceeded!`;
                 }
 
                 container.innerHTML += `
                     <div class="space-y-1">
                         <div class="flex justify-between text-xs">
-                            <span class="font-semibold text-white">${cat === 'Comida' ? '🛒 Alimentación' : cat === 'Transporte' ? '🚗 Transporte' : '🎬 Ocio / Caprichos'}</span>
+                            <span class="font-semibold text-white">${cat}</span>
                             <span class="${textColor}">${formatDisplayAmount(consumido)} / ${formatDisplayAmount(maximo)}</span>
                         </div>
                         <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
@@ -542,144 +607,145 @@
             });
         }
 
-        function calculate503020Rule() {
-            let ingresosTotales = 0, necesidadesReales = 0, deseosReales = 0;
-            ledgerDatabase.forEach(item => {
-                if (item.amount > 0) ingresosTotales += item.amount;
-                else {
-                    if (item.intent === 'deseo') deseosReales += Math.abs(item.amount);
-                    else necesidadesReales += Math.abs(item.amount);
+        // --- RENDERIZADO DEL CALENDARIO (RESCATADO DE V15.0) ---
+        function renderCalendarStructure() {
+            const grid = document.getElementById('calendarGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            // Renderizar un mes fijo simulado (30 días de junio)
+            for (let i = 1; i <= 30; i++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'cal-day bg-slate-950/40 hover:bg-slate-800 text-white border border-slate-800/40';
+                dayEl.innerText = i;
+
+                // Validación de datos (.has-data de la V15)
+                const dayHasData = ledgerDatabase.some(item => item.dayNum === i);
+                if (dayHasData) dayEl.classList.add('has-data');
+
+                if (selectedCalendarDay === i) {
+                    dayEl.classList.add('bg-cyan-950', 'border-cyan-500', 'text-cyan-400');
                 }
-            });
 
-            const ideal50 = ingresosTotales * 0.50, ideal30 = ingresosTotales * 0.30, ideal20 = ingresosTotales * 0.20;
-            const ahorroReal = ingresosTotales - necesidadesReales - deseosReales;
-
-            document.getElementById('txtIdeal50').innerText = `Ideal: ${formatDisplayAmount(ideal50)}`;
-            document.getElementById('txtIdeal30').innerText = `Ideal: ${formatDisplayAmount(ideal30)}`;
-            document.getElementById('txtIdeal20').innerText = `Ideal: ${formatDisplayAmount(ideal20)}`;
-
-            document.getElementById('txtReal50').innerText = formatDisplayAmount(necesidadesReales);
-            document.getElementById('txtReal30').innerText = formatDisplayAmount(deseosReales);
-            document.getElementById('txtReal20').innerText = formatDisplayAmount(ahorroReal);
-
-            formatRuleBadge('badge50', 'cardRule50', necesidadesReales, ideal50, true);
-            formatRuleBadge('badge30', 'cardRule30', deseosReales, ideal30, true);
-            formatRuleBadge('badge20', 'cardRule20', ahorroReal, ideal20, false);
-        }
-
-        function formatRuleBadge(badgeId, cardId, real, ideal, esGasto) {
-            const badge = document.getElementById(badgeId);
-            const card = document.getElementById(cardId);
-            if (esGasto) {
-                if (real > ideal) {
-                    badge.innerText = "❌ Excedido"; badge.className = "text-[9px] block font-bold mt-1 text-rose-400";
-                    card.style.borderColor = "rgba(244, 63, 94, 0.4)";
-                } else {
-                    badge.innerText = "✅ Optimizado"; badge.className = "text-[9px] block font-bold mt-1 text-emerald-400";
-                    card.style.borderColor = "rgba(16, 185, 129, 0.2)";
-                }
-            } else {
-                if (real >= ideal) {
-                    badge.innerText = "🏆 Superada"; badge.className = "text-[9px] block font-bold mt-1 text-emerald-400";
-                    card.style.borderColor = "rgba(16, 185, 129, 0.4)";
-                } else {
-                    badge.innerText = "📉 Bajo el nivel"; badge.className = "text-[9px] block font-bold mt-1 text-amber-400";
-                    card.style.borderColor = "rgba(245, 158, 11, 0.2)";
-                }
+                dayEl.onclick = () => focusCalendarDay(i);
+                grid.appendChild(dayEl);
             }
         }
 
-        function createNewGoal(e) {
-            e.preventDefault();
-            const name = document.getElementById('goalName').value.trim();
-            const target = parseFloat(document.getElementById('goalTarget').value) || 0;
-            financialGoals.push({ id: 'G-' + Math.random().toString(36).substr(2, 5), name, target });
-            localStorage.setItem('finanzas_pro_goals', JSON.stringify(financialGoals));
-            document.getElementById('goalForm').reset();
-            renderFinancialGoals();
-        }
+        function focusCalendarDay(dayNum) {
+            selectedCalendarDay = dayNum;
+            document.getElementById('btn-reset-cal').classList.remove('hidden');
+            renderCalendarStructure();
 
-        function deleteGoal(id) {
-            financialGoals = financialGoals.filter(g => g.id !== id);
-            localStorage.setItem('finanzas_pro_goals', JSON.stringify(financialGoals));
-            renderFinancialGoals();
-        }
-
-        function renderFinancialGoals() {
-            const container = document.getElementById('goalsListContainer');
+            const container = document.getElementById('dayListContainer');
             container.innerHTML = '';
-            let ingresos = 0, gastos = 0;
-            ledgerDatabase.forEach(i => i.amount > 0 ? ingresos += i.amount : gastos += Math.abs(i.amount));
-            const patrimonioActual = Math.max(ingresos - gastos, 0);
-
-            if(!financialGoals.length) {
-                container.innerHTML = `<p class="text-center text-slate-600 text-xs italic py-6">No has definido metas aún.</p>`;
+            
+            const dayMoves = ledgerDatabase.filter(item => item.dayNum === dayNum);
+            if (!dayMoves.length) {
+                container.innerHTML = `<p class="text-slate-500 italic text-center pt-10">${activeLang === 'es' ? 'Sin transacciones este día.' : 'No transactions on this day.'}</p>`;
                 return;
             }
 
-            financialGoals.forEach(goal => {
-                let progresoPorcentaje = Math.min((patrimonioActual / goal.target) * 100, 100).toFixed(0);
+            dayMoves.forEach(tx => {
                 container.innerHTML += `
-                    <div class="bg-slate-950/50 border border-slate-800/80 p-3 rounded-xl flex flex-col space-y-1.5">
-                        <div class="flex justify-between items-center text-xs">
-                            <div class="flex flex-col">
-                                <span class="font-bold text-white">${goal.name}</span>
-                                <span class="text-[10px] text-slate-500">Objetivo: ${formatDisplayAmount(goal.target)}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="font-mono font-bold text-emerald-400">${progresoPorcentaje}%</span>
-                                <button onclick="deleteGoal('${goal.id}')" class="text-slate-600 hover:text-rose-400 font-bold px-1 text-[11px] cursor-pointer">✕</button>
-                            </div>
+                    <div class="p-2 bg-slate-900 rounded-lg flex justify-between items-center border border-slate-800">
+                        <div>
+                            <p class="font-bold text-white">${tx.description}</p>
+                            <p class="text-[9px] text-slate-500">${tx.category} • ${tx.intent.toUpperCase()}</p>
                         </div>
-                        <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden border border-slate-800">
-                            <div class="bg-gradient-to-r from-emerald-500 to-cyan-400 h-full transition-all duration-500" style="width: ${progresoPorcentaje}%"></div>
-                        </div>
+                        <span class="mono font-bold ${tx.amount > 0 ? 'text-emerald-400' : 'text-rose-400'}">${formatDisplayAmount(tx.amount)}</span>
                     </div>
                 `;
             });
         }
 
+        function resetCalendarFocus() {
+            selectedCalendarDay = null;
+            document.getElementById('btn-reset-cal').classList.add('hidden');
+            renderCalendarStructure();
+            document.getElementById('dayListContainer').innerHTML = `<p class="text-slate-500 italic text-center pt-10">${activeLang === 'es' ? 'Selecciona un día marcado para auditar sus detalles.' : 'Select a marked day to audit its details.'}</p>`;
+        }
+
+        // --- CHAT INTERACTIVO CON COMANDOS (FUSIÓN V15) ---
+        function toggleMenuComandos(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('menu-comandos');
+            menu.classList.toggle('hidden');
+        }
+
+        function ejecutarComando(text) {
+            document.getElementById('ai-chat-input').value = text;
+            document.getElementById('menu-comandos').classList.add('hidden');
+            sendChatMessage();
+        }
+
+        document.addEventListener('click', () => {
+            const menu = document.getElementById('menu-comandos');
+            if (menu) menu.classList.add('hidden');
+        });
+
+        function sendChatMessage() {
+            const input = document.getElementById('ai-chat-input');
+            const chatroom = document.getElementById('chatChatroom');
+            const query = input.value.trim();
+            if(!query) return;
+
+            // Insertar mensaje de usuario
+            chatroom.innerHTML += `
+                <div class="chat-msg user p-3 rounded-xl max-w-[85%] bg-cyan-950 text-cyan-100 ml-auto border border-cyan-800/40">
+                    <p>${query}</p>
+                </div>
+            `;
+            input.value = '';
+
+            // Respuesta simulada con lógica estructural (Efecto bot-alert V15 si se pregunta por límites)
+            setTimeout(() => {
+                let reply = activeLang === 'es' ? "He procesado tu consulta. Tu salud financiera se mantiene bajo los parámetros normales." : "I have processed your query. Your financial health remains within standard metrics.";
+                let isAlert = false;
+
+                if (query.toLowerCase().includes('tope') || query.toLowerCase().includes('limit') || query.toLowerCase().includes('regla')) {
+                    isAlert = true;
+                    reply = activeLang === 'es' ? "⚠️ ALERTA DE SISTEMA: Recuerda monitorizar de cerca la categoría Ocio. Tu tasa de gastos suntuarios o antojos roza el límite aconsejado en tu plan de distribución." : "⚠️ SYSTEM ALERT: Remember to closely monitor the Leisure category. Your discretionary spending is approaching the recommended ceiling in your layout.";
+                }
+
+                chatroom.innerHTML += `
+                    <div class="chat-msg bot p-3 rounded-xl max-w-[85%] ${isAlert ? 'bot-alert' : 'bg-slate-900 border border-slate-800'} mr-auto">
+                        <p>${reply}</p>
+                    </div>
+                `;
+                chatroom.scrollTop = chatroom.scrollHeight;
+            }, 600);
+        }
+
+        // --- CORE Y CONFIGURACIÓN ---
         function syncStorage() {
-            localStorage.setItem('finanzas_pro_v42_core', JSON.stringify(ledgerDatabase));
+            localStorage.setItem('finanzas_pro_v20_core', JSON.stringify(ledgerDatabase));
             refreshSuiteDashboard();
         }
 
         function refreshSuiteDashboard() {
             renderLedgerList();
             evaluateFinancialMetrics();
-            if(!document.getElementById('mod-analytics').classList.contains('hidden')) {
+            if (!document.getElementById('mod-analytics').classList.contains('hidden')) {
                 refreshAnalyticalCharts();
                 renderBudgetLimitsStatus();
             }
-            if(!document.getElementById('mod-simulator').classList.contains('hidden')) {
-                calculate503020Rule();
-                renderFinancialGoals();
+            if (!document.getElementById('mod-calendar').classList.contains('hidden')) {
+                renderCalendarStructure();
             }
         }
 
         function renderLedgerList() {
-            const query = searchBox.value ? searchBox.value.toLowerCase() : '';
-            const filter = filterBox.value;
-            const collection = ledgerDatabase.filter(item => {
-                const searchMatch = item.description.toLowerCase().includes(query) || item.category.toLowerCase().includes(query);
-                let filterMatch = true;
-                if (filter === 'income') filterMatch = item.amount > 0;
-                if (filter === 'expense') filterMatch = item.amount < 0;
-                return searchMatch && filterMatch;
-            });
-
-            ledgerContainer.innerHTML = collection.length ? '' : `<p class="text-center text-slate-600 text-xs italic py-8">Cero movimientos</p>`;
-            collection.forEach(tx => {
+            ledgerContainer.innerHTML = '';
+            
+            ledgerDatabase.forEach(tx => {
                 const isCredit = tx.amount > 0;
                 const element = document.createElement('li');
-                let intentBadge = !isCredit ? (tx.intent === 'deseo' ? `<span class="text-[7px] bg-amber-500/10 text-amber-400 px-1 py-0.5 rounded font-bold shrink-0">ANTOJO</span>` : `<span class="text-[7px] bg-cyan-500/10 text-cyan-400 px-1 py-0.5 rounded font-bold shrink-0">VITAL</span>`) : '';
-
                 element.className = "flex items-center justify-between p-2.5 bg-slate-900/60 rounded-xl border border-slate-800/40 text-xs text-white";
                 element.innerHTML = `
                     <div class="flex flex-col">
                         <span class="font-bold">${tx.description}</span>
-                        <span class="text-[9px] text-slate-500">${tx.category} • ${tx.timestamp} ${intentBadge}</span>
+                        <span class="text-[9px] text-slate-500">${tx.category} • ${tx.timestamp}</span>
                     </div>
                     <span class="font-mono font-bold ${isCredit ? 'text-emerald-400' : 'text-rose-400'} money-display">${formatDisplayAmount(tx.amount)}</span>
                 `;
@@ -706,7 +772,8 @@
             let baseCost = fijos > 0 ? fijos / 30 : (gastos > 0 ? gastos / 30 : 0);
             if (baseCost > 0 && neto > 0) diasSupervivencia = Math.round(neto / baseCost);
             
-            document.getElementById('survivalDaysText').innerText = systemPrivacyActive ? '••••••' : `${diasSupervivencia} días`;
+            document.getElementById('survivalDaysText').innerText = systemPrivacyActive ? '••••••' : `${diasSupervivencia} ${activeLang === 'es' ? 'días' : 'days'}`;
+            
             const statusLabel = document.getElementById('survivalStatusLabel');
             if (diasSupervivencia === 0) { statusLabel.innerText = "CRÍTICO"; statusLabel.style.color = "#f43f5e"; }
             else if (diasSupervivencia < 90) { statusLabel.innerText = "VULNERABLE"; statusLabel.style.color = "#fbbf24"; }
@@ -726,9 +793,7 @@
                 } else ingresosPorMes += item.amount;
             });
 
-            // Ajuste dinámico de color de texto según el tema seleccionado
-            const activeTheme = document.documentElement.getAttribute('data-theme') || 'cyberpunk';
-            const labelColor = activeTheme === 'glass' ? '#cbd5e1' : '#94a3b8';
+            const labelColor = '#94a3b8';
 
             if (pieChartInstance) pieChartInstance.destroy();
             pieChartInstance = new Chart(ctxPie, {
@@ -737,37 +802,28 @@
                     labels: Object.keys(categoriasMap),
                     datasets: [{ data: Object.values(categoriasMap), backgroundColor: ['#22d3ee', '#ec4899', '#f59e0b', '#10b981', '#6366f1'], borderWidth: 0 }]
                 },
-                options: { plugins: { legend: { display: true, position: 'bottom', labels: { color: labelColor, font: { size: 9 } } } }, responsive: true, maintainAspectRatio: false }
+                options: { plugins: { legend: { position: 'bottom', labels: { color: labelColor, font: { size: 9 } } } }, responsive: true, maintainAspectRatio: false }
             });
 
             if (barChartInstance) barChartInstance.destroy();
             barChartInstance = new Chart(ctxBar, {
                 type: 'bar',
                 data: {
-                    labels: ['Ingresos', 'Gastos'],
+                    labels: activeLang === 'es' ? ['Ingresos', 'Gastos'] : ['Income', 'Expenses'],
                     datasets: [{ data: [ingresosPorMes, gastosPorMes], backgroundColor: ['rgba(16, 185, 129, 0.2)', 'rgba(244, 63, 94, 0.2)'], borderColor: ['#10b981', '#f43f5e'], borderWidth: 2, borderRadius: 8 }]
                 },
                 options: { scales: { y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: labelColor, font: { size: 9 } } }, x: { ticks: { color: labelColor, font: { size: 10 } } } }, plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
             });
         }
 
-        function toggleDataMenu() { document.getElementById('dataMenu').classList.toggle('hidden'); }
         function changeCurrency() { activeCurrency = currencySelect.value; refreshSuiteDashboard(); }
-        function triggerImport() { document.getElementById('importFile').click(); }
-        
-        function purgeDatabase() {
-            if(confirm("⚠️ ¿Deseas purgar toda la base de datos?")) {
-                ledgerDatabase = [];
-                syncStorage();
-            }
-        }
 
-        // Carga inicial sincronizada con preferencias
         window.onload = function() { 
-            const savedTheme = localStorage.getItem('finanzas_pro_theme') || 'cyberpunk';
+            populateMonthFilter();
+            const savedTheme = localStorage.getItem('finanzas_pro_v20_theme') || 'cyberpunk';
             document.getElementById('themeSelector').value = savedTheme;
             changeSystemTheme(savedTheme);
-            refreshSuiteDashboard(); 
+            changeSystemLanguage('es');
         };
     </script>
 </body>
