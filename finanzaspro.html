@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>Finanzas Pro v20.0 | Unified Core Suite</title>
+    <title>Finanzas Pro v20.0 | Unified Settings Suite</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* --- ARQUITECTURA DE TEMAS CENTRALIZADA (UNIFICADA V15 + V20) --- */
+        /* --- ARQUITECTURA DE TEMAS CENTRALIZADA --- */
         :root[data-theme="cyberpunk"] {
             --bg-color: #0b0f19;
             --card-bg: #151f32;
@@ -98,20 +98,18 @@
             transition: all 0.3s ease;
         }
         
-        /* --- ANIMACIÓN DE PANTALLAS (RESCATADA DE V15.0) --- */
+        .module-view:not(.hidden) {
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-        .module-view:not(.hidden) {
-            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         .privacy-masked { filter: blur(8px); pointer-events: none; user-select: none; }
         
-        /* --- ESTILOS DEL CALENDARIO CON INDICADORES --- */
         .cal-day {
             aspect-ratio: 1;
             display: flex;
@@ -134,45 +132,26 @@
             border-radius: 50%;
         }
         
-        /* --- ALERTAS CRÍTICAS DEL BOT DE IA --- */
         .chat-msg.bot-alert {
             background-color: rgba(239, 68, 68, 0.08);
             border-left: 3px solid var(--danger);
         }
-
-        @keyframes pulse-cyan {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 0 5px rgba(34, 211, 238, 0); }
-        }
-        .help-trigger { animation: pulse-cyan 2s infinite; }
-        
-        @media screen and (max-width: 768px) { input, select { font-size: 16px !important; } }
     </style>
 </head>
 <body class="min-h-screen w-full overflow-x-hidden selection:bg-cyan-500 selection:text-slate-950 antialiased block">
 
     <div class="w-full max-w-full overflow-x-hidden flex flex-col justify-start items-stretch project-wrapper">
 
-        <header class="sticky top-0 z-40 glass-panel px-4 py-3 shadow-xl w-full box-border transition-all duration-300">
-            <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3 w-full">
+        <header class="sticky top-0 z-40 glass-panel px-4 py-3 shadow-xl w-full box-border">
+            <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-3 w-full">
                 
-                <div class="flex items-center justify-between w-full md:w-auto gap-4">
-                    <div class="flex items-center gap-2">
-                        <div class="w-9 h-9 bg-gradient-to-br from-cyan-500 via-blue-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shrink-0">
-                            <span class="text-slate-950 font-extrabold text-lg">FP</span>
-                        </div>
-                        <div>
-                            <h1 class="text-base font-bold text-white leading-tight" id="lbl-suite-title">Finanzas<span class="text-cyan-400">Pro</span></h1>
-                            <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Suite Unificada • v20.0 Core</p>
-                        </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 bg-gradient-to-br from-cyan-500 via-blue-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shrink-0">
+                        <span class="text-slate-950 font-extrabold text-lg">FP</span>
                     </div>
-                    <div class="md:hidden shrink-0">
-                        <select id="mobileModuleSelector" onchange="switchModule(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-1.5 px-2.5 text-cyan-400 outline-none">
-                            <option value="mod-overview">🎛️ Resumen</option>
-                            <option value="mod-analytics">📊 Presupuestos</option>
-                            <option value="mod-calendar">📅 Calendario</option>
-                            <option value="mod-ai-chat">💬 Asistente IA</option>
-                        </select>
+                    <div>
+                        <h1 class="text-base font-bold text-white leading-tight" id="lbl-suite-title">Finanzas<span class="text-cyan-400">Pro</span></h1>
+                        <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Suite Unificada • v20.0</p>
                     </div>
                 </div>
                 
@@ -182,31 +161,79 @@
                     <button onclick="switchModule('mod-calendar')" id="btn-mod-calendar" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">📅 Calendario</button>
                     <button onclick="switchModule('mod-ai-chat')" id="btn-mod-ai-chat" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">💬 Asistente IA</button>
                 </div>
-                
-                <div class="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto border-t border-slate-800/50 md:border-0 pt-2 md:pt-0">
-                    <select id="langSelector" onchange="changeSystemLanguage(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-2 px-2 text-slate-300 outline-none cursor-pointer">
-                        <option value="es">🇪🇸 Español</option>
-                        <option value="en">🇺🇸 English</option>
-                    </select>
 
-                    <select id="themeSelector" onchange="changeSystemTheme(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-2 px-2 text-slate-300 outline-none cursor-pointer">
-                        <option value="cyberpunk">🌃 Cyberpunk</option>
-                        <option value="glass">💎 Glassmorphism</option>
-                        <option value="space">🌌 Cosmos</option>
-                        <option value="minimal">⚪ Minimalist</option>
-                    </select>
+                <div class="flex items-center gap-3 shrink-0">
+                    <div class="md:hidden">
+                        <select id="mobileModuleSelector" onchange="switchModule(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-1.5 px-2 text-cyan-400 outline-none">
+                            <option value="mod-overview">🎛️ Resumen</option>
+                            <option value="mod-analytics">📊 Presupuestos</option>
+                            <option value="mod-calendar">📅 Calendario</option>
+                            <option value="mod-ai-chat">💬 Asistente IA</option>
+                        </select>
+                    </div>
 
-                    <div class="flex items-center bg-slate-900/90 rounded-xl p-1 border border-slate-800 text-xs font-mono min-w-0">
-                        <select id="globalCurrency" onchange="changeCurrency()" class="bg-transparent border-0 outline-none text-cyan-400 font-bold text-xs px-1 truncate cursor-pointer">
+                    <div class="flex items-center bg-slate-900/90 rounded-xl p-1.5 border border-slate-800 text-xs font-mono">
+                        <select id="globalCurrency" onchange="changeCurrency()" class="bg-transparent border-0 outline-none text-cyan-400 font-bold text-xs px-1 cursor-pointer">
                             <option value="USD">USD ($)</option>
                             <option value="EUR">EUR (€)</option>
                             <option value="MXN">MXN ($)</option>
                         </select>
                     </div>
+
+                    <button onclick="toggleSettingsMenu()" class="w-9 h-9 bg-slate-900 border border-slate-800 text-slate-400 hover:text-white rounded-xl flex items-center justify-center transition-colors cursor-pointer relative" id="btn-settings-toggle">
+                        <i class="fa-solid fa-gear text-sm"></i>
+                    </button>
                 </div>
 
             </div>
         </header>
+
+        <div id="settingsDropdown" class="hidden fixed top-16 right-4 z-50 w-72 bg-slate-900/95 backdrop-blur-xl border border-slate-800 rounded-2xl p-4 shadow-2xl space-y-4 animate-[fadeIn_0.2s_ease-out]">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <h4 class="text-xs font-extrabold uppercase tracking-widest text-slate-400" id="lbl-menu-title">⚙️ Ajustes de la Suite</h4>
+                <button onclick="toggleSettingsMenu()" class="text-slate-500 hover:text-slate-300 text-xs"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="space-y-1.5">
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500" id="lbl-menu-lang">Idioma del Sistema</label>
+                <select id="langSelector" onchange="changeSystemLanguage(this.value)" class="w-full bg-slate-950 border border-slate-800 text-xs font-semibold rounded-xl py-2 px-2.5 text-slate-300 outline-none cursor-pointer">
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="en">🇺🇸 English</option>
+                </select>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500" id="lbl-menu-theme">Tema Estético Visual</label>
+                <select id="themeSelector" onchange="changeSystemTheme(this.value)" class="w-full bg-slate-950 border border-slate-800 text-xs font-semibold rounded-xl py-2 px-2.5 text-slate-300 outline-none cursor-pointer">
+                    <option value="cyberpunk">🌃 Cyberpunk Core</option>
+                    <option value="glass">💎 Glassmorphism</option>
+                    <option value="space">🌌 Cosmos Contrast</option>
+                    <option value="minimal">⚪ Minimalist Clean</option>
+                </select>
+            </div>
+
+            <div class="space-y-2 pt-1 border-t border-slate-800/60">
+                <button onclick="triggerAppGuide()" class="w-full bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left text-xs font-medium py-2 px-3 rounded-xl transition flex items-center gap-2 text-slate-300 cursor-pointer">
+                    <i class="fa-solid fa-circle-info text-cyan-400 text-[11px]"></i> <span id="lbl-menu-guide">Ver Guía Interactiva</span>
+                </button>
+                <button onclick="purgeAppCache()" class="w-full bg-rose-950/20 hover:bg-rose-950/40 border border-rose-900/30 text-left text-xs font-bold py-2 px-3 rounded-xl transition flex items-center gap-2 text-rose-400 cursor-pointer">
+                    <i class="fa-solid fa-trash-can text-[11px]"></i> <span id="lbl-menu-clear">Borrar Caché y Datos</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="guideModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-4 relative shadow-2xl">
+                <h3 class="font-bold text-base text-white flex items-center gap-2">🚀 Guía de Usuario Unificada</h3>
+                <div class="text-xs text-slate-300 space-y-2 max-h-[300px] overflow-y-auto custom-scroll pr-1">
+                    <p><strong>1. Registro Limpio:</strong> Ingresa tus transacciones usando el formulario manual. Usa el <em>Filtro Psicológico</em> para catalogar necesidades frente a antojos directos.</p>
+                    <p><strong>2. Alertas de Topes:</strong> Ve a la pestaña de Presupuestos para fijar techos financieros. Si gastas de más, el sistema encenderá marcas rojas automáticas.</p>
+                    <p><strong>3. Calendario Sincronizado:</strong> Los puntos debajo de las fechas en el calendario indican que hubo actividad. Toca un día para inspeccionar su historial aislado.</p>
+                    <p><strong>4. Comandos de IA:</strong> En la sección del chat de Inteligencia Artificial puedes usar plantillas rápidas para auditar de inmediato tus balances sin escribir líneas largas.</p>
+                </div>
+                <button onclick="closeAppGuide()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs py-2.5 rounded-xl transition cursor-pointer">Entendido, Cerrar</button>
+            </div>
+        </div>
 
         <section class="w-full max-w-full px-4 pt-4 box-border">
             <div class="relative overflow-hidden rounded-2xl p-5 shadow-2xl w-full box-border neo-card">
@@ -218,7 +245,7 @@
                                 <span id="privacyIcon">👁️ Ocultar</span>
                             </button>
                         </div>
-                        <div class="text-2xl sm:text-3xl font-black tracking-tight mono money-display truncate break-all" id="netWealthText">$0.00</div>
+                        <div class="text-2xl sm:text-3xl font-black tracking-tight mono money-display truncate break-all text-white" id="netWealthText">$0.00</div>
                     </div>
                     <div class="col-span-12 md:col-span-4 bg-slate-950/40 border border-slate-800/60 rounded-xl p-3 flex items-center justify-between shadow-inner min-w-0">
                         <div class="min-w-0 mr-2">
@@ -228,18 +255,18 @@
                             <p class="text-[10px] text-slate-500 truncate" id="lbl-survival-sub">Soporte sin empleo</p>
                         </div>
                         <div class="text-right shrink-0">
-                            <span id="survivalDaysText" class="text-lg font-black mono block leading-none money-display">0 días</span>
+                            <span id="survivalDaysText" class="text-lg font-black mono block leading-none money-display text-white">0 días</span>
                             <span class="text-[8px] font-bold uppercase text-slate-400" id="survivalStatusLabel">---</span>
                         </div>
                     </div>
                     <div class="col-span-12 md:col-span-3 flex justify-between md:justify-end gap-2 border-t md:border-t-0 md:border-l border-slate-800/80 pt-2 md:pt-0 md:pl-4 min-w-0">
                         <div class="min-w-0 flex-1">
                             <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider" id="lbl-income">Ingresos</p>
-                            <p id="totalIncomeText" class="text-xs sm:text-sm font-bold mono money-display truncate">$0.00</p>
+                            <p id="totalIncomeText" class="text-xs sm:text-sm font-bold mono money-display truncate text-white">$0.00</p>
                         </div>
                         <div class="min-w-0 flex-1 border-l border-slate-850 pl-2 md:border-0 md:pl-0">
                             <p class="text-[9px] font-bold text-rose-400 uppercase tracking-wider" id="lbl-expense">Gastos</p>
-                            <p id="totalExpenseText" class="text-xs sm:text-sm font-bold mono money-display truncate">$0.00</p>
+                            <p id="totalExpenseText" class="text-xs sm:text-sm font-bold mono money-display truncate text-white">$0.00</p>
                         </div>
                     </div>
                 </div>
@@ -297,10 +324,10 @@
 
                 <div class="col-span-12 lg:col-span-8 min-w-0 w-full">
                     <div class="neo-card rounded-2xl shadow-xl overflow-hidden flex flex-col w-full box-border">
-                        <div class="p-4 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full box-border">
-                            <div class="min-w-0"><h3 class="font-bold text-sm truncate" id="lbl-history-title">Historial Contable</h3></div>
-                            <div class="flex items-center gap-2 w-full sm:w-auto min-w-0">
-                                <select id="monthFilter" onchange="renderLedgerList()" class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2 text-xs text-slate-400 outline-none cursor-pointer shrink-0">
+                        <div class="p-4 border-b border-slate-800/80 flex items-center justify-between gap-3 w-full box-border">
+                            <div class="min-w-0"><h3 class="font-bold text-sm truncate text-white" id="lbl-history-title">Historial Contable</h3></div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <select id="monthFilter" onchange="renderLedgerList()" class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2 text-xs text-slate-400 outline-none cursor-pointer">
                                     <option value="all">Todo el tiempo</option>
                                 </select>
                             </div>
@@ -315,7 +342,7 @@
             <div id="mod-analytics" class="module-view hidden space-y-4 w-full box-border">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 w-full">
                     <div class="neo-card p-4 rounded-2xl shadow-xl lg:col-span-4 space-y-3 box-border">
-                        <h4 class="font-bold text-xs uppercase tracking-wider" id="lbl-adjust-limits">⚙️ Ajustar Topes Mensuales</h4>
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-white" id="lbl-adjust-limits">⚙️ Ajustar Topes Mensuales</h4>
                         <div class="space-y-2.5 text-xs">
                             <div>
                                 <label class="text-slate-400 block text-[10px] mb-1">🛒 Alimentación</label>
@@ -332,7 +359,7 @@
                         </div>
                     </div>
                     <div class="neo-card p-4 rounded-2xl shadow-xl lg:col-span-8 space-y-4 box-border">
-                        <h4 class="font-bold text-xs uppercase tracking-wider" id="lbl-diag-limits">📉 Diagnóstico de Alertas de Presupuestos</h4>
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-white" id="lbl-diag-limits">📉 Diagnóstico de Alertas de Presupuestos</h4>
                         <div id="budgetBarsContainer" class="space-y-4"></div>
                     </div>
                 </div>
@@ -353,7 +380,7 @@
             <div id="mod-calendar" class="module-view hidden grid grid-cols-12 gap-4 w-full box-border">
                 <div class="col-span-12 lg:col-span-7 neo-card p-4 rounded-2xl shadow-xl">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-sm" id="lbl-cal-title">Calendario de Registros</h3>
+                        <h3 class="font-bold text-sm text-white" id="lbl-cal-title">Calendario de Registros</h3>
                         <button onclick="resetCalendarFocus()" id="btn-reset-cal" class="text-[10px] bg-slate-950 px-2 py-1 border border-slate-800 rounded-lg font-bold text-cyan-400 hidden">Ver mes completo</button>
                     </div>
                     <div class="grid grid-cols-7 gap-1.5 text-center text-[10px] uppercase font-bold text-slate-500 mb-2">
@@ -362,7 +389,7 @@
                     <div id="calendarGrid" class="grid grid-cols-7 gap-1.5"></div>
                 </div>
                 <div class="col-span-12 lg:col-span-5 neo-card p-4 rounded-2xl shadow-xl flex flex-col">
-                    <h4 class="font-bold text-xs uppercase tracking-wider mb-2" id="lbl-cal-focus-title">Flujo del Día Seleccionado</h4>
+                    <h4 class="font-bold text-xs uppercase tracking-wider mb-2 text-white" id="lbl-cal-focus-title">Flujo del Día Seleccionado</h4>
                     <div id="dayListContainer" class="flex-1 overflow-y-auto custom-scroll space-y-2 h-[260px] text-xs">
                         <p class="text-slate-500 italic text-center pt-10">Selecciona un día marcado para auditar sus detalles.</p>
                     </div>
@@ -374,12 +401,12 @@
                     <div class="p-3 border-b border-slate-800/80 bg-slate-950/40 flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span class="text-xs font-bold" id="lbl-ai-status">Asistente Financiero AI Inteligente</span>
+                            <span class="text-xs font-bold text-white" id="lbl-ai-status">Asistente Financiero AI Inteligente</span>
                         </div>
                     </div>
                     
                     <div id="chatChatroom" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll bg-slate-950/10 text-xs">
-                        <div class="chat-msg bot p-3 rounded-xl max-w-[85%] bg-slate-900 border border-slate-800 mr-auto">
+                        <div class="chat-msg bot p-3 rounded-xl max-w-[85%] bg-slate-900 border border-slate-800 mr-auto text-slate-300">
                             <p id="lbl-ai-welcome">¡Hola! Soy tu asistente unificado. Puedo revisar tus límites de gasto, balances o darte consejos basados en la regla de distribución 50/30/20.</p>
                         </div>
                     </div>
@@ -406,7 +433,7 @@
     </div>
 
     <script>
-        // --- DICCIONARIO MULTI-IDIOMA CENTRALIZADO (RESCATADO DE V15.0) ---
+        // --- DICCIONARIO MULTI-IDIOMA ---
         const languageStrings = {
             es: {
                 suiteTitle: "Finanzas<span class='text-cyan-400'>Pro</span>", netWealth: "Patrimonio Neto Consolidado",
@@ -416,7 +443,9 @@
                 formFixed: "Gasto Fijo", btnSubmit: "REGISTRAR", historyTitle: "Historial Contable",
                 adjustLimits: "⚙️ Ajustar Topes Mensuales", diagLimits: "📉 Diagnóstico de Alertas de Presupuestos",
                 calTitle: "Calendario de Registros", calFocusTitle: "Flujo del Día Seleccionado",
-                aiStatus: "Asistente Financiero AI Inteligente", aiWelcome: "¡Hola! Soy tu asistente unificado. Puedo revisar tus límites de gasto, balances o darte consejos basados en la regla de distribución 50/30/20."
+                aiStatus: "Asistente Financiero AI Inteligente", aiWelcome: "¡Hola! Soy tu asistente unificado. Puedo revisar tus límites de gasto, balances o darte consejos basados en la regla de distribución 50/30/20.",
+                menuTitle: "⚙️ Ajustes de la Suite", menuLang: "Idioma del Sistema", menuTheme: "Tema Estético Visual",
+                menuGuide: "Ver Guía Interactiva", menuClear: "Borrar Caché y Datos"
             },
             en: {
                 suiteTitle: "Finance<span class='text-cyan-400'>Pro</span>", netWealth: "Consolidated Net Wealth",
@@ -426,7 +455,9 @@
                 formFixed: "Fixed Cost", btnSubmit: "RECORD ENTRY", historyTitle: "Accounting Ledger",
                 adjustLimits: "⚙️ Adjust Monthly Caps", diagLimits: "📉 Budget Alerts Diagnostic",
                 calTitle: "Records Calendar", calFocusTitle: "Selected Day Ledger Flow",
-                aiStatus: "Smart AI Financial Assistant", aiWelcome: "Hello! I am your unified core assistant. I can check your spending limits, net wealth balances, or give you advice based on the 50/30/20 budget rule."
+                aiStatus: "Smart AI Financial Assistant", aiWelcome: "Hello! I am your unified core assistant. I can check your spending limits, net wealth balances, or give you advice based on the 50/30/20 budget rule.",
+                menuTitle: "⚙️ Suite Settings", menuLang: "System Language", menuTheme: "Visual Aesthetic Theme",
+                menuGuide: "View Interactive Guide", menuClear: "Clear Cache & Data"
             }
         };
 
@@ -434,11 +465,8 @@
         let activeCurrency = 'USD';
         let activeLang = 'es';
         
-        let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_v20_core')) || [
-            { id: 'TX-INITIAL1', description: 'Nómina Mensual', category: 'Ingreso', amount: 2500, isRecurring: true, intent: 'necesidad', timestamp: '02 jun', dayNum: 2 },
-            { id: 'TX-INITIAL2', description: 'Compra de Supermercado', category: 'Comida', amount: -120, isRecurring: false, intent: 'necesidad', timestamp: '02 jun', dayNum: 2 },
-            { id: 'TX-INITIAL3', description: 'Cine y Palomitas', category: 'Ocio', amount: -35, isRecurring: false, intent: 'deseo', timestamp: '03 jun', dayNum: 3 }
-        ];
+        // CORRECCIÓN SOLICITADA: Inicia totalmente en vacío ($0.00)
+        let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_v20_core')) || [];
         let budgetLimits = JSON.parse(localStorage.getItem('finanzas_pro_v20_limits')) || { "Comida": 300, "Transporte": 150, "Ocio": 200 };
 
         let systemPrivacyActive = false;
@@ -450,6 +478,42 @@
         const ledgerContainer = document.getElementById('ledgerContainer');
         const monthFilter = document.getElementById('monthFilter');
         const currencySelect = document.getElementById('globalCurrency');
+
+        // --- MENÚ DESPLEGABLE DE CONFIGURACIÓN ---
+        function toggleSettingsMenu() {
+            const menu = document.getElementById('settingsDropdown');
+            menu.classList.toggle('hidden');
+        }
+
+        // Cerrar menú de ajustes si haces clic afuera
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('settingsDropdown');
+            const btn = document.getElementById('btn-settings-toggle');
+            if (menu && !menu.classList.contains('hidden') && !menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // --- GUÍA INTERACTIVA MODAL ---
+        function triggerAppGuide() {
+            document.getElementById('settingsDropdown').classList.add('hidden');
+            document.getElementById('guideModal').classList.remove('hidden');
+        }
+        function closeAppGuide() {
+            document.getElementById('guideModal').classList.add('hidden');
+        }
+
+        // --- BORRAR CACHÉ Y PURGAR DATOS ---
+        function purgeAppCache() {
+            if (confirm(activeLang === 'es' ? "⚠️ ¿Estás completamente seguro de que deseas borrar toda la caché, límites y transacciones guardadas en el navegador?" : "⚠️ Are you sure you want to completely wipe all cache, custom limits, and saved records from the browser?")) {
+                localStorage.clear();
+                ledgerDatabase = [];
+                budgetLimits = { "Comida": 300, "Transporte": 150, "Ocio": 200 };
+                document.getElementById('settingsDropdown').classList.add('hidden');
+                syncStorage();
+                location.reload();
+            }
+        }
 
         // --- MANEJO MULTI-IDIOMA ---
         function changeSystemLanguage(lang) {
@@ -478,6 +542,11 @@
             document.getElementById('lbl-cal-focus-title').innerText = dictionary.calFocusTitle;
             document.getElementById('lbl-ai-status').innerText = dictionary.aiStatus;
             document.getElementById('lbl-ai-welcome').innerText = dictionary.aiWelcome;
+            document.getElementById('lbl-menu-title').innerText = dictionary.menuTitle;
+            document.getElementById('lbl-menu-lang').innerText = dictionary.menuLang;
+            document.getElementById('lbl-menu-theme').innerText = dictionary.menuTheme;
+            document.getElementById('lbl-menu-guide').innerText = dictionary.menuGuide;
+            document.getElementById('lbl-menu-clear').innerText = dictionary.menuClear;
 
             refreshSuiteDashboard();
         }
@@ -525,7 +594,7 @@
             }
         }
 
-        // --- MOVIMIENTOS Y BASE DE DATOS ---
+        // --- REGISTRO DE MOVIMIENTOS ---
         ledgerForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const description = document.getElementById('txDesc').value.trim();
@@ -554,8 +623,7 @@
         });
 
         function populateMonthFilter() {
-            // Setup base simplificado para simular agrupación temporal de la V15
-            monthFilter.innerHTML = activeLang === 'es' ? '<option value="all">Todo el tiempo</option><option value="jun">Junio (Actual)</option>' : '<option value="all">All-time</option><option value="jun">June (Current)</option>';
+            monthFilter.innerHTML = activeLang === 'es' ? '<option value="all">Todo el tiempo</option>' : '<option value="all">All-time</option>';
         }
 
         function updateBudgetLimits() {
@@ -607,19 +675,17 @@
             });
         }
 
-        // --- RENDERIZADO DEL CALENDARIO (RESCATADO DE V15.0) ---
+        // --- CALENDARIO CONTABLE ---
         function renderCalendarStructure() {
             const grid = document.getElementById('calendarGrid');
             if (!grid) return;
             grid.innerHTML = '';
 
-            // Renderizar un mes fijo simulado (30 días de junio)
             for (let i = 1; i <= 30; i++) {
                 const dayEl = document.createElement('div');
                 dayEl.className = 'cal-day bg-slate-950/40 hover:bg-slate-800 text-white border border-slate-800/40';
                 dayEl.innerText = i;
 
-                // Validación de datos (.has-data de la V15)
                 const dayHasData = ledgerDatabase.some(item => item.dayNum === i);
                 if (dayHasData) dayEl.classList.add('has-data');
 
@@ -666,11 +732,10 @@
             document.getElementById('dayListContainer').innerHTML = `<p class="text-slate-500 italic text-center pt-10">${activeLang === 'es' ? 'Selecciona un día marcado para auditar sus detalles.' : 'Select a marked day to audit its details.'}</p>`;
         }
 
-        // --- CHAT INTERACTIVO CON COMANDOS (FUSIÓN V15) ---
+        // --- CHAT INTERACTIVO IA ---
         function toggleMenuComandos(e) {
             e.stopPropagation();
-            const menu = document.getElementById('menu-comandos');
-            menu.classList.toggle('hidden');
+            document.getElementById('menu-comandos').classList.toggle('hidden');
         }
 
         function ejecutarComando(text) {
@@ -679,18 +744,12 @@
             sendChatMessage();
         }
 
-        document.addEventListener('click', () => {
-            const menu = document.getElementById('menu-comandos');
-            if (menu) menu.classList.add('hidden');
-        });
-
         function sendChatMessage() {
             const input = document.getElementById('ai-chat-input');
             const chatroom = document.getElementById('chatChatroom');
             const query = input.value.trim();
             if(!query) return;
 
-            // Insertar mensaje de usuario
             chatroom.innerHTML += `
                 <div class="chat-msg user p-3 rounded-xl max-w-[85%] bg-cyan-950 text-cyan-100 ml-auto border border-cyan-800/40">
                     <p>${query}</p>
@@ -698,18 +757,17 @@
             `;
             input.value = '';
 
-            // Respuesta simulada con lógica estructural (Efecto bot-alert V15 si se pregunta por límites)
             setTimeout(() => {
                 let reply = activeLang === 'es' ? "He procesado tu consulta. Tu salud financiera se mantiene bajo los parámetros normales." : "I have processed your query. Your financial health remains within standard metrics.";
                 let isAlert = false;
 
                 if (query.toLowerCase().includes('tope') || query.toLowerCase().includes('limit') || query.toLowerCase().includes('regla')) {
                     isAlert = true;
-                    reply = activeLang === 'es' ? "⚠️ ALERTA DE SISTEMA: Recuerda monitorizar de cerca la categoría Ocio. Tu tasa de gastos suntuarios o antojos roza el límite aconsejado en tu plan de distribución." : "⚠️ SYSTEM ALERT: Remember to closely monitor the Leisure category. Your discretionary spending is approaching the recommended ceiling in your layout.";
+                    reply = activeLang === 'es' ? "⚠️ ALERTA DE SISTEMA: Recuerda monitorizar de cerca tus presupuestos fijados en el Panel de Ajustes para evitar desbordar tu plan de distribución." : "⚠️ SYSTEM ALERT: Remember to closely monitor your set limits inside the Settings Panel to avoid breaking your custom layout.";
                 }
 
                 chatroom.innerHTML += `
-                    <div class="chat-msg bot p-3 rounded-xl max-w-[85%] ${isAlert ? 'bot-alert' : 'bg-slate-900 border border-slate-800'} mr-auto">
+                    <div class="chat-msg bot p-3 rounded-xl max-w-[85%] ${isAlert ? 'bot-alert' : 'bg-slate-900 border border-slate-800'} mr-auto text-slate-300">
                         <p>${reply}</p>
                     </div>
                 `;
@@ -717,7 +775,7 @@
             }, 600);
         }
 
-        // --- CORE Y CONFIGURACIÓN ---
+        // --- METRICAS Y REFRESH GLOBAL ---
         function syncStorage() {
             localStorage.setItem('finanzas_pro_v20_core', JSON.stringify(ledgerDatabase));
             refreshSuiteDashboard();
@@ -737,6 +795,10 @@
 
         function renderLedgerList() {
             ledgerContainer.innerHTML = '';
+            if (ledgerDatabase.length === 0) {
+                ledgerContainer.innerHTML = `<p class="text-slate-500 italic text-center pt-20 text-xs">${activeLang === 'es' ? 'No hay registros contables aún.' : 'No accounting entries yet.'}</p>`;
+                return;
+            }
             
             ledgerDatabase.forEach(tx => {
                 const isCredit = tx.amount > 0;
@@ -747,7 +809,7 @@
                         <span class="font-bold">${tx.description}</span>
                         <span class="text-[9px] text-slate-500">${tx.category} • ${tx.timestamp}</span>
                     </div>
-                    <span class="font-mono font-bold ${isCredit ? 'text-emerald-400' : 'text-rose-400'} money-display">${formatDisplayAmount(tx.amount)}</span>
+                    <span class="font-mono font-bold ${isCredit ? 'text-emerald-400' : 'text-rose-400'}">${formatDisplayAmount(tx.amount)}</span>
                 `;
                 ledgerContainer.appendChild(element);
             });
@@ -775,7 +837,7 @@
             document.getElementById('survivalDaysText').innerText = systemPrivacyActive ? '••••••' : `${diasSupervivencia} ${activeLang === 'es' ? 'días' : 'days'}`;
             
             const statusLabel = document.getElementById('survivalStatusLabel');
-            if (diasSupervivencia === 0) { statusLabel.innerText = "CRÍTICO"; statusLabel.style.color = "#f43f5e"; }
+            if (diasSupervivencia === 0) { statusLabel.innerText = "---"; statusLabel.style.color = "#64748b"; }
             else if (diasSupervivencia < 90) { statusLabel.innerText = "VULNERABLE"; statusLabel.style.color = "#fbbf24"; }
             else { statusLabel.innerText = "ESTABLE"; statusLabel.style.color = "#34d399"; }
         }
@@ -783,12 +845,12 @@
         function refreshAnalyticalCharts() {
             const ctxPie = document.getElementById('pieChartCanvas').getContext('2d');
             const ctxBar = document.getElementById('barChartCanvas').getContext('2d');
-            let categoriasMap = {};
+            let categoriesMap = {};
             let ingresosPorMes = 0, gastosPorMes = 0;
 
             ledgerDatabase.forEach(item => {
                 if (item.amount < 0) {
-                    categoriasMap[item.category] = (categoriasMap[item.category] || 0) + Math.abs(item.amount);
+                    categoriesMap[item.category] = (categoriesMap[item.category] || 0) + Math.abs(item.amount);
                     gastosPorMes += Math.abs(item.amount);
                 } else ingresosPorMes += item.amount;
             });
@@ -799,8 +861,8 @@
             pieChartInstance = new Chart(ctxPie, {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(categoriasMap),
-                    datasets: [{ data: Object.values(categoriasMap), backgroundColor: ['#22d3ee', '#ec4899', '#f59e0b', '#10b981', '#6366f1'], borderWidth: 0 }]
+                    labels: Object.keys(categoriesMap),
+                    datasets: [{ data: Object.values(categoriesMap), backgroundColor: ['#22d3ee', '#ec4899', '#f59e0b', '#10b981', '#6366f1'], borderWidth: 0 }]
                 },
                 options: { plugins: { legend: { position: 'bottom', labels: { color: labelColor, font: { size: 9 } } } }, responsive: true, maintainAspectRatio: false }
             });
