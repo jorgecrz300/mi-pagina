@@ -29,35 +29,35 @@
 
         /* Estilos del Módulo de Escáner Inteligente (Estilo Oscuro/Pro) */
         .caja-escaner { 
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
             border: 1px solid rgba(255, 255, 255, 0.05);
             padding: 20px; 
             border-radius: 15px; 
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-            max-width: 500px; 
-            margin: 20px auto; 
             text-align: center;
             color: #cbd5e1;
+            margin-top: 15px;
         }
-        .caja-escaner h1 { color: #ffffff; font-size: 20px; font-weight: 800; margin-bottom: 5px; }
+        .caja-escaner h1 { color: #ffffff; font-size: 16px; font-weight: 800; margin-bottom: 5px; }
         .caja-escaner h1 span { color: #22d3ee; }
-        .caja-escaner p { font-size: 13px; color: #94a3b8; margin: 5px 0 15px 0; }
+        .caja-escaner p { font-size: 12px; color: #94a3b8; margin: 5px 0 15px 0; }
         .btn-subir-ticket { 
             background: linear-gradient(to right, #0891b2, #2563eb);
-            color: white; padding: 14px; border-radius: 12px; cursor: pointer; display: block; 
-            margin: 20px 0; font-weight: bold; font-size: 13px; letter-spacing: 0.5px;
+            color: white; padding: 12px; border-radius: 12px; cursor: pointer; display: block; 
+            margin: 15px 0; font-weight: bold; font-size: 12px; letter-spacing: 0.5px;
             box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2); transition: all 0.2s;
+            text-align: center;
         }
         .btn-subir-ticket:hover { opacity: 0.9; }
         #preview-ticket { 
-            width: 100%; max-height: 250px; object-fit: contain; margin-top: 15px; 
+            width: 100%; max-height: 200px; object-fit: contain; margin-top: 15px; 
             display: none; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px;
         }
-        .estado-escaner { font-weight: bold; color: #22d3ee; margin: 10px 0; font-size: 13px; }
+        .estado-escaner { font-weight: bold; color: #22d3ee; margin: 10px 0; font-size: 12px; }
         .deteccion-ia-pro { background: rgba(15, 23, 42, 0.6); border: 2px dashed #06b6d4; border-radius: 12px; padding: 15px; margin-top: 20px; display: none; }
         .total-detectado-pro { font-size: 28px; font-weight: 900; color: #34d399; margin: 8px 0; font-family: monospace; }
         .btn-grupo-pro { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
-        .btn-accion-pro { padding: 10px; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; font-weight: bold; font-size: 12px; color: white; cursor: pointer; transition: background 0.2s; }
+        .btn-accion-pro { padding: 10px; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; font-weight: bold; font-size: 11px; color: white; cursor: pointer; transition: background 0.2s; }
         .btn-cash-pro { background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.3); }
         .btn-cash-pro:hover { background: rgba(16, 185, 129, 0.3); }
         .btn-card-pro { background: rgba(6, 182, 212, 0.2); color: #22d3ee; border-color: rgba(6, 182, 212, 0.3); }
@@ -68,7 +68,7 @@
 
     <div class="w-full max-w-full overflow-x-hidden flex flex-col justify-start items-stretch project-wrapper">
 
-        <header class="sticky top-0 z-40 glass-panel px-4 py-3 shadow-xl w-full box-border overflow-visible">
+        <header class="sticky top-0 z-40 glass-panel px-4 py-3 shadow-xl w-full box-border">
             <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3 w-full">
                 
                 <div class="flex items-center justify-between w-full md:w-auto gap-4">
@@ -128,7 +128,7 @@
             </div>
         </header>
 
-        <section class="w-full max-w-full px-4 pt-4 box-border overflow-hidden">
+        <section class="w-full max-w-full px-4 pt-4 box-border">
             <div class="relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-slate-800/80 shadow-2xl w-full box-border">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center w-full">
                     <div class="col-span-12 md:col-span-5 min-w-0">
@@ -165,7 +165,7 @@
             </div>
         </section>
 
-        <main class="w-full max-w-full p-4 box-border overflow-hidden flex-1">
+        <main class="w-full max-w-full p-4 box-border flex-1">
 
             <div id="mod-overview" class="module-view grid grid-cols-12 gap-4 w-full box-border">
                 <div class="col-span-12 lg:col-span-4 min-w-0 w-full">
@@ -229,19 +229,17 @@
                             </label>
 
                             <canvas id="canvas-procesado" style="display:none;"></canvas>
-                            
                             <img id="preview-ticket" alt="Vista previa del ticket">
-                            
                             <div id="status" class="estado-escaner"></div>
 
                             <div id="panelDeteccion" class="deteccion-ia-pro">
-                                <p style="font-weight: bold; margin: 0;">¡Lectura Exitosa! Total encontrado:</p>
+                                <p style="font-weight: bold; margin: 0; text-align:center;">¡Lectura Exitosa! Total encontrado:</p>
                                 <div class="total-detectado-pro" id="montoDetectado">$0.00</div>
-                                <p style="font-size: 11px; color: #64748b; margin-bottom: 5px;">¿Con qué método pagaste este ticket?</p>
+                                <p style="font-size: 11px; color: #64748b; margin-bottom: 5px; text-align:center;">¿Cómo liquidaste este monto?</p>
                                 
                                 <div class="btn-grupo-pro">
-                                    <button class="btn-accion-pro btn-cash-pro" onclick="aplicarGasto('efectivo')">💵 Pagué en Cash</button>
-                                    <button class="btn-accion-pro btn-card-pro" onclick="aplicarGasto('tarjeta')">💳 Pagué con Débito</button>
+                                    <button class="btn-accion-pro btn-cash-pro" onclick="aplicarGasto('efectivo')">💵 En Cash</button>
+                                    <button class="btn-accion-pro btn-card-pro" onclick="aplicarGasto('tarjeta')">💳 Con Débito</button>
                                 </div>
                             </div>
                         </div>
@@ -254,10 +252,10 @@
                             <div class="min-w-0"><h3 class="font-bold text-white text-sm truncate">Historial Contable</h3></div>
                             <div class="flex items-center gap-2 w-full sm:w-auto min-w-0">
                                 <div class="relative flex-1 sm:flex-initial min-w-0">
-                                    <input type="text" id="txSearch" placeholder="Buscar..." class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2.5 pl-8 text-xs focus:border-cyan-500 outline-none w-full sm:w-40 text-white placeholder-slate-600" />
+                                    <input type="text" id="txSearch" oninput="renderLedgerList()" placeholder="Buscar..." class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2.5 pl-8 text-xs focus:border-cyan-500 outline-none w-full sm:w-40 text-white placeholder-slate-600" />
                                     <span class="absolute left-2.5 top-2 text-slate-600 text-xs">🔍</span>
                                 </div>
-                                <select id="txFilter" class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2 text-xs text-slate-400 outline-none cursor-pointer shrink-0">
+                                <select id="txFilter" onchange="renderLedgerList()" class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2 text-xs text-slate-400 outline-none cursor-pointer shrink-0">
                                     <option value="all">Todo</option>
                                     <option value="income">Créditos</option>
                                     <option value="expense">Débitos</option>
@@ -265,14 +263,14 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="h-[340px] overflow-y-auto overflow-x-hidden custom-scroll p-3 bg-slate-950/20 w-full box-border">
+                        <div class="h-[430px] overflow-y-auto overflow-x-hidden custom-scroll p-3 bg-slate-950/20 w-full box-border">
                             <ul id="ledgerContainer" class="space-y-1.5 w-full block max-w-full"></ul>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="mod-analytics" class="module-view hidden space-y-4 w-full box-border overflow-hidden">
+            <div id="mod-analytics" class="module-view hidden space-y-4 w-full box-border">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 w-full">
                     <div class="neo-card p-4 rounded-2xl shadow-xl md:col-span-5 flex flex-col justify-between w-full min-w-0 box-border">
                         <h4 class="font-bold text-white text-[11px] uppercase tracking-wider mb-2">Porcentajes de Categoría</h4>
@@ -321,11 +319,11 @@
                         <div class="grid grid-cols-2 gap-3 w-full">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Inversión Mensual</label>
-                                <input type="number" id="simMonthly" value="250" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-white outline-none">
+                                <input type="number" id="simMonthly" value="250" oninput="calculateProjection()" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-white outline-none">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tasa Anual (%)</label>
-                                <input type="number" id="simRate" value="9" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-white outline-none">
+                                <input type="number" id="simRate" value="9" oninput="calculateProjection()" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-white outline-none">
                             </div>
                         </div>
                         <div class="w-full">
@@ -363,16 +361,16 @@
         let systemGuideActive = false;
         let pieChartInstance = null;
         let barChartInstance = null;
-        let montoEscaneadoGlobal = 0; // Almacenará el resultado del OCR
+        let montoEscaneadoGlobal = 0;
 
         const guideDictionary = {
-            patrimonio: { title: "Patrimonio Neto", icon: "💰", desc: "Es el dinero real que posees actualmente. Se calcula restando de forma matemática todos tus gastos acumulados a la suma de tus ingresos totales registrados." },
-            supervivencia: { title: "Días de Supervivencia", icon: "⏱️", desc: "Es un cálculo que te dice cuántos días podrías seguir viviendo manteniendo tu nivel de consumo actual si hoy mismo te quedaras sin tu fuente principal de ingresos." },
-            registro: { title: "Registro Rápido", icon: "⚡", desc: "Aquí inyectas los movimientos a tu historial. Los ingresos suman a tu patrimonio, mientras que los costos de comida, ocio u otros restan capital." },
-            psicologico: { title: "Filtro Psicológico", icon: "🛡️", desc: "Te obliga a clasificar tus gastos antes de hacerlos. Las 'Necesidades' son obligatorias para sobrevivir. Los 'Antojos' son deseos prescindibles que inflan tu Índice de Vanidad." },
-            gastofijo: { title: "Gasto Fijo", icon: "📦", desc: "Identifica salidas de dinero que se repiten periódicamente (como suscripciones, renta o seguros) para ayudar al algoritmo a mapear tu estilo de vida indispensable." },
-            vanidad: { title: "Índice de Vanidad", icon: "✨", desc: "Es un porcentaje que calcula cuánto de tu dinero total gastado se ha ido exclusivamente en caprichos o antojos en lugar de necesidades vitales." },
-            interes: { title: "Interés Compuesto", icon: "🔮", desc: "Es un simulador algorítmico que proyecta cuánto dinero acumularás a largo plazo si inviertes una cantidad fija al mes con una tasa de rendimiento constante." }
+            patrimonio: { title: "Patrimonio Neto", icon: "💰", desc: "Es el dinero real que posees actualmente. Se calcula restando todos tus gastos acumulados a la suma de tus ingresos totales registrados." },
+            supervivencia: { title: "Días de Supervivencia", icon: "⏱️", desc: "Te dice cuántos días podrías seguir viviendo manteniendo tu nivel de consumo actual si hoy mismo te quedaras sin ingresos." },
+            registro: { title: "Registro Rápido", icon: "⚡", desc: "Aquí inyectas los movimientos a tu historial. Los ingresos suman a tu patrimonio, mientras que los costos restan capital." },
+            psicologico: { title: "Filtro Psicológico", icon: "🛡️", desc: "Clasifica tus gastos. Las 'Necesidades' son obligatorias para sobrevivir. Los 'Antojos' son deseos prescindibles que inflan tu Índice de Vanidad." },
+            gastofijo: { title: "Gasto Fijo", icon: "📦", desc: "Identifica salidas de dinero que se repiten periódicamente (como suscripciones, renta o seguros)." },
+            vanidad: { title: "Índice de Vanidad", icon: "✨", desc: "Es un porcentaje que calcula cuánto de tu dinero total gastado se ha ido exclusivamente en caprichos o antojos." },
+            interes: { title: "Interés Compuesto", icon: "🔮", desc: "Simulador algorítmico que proyecta cuánto dinero acumularás a largo plazo si inviertes una cantidad fija al mes." }
         };
 
         const ledgerForm = document.getElementById('ledgerForm');
@@ -381,13 +379,18 @@
         const filterBox = document.getElementById('txFilter');
         const currencySelect = document.getElementById('globalCurrency');
 
-        // ELEMENTOS DEL ESCÁNER
         const inputArchivo = document.getElementById('archivo');
         const vistaPrevia = document.getElementById('preview-ticket');
         const textoEstado = document.getElementById('status');
         const panelDeteccion = document.getElementById('panelDeteccion');
         const displayMontoDetectado = document.getElementById('montoDetectado');
         const canvasProcesado = document.getElementById('canvas-procesado');
+
+        function formatDisplayAmount(val) {
+            const currentSymbol = currencySymbols[activeCurrency];
+            if (systemPrivacyActive) return '••••••';
+            return `${val < 0 ? '-' : ''}${currentSymbol}${Math.abs(val).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
 
         function toggleSystemGuide() {
             systemGuideActive = !systemGuideActive;
@@ -398,7 +401,6 @@
                 btn.className = "w-full text-left text-xs p-2 bg-rose-950/30 hover:bg-rose-900/50 text-rose-400 rounded-lg font-bold transition-colors border border-rose-800/30";
                 markers.forEach(m => m.classList.remove('hidden'));
                 toggleDataMenu();
-                alert("¡Guía activada! Presiona los círculos de color '?' para ver qué significa cada elemento.");
             } else {
                 btn.innerText = "📖 Activar Guía Dinámica";
                 btn.className = "w-full text-left text-xs p-2 bg-cyan-950/30 hover:bg-cyan-900/50 text-cyan-400 rounded-lg font-bold transition-colors border border-cyan-800/30";
@@ -436,14 +438,33 @@
             const activeBtn = document.getElementById(`btn-${targetModuleId}`);
             if (activeBtn) activeBtn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md";
             if (targetModuleId === 'mod-analytics') setTimeout(refreshAnalyticalCharts, 5);
+            if (targetModuleId === 'mod-simulator') calculateProjection();
         }
 
-        // NUEVO FLUJO OPTIMIZADO PARA TRATAMIENTO DE FOTOS (NUEVA MEJORA)
+        function togglePrivacyMode() {
+            systemPrivacyActive = !systemPrivacyActive;
+            const btn = document.getElementById('privacyToggleBtn');
+            const icon = document.getElementById('privacyIcon');
+            const targetDisplays = document.querySelectorAll('.money-display');
+            
+            if (systemPrivacyActive) {
+                icon.innerText = '🔒';
+                btn.classList.replace('text-slate-400', 'text-cyan-400');
+                targetDisplays.forEach(d => d.classList.add('privacy-masked'));
+            } else {
+                icon.innerText = '🔓';
+                btn.classList.replace('text-cyan-400', 'text-slate-400');
+                targetDisplays.forEach(d => d.classList.remove('privacy-masked'));
+            }
+            refreshSuiteDashboard();
+        }
+
+        // --- LÓGICA DEL ESCÁNER INTELIGENTE ---
         inputArchivo.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
 
-            textoEstado.innerText = "⚡ Optimizando imagen para lectura...";
+            textoEstado.innerText = "⚡ Tratando imagen y eliminando ruido...";
             panelDeteccion.style.display = 'none';
 
             const reader = new FileReader();
@@ -451,8 +472,6 @@
                 const img = new Image();
                 img.onload = function() {
                     const ctx = canvasProcesado.getContext('2d');
-                    
-                    // 1. Redimensionar foto pesada a tamaño óptimo de lectura (Max 1000px)
                     const MAX_WIDTH = 1000;
                     let width = img.width;
                     let height = img.height;
@@ -465,12 +484,11 @@
                     canvasProcesado.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // 2. Aplicar filtro Blanco y Negro de alto contraste dinámico
                     const imgData = ctx.getImageData(0, 0, canvasProcesado.width, canvasProcesado.height);
                     const data = imgData.data;
                     for (let i = 0; i < data.length; i += 4) {
                         let gris = 0.34 * data[i] + 0.5 * data[i + 1] + 0.16 * data[i + 2];
-                        let umbral = 120; // Ajuste óptimo para tinta sobre papel
+                        let umbral = 120; 
                         let colorFinal = (gris > umbral) ? 255 : 0;
                         data[i]     = colorFinal;
                         data[i + 1] = colorFinal;
@@ -478,10 +496,7 @@
                     }
                     ctx.putImageData(imgData, 0, 0);
 
-                    // Convertir a base64 final procesada e iniciar IA
                     const imagenLimpiaBase64 = canvasProcesado.toDataURL('image/jpeg', 0.8);
-                    
-                    // Mostrar imagen tratada en el DOM estilo hacker/cyberpunk
                     vistaPrevia.src = imagenLimpiaBase64;
                     vistaPrevia.style.display = 'block';
 
@@ -492,51 +507,40 @@
             reader.readAsDataURL(file);
         });
 
-        // INICIALIZACIÓN OPTIMIZADA DE TESSERACT EN ESPAÑOL (NUEVA MEJORA)
         function procesarOcrTicket(srcImagen) {
-            textoEstado.innerText = "🤖 Analizando estructura contable del ticket...";
+            textoEstado.innerText = "🤖 Buscando bloque de totalizadores...";
             
             Tesseract.recognize(
-                srcImagen,
-                'spa', // Idioma nativo para entender tags locales
-                { logger: m => { if(m.status === 'recognizing') textoEstado.innerText = `🧠 Escaneando: ${Math.round(m.progress * 100)}%`; } }
+                srcImagen, 'spa',
+                { logger: m => { if(m.status === 'recognizing') textoEstado.innerText = `🧠 Escaneando ticket: ${Math.round(m.progress * 100)}%`; } }
             ).then(({ data: { text } }) => {
-                console.log("Texto Crudo Extractado:", text);
                 let totalDetectado = extraerMontoInteligente(text);
 
                 if (totalDetectado && totalDetectado > 0) {
                     montoEscaneadoGlobal = totalDetectado;
-                    textoEstado.innerText = "🔮 ¡Procesamiento completado!";
-                    displayMontoDetectado.innerText = `${currencySymbols[activeCurrency]}${montoEscaneadoGlobal.toFixed(2)}`;
+                    textoEstado.innerText = "🔮 ¡Monto identificado de forma exitosa!";
+                    displayMontoDetectado.innerText = formatDisplayAmount(montoEscaneadoGlobal).replace('-', '');
                     panelDeteccion.style.display = 'block';
                 } else {
-                    textoEstado.innerText = "❌ No encontré un campo 'TOTAL' claro. Intenta con otra foto.";
+                    textoEstado.innerText = "❌ No encontré un campo de totalización claro.";
                     panelDeteccion.style.display = 'none';
                 }
             }).catch(err => {
                 console.error(err);
-                textoEstado.innerText = "⚠️ Error en el motor de la IA local.";
+                textoEstado.innerText = "⚠️ Error en la librería OCR.";
             });
         }
 
-        // ALGORITMO CONTEXTUAL DE EXTRACCIÓN (NUEVA MEJORA)
         function extraerMontoInteligente(texto) {
             const lineas = texto.toUpperCase().split('\n');
-            const palabrasClave = ["TOTAL", "IMPORTE", "NETO", "PAGAR", "CASH", "EFE", "SUBTOTAL"];
+            const palabrasClave = ["TOTAL", "IMPORTE", "NETO", "PAGAR", "CASH", "PAGO", "SUBTOTAL", "VALOR"];
             const regexPrecio = /(?:\$|\s|^)(\d+[\.,]\d{2})\b/;
 
             for (let i = 0; i < lineas.length; i++) {
                 let linea = lineas[i];
-                
-                // Si la línea contiene una palabra financiera clave
                 if (palabrasClave.some(palabra => linea.includes(palabra))) {
                     let match = linea.match(regexPrecio);
-                    
-                    // Si el precio no está en la misma línea, buscar en la línea inmediatamente inferior
-                    if (!match && lineas[i + 1]) {
-                        match = lineas[i + 1].match(regexPrecio);
-                    }
-                    
+                    if (!match && lineas[i + 1]) match = lineas[i + 1].match(regexPrecio);
                     if (match) {
                         let numString = match[1].replace(',', '.');
                         let valorFinal = parseFloat(numString);
@@ -545,7 +549,6 @@
                 }
             }
 
-            // Plan B: Caer en tu buscador general analizando línea por línea si no hay palabras clave
             for (let linea of lineas) {
                 let match = linea.match(regexPrecio);
                 if (match) {
@@ -557,32 +560,27 @@
             return 0;
         }
 
-        // LOGICA DE REGISTRO AUTOMÁTICO DESDE BOTONES DEL ESCÁNER
         window.aplicarGasto = function(metodoPago) {
             if (montoEscaneadoGlobal <= 0) return;
 
-            const inputImporteReal = document.getElementById('txAmount');
-            const inputConceptoReal = document.getElementById('txDesc');
-            const inputCategoriaReal = document.getElementById('txCategory');
+            ledgerDatabase.unshift({
+                id: 'TX-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+                description: `Ticket Escaneado [${metodoPago === 'efectivo' ? 'Cash' : 'Tarjeta'}] 📸`,
+                category: "Otros",
+                amount: -montoEscaneadoGlobal,
+                isRecurring: false,
+                intent: "necesidad",
+                timestamp: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+            });
 
-            if (inputImporteReal && inputConceptoReal) {
-                // Autocompletamos tu formulario principal
-                inputImporteReal.value = montoEscaneadoGlobal.toFixed(2);
-                inputConceptoReal.value = `Gasto Escaneado [${metodoPago === 'efectivo' ? 'Cash' : 'Tarjeta'}] 📸`;
-                inputCategoriaReal.value = "Otros"; // Categoría por defecto para procesar
-
-                // Forzamos el submit nativo para correr toda tu lógica existente de balances
-                ledgerForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-            }
-
-            // Resetear el estado del escáner
+            syncStorage();
             panelDeteccion.style.display = 'none';
             vistaPrevia.style.display = 'none';
-            textoEstado.innerText = "🚀 ¡Gasto inyectado e historial actualizado con éxito!";
+            textoEstado.innerText = "🚀 ¡Inyectado correctamente al balance general!";
             montoEscaneadoGlobal = 0;
         };
 
-        // EVENT LISTENER DE ENVIO DEL FORMULARIO PRINCIPAL
+        // --- MANEJO CENTRAL DEL LEDGER FORM ---
         ledgerForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const description = document.getElementById('txDesc').value.trim();
@@ -624,13 +622,11 @@
         function refreshSuiteDashboard() {
             renderLedgerList();
             evaluateFinancialMetrics();
-            if (systemGuideActive) refreshAnalyticalCharts();
         }
 
         function renderLedgerList() {
             const query = searchBox.value ? searchBox.value.toLowerCase() : '';
             const filter = filterBox.value;
-            const currentSymbol = currencySymbols[activeCurrency];
 
             const collection = ledgerDatabase.filter(item => {
                 const searchMatch = item.description.toLowerCase().includes(query) || item.category.toLowerCase().includes(query);
@@ -654,7 +650,7 @@
                         <span class="font-bold">${tx.description}</span>
                         <span class="text-[9px] text-slate-500">${tx.category} • ${tx.timestamp} ${intentBadge}</span>
                     </div>
-                    <span class="font-mono font-bold ${isCredit ? 'text-emerald-400' : 'text-rose-400'}">${isCredit ? '+' : ''}${currentSymbol}${Math.abs(tx.amount).toFixed(2)}</span>
+                    <span class="font-mono font-bold ${isCredit ? 'text-emerald-400' : 'text-rose-400'}">${formatDisplayAmount(tx.amount)}</span>
                 `;
                 ledgerContainer.appendChild(element);
             });
@@ -663,40 +659,170 @@
         function evaluateFinancialMetrics() {
             let ingresos = 0;
             let gastos = 0;
+            let fijosMensuales = 0;
+            let caprichos = 0;
 
             ledgerDatabase.forEach(item => {
                 if (item.amount > 0) ingresos += item.amount;
-                else gastos += Math.abs(item.amount);
+                else {
+                    gastos += Math.abs(item.amount);
+                    if (item.isRecurring) fijosMensuales += Math.abs(item.amount);
+                    if (item.intent === 'deseo') caprichos += Math.abs(item.amount);
+                }
             });
 
             const neto = ingresos - gastos;
-            const currentSymbol = currencySymbols[activeCurrency];
 
-            document.getElementById('netWealthText').innerText = `${neto < 0 ? '-' : ''}${currentSymbol}${Math.abs(neto).toFixed(2)}`;
-            document.getElementById('totalIncomeText').innerText = `${currentSymbol}${ingresos.toFixed(2)}`;
-            document.getElementById('totalExpenseText').innerText = `${currentSymbol}${gastos.toFixed(2)}`;
+            document.getElementById('netWealthText').innerText = formatDisplayAmount(neto);
+            document.getElementById('totalIncomeText').innerText = formatDisplayAmount(ingresos);
+            document.getElementById('totalExpenseText').innerText = formatDisplayAmount(gastos);
 
-            // Cálculo básico de supervivencia
+            // Métricas Analíticas
+            let vanityRate = gastos > 0 ? Math.round((caprichos / gastos) * 100) : 0;
+            let savingRate = ingresos > 0 ? Math.round((neto / ingresos) * 100) : 0;
+            if (savingRate < 0) savingRate = 0;
+            let vitalExpense = gastos - caprichos;
+            let efficiency = vitalExpense > 0 ? (ingresos / vitalExpense).toFixed(1) : '0.0';
+
+            document.getElementById('kpiVanityRate').innerText = `${vanityRate}% Antojos`;
+            document.getElementById('kpiVitalExpense').innerText = formatDisplayAmount(vitalExpense);
+            document.getElementById('kpiSavingRate').innerText = `${savingRate}%`;
+            document.getElementById('kpiEfficiency').innerText = `${efficiency}x`;
+
+            // Supervivencia Realista
             let diasSupervivencia = 0;
-            if (gastos > 0) {
-                let gastoDiarioPromedio = gastos / 30;
-                diasSupervivencia = gastoDiarioPromedio > 0 ? Math.round(neto / gastoDiarioPromedio) : 0;
+            let baseCost = fijosMensuales > 0 ? fijosMensuales / 30 : (gastos > 0 ? gastos / 30 : 0);
+            if (baseCost > 0 && neto > 0) {
+                diasSupervivencia = Math.round(neto / baseCost);
             }
-            if (diasSupervivencia < 0) diasSupervivencia = 0;
+            
             document.getElementById('survivalDaysText').innerText = `${diasSupervivencia} días`;
+            const statusLabel = document.getElementById('survivalStatusLabel');
+            if (diasSupervivencia === 0) { statusLabel.innerText = "CRÍTICO"; statusLabel.style.color = "#f43f5e"; }
+            else if (diasSupervivencia < 90) { statusLabel.innerText = "VULNERABLE"; statusLabel.style.color = "#fbbf24"; }
+            else { statusLabel.innerText = "ESTABLE"; statusLabel.style.color = "#34d399"; }
         }
 
-        function refreshAnalyticalCharts() { console.log("Refrescando gráficos contables..."); }
-        function calculateProjection() { console.log("Proyectando interés compuesto..."); }
-        function togglePrivacyMode() { console.log("Privacidad conmutada."); }
-        function toggleDataMenu() { document.getElementById('dataMenu').classList.toggle('hidden'); }
-        function changeCurrency() { activeCurrency = currencySelect.value; refreshSuiteDashboard(); }
-        function exportToCSV() { console.log("Exportando..."); }
-        function triggerImport() { document.getElementById('importFile').click(); }
-        function importBackup(e) { console.log("Importando JSON..."); }
-        function purgeDatabase() { if(confirm("¿Seguro de borrar todo?")) { ledgerDatabase = []; syncStorage(); } }
+        // --- SISTEMA DE GRÁFICOS COMPLETO (REAL) ---
+        function refreshAnalyticalCharts() {
+            const ctxPie = document.getElementById('pieChartCanvas').getContext('2d');
+            const ctxBar = document.getElementById('barChartCanvas').getContext('2d');
+            
+            let categoriasMap = {};
+            let ingresosPorMes = 0;
+            let gastosPorMes = 0;
 
-        // Inicialización primaria
+            ledgerDatabase.forEach(item => {
+                if (item.amount < 0) {
+                    categoriasMap[item.category] = (categoriasMap[item.category] || 0) + Math.abs(item.amount);
+                    gastosPorMes += Math.abs(item.amount);
+                } else {
+                    ingresosPorMes += item.amount;
+                }
+            });
+
+            const pieLabels = Object.keys(categoriasMap);
+            const pieData = Object.values(categoriasMap);
+            const noDataText = document.getElementById('noPieDataText');
+
+            if(pieData.length === 0) noDataText.classList.remove('hidden');
+            else noDataText.classList.add('hidden');
+
+            if (pieChartInstance) pieChartInstance.destroy();
+            pieChartInstance = new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: pieLabels,
+                    datasets: [{
+                        data: pieData,
+                        backgroundColor: ['#22d3ee', '#ec4899', '#f59e0b', '#10b981', '#6366f1', '#a855f7', '#64748b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { plugins: { legend: { display: true, position: 'bottom', labels: { color: '#94a3b8', font: { size: 9 } } } }, responsive: true, maintainAspectRatio: false }
+            });
+
+            if (barChartInstance) barChartInstance.destroy();
+            barChartInstance = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['Ingresos Totales', 'Gastos Totales'],
+                    datasets: [{
+                        data: [ingresosPorMes, gastosPorMes],
+                        backgroundColor: ['rgba(16, 185, 129, 0.2)', 'rgba(244, 63, 94, 0.2)'],
+                        borderColor: ['#10b981', '#f43f5e'],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    scales: { y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#64748b', font: { size: 9 } } }, x: { ticks: { color: '#64748b', font: { size: 10 } } } },
+                    plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false
+                }
+            });
+        }
+
+        // --- SISTEMA SIMULADOR COMPLETO (REAL) ---
+        function calculateProjection() {
+            const monthly = parseFloat(document.getElementById('simMonthly').value) || 0;
+            const annualRate = (parseFloat(document.getElementById('simRate').value) || 0) / 100;
+            const years = parseInt(document.getElementById('simYears').value) || 1;
+            
+            document.getElementById('yearsLabel').innerText = `${years} Años`;
+            
+            let total = 0;
+            const monthlyRate = annualRate / 12;
+            const totalMonths = years * 12;
+
+            for (let i = 0; i < totalMonths; i++) {
+                total = (total + monthly) * (1 + monthlyRate);
+            }
+
+            document.getElementById('projectionResultText').innerText = formatDisplayAmount(total);
+        }
+
+        function toggleDataMenu() { document.getElementById('dataMenu').classList.toggle('hidden'); }
+        function changeCurrency() { activeCurrency = currencySelect.value; refreshSuiteDashboard(); calculateProjection(); if(!document.getElementById('mod-analytics').classList.contains('hidden')) refreshAnalyticalCharts(); }
+        function triggerImport() { document.getElementById('importFile').click(); }
+        
+        function exportToCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,ID,Concepto,Categoria,Importe,Fijo,FiltroPsicologico,Fecha\n";
+            ledgerDatabase.forEach(r => {
+                csvContent += `${r.id},"${r.description}",${r.category},${r.amount},${r.isRecurring},${r.intent},${r.timestamp}\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Finanzas_Pro_Respaldo_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function importBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (Array.isArray(parsed)) {
+                        ledgerDatabase = parsed;
+                        syncStorage();
+                        alert("¡Respaldo JSON restaurado con éxito!");
+                    }
+                } catch(err) { alert("Archivo JSON inválido."); }
+            };
+            reader.readAsText(file);
+        }
+
+        function purgeDatabase() {
+            if(confirm("⚠️ ¿Estás completamente seguro de purgar toda la base de datos local? Perderás todo el historial.")) {
+                ledgerDatabase = [];
+                syncStorage();
+            }
+        }
+
         window.onload = function() {
             refreshSuiteDashboard();
         };
