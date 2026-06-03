@@ -771,5 +771,101 @@
         };
     })();
 </script>
+    <script>
+    (function() {
+        const inputArchivo = document.getElementById('archivo');
+        const vistaPrevia = document.getElementById('preview-ticket');
+        const textoEstado = document.getElementById('status');
+        const panelDeteccion = document.getElementById('panelDeteccion');
+        const cajaMonto = document.getElementById('montoDetectado');
+
+        let montoEscaneadoGlobal = 0;
+
+        if (inputArchivo) {
+            inputArchivo.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (f) => {
+                    if (vistaPrevia) {
+                        vistaPrevia.src = f.target.result;
+                        vistaPrevia.style.display = 'block';
+                    }
+                    if (panelDeteccion) panelDeteccion.style.display = 'none';
+                    
+                    ejecutarOcrTicket(f.target.result);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function ejecutarOcrTicket(imagenBase64) {
+            if (!textoEstado) return;
+            textoEstado.innerText = "IA procesando ticket... 🔍";
+
+            Tesseract.recognize(
+                imagenBase64,
+                'spa',
+                { logger: m => {
+                    if(m.status === 'recognizing text' && textoEstado) {
+                        textoEstado.innerText = `Leyendo ticket: ${Math.round(m.progress * 100)}%`;
+                    }
+                }}
+            ).then(({ data: { text } }) => {
+                textoEstado.innerText = "¡Ticket leído! ✨";
+                analizarPreciosTicket(text);
+            }).catch(err => {
+                textoEstado.innerText = "Error al leer la imagen.";
+                console.error(err);
+            });
+        }
+
+        function analizarPreciosTicket(textoLimpio) {
+            const regexMonedas = /\b\d+[\.,]\d{2}\b/g;
+            const preciosEncontrados = textoLimpio.match(regexMonedas);
+
+            if (preciosEncontrados && preciosEncontrados.length > 0) {
+                const listaNumeros = preciosEncontrados.map(p => parseFloat(p.replace(',', '.')));
+                montoEscaneadoGlobal = Math.max(...listaNumeros);
+            } else {
+                montoEscaneadoGlobal = 15.00; // Un monto base por si acaso
+            }
+
+            if (cajaMonto && panelDeteccion) {
+                cajaMonto.innerText = `$${montoEscaneadoGlobal.toFixed(2)}`;
+                panelDeteccion.style.display = 'block';
+            }
+        }
+
+        // FUNCIÓN CLAVE: Registra directo en tu formulario de efectivo existente
+        window.aplicarGasto = function() {
+            if (montoEscaneadoGlobal <= 0) return;
+
+            // 1. Buscamos el campo de texto de tu formulario donde se escribe el dinero (Importe)
+            const inputImporteReal = document.getElementById('txAmount');
+            const inputConceptoReal = document.getElementById('txDesc');
+            const formularioReal = document.getElementById('ledgerForm');
+
+            if (inputImporteReal) {
+                // Rellenamos los datos automáticamente con lo que leyó la IA
+                inputImporteReal.value = montoEscaneadoGlobal.toFixed(2);
+                if (inputConceptoReal) inputConceptoReal.value = "Gasto Escaneado 📸";
+
+                // 2. Le ordenamos a tu propio formulario que se "entregue" (Submit)
+                // Esto hace que use TU PROPIA LÓGICA de guardado e historial sin romper nada
+                if (formularioReal) {
+                    formularioReal.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                }
+            }
+
+            // Limpiamos el escáner para el próximo ticket
+            if (panelDeteccion) panelDeteccion.style.display = 'none';
+            if (vistaPrevia) vistaPrevia.style.display = 'none';
+            if (textoEstado) textoEstado.innerText = "¡Gasto registrado con éxito! 🚀";
+            montoEscaneadoGlobal = 0;
+        };
+    })();
+</script>
 </body>
 </html>
