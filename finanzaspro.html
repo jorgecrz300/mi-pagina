@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Finanzas Pro | Guided Interactive Suite</title>
+    <title>Finanzas Pro | Guided Interactive Suite Premium</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -41,22 +41,22 @@
                         </div>
                         <div>
                             <h1 class="text-base font-bold text-white leading-tight">Finanzas<span class="text-cyan-400">Pro</span></h1>
-                            <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Guided Suite • v4.6</p>
+                            <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Suite Inteligente • v5.0 Pro</p>
                         </div>
                     </div>
                     <div class="md:hidden shrink-0">
                         <select id="mobileModuleSelector" onchange="switchModule(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-1.5 px-2.5 text-cyan-400 outline-none">
                             <option value="mod-overview">🎛️ Resumen</option>
-                            <option value="mod-analytics">📊 Analíticas</option>
-                            <option value="mod-simulator">🔮 Simulador</option>
+                            <option value="mod-analytics">📊 Presupuestos</option>
+                            <option value="mod-simulator">🔮 Metas y Reglas</option>
                         </select>
                     </div>
                 </div>
                 
                 <div class="hidden md:flex items-center bg-slate-950/60 p-1 rounded-xl border border-slate-800/80">
                     <button onclick="switchModule('mod-overview')" id="btn-mod-overview" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md">🎛️ Resumen General</button>
-                    <button onclick="switchModule('mod-analytics')" id="btn-mod-analytics" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">📊 Analíticas e Impacto</button>
-                    <button onclick="switchModule('mod-simulator')" id="btn-mod-simulator" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">🔮 Proyecciones</button>
+                    <button onclick="switchModule('mod-analytics')" id="btn-mod-analytics" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">📊 Límites de Presupuesto</button>
+                    <button onclick="switchModule('mod-simulator')" id="btn-mod-simulator" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">🔮 Metas y Plan 50/30/20</button>
                 </div>
                 
                 <div class="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto border-t border-slate-800/50 md:border-0 pt-2 md:pt-0">
@@ -69,15 +69,15 @@
                             <option value="ARS">ARS ($)</option>
                         </select>
                     </div>
-                    <button onclick="togglePrivacyMode()" id="privacyToggleBtn" class="p-2 bg-slate-900/80 border border-slate-800 rounded-xl text-slate-400 shrink-0 text-xs" title="Modo Privacidad">
+                    <button onclick="togglePrivacyMode()" id="privacyToggleBtn" class="p-2 bg-slate-900/80 border border-slate-800 rounded-xl text-slate-400 shrink-0 text-xs">
                         <span id="privacyIcon">🔓</span>
                     </button>
                     <div class="relative flex-1 md:flex-initial">
                         <button onclick="toggleDataMenu()" class="w-full md:w-auto flex items-center justify-center gap-1 bg-slate-900/80 border border-slate-800 text-xs font-bold py-2 px-3 rounded-xl">
                             ⚙️ Sistema
                         </button>
-                        <div id="dataMenu" class="hidden absolute right-0 md:right-0 mt-2 w-52 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl p-2 space-y-1 z-50 max-md:fixed max-md:top-36 max-md:left-4 max-md:right-4 max-md:w-auto">
-                            <button onclick="toggleSystemGuide()" id="guideToggleBtn" class="w-full text-left text-xs p-2 bg-cyan-950/30 hover:bg-cyan-900/50 text-cyan-400 rounded-lg font-bold transition-colors border border-cyan-800/30">📖 Activar Guía Dinámica</button>
+                        <div id="dataMenu" class="hidden absolute right-0 mt-2 w-52 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl p-2 space-y-1 z-50">
+                            <button onclick="toggleSystemGuide()" id="guideToggleBtn" class="w-full text-left text-xs p-2 bg-cyan-950/30 hover:bg-cyan-900/50 text-cyan-400 rounded-lg font-bold border border-cyan-800/30">📖 Guía Dinámica</button>
                             <div class="border-t border-slate-800 my-1"></div>
                             <button onclick="exportToCSV()" class="w-full text-left text-xs p-2 hover:bg-slate-800 rounded-lg text-slate-200 font-medium">📥 Exportar CSV</button>
                             <button onclick="triggerImport()" class="w-full text-left text-xs p-2 hover:bg-slate-800 rounded-lg text-slate-200 font-medium">📤 Importar Respaldo</button>
@@ -135,36 +135,34 @@
                     <div class="neo-card p-4 rounded-2xl shadow-xl w-full box-border">
                         <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-1.5">
                             <span class="text-cyan-400">⚡</span> Registro Rápido Manual
-                            <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('registro')">?</span>
                         </h3>
                         <form id="ledgerForm" class="space-y-3 w-full box-border">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Concepto / Descripción</label>
-                                <input type="text" id="txDesc" placeholder="Ej. Almuerzo, Uber, Nómina..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white transition" required />
+                                <input type="text" id="txDesc" placeholder="Ej. Almuerzo, Supermercado, Nómina..." class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white transition" required />
                             </div>
                             <div class="grid grid-cols-2 gap-2 w-full">
                                 <div class="min-w-0">
                                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Categoría</label>
                                     <select id="txCategory" onchange="togglePsychSelector(this.value)" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-300 outline-none focus:ring-1 focus:ring-cyan-500 cursor-pointer">
                                         <option value="Ingreso">💼 Ingresos</option>
-                                        <option value="Inversiones">📈 Inversión</option>
                                         <option value="Comida">🛒 Alimentación</option>
                                         <option value="Vivienda">🏠 Vivienda</option>
                                         <option value="Transporte">🚗 Transporte</option>
-                                        <option value="Ocio">🎬 Ocio / Cine</option>
+                                        <option value="Ocio">🎬 Ocio / Caprichos</option>
                                         <option value="Salud">🏥 Bienestar</option>
                                         <option value="Otros">📦 Otros Gastos</option>
                                     </select>
                                 </div>
                                 <div class="min-w-0">
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Importe</label>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Importe ($)</label>
                                     <input type="number" step="0.01" id="txAmount" placeholder="0.00" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 text-xs focus:ring-1 focus:ring-cyan-500 outline-none text-white font-mono" required />
                                 </div>
                             </div>
 
                             <div id="psychologicalBlock" class="hidden bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80 space-y-1.5 w-full">
                                 <div class="flex items-center gap-1.5">
-                                    <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">¿Necesidad o Capricho?</label>
+                                    <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Filtro Psicológico</label>
                                     <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[8px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('psicologico')">?</span>
                                 </div>
                                 <div class="grid grid-cols-2 gap-2 w-full">
@@ -176,7 +174,6 @@
                                 <div class="flex items-center gap-1.5 bg-slate-950/40 p-2 rounded-xl border border-slate-800/60 justify-center">
                                     <input type="checkbox" id="txRecurring" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
                                     <label for="txRecurring" class="text-[10px] text-slate-400 font-medium cursor-pointer select-none">Gasto Fijo</label>
-                                    <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[8px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('gastofijo')">?</span>
                                 </div>
                                 <button type="submit" class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold text-xs tracking-wider rounded-xl cursor-pointer py-2.5 shadow-md">REGISTRAR</button>
                             </div>
@@ -197,7 +194,6 @@
                                     <option value="all">Todo</option>
                                     <option value="income">Créditos</option>
                                     <option value="expense">Débitos</option>
-                                    <option value="recurring">Fijos</option>
                                 </select>
                             </div>
                         </div>
@@ -209,72 +205,106 @@
             </div>
 
             <div id="mod-analytics" class="module-view hidden space-y-4 w-full box-border">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 w-full">
+                    <div class="neo-card p-4 rounded-2xl shadow-xl lg:col-span-4 space-y-3 box-border">
+                        <div>
+                            <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-1.5">⚙️ Ajustar Topes Mensuales</h4>
+                            <p class="text-[10px] text-slate-500">Establece el dinero máximo a gastar por categoría.</p>
+                        </div>
+                        <div class="space-y-2.5 text-xs">
+                            <div>
+                                <label class="text-slate-400 block text-[10px] mb-1">🛒 Alimentación</label>
+                                <input type="number" id="limit-Comida" value="300" oninput="updateBudgetLimits()" class="w-full bg-slate-950 border border-slate-800 p-2 rounded-xl font-mono text-white text-xs outline-none">
+                            </div>
+                            <div>
+                                <label class="text-slate-400 block text-[10px] mb-1">🚗 Transporte</label>
+                                <input type="number" id="limit-Transporte" value="150" oninput="updateBudgetLimits()" class="w-full bg-slate-950 border border-slate-800 p-2 rounded-xl font-mono text-white text-xs outline-none">
+                            </div>
+                            <div>
+                                <label class="text-slate-400 block text-[10px] mb-1">🎬 Ocio / Caprichos</label>
+                                <input type="number" id="limit-Ocio" value="200" oninput="updateBudgetLimits()" class="w-full bg-slate-950 border border-slate-800 p-2 rounded-xl font-mono text-white text-xs outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="neo-card p-4 rounded-2xl shadow-xl lg:col-span-8 space-y-4 box-border">
+                        <h4 class="font-bold text-white text-xs uppercase tracking-wider">📉 Diagnóstico de Alertas de Presupuestos</h4>
+                        <div id="budgetBarsContainer" class="space-y-4">
+                            </div>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 w-full">
                     <div class="neo-card p-4 rounded-2xl shadow-xl md:col-span-5 flex flex-col justify-between w-full min-w-0 box-border">
                         <h4 class="font-bold text-white text-[11px] uppercase tracking-wider mb-2">Porcentajes de Categoría</h4>
-                        <div class="h-[200px] w-full max-w-full flex items-center justify-center relative overflow-hidden box-border">
+                        <div class="h-[200px] w-full flex items-center justify-center relative overflow-hidden box-border">
                             <canvas id="pieChartCanvas" class="max-w-full max-h-full block"></canvas>
                             <div id="noPieDataText" class="hidden absolute inset-0 flex items-center justify-center text-slate-600 text-xs italic bg-[#151f32]/60 rounded-xl">Sin egresos registrados</div>
                         </div>
                     </div>
                     <div class="neo-card p-4 rounded-2xl shadow-xl md:col-span-7 flex flex-col justify-between w-full min-w-0 box-border">
                         <h4 class="font-bold text-white text-[11px] uppercase tracking-wider mb-2">Histograma de Consumo</h4>
-                        <div class="h-[200px] w-full max-w-full flex items-center justify-center relative overflow-hidden box-border">
+                        <div class="h-[200px] w-full flex items-center justify-center relative overflow-hidden box-border">
                             <canvas id="barChartCanvas" class="max-w-full max-h-full block"></canvas>
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full">
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0">
-                        <div class="flex items-center justify-between mb-1 min-w-0"><span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Índice de Vanidad</span><span class="help-marker hidden w-3 h-3 rounded-full bg-cyan-500 text-slate-950 text-[8px] font-bold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('vanidad')">?</span></div>
-                        <p id="kpiVanityRate" class="text-sm sm:text-base font-extrabold text-amber-400 mono truncate">0% Deseos</p>
-                    </div>
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Gasto Vital Real</span>
-                        <p id="kpiVitalExpense" class="text-sm sm:text-base font-extrabold text-cyan-400 mono money-display truncate">$0.00</p>
-                    </div>
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Tasa de Ahorro</span>
-                        <p id="kpiSavingRate" class="text-sm sm:text-base font-extrabold text-emerald-400 mono truncate">0%</p>
-                    </div>
-                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60 min-w-0">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase block truncate">Eficiencia Financiera</span>
-                        <p id="kpiEfficiency" class="text-sm sm:text-base font-extrabold text-blue-400 mono truncate">0.0x</p>
-                    </div>
-                </div>
             </div>
 
-            <div id="mod-simulator" class="module-view hidden max-w-2xl mx-auto w-full box-border">
-                <div class="neo-card p-5 rounded-2xl shadow-xl space-y-4 w-full box-border">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h3 class="text-sm font-bold text-white flex items-center gap-1.5"><span>🔮</span> Interés Compuesto Futuro</h3>
-                            <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('interes')">?</span>
-                        </div>
-                        <p class="text-[11px] text-slate-500 mt-0.5">Calcula la multiplicación silenciosa de tu capital.</p>
+            <div id="mod-simulator" class="module-view hidden space-y-4 w-full box-border">
+                
+                <div class="neo-card p-4 rounded-2xl shadow-xl w-full box-border">
+                    <div class="flex items-center gap-2 mb-1">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">🧮 Auditoría de Distribución (Regla 50/30/20)</h3>
+                        <span class="help-marker hidden w-3.5 h-3.5 rounded-full bg-cyan-500 text-slate-950 text-[9px] font-extrabold flex items-center justify-center cursor-pointer help-trigger" onclick="showExplanation('regla')">?</span>
                     </div>
-                    <div class="space-y-3 w-full">
-                        <div class="grid grid-cols-2 gap-3 w-full">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Inversión Mensual</label>
-                                <input type="number" id="simMonthly" value="250" oninput="calculateProjection()" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-white outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tasa Anual (%)</label>
-                                <input type="number" id="simRate" value="9" oninput="calculateProjection()" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono text-white outline-none">
-                            </div>
+                    <p class="text-[11px] text-slate-500">Evaluación en tiempo real de tus gastos en base a tus ingresos mensuales acumulados.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800" id="cardRule50">
+                            <div class="flex justify-between font-bold text-xs text-cyan-400 mb-1"><span>🛡️ Necesidades (50%)</span><span id="txtIdeal50">$0</span></div>
+                            <p class="text-[10px] text-slate-500">Gastado real:</p>
+                            <p class="text-base font-black text-white mono font-mono" id="txtReal50">$0.00</p>
+                            <span class="text-[9px] block font-bold mt-1 uppercase" id="badge50">---</span>
                         </div>
-                        <div class="w-full">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Horizonte Temporal</label>
-                            <input type="range" id="simYears" min="1" max="40" value="15" oninput="calculateProjection()" class="w-full accent-cyan-500 cursor-pointer h-1.5 bg-slate-950 rounded-lg">
-                            <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-1"><span>1 Año</span><span class="text-cyan-400 font-bold" id="yearsLabel">15 Años</span><span>40 Años</span></div>
+                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800" id="cardRule30">
+                            <div class="flex justify-between font-bold text-xs text-amber-400 mb-1"><span>✨ Antojos / Deseos (30%)</span><span id="txtIdeal30">$0</span></div>
+                            <p class="text-[10px] text-slate-500">Gastado real:</p>
+                            <p class="text-base font-black text-white mono font-mono" id="txtReal30">$0.00</p>
+                            <span class="text-[9px] block font-bold mt-1 uppercase" id="badge30">---</span>
                         </div>
-                        <div class="bg-slate-950 border border-slate-800/80 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-2 w-full box-border">
-                            <div class="text-center sm:text-left"><h4 class="text-xs font-bold text-slate-300">Capital Proyectado Final:</h4></div>
-                            <span class="text-lg font-black text-emerald-400 mono money-display truncate max-w-full" id="projectionResultText">$0.00</span>
+                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800" id="cardRule20">
+                            <div class="flex justify-between font-bold text-xs text-emerald-400 mb-1"><span>📈 Ahorro / Inversión (20%)</span><span id="txtIdeal20">$0</span></div>
+                            <p class="text-[10px] text-slate-500">Capital libre real:</p>
+                            <p class="text-base font-black text-white mono font-mono" id="txtReal20">$0.00</p>
+                            <span class="text-[9px] block font-bold mt-1 uppercase" id="badge20">---</span>
                         </div>
                     </div>
                 </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 w-full">
+                    <div class="neo-card p-4 rounded-2xl shadow-xl lg:col-span-4 space-y-3 box-border">
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1">🎯 Crear Nueva Meta</h3>
+                        <form id="goalForm" class="space-y-3 text-xs" onsubmit="createNewGoal(event)">
+                            <div>
+                                <label class="block text-[10px] text-slate-400 mb-1">Nombre de la Meta</label>
+                                <input type="text" id="goalName" placeholder="Ej. Fondo de Emergencias, Laptop..." class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-slate-400 mb-1">Monto Objetivo ($)</label>
+                                <input type="number" step="0.01" id="goalTarget" placeholder="0.00" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-xl text-white font-mono outline-none" required>
+                            </div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-2 rounded-xl cursor-pointer shadow-md">AÑADIR META</button>
+                        </form>
+                    </div>
+
+                    <div class="neo-card p-4 rounded-2xl shadow-xl lg:col-span-8 space-y-3 box-border">
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">📊 Progreso de Objetivos de Vida</h3>
+                        <div id="goalsListContainer" class="space-y-3 max-h-[320px] overflow-y-auto custom-scroll pr-1">
+                            </div>
+                    </div>
+                </div>
+
             </div>
 
         </main>
@@ -284,10 +314,10 @@
         <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
             <div class="flex items-center gap-2 border-b border-slate-800 pb-2.5">
                 <span class="text-lg text-cyan-400" id="guideModalIcon">💡</span>
-                <h4 class="text-sm font-bold text-white" id="guideModalTitle">Título de la sección</h4>
+                <h4 class="text-sm font-bold text-white" id="guideModalTitle">Título</h4>
             </div>
-            <p class="text-xs text-slate-400 leading-relaxed" id="guideModalDesc">Explicación del elemento.</p>
-            <button onclick="closeExplanation()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-2 rounded-xl cursor-pointer transition-colors">Entendido</button>
+            <p class="text-xs text-slate-400 leading-relaxed" id="guideModalDesc">Descripción.</p>
+            <button onclick="closeExplanation()" class="w-full bg-slate-800 text-white font-bold text-xs py-2 rounded-xl cursor-pointer">Entendido</button>
         </div>
     </div>
 
@@ -295,19 +325,24 @@
         const currencySymbols = { USD: '$', EUR: '€', MXN: 'MXN$', COP: 'COP$', ARS: 'ARS$' };
         let activeCurrency = 'USD';
         let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_v42_core')) || [];
+        
+        // Carga de límites predeterminados e ideas premium
+        let budgetLimits = JSON.parse(localStorage.getItem('finanzas_pro_limits')) || { "Comida": 300, "Transporte": 150, "Ocio": 200 };
+        let financialGoals = JSON.parse(localStorage.getItem('finanzas_pro_goals')) || [
+            { id: 'G-1', name: '📈 Fondo de Emergencias', target: 1000 },
+            { id: 'G-2', name: '✈️ Próximo Viaje', target: 2500 }
+        ];
+
         let systemPrivacyActive = false;
         let systemGuideActive = false;
         let pieChartInstance = null;
         let barChartInstance = null;
 
         const guideDictionary = {
-            patrimonio: { title: "Patrimonio Neto", icon: "💰", desc: "Es el dinero real que posees actualmente. Se calcula restando todos tus gastos acumulados a la suma de tus ingresos totales registrados." },
-            supervivencia: { title: "Días de Supervivencia", icon: "⏱️", desc: "Te dice cuántos días podrías seguir viviendo manteniendo tu nivel de consumo actual si hoy mismo te quedaras sin ingresos." },
-            registro: { title: "Registro Rápido", icon: "⚡", desc: "Aquí inyectas los movimientos a tu historial. Los ingresos suman a tu patrimonio, mientras que los costos restan capital." },
-            psicologico: { title: "Filtro Psicológico", icon: "🛡️", desc: "Clasifica tus gastos. Las 'Necesidades' son obligatorias para sobrevivir. Los 'Antojos' son deseos prescindibles que inflan tu Índice de Vanidad." },
-            gastofijo: { title: "Gasto Fijo", icon: "📦", desc: "Identifica salidas de dinero que se repiten periódicamente (como suscripciones, renta o seguros)." },
-            vanidad: { title: "Índice de Vanidad", icon: "✨", desc: "Es un porcentaje que calcula cuánto de tu dinero total gastado se ha ido exclusivamente en caprichos o antojos." },
-            interes: { title: "Interés Compuesto", icon: "🔮", desc: "Simulador algorítmico que proyecta cuánto dinero acumularás a largo plazo si inviertes una cantidad fija al mes." }
+            patrimonio: { title: "Patrimonio Neto", icon: "💰", desc: "El capital real líquido que te queda restando los egresos totales de tus cobros." },
+            supervivencia: { title: "Supervivencia", icon: "⏱️", desc: "Días estimados que resistirías con tu saldo actual según tu media de costo fijo o variable." },
+            psicologico: { title: "Filtro Psicológico", icon: "🛡️", desc: "Separa lo vital de los caprichos. Los antojos inflarán los registros analíticos de gastos no esenciales." },
+            regla: { title: "Regla 50/30/20", icon: "🧮", desc: "Filosofía contable premium: 50% para necesidades básicas, 30% para antojos libres y 20% guardado neto para metas de inversión." }
         };
 
         const ledgerForm = document.getElementById('ledgerForm');
@@ -326,17 +361,9 @@
             systemGuideActive = !systemGuideActive;
             const btn = document.getElementById('guideToggleBtn');
             const markers = document.querySelectorAll('.help-marker');
-            if (systemGuideActive) {
-                btn.innerText = "❌ Desactivar Guía";
-                btn.className = "w-full text-left text-xs p-2 bg-rose-950/30 hover:bg-rose-900/50 text-rose-400 rounded-lg font-bold transition-colors border border-rose-800/30";
-                markers.forEach(m => m.classList.remove('hidden'));
-                toggleDataMenu();
-            } else {
-                btn.innerText = "📖 Activar Guía Dinámica";
-                btn.className = "w-full text-left text-xs p-2 bg-cyan-950/30 hover:bg-cyan-900/50 text-cyan-400 rounded-lg font-bold transition-colors border border-cyan-800/30";
-                markers.forEach(m => m.classList.add('hidden'));
-                toggleDataMenu();
-            }
+            btn.innerText = systemGuideActive ? "❌ Ocultar Guía" : "📖 Guía Dinámica";
+            markers.forEach(m => systemGuideActive ? m.classList.remove('hidden') : m.classList.add('hidden'));
+            toggleDataMenu();
         }
 
         function showExplanation(key) {
@@ -348,48 +375,34 @@
             document.getElementById('guideModal').classList.remove('hidden');
         }
 
-        function closeExplanation() {
-            document.getElementById('guideModal').classList.add('hidden');
-        }
-
-        function togglePsychSelector(categoryValue) {
-            const block = document.getElementById('psychologicalBlock');
-            if(categoryValue === 'Ingreso' || categoryValue === 'Inversiones') block.classList.add('hidden');
-            else block.classList.remove('hidden');
-        }
+        function closeExplanation() { document.getElementById('guideModal').classList.add('hidden'); }
+        function togglePsychSelector(cat) { document.getElementById('psychologicalBlock').className = (cat === 'Ingreso') ? 'hidden' : 'block bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80 space-y-1.5 w-full'; }
 
         function switchModule(targetModuleId) {
             document.querySelectorAll('.module-view').forEach(view => view.classList.add('hidden'));
             document.getElementById(targetModuleId).classList.remove('hidden');
             document.getElementById('mobileModuleSelector').value = targetModuleId;
-            document.querySelectorAll('.module-tab-btn').forEach(btn => {
-                btn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200";
-            });
+            document.querySelectorAll('.module-tab-btn').forEach(btn => btn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200");
             const activeBtn = document.getElementById(`btn-${targetModuleId}`);
             if (activeBtn) activeBtn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md";
-            if (targetModuleId === 'mod-analytics') setTimeout(refreshAnalyticalCharts, 5);
-            if (targetModuleId === 'mod-simulator') calculateProjection();
+            
+            if (targetModuleId === 'mod-analytics') {
+                setTimeout(refreshAnalyticalCharts, 5);
+                setTimeout(renderBudgetLimitsStatus, 5);
+            }
+            if (targetModuleId === 'mod-simulator') {
+                calculate503020Rule();
+                renderFinancialGoals();
+            }
         }
 
         function togglePrivacyMode() {
             systemPrivacyActive = !systemPrivacyActive;
-            const btn = document.getElementById('privacyToggleBtn');
-            const icon = document.getElementById('privacyIcon');
-            const targetDisplays = document.querySelectorAll('.money-display');
-            
-            if (systemPrivacyActive) {
-                icon.innerText = '🔒';
-                btn.classList.replace('text-slate-400', 'text-cyan-400');
-                targetDisplays.forEach(d => d.classList.add('privacy-masked'));
-            } else {
-                icon.innerText = '🔓';
-                btn.classList.replace('text-cyan-400', 'text-slate-400');
-                targetDisplays.forEach(d => d.classList.remove('privacy-masked'));
-            }
+            document.getElementById('privacyIcon').innerText = systemPrivacyActive ? '🔒' : '🔓';
             refreshSuiteDashboard();
         }
 
-        // --- MANEJO DEL REGISTRO MANUAL ---
+        // --- ENTRADA CONTABLE MANUAL ---
         ledgerForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const description = document.getElementById('txDesc').value.trim();
@@ -398,23 +411,18 @@
             const isRecurring = document.getElementById('txRecurring').checked;
             let intent = 'necesidad';
             
-            if(category !== 'Ingreso' && category !== 'Inversiones') {
+            if(category !== 'Ingreso') {
                 const checkedIntent = document.querySelector('input[name="txIntent"]:checked');
                 intent = checkedIntent ? checkedIntent.value : 'necesidad';
             }
-            
             if (!description || isNaN(amount)) return;
 
-            if (category !== 'Ingreso' && category !== 'Inversiones' && amount > 0) amount = -amount;
-            else if ((category === 'Ingreso' || category === 'Inversiones') && amount < 0) amount = Math.abs(amount);
+            if (category !== 'Ingreso' && amount > 0) amount = -amount;
+            else if (category === 'Ingreso' && amount < 0) amount = Math.abs(amount);
 
             ledgerDatabase.unshift({
                 id: 'TX-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-                description,
-                category,
-                amount,
-                isRecurring,
-                intent,
+                description, category, amount, isRecurring, intent,
                 timestamp: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
             });
 
@@ -423,6 +431,173 @@
             document.getElementById('psychologicalBlock').classList.add('hidden');
         });
 
+        // --- IDEA 3: PROCESAMIENTO Y CONTROL DE LÍMITES POR CATEGORÍA ---
+        function updateBudgetLimits() {
+            budgetLimits["Comida"] = parseFloat(document.getElementById('limit-Comida').value) || 0;
+            budgetLimits["Transporte"] = parseFloat(document.getElementById('limit-Transporte').value) || 0;
+            budgetLimits["Ocio"] = parseFloat(document.getElementById('limit-Ocio').value) || 0;
+            localStorage.setItem('finanzas_pro_limits', JSON.stringify(budgetLimits));
+            renderBudgetLimitsStatus();
+        }
+
+        function renderBudgetLimitsStatus() {
+            const container = document.getElementById('budgetBarsContainer');
+            container.innerHTML = '';
+
+            const trackedCategories = ["Comida", "Transporte", "Ocio"];
+            let gastosMap = { "Comida": 0, "Transporte": 0, "Ocio": 0 };
+
+            ledgerDatabase.forEach(item => {
+                if (item.amount < 0 && trackedCategories.includes(item.category)) {
+                    gastosMap[item.category] += Math.abs(item.amount);
+                }
+            });
+
+            trackedCategories.forEach(cat => {
+                const consumido = gastosMap[cat];
+                const maximo = budgetLimits[cat] || 1;
+                let porcentaje = Math.min((consumido / maximo) * 100, 100);
+                
+                let barColor = "bg-cyan-500";
+                let textColor = "text-slate-300";
+                let alertLabel = "";
+
+                if (consumido >= maximo) {
+                    barColor = "bg-rose-500";
+                    textColor = "text-rose-400 font-bold";
+                    alertLabel = `⚠️ ¡Límite superado por ${formatDisplayAmount(consumido - maximo)}!`;
+                } else if (porcentaje >= 80) {
+                    barColor = "bg-amber-500";
+                    textColor = "text-amber-400";
+                    alertLabel = "⏳ Alerta: Al 80% del tope";
+                }
+
+                container.innerHTML += `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs">
+                            <span class="font-semibold text-white">${cat === 'Comida' ? '🛒 Alimentación' : cat === 'Transporte' ? '🚗 Transporte' : '🎬 Ocio / Caprichos'}</span>
+                            <span class="${textColor}">${formatDisplayAmount(consumido)} / ${formatDisplayAmount(maximo)}</span>
+                        </div>
+                        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
+                            <div class="${barColor} h-full transition-all duration-500" style="width: ${porcentaje}%"></div>
+                        </div>
+                        ${alertLabel ? `<p class="text-[9px] ${textColor} tracking-wide text-right">${alertLabel}</p>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        // --- IDEA 4: CALCULADORA REGLA 50/30/20 ---
+        function calculate503020Rule() {
+            let ingresosTotales = 0;
+            let necesidadesReales = 0;
+            let deseosReales = 0;
+
+            ledgerDatabase.forEach(item => {
+                if (item.amount > 0) ingresosTotales += item.amount;
+                else {
+                    if (item.intent === 'deseo') deseosReales += Math.abs(item.amount);
+                    else necesidadesReales += Math.abs(item.amount);
+                }
+            });
+
+            const ideal50 = ingresosTotales * 0.50;
+            const ideal30 = ingresosTotales * 0.30;
+            const ideal20 = ingresosTotales * 0.20;
+            const ahorroReal = ingresosTotales - necesidadesReales - deseosReales;
+
+            document.getElementById('txtIdeal50').innerText = `Ideal: ${formatDisplayAmount(ideal50)}`;
+            document.getElementById('txtIdeal30').innerText = `Ideal: ${formatDisplayAmount(ideal30)}`;
+            document.getElementById('txtIdeal20').innerText = `Ideal: ${formatDisplayAmount(ideal20)}`;
+
+            document.getElementById('txtReal50').innerText = formatDisplayAmount(necesidadesReales);
+            document.getElementById('txtReal30').innerText = formatDisplayAmount(deseosReales);
+            document.getElementById('txtReal20').innerText = formatDisplayAmount(ahorroReal);
+
+            // Diagnósticos visuales con bordes
+            formatRuleBadge('badge50', 'cardRule50', necesidadesReales, ideal50, true);
+            formatRuleBadge('badge30', 'cardRule30', deseosReales, ideal30, true);
+            formatRuleBadge('badge20', 'cardRule20', ahorroReal, ideal20, false);
+        }
+
+        function formatRuleBadge(badgeId, cardId, real, ideal, esGasto) {
+            const badge = document.getElementById(badgeId);
+            const card = document.getElementById(cardId);
+            
+            if (esGasto) {
+                if (real > ideal) {
+                    badge.innerText = "❌ Excedido"; badge.className = "text-[9px] block font-bold mt-1 text-rose-400";
+                    card.style.borderColor = "rgba(244, 63, 94, 0.4)";
+                } else {
+                    badge.innerText = "✅ Optimizado"; badge.className = "text-[9px] block font-bold mt-1 text-emerald-400";
+                    card.style.borderColor = "rgba(16, 185, 129, 0.2)";
+                }
+            } else {
+                if (real >= ideal) {
+                    badge.innerText = "🏆 Meta de ahorro superada"; badge.className = "text-[9px] block font-bold mt-1 text-emerald-400";
+                    card.style.borderColor = "rgba(16, 185, 129, 0.4)";
+                } else {
+                    badge.innerText = "📉 Bajo el nivel ideal"; badge.className = "text-[9px] block font-bold mt-1 text-amber-400";
+                    card.style.borderColor = "rgba(245, 158, 11, 0.2)";
+                }
+            }
+        }
+
+        // --- IDEA 1: MÓDULO DE METAS DE AHORRO ---
+        function createNewGoal(e) {
+            e.preventDefault();
+            const name = document.getElementById('goalName').value.trim();
+            const target = parseFloat(document.getElementById('goalTarget').value) || 0;
+
+            financialGoals.push({ id: 'G-' + Math.random().toString(36).substr(2, 5), name, target });
+            localStorage.setItem('finanzas_pro_goals', JSON.stringify(financialGoals));
+            document.getElementById('goalForm').reset();
+            renderFinancialGoals();
+        }
+
+        function deleteGoal(id) {
+            financialGoals = financialGoals.filter(g => g.id !== id);
+            localStorage.setItem('finanzas_pro_goals', JSON.stringify(financialGoals));
+            renderFinancialGoals();
+        }
+
+        function renderFinancialGoals() {
+            const container = document.getElementById('goalsListContainer');
+            container.innerHTML = '';
+
+            let ingresos = 0, gastos = 0;
+            ledgerDatabase.forEach(i => i.amount > 0 ? ingresos += i.amount : gastos += Math.abs(i.amount));
+            const patrimonioActual = Math.max(ingresos - gastos, 0);
+
+            if(!financialGoals.length) {
+                container.innerHTML = `<p class="text-center text-slate-600 text-xs italic py-6">No has definido metas de vida aún.</p>`;
+                return;
+            }
+
+            financialGoals.forEach(goal => {
+                let progresoPorcentaje = Math.min((patrimonioActual / goal.target) * 100, 100).toFixed(0);
+                
+                container.innerHTML += `
+                    <div class="bg-slate-950/50 border border-slate-800/80 p-3 rounded-xl flex flex-col space-y-1.5">
+                        <div class="flex justify-between items-center text-xs">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-white">${goal.name}</span>
+                                <span class="text-[10px] text-slate-500">Objetivo: ${formatDisplayAmount(goal.target)}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono font-bold text-emerald-400">${progresoPorcentaje}%</span>
+                                <button onclick="deleteGoal('${goal.id}')" class="text-slate-600 hover:text-rose-400 font-bold px-1 text-[11px]">✕</button>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden border border-slate-800">
+                            <div class="bg-gradient-to-r from-emerald-500 to-cyan-400 h-full transition-all duration-500" style="width: ${progresoPorcentaje}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- INTERFAZ BASE Y RENDERS ORIGINALES ---
         function syncStorage() {
             localStorage.setItem('finanzas_pro_v42_core', JSON.stringify(ledgerDatabase));
             refreshSuiteDashboard();
@@ -431,6 +606,14 @@
         function refreshSuiteDashboard() {
             renderLedgerList();
             evaluateFinancialMetrics();
+            if(!document.getElementById('mod-analytics').classList.contains('hidden')) {
+                refreshAnalyticalCharts();
+                renderBudgetLimitsStatus();
+            }
+            if(!document.getElementById('mod-simulator').classList.contains('hidden')) {
+                calculate503020Rule();
+                renderFinancialGoals();
+            }
         }
 
         function renderLedgerList() {
@@ -442,7 +625,6 @@
                 let filterMatch = true;
                 if (filter === 'income') filterMatch = item.amount > 0;
                 if (filter === 'expense') filterMatch = item.amount < 0;
-                if (filter === 'recurring') filterMatch = item.isRecurring === true;
                 return searchMatch && filterMatch;
             });
 
@@ -466,44 +648,23 @@
         }
 
         function evaluateFinancialMetrics() {
-            let ingresos = 0;
-            let gastos = 0;
-            let fijosMensuales = 0;
-            let caprichos = 0;
-
+            let ingresos = 0, gastos = 0, fijos = 0;
             ledgerDatabase.forEach(item => {
                 if (item.amount > 0) ingresos += item.amount;
                 else {
                     gastos += Math.abs(item.amount);
-                    if (item.isRecurring) fijosMensuales += Math.abs(item.amount);
-                    if (item.intent === 'deseo') caprichos += Math.abs(item.amount);
+                    if (item.isRecurring) fijos += Math.abs(item.amount);
                 }
             });
 
             const neto = ingresos - gastos;
-
             document.getElementById('netWealthText').innerText = formatDisplayAmount(neto);
             document.getElementById('totalIncomeText').innerText = formatDisplayAmount(ingresos);
             document.getElementById('totalExpenseText').innerText = formatDisplayAmount(gastos);
 
-            // KPIs Avanzados
-            let vanityRate = gastos > 0 ? Math.round((caprichos / gastos) * 100) : 0;
-            let savingRate = ingresos > 0 ? Math.round((neto / ingresos) * 100) : 0;
-            if (savingRate < 0) savingRate = 0;
-            let vitalExpense = gastos - caprichos;
-            let efficiency = vitalExpense > 0 ? (ingresos / vitalExpense).toFixed(1) : '0.0';
-
-            document.getElementById('kpiVanityRate').innerText = `${vanityRate}% Antojos`;
-            document.getElementById('kpiVitalExpense').innerText = formatDisplayAmount(vitalExpense);
-            document.getElementById('kpiSavingRate').innerText = `${savingRate}%`;
-            document.getElementById('kpiEfficiency').innerText = `${efficiency}x`;
-
-            // Supervivencia Realista
             let diasSupervivencia = 0;
-            let baseCost = fijosMensuales > 0 ? fijosMensuales / 30 : (gastos > 0 ? gastos / 30 : 0);
-            if (baseCost > 0 && neto > 0) {
-                diasSupervivencia = Math.round(neto / baseCost);
-            }
+            let baseCost = fijos > 0 ? fijos / 30 : (gastos > 0 ? gastos / 30 : 0);
+            if (baseCost > 0 && neto > 0) diasSupervivencia = Math.round(neto / baseCost);
             
             document.getElementById('survivalDaysText').innerText = `${diasSupervivencia} días`;
             const statusLabel = document.getElementById('survivalStatusLabel');
@@ -512,41 +673,25 @@
             else { statusLabel.innerText = "ESTABLE"; statusLabel.style.color = "#34d399"; }
         }
 
-        // --- ENTORNO DE GRÁFICOS (CHART.JS) ---
         function refreshAnalyticalCharts() {
             const ctxPie = document.getElementById('pieChartCanvas').getContext('2d');
             const ctxBar = document.getElementById('barChartCanvas').getContext('2d');
-            
             let categoriasMap = {};
-            let ingresosPorMes = 0;
-            let gastosPorMes = 0;
+            let ingresosPorMes = 0, gastosPorMes = 0;
 
             ledgerDatabase.forEach(item => {
                 if (item.amount < 0) {
                     categoriasMap[item.category] = (categoriasMap[item.category] || 0) + Math.abs(item.amount);
                     gastosPorMes += Math.abs(item.amount);
-                } else {
-                    ingresosPorMes += item.amount;
-                }
+                } else ingresosPorMes += item.amount;
             });
-
-            const pieLabels = Object.keys(categoriasMap);
-            const pieData = Object.values(categoriasMap);
-            const noDataText = document.getElementById('noPieDataText');
-
-            if(pieData.length === 0) noDataText.classList.remove('hidden');
-            else noDataText.classList.add('hidden');
 
             if (pieChartInstance) pieChartInstance.destroy();
             pieChartInstance = new Chart(ctxPie, {
                 type: 'doughnut',
                 data: {
-                    labels: pieLabels,
-                    datasets: [{
-                        data: pieData,
-                        backgroundColor: ['#22d3ee', '#ec4899', '#f59e0b', '#10b981', '#6366f1', '#a855f7', '#64748b'],
-                        borderWidth: 0
-                    }]
+                    labels: Object.keys(categoriasMap),
+                    datasets: [{ data: Object.values(categoriasMap), backgroundColor: ['#22d3ee', '#ec4899', '#f59e0b', '#10b981', '#6366f1'], borderWidth: 0 }]
                 },
                 options: { plugins: { legend: { display: true, position: 'bottom', labels: { color: '#94a3b8', font: { size: 9 } } } }, responsive: true, maintainAspectRatio: false }
             });
@@ -555,86 +700,25 @@
             barChartInstance = new Chart(ctxBar, {
                 type: 'bar',
                 data: {
-                    labels: ['Ingresos Totales', 'Gastos Totales'],
-                    datasets: [{
-                        data: [ingresosPorMes, gastosPorMes],
-                        backgroundColor: ['rgba(16, 185, 129, 0.2)', 'rgba(244, 63, 94, 0.2)'],
-                        borderColor: ['#10b981', '#f43f5e'],
-                        borderWidth: 2,
-                        borderRadius: 8
-                    }]
+                    labels: ['Ingresos', 'Gastos'],
+                    datasets: [{ data: [ingresosPorMes, gastosPorMes], backgroundColor: ['rgba(16, 185, 129, 0.2)', 'rgba(244, 63, 94, 0.2)'], borderColor: ['#10b981', '#f43f5e'], borderWidth: 2, borderRadius: 8 }]
                 },
-                options: {
-                    scales: { y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#64748b', font: { size: 9 } } }, x: { ticks: { color: '#64748b', font: { size: 10 } } } },
-                    plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false
-                }
+                options: { scales: { y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#64748b', font: { size: 9 } } }, x: { ticks: { color: '#64748b', font: { size: 10 } } } }, plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
             });
-        }
-
-        // --- SISTEMA SIMULADOR DE INTERÉS COMPUESTO ---
-        function calculateProjection() {
-            const monthly = parseFloat(document.getElementById('simMonthly').value) || 0;
-            const annualRate = (parseFloat(document.getElementById('simRate').value) || 0) / 100;
-            const years = parseInt(document.getElementById('simYears').value) || 1;
-            
-            document.getElementById('yearsLabel').innerText = `${years} Años`;
-            
-            let total = 0;
-            const monthlyRate = annualRate / 12;
-            const totalMonths = years * 12;
-
-            for (let i = 0; i < totalMonths; i++) {
-                total = (total + monthly) * (1 + monthlyRate);
-            }
-
-            document.getElementById('projectionResultText').innerText = formatDisplayAmount(total);
         }
 
         function toggleDataMenu() { document.getElementById('dataMenu').classList.toggle('hidden'); }
-        function changeCurrency() { activeCurrency = currencySelect.value; refreshSuiteDashboard(); calculateProjection(); if(!document.getElementById('mod-analytics').classList.contains('hidden')) refreshAnalyticalCharts(); }
+        function changeCurrency() { activeCurrency = currencySelect.value; refreshSuiteDashboard(); }
         function triggerImport() { document.getElementById('importFile').click(); }
         
-        function exportToCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,ID,Concepto,Categoria,Importe,Fijo,FiltroPsicologico,Fecha\n";
-            ledgerDatabase.forEach(r => {
-                csvContent += `${r.id},"${r.description}",${r.category},${r.amount},${r.isRecurring},${r.intent},${r.timestamp}\n`;
-            });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Finanzas_Pro_Respaldo_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function importBackup(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const parsed = JSON.parse(e.target.result);
-                    if (Array.isArray(parsed)) {
-                        ledgerDatabase = parsed;
-                        syncStorage();
-                        alert("¡Respaldo JSON restaurado con éxito!");
-                    }
-                } catch(err) { alert("Archivo JSON inválido."); }
-            };
-            reader.readAsText(file);
-        }
-
         function purgeDatabase() {
-            if(confirm("⚠️ ¿Estás completamente seguro de purgar toda la base de datos local? Perderás todo el historial.")) {
+            if(confirm("⚠️ ¿Deseas purgar toda la base de datos?")) {
                 ledgerDatabase = [];
                 syncStorage();
             }
         }
 
-        window.onload = function() {
-            refreshSuiteDashboard();
-        };
+        window.onload = function() { refreshSuiteDashboard(); };
     </script>
 </body>
 </html>
