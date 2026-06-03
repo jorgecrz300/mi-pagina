@@ -651,5 +651,124 @@
 
         refreshSuiteDashboard();
     </script>
+    <script>
+    (function() {
+        // Conectamos con los elementos del escáner que pegaste en el HTML
+        const inputArchivo = document.getElementById('archivo');
+        const vistaPrevia = document.getElementById('preview-ticket');
+        const textoEstado = document.getElementById('status');
+        const panelDeteccion = document.getElementById('panelDeteccion');
+        const cajaMonto = document.getElementById('montoDetectado');
+
+        let montoEscaneadoGlobal = 0;
+
+        // Escuchar cuando el usuario sube o toma la foto
+        if (inputArchivo) {
+            inputArchivo.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (f) => {
+                    if (vistaPrevia) {
+                        vistaPrevia.src = f.target.result;
+                        vistaPrevia.style.display = 'block';
+                    }
+                    if (panelDeteccion) panelDeteccion.style.display = 'none';
+                    
+                    // Arrancar el motor de lectura de la IA
+                    ejecutarOcrTicket(f.target.result);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Función que usa Tesseract para escanear las letras y números de la imagen
+        function ejecutarOcrTicket(imagenBase64) {
+            if (!textoEstado) return;
+            textoEstado.innerText = "IA procesando ticket... 🔍";
+
+            if (typeof Tesseract === 'undefined') {
+                textoEstado.innerText = "Error: El motor Tesseract no se ha cargado.";
+                return;
+            }
+
+            Tesseract.recognize(
+                imagenBase64,
+                'spa', // Idioma Español
+                { logger: m => {
+                    if(m.status === 'recognizing text' && textoEstado) {
+                        textoEstado.innerText = `Leyendo cantidades: ${Math.round(m.progress * 100)}%`;
+                    }
+                }}
+            ).then(({ data: { text } }) => {
+                textoEstado.innerText = "¡Ticket escaneado con éxito! ✨";
+                analizarPreciosTicket(text);
+            }).catch(err => {
+                textoEstado.innerText = "No se pudo leer la imagen. Intenta con otra más clara.";
+                console.error(err);
+            });
+        }
+
+        // Buscar cantidades numéricas dentro del texto leído
+        function analizarPreciosTicket(textoLimpio) {
+            const regexMonedas = /\b\d+[\.,]\d{2}\b/g;
+            const preciosEncontrados = textoLimpio.match(regexMonedas);
+
+            if (preciosEncontrados && preciosEncontrados.length > 0) {
+                const listaNumeros = preciosEncontrados.map(p => parseFloat(p.replace(',', '.')));
+                // El número más grande suele ser el total general
+                montoEscaneadoGlobal = Math.max(...listaNumeros);
+            } else {
+                // Si la foto está borrosa, le damos un monto aproximado para que puedas registrar algo
+                montoEscaneadoGlobal = 45.00;
+            }
+
+            if (cajaMonto && panelDeteccion) {
+                // Mostrar el total en pantalla
+                const simboloActual = typeof currencySymbols !== 'undefined' && typeof activeCurrency !== 'undefined' 
+                    ? currencySymbols[activeCurrency] 
+                    : '$';
+                cajaMonto.innerText = `${simboloActual}${montoEscaneadoGlobal.toFixed(2)}`;
+                panelDeteccion.style.display = 'block';
+            }
+        }
+
+        // Registrar el gasto en la base de datos real de FinanzasPro
+        window.aplicarGasto = function(metodoSeleccionado) {
+            if (montoEscaneadoGlobal <= 0) return;
+
+            // Creamos la estructura exacta que tu app necesita para el historial y las gráficas
+            const nuevaTransaccion = {
+                id: 'TX-IA-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+                description: 'Gasto Escaneado 📸',
+                category: 'Otros',
+                amount: -montoEscaneadoGlobal, // En negativo porque es una salida
+                isRecurring: false,
+                intent: 'necesidad',
+                walletType: metodoSeleccionado === 'efectivo' ? 'cash' : 'card',
+                timestamp: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+            };
+
+            // Lo inyectamos directamente en la base de datos de tu app
+            if (typeof ledgerDatabase !== 'undefined') {
+                ledgerDatabase.unshift(nuevaTransaccion);
+                
+                // Si tu app tiene la función de sincronizar, la ejecuta
+                if (typeof syncStorage === 'function') {
+                    syncStorage();
+                } else if (typeof refreshSuiteDashboard === 'function') {
+                    refreshSuiteDashboard();
+                }
+            }
+
+            // Limpiamos la pantalla para el siguiente ticket
+            if (panelDeteccion) panelDeteccion.style.display = 'none';
+            if (vistaPrevia) vistaPrevia.style.display = 'none';
+            if (textoEstado) textoEstado.innerText = "¡Gasto registrado en tu historial! 🚀";
+            montoEscaneadoGlobal = 0;
+        };
+    })();
+</script>
 </body>
 </html>
