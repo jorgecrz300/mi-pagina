@@ -255,6 +255,30 @@
                                 <button type="submit" class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold text-xs tracking-wider rounded-xl cursor-pointer py-2.5 shadow-md">REGISTRAR</button>
                             </div>
                         </form>
+                        <div class="caja-escaner">
+    <h1>📸 Escáner de <span>Gastos</span></h1>
+    <p>Sube la foto de tu ticket para procesar el total con IA.</p>
+
+    <label class="btn-subir-ticket">
+        TOMAR FOTO O SUBIR TICKET
+        <input type="file" id="archivo" accept="image/*" style="display:none">
+    </label>
+
+    <img id="preview-ticket" alt="Vista previa del ticket">
+    
+    <div id="status" class="estado-escaner"></div>
+
+    <div id="panelDeteccion" class="deteccion-ia-pro">
+        <p style="font-weight: bold; margin: 0;">¡Lectura Exitosa! Total encontrado:</p>
+        <div class="total-detectado-pro" id="montoDetectado">$0.00</div>
+        <p style="font-size: 11px; color: #64748b; margin-bottom: 5px;">¿Con qué método pagaste este ticket?</p>
+        
+        <div class="btn-grupo-pro">
+            <button class="btn-accion-pro btn-cash-pro" onclick="aplicarGasto('efectivo')">💵 Pagué en Cash</button>
+            <button class="btn-accion-pro btn-card-pro" onclick="aplicarGasto('tarjeta')">💳 Pagué con Débito</button>
+        </div>
+    </div>
+</div>
                     </div>
                 </div>
                 <div class="col-span-12 lg:col-span-8 min-w-0 w-full">
