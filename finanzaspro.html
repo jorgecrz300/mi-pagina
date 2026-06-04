@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FinanzasPro">
     
-    <title>Finanzas Pro v20.0 | Unified Settings Suite</title>
+    <title>Finanzas Pro v20.1 | Unified Suite</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +30,7 @@
             --danger: #ef4444;
             --border-color: rgba(255, 255, 255, 0.05);
             --glass-blur: none;
-            --panel-bg: rgba(15, 23, 42, 0.9);
+            --panel-bg: rgba(15, 23, 42, 0.95);
         }
         
         :root[data-theme="glass"] {
@@ -43,7 +43,7 @@
             --danger: #f43f5e;
             --border-color: rgba(255, 255, 255, 0.08);
             --glass-blur: blur(16px);
-            --panel-bg: rgba(15, 23, 42, 0.4);
+            --panel-bg: rgba(15, 23, 42, 0.6);
         }
 
         :root[data-theme="space"] {
@@ -142,16 +142,15 @@
 
     <div class="w-full max-w-full overflow-x-hidden flex flex-col justify-start items-stretch project-wrapper">
 
-        <header class="sticky top-0 z-40 glass-panel px-4 py-3 shadow-xl w-full box-border">
-            <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-3 w-full">
+        <header class="sticky top-0 z-40 glass-panel px-3 py-2.5 shadow-xl w-full box-border">
+            <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-2 w-full">
                 
-                <div class="flex items-center gap-2">
-                    <div class="w-9 h-9 bg-gradient-to-br from-cyan-500 via-blue-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shrink-0">
-                        <span class="text-slate-950 font-extrabold text-lg">FP</span>
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <div class="w-8 h-8 bg-gradient-to-br from-cyan-500 via-blue-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shrink-0">
+                        <span class="text-slate-950 font-extrabold text-sm">FP</span>
                     </div>
-                    <div>
-                        <h1 class="text-base font-bold text-white leading-tight" id="lbl-suite-title">Finanzas<span class="text-cyan-400">Pro</span></h1>
-                        <p class="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Suite Unificada • v20.0</p>
+                    <div class="hidden xs:block">
+                        <h1 class="text-xs font-bold text-white leading-tight" id="lbl-suite-title">Finanzas<span class="text-cyan-400">Pro</span></h1>
                     </div>
                 </div>
                 
@@ -162,33 +161,33 @@
                     <button onclick="switchModule('mod-ai-chat')" id="btn-mod-ai-chat" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">💬 Asistente IA</button>
                 </div>
 
-                <div class="flex items-center gap-3 shrink-0">
+                <div class="flex items-center gap-1.5 shrink-0 ml-auto">
                     <div class="md:hidden">
-                        <select id="mobileModuleSelector" onchange="switchModule(this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-xl py-1.5 px-2 text-cyan-400 outline-none">
+                        <select id="mobileModuleSelector" onchange="switchModule(this.value)" class="bg-slate-900 border border-slate-800 text-[11px] font-bold rounded-lg py-1 px-1.5 text-cyan-400 outline-none">
                             <option value="mod-overview">🎛️ Resumen</option>
-                            <option value="mod-analytics">📊 Presupuestos</option>
-                            <option value="mod-calendar">📅 Calendario</option>
-                            <option value="mod-ai-chat">💬 Asistente IA</option>
+                            <option value="mod-analytics">📊 Mód 2</option>
+                            <option value="mod-calendar">📅 Mód 3</option>
+                            <option value="mod-ai-chat">💬 Mód 4</option>
                         </select>
                     </div>
 
-                    <div class="flex items-center bg-slate-900/90 rounded-xl p-1.5 border border-slate-800 text-xs font-mono">
-                        <select id="globalCurrency" onchange="changeCurrency()" class="bg-transparent border-0 outline-none text-cyan-400 font-bold text-xs px-1 cursor-pointer">
-                            <option value="USD">USD ($)</option>
-                            <option value="EUR">EUR (€)</option>
-                            <option value="MXN">MXN ($)</option>
+                    <div class="flex items-center bg-slate-900 rounded-lg px-1 py-1 border border-slate-800 text-[11px] font-mono">
+                        <select id="globalCurrency" onchange="changeCurrency()" class="bg-transparent border-0 outline-none text-cyan-400 font-bold text-[11px] cursor-pointer">
+                            <option value="USD">$</option>
+                            <option value="EUR">€</option>
+                            <option value="MXN">N$</option>
                         </select>
                     </div>
 
-                    <button onclick="toggleSettingsMenu()" class="w-9 h-9 bg-slate-900 border border-slate-800 text-slate-400 hover:text-white rounded-xl flex items-center justify-center transition-colors cursor-pointer relative" id="btn-settings-toggle">
-                        <i class="fa-solid fa-gear text-sm"></i>
+                    <button onclick="toggleSettingsMenu()" class="w-8 h-8 bg-slate-900 border border-slate-800 text-slate-400 hover:text-white rounded-lg flex items-center justify-center transition-colors cursor-pointer shrink-0" id="btn-settings-toggle">
+                        <i class="fa-solid fa-gear text-xs"></i>
                     </button>
                 </div>
 
             </div>
         </header>
 
-        <div id="settingsDropdown" class="hidden fixed top-16 right-4 z-50 w-72 bg-slate-900/95 backdrop-blur-xl border border-slate-800 rounded-2xl p-4 shadow-2xl space-y-4 animate-[fadeIn_0.2s_ease-out]">
+        <div id="settingsDropdown" class="hidden fixed top-14 right-3 z-50 w-72 bg-slate-950/95 backdrop-blur-2xl border border-slate-800 rounded-2xl p-4 shadow-2xl space-y-4 animate-[fadeIn_0.2s_ease-out]">
             <div class="flex items-center justify-between border-b border-slate-800 pb-2">
                 <h4 class="text-xs font-extrabold uppercase tracking-widest text-slate-400" id="lbl-menu-title">⚙️ Ajustes de la Suite</h4>
                 <button onclick="toggleSettingsMenu()" class="text-slate-500 hover:text-slate-300 text-xs"><i class="fa-solid fa-xmark"></i></button>
@@ -196,7 +195,7 @@
             
             <div class="space-y-1.5">
                 <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500" id="lbl-menu-lang">Idioma del Sistema</label>
-                <select id="langSelector" onchange="changeSystemLanguage(this.value)" class="w-full bg-slate-950 border border-slate-800 text-xs font-semibold rounded-xl py-2 px-2.5 text-slate-300 outline-none cursor-pointer">
+                <select id="langSelector" onchange="changeSystemLanguage(this.value)" class="w-full bg-slate-900 border border-slate-800 text-xs font-semibold rounded-xl py-2 px-2.5 text-slate-300 outline-none cursor-pointer">
                     <option value="es">🇪🇸 Español</option>
                     <option value="en">🇺🇸 English</option>
                 </select>
@@ -204,7 +203,7 @@
 
             <div class="space-y-1.5">
                 <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500" id="lbl-menu-theme">Tema Estético Visual</label>
-                <select id="themeSelector" onchange="changeSystemTheme(this.value)" class="w-full bg-slate-950 border border-slate-800 text-xs font-semibold rounded-xl py-2 px-2.5 text-slate-300 outline-none cursor-pointer">
+                <select id="themeSelector" onchange="changeSystemTheme(this.value)" class="w-full bg-slate-900 border border-slate-800 text-xs font-semibold rounded-xl py-2 px-2.5 text-slate-300 outline-none cursor-pointer">
                     <option value="cyberpunk">🌃 Cyberpunk Core</option>
                     <option value="glass">💎 Glassmorphism</option>
                     <option value="space">🌌 Cosmos Contrast</option>
@@ -212,8 +211,19 @@
                 </select>
             </div>
 
-            <div class="space-y-2 pt-1 border-t border-slate-800/60">
-                <button onclick="triggerAppGuide()" class="w-full bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left text-xs font-medium py-2 px-3 rounded-xl transition flex items-center gap-2 text-slate-300 cursor-pointer">
+            <div class="space-y-2 pt-2 border-t border-slate-800/60">
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="exportSystemData()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-center text-[11px] font-medium py-2 px-2 rounded-xl transition flex items-center justify-center gap-1.5 text-emerald-400 cursor-pointer">
+                        <i class="fa-solid fa-file-export"></i> <span id="lbl-menu-export">Exportar</span>
+                    </button>
+                    <button onclick="triggerImportSelection()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-center text-[11px] font-medium py-2 px-2 rounded-xl transition flex items-center justify-center gap-1.5 text-cyan-400 cursor-pointer">
+                        <i class="fa-solid fa-file-import"></i> <span id="lbl-menu-import">Importar</span>
+                    </button>
+                </div>
+                
+                <input type="file" id="systemImportFile" class="hidden" accept=".json" onchange="importSystemData(event)">
+
+                <button onclick="triggerAppGuide()" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left text-xs font-medium py-2 px-3 rounded-xl transition flex items-center gap-2 text-slate-300 cursor-pointer">
                     <i class="fa-solid fa-circle-info text-cyan-400 text-[11px]"></i> <span id="lbl-menu-guide">Ver Guía Interactiva</span>
                 </button>
                 <button onclick="purgeAppCache()" class="w-full bg-rose-950/20 hover:bg-rose-950/40 border border-rose-900/30 text-left text-xs font-bold py-2 px-3 rounded-xl transition flex items-center gap-2 text-rose-400 cursor-pointer">
@@ -445,7 +455,8 @@
                 calTitle: "Calendario de Registros", calFocusTitle: "Flujo del Día Seleccionado",
                 aiStatus: "Asistente Financiero AI Inteligente", aiWelcome: "¡Hola! Soy tu asistente unificado. Puedo revisar tus límites de gasto, balances o darte consejos basados en la regla de distribución 50/30/20.",
                 menuTitle: "⚙️ Ajustes de la Suite", menuLang: "Idioma del Sistema", menuTheme: "Tema Estético Visual",
-                menuGuide: "Ver Guía Interactiva", menuClear: "Borrar Caché y Datos"
+                menuGuide: "Ver Guía Interactiva", menuClear: "Borrar Caché y Datos",
+                menuExport: "Exportar", menuImport: "Importar"
             },
             en: {
                 suiteTitle: "Finance<span class='text-cyan-400'>Pro</span>", netWealth: "Consolidated Net Wealth",
@@ -457,15 +468,15 @@
                 calTitle: "Records Calendar", calFocusTitle: "Selected Day Ledger Flow",
                 aiStatus: "Smart AI Financial Assistant", aiWelcome: "Hello! I am your unified core assistant. I can check your spending limits, net wealth balances, or give you advice based on the 50/30/20 budget rule.",
                 menuTitle: "⚙️ Suite Settings", menuLang: "System Language", menuTheme: "Visual Aesthetic Theme",
-                menuGuide: "View Interactive Guide", menuClear: "Clear Cache & Data"
+                menuGuide: "View Interactive Guide", menuClear: "Clear Cache & Data",
+                menuExport: "Export", menuImport: "Import"
             }
         };
 
-        const currencySymbols = { USD: '$', EUR: '€', MXN: 'MXN$' };
+        const currencySymbols = { USD: '$', EUR: '€', MXN: '$' };
         let activeCurrency = 'USD';
         let activeLang = 'es';
         
-        // CORRECCIÓN SOLICITADA: Inicia totalmente en vacío ($0.00)
         let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_v20_core')) || [];
         let budgetLimits = JSON.parse(localStorage.getItem('finanzas_pro_v20_limits')) || { "Comida": 300, "Transporte": 150, "Ocio": 200 };
 
@@ -485,7 +496,6 @@
             menu.classList.toggle('hidden');
         }
 
-        // Cerrar menú de ajustes si haces clic afuera
         document.addEventListener('click', function(e) {
             const menu = document.getElementById('settingsDropdown');
             const btn = document.getElementById('btn-settings-toggle');
@@ -493,6 +503,54 @@
                 menu.classList.add('hidden');
             }
         });
+
+        // --- EXPORTAR E IMPORTAR COPIAS DE SEGURIDAD (SOLICITADO) ---
+        function exportSystemData() {
+            const packageData = {
+                version: "20.1",
+                ledger: ledgerDatabase,
+                limits: budgetLimits,
+                currency: activeCurrency,
+                language: activeLang
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(packageData));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "FinanzasPro_Backup.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function triggerImportSelection() {
+            document.getElementById('systemImportFile').click();
+        }
+
+        function importSystemData(event) {
+            const fileReader = new FileReader();
+            fileReader.onload = function(e) {
+                try {
+                    const parsedData = JSON.parse(e.target.result);
+                    if (parsedData.ledger && parsedData.limits) {
+                        ledgerDatabase = parsedData.ledger;
+                        budgetLimits = parsedData.limits;
+                        if(parsedData.currency) activeCurrency = parsedData.currency;
+                        
+                        localStorage.setItem('finanzas_pro_v20_core', JSON.stringify(ledgerDatabase));
+                        localStorage.setItem('finanzas_pro_v20_limits', JSON.stringify(budgetLimits));
+                        
+                        document.getElementById('settingsDropdown').classList.add('hidden');
+                        refreshSuiteDashboard();
+                        alert(activeLang === 'es' ? "¡Datos importados con éxito!" : "Data imported successfully!");
+                    } else {
+                        alert("Archivo JSON no compatible.");
+                    }
+                } catch (err) {
+                    alert("Error leyendo el archivo.");
+                }
+            };
+            fileReader.readAsText(event.target.files[0]);
+        }
 
         // --- GUÍA INTERACTIVA MODAL ---
         function triggerAppGuide() {
@@ -505,7 +563,7 @@
 
         // --- BORRAR CACHÉ Y PURGAR DATOS ---
         function purgeAppCache() {
-            if (confirm(activeLang === 'es' ? "⚠️ ¿Estás completamente seguro de que deseas borrar toda la caché, límites y transacciones guardadas en el navegador?" : "⚠️ Are you sure you want to completely wipe all cache, custom limits, and saved records from the browser?")) {
+            if (confirm(activeLang === 'es' ? "⚠️ ¿Estás completamente seguro de que deseas borrar toda la caché, límites y transacciones?" : "⚠️ Are you sure you want to completely wipe all data?")) {
                 localStorage.clear();
                 ledgerDatabase = [];
                 budgetLimits = { "Comida": 300, "Transporte": 150, "Ocio": 200 };
@@ -547,6 +605,8 @@
             document.getElementById('lbl-menu-theme').innerText = dictionary.menuTheme;
             document.getElementById('lbl-menu-guide').innerText = dictionary.menuGuide;
             document.getElementById('lbl-menu-clear').innerText = dictionary.menuClear;
+            document.getElementById('lbl-menu-export').innerText = dictionary.menuExport;
+            document.getElementById('lbl-menu-import').innerText = dictionary.menuImport;
 
             refreshSuiteDashboard();
         }
@@ -625,6 +685,10 @@
         function populateMonthFilter() {
             monthFilter.innerHTML = activeLang === 'es' ? '<option value="all">Todo el tiempo</option>' : '<option value="all">All-time</option>';
         }
+
+        document.getElementById('limit-Comida').value = budgetLimits["Comida"] || 300;
+        document.getElementById('limit-Transporte').value = budgetLimits["Transporte"] || 150;
+        document.getElementById('limit-Ocio').value = budgetLimits["Ocio"] || 200;
 
         function updateBudgetLimits() {
             budgetLimits["Comida"] = parseFloat(document.getElementById('limit-Comida').value) || 0;
