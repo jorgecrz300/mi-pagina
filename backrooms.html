@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Backrooms: Infinite Rooms</title>
+    <title>The Backrooms: Glitch Blueprint</title>
     <style>
         * {
             box-sizing: border-box;
@@ -11,9 +11,9 @@
             padding: 0;
         }
         body {
-            background-color: #11110b;
+            background-color: #050505;
             color: #fff;
-            font-family: sans-serif;
+            font-family: monospace;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -23,168 +23,201 @@
         }
         h1 {
             margin-bottom: 10px;
-            font-size: 24px;
-            color: #bc9c4a;
-            text-shadow: 2px 2px #000;
-            letter-spacing: 2px;
+            font-size: 20px;
+            color: #ff3333;
+            letter-spacing: 4px;
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
         }
         canvas {
-            background-color: #dfca80; /* Alfombra beige/amarilla */
-            border: 4px solid #3a321d;
-            box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.8);
+            background-color: #000000;
+            border: 3px solid #222;
+            box-shadow: 0px 0px 40px rgba(255, 0, 100, 0.2);
         }
         .instructions {
             margin-top: 15px;
-            font-size: 14px;
-            color: #8c846e;
+            font-size: 12px;
+            color: #555;
             text-align: center;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <h1>THE BACKROOMS: INFINITE ROOMS</h1>
+    <h1>LEVEL_0_BLUEPRINT.EXE</h1>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <div class="instructions">Usa WASD o las Flechas. Camina en cualquier dirección, las habitaciones son infinitas...</div>
+    <div class="instructions">CONTROLES: WASD / FLECHAS - EXPLORACIÓN INFINITA</div>
 
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
-        // Configuración del mundo
-        const TILE_SIZE = 60; // Tamaño de cada bloque de pared
+        const TILE_SIZE = 80; // Habitaciones un poco más grandes para apreciar las líneas
         const PLAYER_SPEED = 4;
 
-        // El jugador se queda estático en el centro de la pantalla.
-        // Lo que se mueve es el "mundo" (la cámara).
         const player = {
             worldX: 0,
             worldY: 0,
-            radius: 12,
+            radius: 8,
             screenX: canvas.width / 2,
             screenY: canvas.height / 2
         };
 
         const keys = {};
 
-        // Función matemática para generar ruido pseudo-aleatorio basado en coordenadas (Semilla)
+        // Función de ruido matemático para el mapa infinito
         function pseudoRandom(x, y) {
             const h = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453123;
             return h - Math.floor(h);
         }
 
-        // Determina si hay una pared en una coordenada del mundo
-        function isWall(tileX, tileY) {
-            // Generar una estructura tipo "habitaciones" usando cuadrículas
-            // Cada 5 bloques creamos la estructura de una habitación
-            const inRoomX = tileX % 6;
-            const inRoomY = tileY % 6;
+        // Retorna qué tipo de paredes tiene una celda en el mundo de forma infinita
+        function getCellWalls(tileX, tileY) {
+            const inRoomX = tileX % 5;
+            const inRoomY = tileY % 5;
 
-            // Hacer paredes exteriores para las habitaciones
-            if (inRoomX === 0 || inRoomY === 0) {
-                // Dejar aperturas (puertas) de forma pseudo-aleatoria para conectar los cuartos
-                const seed = pseudoRandom(Math.floor(tileX / 6), Math.floor(tileY / 6));
-                
-                // Si estamos en los bloques del medio de la pared, hay probabilidad de que sea una puerta
-                if ((inRoomX === 0 && (tileY % 6 === 3 || tileY % 6 === 4)) || 
-                    (inRoomY === 0 && (tileX % 6 === 3 || tileX % 6 === 4))) {
-                    return false; // Es un espacio abierto (puerta)
-                }
-                return true; // Es pared de la habitación
+            let top = false, bottom = false, left = false, right = false;
+
+            // Generar cuadrícula básica de habitaciones
+            if (inRoomY === 0) top = true;
+            if (inRoomY === 4) bottom = true;
+            if (inRoomX === 0) left = true;
+            if (inRoomX === 4) right = true;
+
+            // Romper paredes aleatoriamente para crear pasillos y aperturas conectadas
+            const roomSeed = pseudoRandom(Math.floor(tileX / 5), Math.floor(tileY / 5));
+            
+            if (roomSeed < 0.4 && (inRoomX === 2 || inRoomX === 3)) top = false;
+            if (roomSeed > 0.6 && (inRoomX === 2 || inRoomX === 3)) bottom = false;
+            if (roomSeed < 0.5 && (inRoomY === 2 || inRoomY === 3)) left = false;
+            if (roomSeed > 0.3 && (inRoomY === 2 || inRoomY === 3)) right = false;
+
+            // Añadir líneas sueltas estilo pilar dentro de cuartos
+            if (inRoomX === 2 && inRoomY === 2 && pseudoRandom(tileX, tileY) < 0.5) {
+                left = true;
+                top = true;
             }
 
-            // Algunos pilares o paredes sueltas dentro de las habitaciones para romper la monotonía
-            if (inRoomX === 3 && inRoomY === 3 && pseudoRandom(tileX, tileY) < 0.4) {
-                return true;
-            }
-
-            return false;
+            return { top, bottom, left, right };
         }
 
-        // Detectar entrada de teclado
+        // Obtiene el color de neón/glitch basado en la posición para imitar la imagen
+        function getGlitchColor(tx, ty) {
+            const rand = pseudoRandom(tx, ty);
+            if (rand < 0.25) return "rgba(255, 50, 50, 0.85)";   // Rojo brillante
+            if (rand < 0.50) return "rgba(50, 255, 150, 0.85)";  // Verde/Cian
+            if (rand < 0.75) return "rgba(240, 240, 100, 0.85)"; // Amarillo/Blanco
+            return "rgba(180, 80, 255, 0.85)";                  // Morado/Magenta
+        }
+
         window.addEventListener("keydown", (e) => { keys[e.key.toLowerCase()] = true; });
         window.addEventListener("keyup", (e) => { keys[e.key.toLowerCase()] = false; });
 
-        // Comprobación de colisión con las paredes del mundo
+        // Detección de colisiones contra los bordes/líneas del mapa
         function canMoveTo(worldX, worldY) {
-            // Revisar los 4 bordes del jugador (caja de colisión simplificada)
+            const buffer = player.radius + 2;
             const checkPoints = [
-                { x: worldX - player.radius, y: worldY - player.radius },
-                { x: worldX + player.radius, y: worldY - player.radius },
-                { x: worldX - player.radius, y: worldY + player.radius },
-                { x: worldX + player.radius, y: worldY + player.radius }
+                {x: worldX - buffer, y: worldY},
+                {x: worldX + buffer, y: worldY},
+                {x: worldX, y: worldY - buffer},
+                {x: worldX, y: worldY + buffer}
             ];
 
             for (let p of checkPoints) {
-                const tileX = Math.floor(p.x / TILE_SIZE);
-                const tileY = Math.floor(p.y / TILE_SIZE);
-                if (isWall(tileX, tileY)) {
-                    return false; // Choca con pared
-                }
+                const tx = Math.floor(p.x / TILE_SIZE);
+                const ty = Math.floor(p.y / TILE_SIZE);
+                
+                const walls = getCellWalls(tx, ty);
+                const innerX = p.x % TILE_SIZE;
+                const innerY = p.y % TILE_SIZE;
+
+                // Si choca con el borde de una línea activada
+                if (walls.top && innerY < 6) return false;
+                if (walls.bottom && innerY > TILE_SIZE - 6) return false;
+                if (walls.left && innerX < 6) return false;
+                if (walls.right && innerX > TILE_SIZE - 6) return false;
             }
             return true;
         }
 
         function update() {
-            let dx = 0;
-            let dy = 0;
-
+            let dx = 0, dy = 0;
             if (keys["arrowup"] || keys["w"]) dy = -PLAYER_SPEED;
             if (keys["arrowdown"] || keys["s"]) dy = PLAYER_SPEED;
             if (keys["arrowleft"] || keys["a"]) dx = -PLAYER_SPEED;
             if (keys["arrowright"] || keys["d"]) dx = PLAYER_SPEED;
 
-            // Intentar mover en X
-            if (dx !== 0 && canMoveTo(player.worldX + dx, player.worldY)) {
-                player.worldX += dx;
-            }
-            // Intentar mover en Y
-            if (dy !== 0 && canMoveTo(player.worldX, player.worldY + dy)) {
-                player.worldY += dy;
-            }
+            if (dx !== 0 && canMoveTo(player.worldX + dx, player.worldY)) player.worldX += dx;
+            if (dy !== 0 && canMoveTo(player.worldX, player.worldY + dy)) player.worldY += dy;
         }
 
         function draw() {
-            // Fondo: Color alfombra sucia
-            ctx.fillStyle = "#dfca80";
+            // Fondo oscuro puro
+            ctx.fillStyle = "#000";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Calcular qué rango de bloques son visibles actualmente en la pantalla
             const startTileX = Math.floor((player.worldX - canvas.width / 2) / TILE_SIZE) - 1;
             const endTileX = Math.ceil((player.worldX + canvas.width / 2) / TILE_SIZE) + 1;
             const startTileY = Math.floor((player.worldY - canvas.height / 2) / TILE_SIZE) - 1;
             const endTileY = Math.ceil((player.worldY + canvas.height / 2) / TILE_SIZE) + 1;
 
-            // Dibujar las paredes visibles
-            ctx.fillStyle = "#bfa65a"; // Amarillo oscuro para las paredes
-            ctx.strokeStyle = "#2e2715"; // Bordes de bloques
-            ctx.lineWidth = 2;
+            // Dibujar las paredes tipo esquema lineal (Blueprint)
+            ctx.lineWidth = 3;
+            ctx.shadowBlur = 6; // Efecto de brillo/neón
 
             for (let ty = startTileY; ty <= endTileY; ty++) {
                 for (let tx = startTileX; tx <= endTileX; tx++) {
-                    if (isWall(tx, ty)) {
-                        // Convertir la posición global del mundo a la posición relativa de la pantalla
-                        const screenX = tx * TILE_SIZE - player.worldX + canvas.width / 2;
-                        const screenY = ty * TILE_SIZE - player.worldY + canvas.height / 2;
-                        
-                        ctx.fillRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
-                        ctx.strokeRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
+                    const walls = getCellWalls(tx, ty);
+                    
+                    const screenX = tx * TILE_SIZE - player.worldX + canvas.width / 2;
+                    const screenY = ty * TILE_SIZE - player.worldY + canvas.height / 2;
+
+                    ctx.strokeStyle = getGlitchColor(tx, ty);
+                    ctx.shadowColor = ctx.strokeStyle;
+
+                    ctx.beginPath();
+                    if (walls.top) {
+                        ctx.moveTo(screenX, screenY);
+                        ctx.lineTo(screenX + TILE_SIZE, screenY);
                     }
+                    if (walls.bottom) {
+                        ctx.moveTo(screenX, screenY + TILE_SIZE);
+                        ctx.lineTo(screenX + TILE_SIZE, screenY + TILE_SIZE);
+                    }
+                    if (walls.left) {
+                        ctx.moveTo(screenX, screenY);
+                        ctx.lineTo(screenX, screenY + TILE_SIZE);
+                    }
+                    if (walls.right) {
+                        ctx.moveTo(screenX + TILE_SIZE, screenY);
+                        ctx.lineTo(screenX + TILE_SIZE, screenY + TILE_SIZE);
+                    }
+                    ctx.stroke();
                 }
             }
 
-            // Dibujar al jugador justo en el centro de la pantalla
+            // Desactivar sombras pesadas para optimizar el resto
+            ctx.shadowBlur = 0;
+
+            // Dibujar punto de jugador (Color de terminal retro)
             ctx.beginPath();
             ctx.arc(player.screenX, player.screenY, player.radius, 0, Math.PI * 2);
-            ctx.fillStyle = "#2b2b2b"; // Color de la silueta del jugador
+            ctx.fillStyle = "#ffffff";
             ctx.fill();
-            
-            // Efecto de sombra sutil alrededor del jugador (Linterna tenue)
-            const gradient = ctx.createRadialGradient(player.screenX, player.screenY, 20, player.screenX, player.screenY, 280);
-            gradient.addColorStop(0, "rgba(0,0,0,0)");
-            gradient.addColorStop(1, "rgba(0,0,0,0.65)"); // Oscuridad en las esquinas
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Filtro estático VHS / Glitch superpuesto
+            ctx.fillStyle = "rgba(255, 255, 255, 0.04)";
+            for (let i = 0; i < 8; i++) {
+                let noiseY = Math.random() * canvas.height;
+                let noiseH = Math.random() * 4;
+                ctx.fillRect(0, noiseY, canvas.width, noiseH);
+            }
+
+            // Línea roja horizontal errática ocasional (Interferencia de video)
+            if (Math.random() < 0.15) {
+                ctx.fillStyle = "rgba(255, 0, 50, 0.25)";
+                ctx.fillRect(0, Math.random() * canvas.height, canvas.width, 2);
+            }
         }
 
         function gameLoop() {
@@ -193,9 +226,9 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // Iniciar el juego en una zona libre de paredes
-        player.worldX = 3 * TILE_SIZE + TILE_SIZE/2;
-        player.worldY = 3 * TILE_SIZE + TILE_SIZE/2;
+        // Posición de inicio inicial despejada
+        player.worldX = 2 * TILE_SIZE + TILE_SIZE / 2;
+        player.worldY = 2 * TILE_SIZE + TILE_SIZE / 2;
 
         gameLoop();
     </script>
