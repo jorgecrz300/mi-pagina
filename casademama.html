@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plano de Casa Final</title>
+    <title>Plano de Casa - Baño con Dos Puertas</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -42,13 +42,13 @@
 </head>
 <body>
 
-    <h1>Plano Interactivo Final</h1>
-    <p>Usa las <b>flechas del teclado</b> para mover a la personita azul.</p>
+    <h1>Plano Interactivo - Baño de 2 Puertas</h1>
+    <p>Usa las <b>flechas del teclado</b>. ¡El baño ahora tiene doble entrada (hacia el cuarto y hacia el corredor)!</p>
 
     <canvas id="mapaCasa" width="500" height="750"></canvas>
 
     <div class="controls-info">
-        <b>Últimos ajustes realizados:</b> Se quitó el muro exterior que bajaba del baño y se cerró la base del baño como indicaste. ¡El diseño quedó listo!
+        <b>Distribución Actual:</b> Baño con acceso desde el corredor izquierdo y desde la Habitación superior | Muro sólido divisorio entre Habitación y Sala habilitado.
     </div>
 
     <script>
@@ -57,32 +57,32 @@
 
         const TILE_SIZE = 25; 
 
-        // Personita (Jugador) - Iniciando cerca de la entrada de las habitaciones
+        // Personita (Jugador)
         let player = {
-            x: 235, 
+            x: 305, 
             y: 250,
             radius: 6,
             speed: 3
         };
 
-        // Lista de muros sólidos definitiva con las últimas correcciones
+        // Lista de muros sólidos (Sistema de colisiones actualizado)
         const solidWalls = [
-            // --- BAÑO ---
+            // --- BAÑO (Con dos accesos libres) ---
             {x1: 50, y1: 100, x2: 50, y2: 150},  // Muro izquierdo baño
             {x1: 50, y1: 100, x2: 125, y2: 100}, // Muro superior baño
-            {x1: 50, y1: 150, x2: 100, y2: 150}, // "cierra aquí" -> Muro inferior horizontal del baño
-            {x1: 125, y1: 100, x2: 125, y2: 150}, // Muro derecho superior del baño
-
-            // Nota: El pedazo vertical que bajaba de (100, 150) a (100, 225) ha sido ELIMINADO por completo.
+            {x1: 50, y1: 150, x2: 100, y2: 150}, // Muro inferior del baño (deja espacio de puerta en la esquina)
 
             // --- HABITACIÓN SUPERIOR ---
             {x1: 125, y1: 100, x2: 175, y2: 100}, 
             {x1: 175, y1: 100, x2: 225, y2: 100, isWindow: true}, // Ventana roja norte
             {x1: 225, y1: 100, x2: 250, y2: 100},
-            {x1: 125, y1: 150, x2: 125, y2: 225}, // Muro izquierdo de la habitación (conecta con el pasillo abierto)
+            
+            // Muro izquierdo de la habitación (se acorta un tramo para habilitar la segunda puerta del baño hacia el cuarto)
+            {x1: 125, y1: 150, x2: 125, y2: 225}, 
+            
             {x1: 125, y1: 225, x2: 200, y2: 225}, // Muro inferior izquierdo
             {x1: 250, y1: 100, x2: 250, y2: 225}, // Muro divisorio vertical sólido entre Habitación y Sala
-            {x1: 235, y1: 225, x2: 250, y2: 225}, // Conexión inferior junto a la puerta
+            {x1: 235, y1: 225, x2: 250, y2: 225}, // Conexión inferior junto a la puerta de la sala
 
             // --- HABITACIÓN INFERIOR ---
             {x1: 125, y1: 275, x2: 125, y2: 325},
@@ -94,11 +94,11 @@
             {x1: 125, y1: 425, x2: 250, y2: 425}, 
 
             // --- SALA Y MUROS PERIMETRALES DERECHOS ---
-            {x1: 250, y1: 100, x2: 375, y2: 100}, // Techo sala
+            {x1: 250, y1: 100, x2: 375, y2: 100}, 
             {x1: 375, y1: 100, x2: 375, y2: 125},
             {x1: 375, y1: 125, x2: 375, y2: 175, isWindow: true}, // Ventana der sup
             {x1: 375, y1: 175, x2: 375, y2: 200},
-            {x1: 375, y1: 250, x2: 375, y2: 300}, // Muro der centro
+            {x1: 375, y1: 250, x2: 375, y2: 300}, 
             {x1: 375, y1: 300, x2: 375, y2: 350, isWindow: true}, // Ventana der inf
             {x1: 375, y1: 350, x2: 375, y2: 425},
             {x1: 250, y1: 425, x2: 300, y2: 425}, 
@@ -171,14 +171,15 @@
                 ctx.stroke();
             });
 
-            // Arcos de puertas
+            // Arcos de puertas discontinuos
             ctx.strokeStyle = '#bdc3c7';
             ctx.lineWidth = 2;
             ctx.setLineDash([3, 3]);
             const doors = [
-                {x: 112, y: 150, r: 12, s: 0, e: Math.PI}, // Puerta baño
-                {x: 215, y: 225, r: 15, s: 0, e: Math.PI}, // Puerta cuarto sup
-                {x: 215, y: 275, r: 15, s: Math.PI, e: 0},   // Puerta cuarto inf
+                {x: 112, y: 150, r: 12, s: 0, e: Math.PI},       // Puerta baño 1 (Hacia el pasillo/corredor)
+                {x: 125, y: 125, r: 12, s: Math.PI*1.5, e: Math.PI*0.5}, // Puerta baño 2 (Hacia la habitación)
+                {x: 215, y: 225, r: 15, s: 0, e: Math.PI},       // Puerta cuarto sup
+                {x: 215, y: 275, r: 15, s: Math.PI, e: 0},       // Puerta cuarto inf
                 {x: 375, y: 225, r: 25, s: Math.PI*1.5, e: Math.PI*0.5},
                 {x: 325, y: 425, r: 25, s: 0, e: Math.PI}
             ];
@@ -190,7 +191,7 @@
             // Textos de habitaciones
             ctx.fillStyle = '#2c3e50';
             ctx.font = 'bold 12px Arial';
-            ctx.fillText("Baño", 65, 130);
+            ctx.fillText("Baño", 65, 125);
             ctx.fillText("Habitación", 145, 175);
             ctx.fillText("Habitación", 155, 340);
             ctx.fillText("Sala", 305, 250);
