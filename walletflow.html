@@ -40,7 +40,12 @@
             --glass-blur: none; --glass-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* Optimización táctil global para Celulares */
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            -webkit-touch-callout: none;
+        }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -48,9 +53,16 @@
             margin: 0; padding: 0; min-height: 100vh;
             display: flex; justify-content: center; align-items: center;
             transition: background 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
         }
 
-        #app-screen { width: 100%; max-width: 500px; padding: env(safe-area-inset-top) 16px 80px 16px; position: relative; }
+        /* Soporte para áreas seguras (Notch y barras de navegación inferiores) */
+        #app-screen { 
+            width: 100%; 
+            max-width: 500px; 
+            padding: env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 85px) 16px; 
+            position: relative; 
+        }
 
         header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
         header h1 { margin: 0; font-size: 22px; color: var(--primary); font-weight: 800; }
@@ -120,7 +132,19 @@
 
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
-        .form-group input, .form-group select { width: 100%; height: 46px; padding: 0 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; background-color: var(--input-bg); color: var(--text-color); }
+        
+        /* 16px Mínimo para evitar zoom automático molesto en iPhone (iOS) */
+        .form-group input, .form-group select { 
+            width: 100%; 
+            height: 48px; 
+            padding: 0 12px; 
+            border: 1px solid var(--border); 
+            border-radius: 10px; 
+            font-size: 16px; 
+            background-color: var(--input-bg); 
+            color: var(--text-color); 
+            outline: none;
+        }
 
         .currency-input-group { display: grid; grid-template-columns: 1fr 90px; gap: 8px; }
 
@@ -142,7 +166,7 @@
         .chart-container { position: relative; height: 200px; width: 100%; }
         .line-chart-box { height: 240px; margin-bottom: 25px; position: relative; width: 100%; }
 
-        /* --- CALENDARIO --- */
+        /* --- CALENDARIO ADAPTABLE (MOBILE FIRST) --- */
         .calendar-nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-title-wrapper { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: background 0.2s; }
         .calendar-title-wrapper:hover { background: var(--border); }
@@ -150,12 +174,35 @@
         .cal-nav-btn { background: var(--bg-color); border: 1px solid var(--border); color: var(--text-color); width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; }
         .cal-nav-btn:hover { color: var(--primary); border-color: var(--primary); }
 
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; background: var(--card-bg); padding: 10px; border-radius: 12px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; background: var(--card-bg); padding: 8px; border-radius: 12px; }
         .cal-day-name { text-align: center; font-size: 11px; font-weight: bold; color: var(--primary); padding-bottom: 8px; }
-        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 14px; position: relative; cursor: pointer; color: var(--text-color); }
+        
+        .cal-day { 
+            aspect-ratio: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 8px; 
+            font-size: 13px; 
+            position: relative; 
+            cursor: pointer; 
+            color: var(--text-color); 
+            padding-bottom: 2px;
+        }
         .cal-day:hover { background: var(--border); }
         .cal-day.today { border: 2px solid var(--primary); font-weight: bold; }
-        .cal-day.has-data::after { content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px; background: var(--success); border-radius: 50%; }
+        
+        /* Ajuste de indicador de datos para no pisar el número en móvil */
+        .cal-day.has-data::after { 
+            content: ''; 
+            position: absolute; 
+            bottom: 3px; 
+            width: 5px; 
+            height: 5px; 
+            background: var(--success); 
+            border-radius: 50%; 
+        }
         .cal-day.selected { background: var(--primary); color: white !important; }
         .cal-day.adjacent-month { opacity: 0.35; }
         .chart-box { height: 220px; margin: 15px 0; }
@@ -202,7 +249,7 @@
         .mock-cal-cell.dot::after { content: ''; position: absolute; bottom: 2px; left: 5px; width: 3px; height: 3px; background: var(--success); border-radius: 50%; }
         .mock-ai { width: 40px; height: 40px; border-radius: 50%; background: rgba(6,182,212,0.1); border: 1px solid var(--ai-accent); display: flex; align-items: center; justify-content: center; color: var(--ai-accent); box-shadow: 0 0 8px rgba(6,182,212,0.3); }
 
-        /* --- ACCESORIOS DE UI --- */
+        /* --- UI COMPONENTES FLOTANTES --- */
         .fab-button { position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px; background: var(--primary); color: white; border: none; border-radius: 50%; font-size: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; z-index: 90; transition: transform 0.2s ease; }
         .fab-button:active { transform: scale(0.9); }
         .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: auto; max-height: 85vh; background: var(--card-bg); border-radius: 24px 24px 0 0; border-top: 1px solid var(--border); padding: 24px; z-index: 180; box-shadow: 0 -5px 25px rgba(0,0,0,0.3); transition: bottom 0.4s cubic-bezier(0.25, 1, 0.5, 1); overflow-y: auto; }
@@ -211,6 +258,15 @@
         .sheet-header h2 { margin: 0; font-size: 18px; }
         .close-sheet-btn { background: var(--bg-color); border: none; color: var(--text-color); width: 36px; height: 36px; border-radius: 50%; font-size: 16px; cursor: pointer; }
 
+        /* Ajustes específicos para pantallas pequeñas (móviles antiguos/compactos) */
+        @media (max-width: 360px) {
+            header h1 { font-size: 19px; }
+            .wallet-balance { font-size: 22px; }
+            .cal-day { font-size: 11px; }
+            .item-details strong { font-size: 13px; }
+        }
+
+        /* Responsive para Tablets y Escritorios */
         @media (min-width: 769px) {
             body { align-items: flex-start; padding-top: 40px; }
             #app-screen { max-width: 900px; }
@@ -553,7 +609,7 @@
 
         // CONTROL DE FORMATO Y MONEDAS DISPONIBLES
         function formatFinancialNumber(value) {
-            if (isPrivateMode) return "••••••";
+            if (isPrivateMode) return "•••••";
             const currencySigns = { 'USD': '$', 'EUR': '€', 'MXN': '$' };
             const rates = { 'USD': 1.0, 'EUR': 0.92, 'MXN': 17.5 };
             const converted = value * (rates[activeCurrency] / rates['USD']);
@@ -563,12 +619,12 @@
         function togglePrivacy() {
             isPrivateMode = !isPrivateMode;
             document.getElementById('privacy-icon').className = isPrivateMode ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
-            refreshSuiteDashboard();
+            updateUI();
         }
 
         function changeCurrency(newCurrency) {
             activeCurrency = newCurrency;
-            refreshSuiteDashboard();
+            updateUI();
             if(document.getElementById('analytics-screen').classList.contains('active')) {
                 initializeAnalyticsCharts();
             }
@@ -585,7 +641,7 @@
         function changeLanguage(langCode) {
             activeLanguage = langCode;
             applyLanguageStrings();
-            refreshSuiteDashboard();
+            updateUI();
         }
 
         function applyLanguageStrings() {
@@ -609,7 +665,6 @@
             document.getElementById('opt-income').innerText = getWord('optInc');
             document.getElementById('btn-reset-cal').innerText = getWord('viewAllMonth');
             
-            // Actualización de ítems del menú dinámico sin alterar clics
             document.getElementById('nav-cal').innerHTML = `<i class="fa-solid fa-calendar"></i> ${getWord('calendar')}`;
             document.getElementById('nav-assistant').innerHTML = `<i class="fa-solid fa-robot"></i> ${getWord('aiAssistant')}`;
             document.getElementById('nav-analytics').innerHTML = `<i class="fa-solid fa-chart-pie"></i> ${getWord('analytics')}`;
@@ -651,7 +706,7 @@
         }
         document.getElementById('entryType').addEventListener('change', rebuildCategoryDropdown);
 
-        // CAPTURA INTERACTIVA (BOTTOM SHEET ACTIONS)
+        // CAPTURA INTERACTIVA (BOTTOM SHEET)
         function openBottomSheet() {
             document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
             rebuildCategoryDropdown();
@@ -678,7 +733,7 @@
             
             closeBottomSheet();
             buildFilterOptions();
-            refreshSuiteDashboard();
+            updateUI();
             
             if(document.getElementById('calendar-screen').classList.contains('active')) {
                 renderInteractiveCalendar();
@@ -690,15 +745,15 @@
             ledgerDatabase = ledgerDatabase.filter(item => item.id !== id);
             localStorage.setItem('finanzas_pro_ledger', JSON.stringify(ledgerDatabase));
             buildFilterOptions();
-            refreshSuiteDashboard();
+            updateUI();
             if(document.getElementById('calendar-screen').classList.contains('active')) {
                 renderInteractiveCalendar();
             }
             generateAiInsights();
         }
 
-        // RENDERIZADO DEL CORE DASHBOARD DE TRANSACCIONES
-        function refreshSuiteDashboard() {
+        // RENDERIZADO DEL DASHBOARD Y FLUJOS HOGAR
+        function updateUI() {
             let totalIncome = 0;
             let totalExpenses = 0;
             const filterValue = document.getElementById('monthFilter').value || 'all';
@@ -749,7 +804,7 @@
             return icons[cat] || 'fa-dollar-sign';
         }
 
-        // --- SISTEMA DEL CALENDARIO OPTIMIZADO Y REPARADO ---
+        // --- SISTEMA DEL CALENDARIO REPARADO ---
         function renderInteractiveCalendar() {
             const grid = document.getElementById('calendarGrid');
             grid.innerHTML = '';
@@ -759,7 +814,7 @@
 
             document.getElementById('calendarMonthYear').innerText = `${getWord('months')[month]} ${year}`;
 
-            // Pintar los nombres abreviados de los días de la semana
+            // Cabeceras de días semanales
             getWord('daysShort').forEach(day => {
                 const cell = document.createElement('div');
                 cell.className = 'cal-day-name';
@@ -767,12 +822,11 @@
                 grid.appendChild(cell);
             });
 
-            // Primer día del mes y total de días
-            const firstDayIndex = new Date(year, month, 1).getDay(); // 0: Domingo, 1: Lunes, etc.
+            const firstDayIndex = new Date(year, month, 1).getDay(); 
             const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
             const totalDaysPrevMonth = new Date(year, month, 0).getDate();
 
-            // Rellenar días del mes anterior (Adyacentes)
+            // Días adyacentes del mes anterior
             for (let i = firstDayIndex - 1; i >= 0; i--) {
                 const dayNum = totalDaysPrevMonth - i;
                 const cell = document.createElement('div');
@@ -781,7 +835,7 @@
                 grid.appendChild(cell);
             }
 
-            // Renderizar los días correspondientes al mes activo
+            // Días del mes activo
             for (let day = 1; day <= totalDaysInMonth; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-day';
@@ -789,13 +843,11 @@
 
                 const dayString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 
-                // Evaluar si existen flujos de transacciones en esta fecha específica
                 const hasTransactions = ledgerDatabase.some(t => t.date === dayString);
                 if (hasTransactions) {
                     cell.classList.add('has-data');
                 }
 
-                // Verificar si es el día de hoy del sistema real
                 const rightNow = new Date();
                 if (rightNow.getFullYear() === year && rightNow.getMonth() === month && rightNow.getDate() === day) {
                     cell.classList.add('today');
@@ -809,7 +861,7 @@
                 grid.appendChild(cell);
             }
 
-            // Rellenar días del mes siguiente para completar la cuadrícula visual (múltiplos de 7)
+            // Días adyacentes del mes siguiente para encajar la cuadrícula
             const currentCells = firstDayIndex + totalDaysInMonth;
             const nextMonthCellsNeeded = (currentCells % 7 === 0) ? 0 : 7 - (currentCells % 7);
             for (let day = 1; day <= nextMonthCellsNeeded; day++) {
@@ -915,12 +967,11 @@
             });
         }
 
-        // --- CORE ANALÍTICO DE GRÁFICOS (CHART.JS SUITE) ---
+        // --- GRÁFICOS ANALÍTICOS (CHART.JS) ---
         function initializeAnalyticsCharts() {
             const textChartColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#f8fafc';
             const borderLineColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#22314d';
 
-            // 1. Gráfico de Distribución por Categorías (Pie Chart)
             const pieCtx = document.getElementById('analyticsPieChart').getContext('2d');
             const categoriesMap = {};
             ledgerDatabase.filter(t => t.type === 'expense').forEach(t => {
@@ -949,7 +1000,6 @@
                 }
             });
 
-            // 2. Gráfico Dinámico de Evolución Temporal (Line Chart)
             const lineCtx = document.getElementById('analyticsLineChart').getContext('2d');
             const temporalMap = {};
             [...ledgerDatabase].reverse().forEach(t => {
@@ -958,7 +1008,7 @@
                 else temporalMap[t.date].exp += t.amount;
             });
 
-            const lineLabels = Object.keys(temporalMap).slide ? Object.keys(temporalMap).slice(-7) : Object.keys(temporalMap); 
+            const lineLabels = Object.keys(temporalMap).slice ? Object.keys(temporalMap).slice(-7) : Object.keys(temporalMap); 
             const incomeTimeline = lineLabels.map(d => temporalMap[d].inc);
             const expenseTimeline = lineLabels.map(d => temporalMap[d].exp);
 
@@ -984,7 +1034,7 @@
             });
         }
 
-        // --- ENGINE PREDICTIVO DE RECOMENDACIONES AI ---
+        // --- DIAGNÓSTICOS PREDICTIVOS AI ---
         function generateAiInsights() {
             let totalInc = 0; let totalExp = 0;
             ledgerDatabase.forEach(t => { if(t.type === 'income') totalInc += t.amount; else totalExp += t.amount; });
@@ -1016,7 +1066,7 @@
             }
         }
 
-        // --- SISTEMA DEL BOT DE IA ---
+        // --- CONVERSACIÓN CON EL CHATBOT ---
         function sendChatMessage() {
             const input = document.getElementById('ai-chat-input');
             const chatroom = document.getElementById('chatroomContainer');
@@ -1037,7 +1087,7 @@
             }, 500);
         }
 
-        // --- FUNCIONES PARA EL MENÚ DE COMANDOS RÁPIDOS ---
+        // --- CONTROL COMANDOS RÁPIDOS ---
         function toggleMenuComandos(event) {
             event.stopPropagation();
             const menu = document.getElementById('menu-comandos');
@@ -1061,14 +1111,14 @@
             }
         });
 
-        // INICIALIZACIÓN
+        // --- INICIALIZACIÓN ---
         const savedTheme = localStorage.getItem('finanzas_pro_theme') || 'cyberpunk';
         document.getElementById('themeSelector').value = savedTheme;
         changeTheme(savedTheme);
 
         applyLanguageStrings();
         buildFilterOptions();
-        refreshSuiteDashboard();
+        updateUI();
         generateAiInsights();
         
         document.getElementById('chatroomContainer').innerHTML = `<div class="chat-msg bot">${getWord('welcomeAi')}</div>`;
