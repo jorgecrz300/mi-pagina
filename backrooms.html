@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Backrooms: Nivel 0 Infinito</title>
+    <title>The Backrooms: Infinite Escape</title>
     <style>
         * {
             box-sizing: border-box;
@@ -21,15 +21,25 @@
             min-height: 100vh;
             overflow: hidden;
         }
-        h1 {
+        .ui-container {
+            display: flex;
+            justify-content: space-between;
+            width: 800px;
             margin-bottom: 5px;
-            font-size: 20px;
+        }
+        h1 {
+            font-size: 18px;
             color: #cbaf5c;
             text-shadow: 2px 2px #000;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
+        }
+        .score {
+            font-size: 18px;
+            color: #ff5555;
+            font-weight: bold;
         }
         canvas {
-            background-color: #dfca80; /* Alfombra beige/amarilla vieja */
+            background-color: #dfca80;
             border: 5px solid #2d2614;
             box-shadow: 0px 0px 35px rgba(0, 0, 0, 0.9);
             cursor: crosshair;
@@ -46,21 +56,30 @@
 </head>
 <body>
 
-    <h1>THE BACKROOMS - LEVEL 0</h1>
+    <div class="ui-container">
+        <h1>THE BACKROOMS - LEVEL 0</h1>
+        <div class="score">ZONAS ESCAPADAS: <span id="levelCount">0</span></div>
+    </div>
+    
     <canvas id="gameCanvas" width="800" height="600"></canvas>
+    
     <div class="instructions">
-        CONTROLES: Moverse con WASD o FLECHAS.<br>
-        🔊 Haz CLIC en la pantalla para activar el zumbido de las luces fluorescentes.
+        CONTROLES: WASD / FLECHAS.<br>
+        Encuentra la **falla de textura (Noclip)** gris y parpadeante para escapar al siguiente sector.<br>
+        🔊 Haz CLIC para activar el zumbido de las luces.
     </div>
 
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
-        // Ajustes de diseño (Paredes delgadas y habitaciones de oficina)
         const TILE_SIZE = 110; 
         const WALL_THICKNESS = 5; 
         const PLAYER_SPEED = 3.5;
+
+        let levelsEscaped = 0;
+        // Cambiamos la semilla del mapa cada vez que el jugador escapa
+        let mapSeedOffset = Math.random() * 1000; 
 
         const player = {
             worldX: 0,
@@ -70,30 +89,33 @@
             screenY: canvas.height / 2
         };
 
+        // Coordenadas de la trampilla de salida en el mundo
+        const exitZone = {
+            tileX: 8,
+            tileY: 6,
+            size: 40
+        };
+
         const keys = {};
         let audioCtx = null;
 
-        // Generador matemático para que el mapa sea infinito y constante
         function pseudoRandom(x, y) {
-            const h = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453123;
+            // Incorporamos el offset para cambiar el laberinto al reiniciar
+            const h = Math.sin((x + mapSeedOffset) * 12.9898 + (y + mapSeedOffset) * 78.233) * 43758.5453123;
             return h - Math.floor(h);
         }
 
-        // Estructura de las habitaciones clásicas del Nivel 0
         function getCellWalls(tileX, tileY) {
-            // Agrupar celdas en cuadrículas de 4x4 para simular cuartos
             const inRoomX = tileX % 4;
             const inRoomY = tileY % 4;
 
             let top = false, bottom = false, left = false, right = false;
 
-            // Crear las divisiones de las oficinas
             if (inRoomY === 0) top = true;
             if (inRoomY === 3) bottom = true;
             if (inRoomX === 0) left = true;
             if (inRoomX === 3) right = true;
 
-            // Romper muros al azar para que estén conectados por pasillos y aperturas vacías
             const seed = pseudoRandom(Math.floor(tileX / 4), Math.floor(tileY / 4));
             
             if (seed < 0.45 && inRoomX > 0 && inRoomX < 3) top = false;
@@ -101,8 +123,7 @@
             if (seed < 0.50 && inRoomY > 0 && inRoomY < 3) left = false;
             if (seed > 0.35 && inRoomY > 0 && inRoomY < 3) right = false;
 
-            // Columnas o pequeños muros sueltos en medio del cuarto para romper la simetría
-            if (inRoomX === 2 && inRoomY === 2 && pseudoRandom(tileX, tileY) < 0.3) {
+            if (inRoomX === 2 && inRoomY === 2 && pseudoRandom(tileX, ty = tileY) < 0.3) {
                 left = true;
                 top = true;
             }
@@ -110,41 +131,27 @@
             return { top, bottom, left, right };
         }
 
-        // Activar el zumbido monótono de las luces de fondo (Monotonous Buzz)
         function startFluorescentBuzz() {
-            if (audioCtx) return; // Ya está activo
-            
+            if (audioCtx) return; 
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            
-            // Oscilador principal para la frecuencia eléctrica de las lámparas (60Hz aproximado)
             const oscillator = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
-            
             oscillator.type = 'sawtooth'; 
-            oscillator.frequency.setValueAtTime(55, audioCtx.currentTime); // Tono grave constante
-            
-            // Filtro para apagar los agudos y que suene encerrado
+            oscillator.frequency.setValueAtTime(55, audioCtx.currentTime); 
             const filter = audioCtx.createBiquadFilter();
             filter.type = 'lowpass';
             filter.frequency.setValueAtTime(120, audioCtx.currentTime);
-
-            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime); // Volumen bajo de fondo
-
+            gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime); 
             oscillator.connect(filter);
             filter.connect(gainNode);
             gainNode.connect(audioCtx.destination);
-            
             oscillator.start();
         }
 
-        // Capturar controles del teclado
         window.addEventListener("keydown", (e) => { keys[e.key.toLowerCase()] = true; });
         window.addEventListener("keyup", (e) => { keys[e.key.toLowerCase()] = false; });
-        
-        // Iniciar audio al presionar la pantalla
         window.addEventListener("click", startFluorescentBuzz);
 
-        // Control preciso de colisiones contra las líneas delgadas amarillas
         function canMoveTo(worldX, worldY) {
             const buffer = player.radius;
             const points = [
@@ -170,6 +177,22 @@
             return true;
         }
 
+        // Función para mover la salida a un lugar aleatorio lejano
+        function relocateExit() {
+            // Elige un cuadrante aleatorio lejos del origen (entre -15 y 15 bloques)
+            let tx = Math.floor(Math.random() * 30) - 15;
+            let ty = Math.floor(Math.random() * 30) - 15;
+            
+            // Evitar que aparezca justo encima del jugador al iniciar
+            if (Math.abs(tx) < 3 && Math.abs(ty) < 3) {
+                tx += 5;
+                ty += 5;
+            }
+            
+            exitZone.tileX = tx;
+            exitZone.tileY = ty;
+        }
+
         function update() {
             let dx = 0, dy = 0;
             if (keys["arrowup"] || keys["w"]) dy = -PLAYER_SPEED;
@@ -177,23 +200,59 @@
             if (keys["arrowleft"] || keys["a"]) dx = -PLAYER_SPEED;
             if (keys["arrowright"] || keys["d"]) dx = PLAYER_SPEED;
 
-            // Movimiento fluido e independiente por cada eje
             if (dx !== 0 && canMoveTo(player.worldX + dx, player.worldY)) player.worldX += dx;
             if (dy !== 0 && canMoveTo(player.worldX, player.worldY + dy)) player.worldY += dy;
+
+            // Comprobar si el jugador pisa la zona de Noclip (Salida)
+            const exitWorldX = exitZone.tileX * TILE_SIZE + (TILE_SIZE / 2);
+            const exitWorldY = exitZone.tileY * TILE_SIZE + (TILE_SIZE / 2);
+            
+            const distance = Math.hypot(player.worldX - exitWorldX, player.worldY - exitWorldY);
+            
+            if (distance < player.radius + exitZone.size / 2) {
+                // ¡Avanza de nivel!
+                levelsEscaped++;
+                document.getElementById("levelCount").innerText = levelsEscaped;
+                
+                // Cambiar el diseño del mapa por completo generando un nuevo offset
+                mapSeedOffset = Math.random() * 1000;
+                
+                // Resetear posición del jugador al centro
+                player.worldX = 2 * TILE_SIZE + TILE_SIZE / 2;
+                player.worldY = 2 * TILE_SIZE + TILE_SIZE / 2;
+                
+                // Mover la salida a otro punto del nuevo laberinto
+                relocateExit();
+            }
         }
 
         function draw() {
-            // Dibujar el suelo de la alfombra sucia
             ctx.fillStyle = "#dfca80";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Calcular rango de renderizado alrededor del jugador
             const startTileX = Math.floor((player.worldX - canvas.width / 2) / TILE_SIZE) - 1;
             const endTileX = Math.ceil((player.worldX + canvas.width / 2) / TILE_SIZE) + 1;
             const startTileY = Math.floor((player.worldY - canvas.height / 2) / TILE_SIZE) - 1;
             const endTileY = Math.ceil((player.worldY + canvas.height / 2) / TILE_SIZE) + 1;
 
-            // Dibujar los paneles de las paredes amarillas opacas
+            // 1. DIBUJAR LA SALIDA (Si está en el rango de visión)
+            if (exitZone.tileX >= startTileX && exitZone.tileX <= endTileX &&
+                exitZone.tileY >= startTileY && exitZone.tileY <= endTileY) {
+                
+                const exitScreenX = exitZone.tileX * TILE_SIZE - player.worldX + canvas.width / 2 + (TILE_SIZE / 2);
+                const exitScreenY = exitZone.tileY * TILE_SIZE - player.worldY + canvas.height / 2 + (TILE_SIZE / 2);
+                
+                // Efecto visual de glitch/falla de realidad (cuadrado gris parpadeante)
+                ctx.fillStyle = Math.random() > 0.3 ? "#7c7768" : "#4a473e";
+                ctx.fillRect(exitScreenX - exitZone.size/2, exitScreenY - exitZone.size/2, exitZone.size, exitZone.size);
+                
+                // Bordes de error digital
+                ctx.strokeStyle = "rgba(255,255,255,0.4)";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(exitScreenX - exitZone.size/2, exitScreenY - exitZone.size/2, exitZone.size, exitZone.size);
+            }
+
+            // 2. DIBUJAR LAS PAREDES AMARILLAS
             ctx.fillStyle = "#af9543"; 
 
             for (let ty = startTileY; ty <= endTileY; ty++) {
@@ -210,17 +269,17 @@
                 }
             }
 
-            // Dibujar al explorador perdido (Silueta oscura)
+            // 3. DIBUJAR JUGADOR
             ctx.beginPath();
             ctx.arc(player.screenX, player.screenY, player.radius, 0, Math.PI * 2);
             ctx.fillStyle = "#3e3725";
             ctx.fill();
             ctx.closePath();
 
-            // Iluminación ambiental restrictiva (Efecto de luz de oficina que cansa la vista)
+            // 4. EFECTO DE LUZ DE LINTERNA / VIÑETA DE OFICINA
             const shadowGradient = ctx.createRadialGradient(player.screenX, player.screenY, 60, player.screenX, player.screenY, 320);
             shadowGradient.addColorStop(0, "rgba(0,0,0,0)");
-            shadowGradient.addColorStop(1, "rgba(23, 19, 5, 0.75)"); // Tonalidad amarillenta lúgubre en la distancia
+            shadowGradient.addColorStop(1, "rgba(23, 19, 5, 0.78)"); 
             ctx.fillStyle = shadowGradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
@@ -231,9 +290,10 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // Posición de aparición en una zona central limpia
+        // Configurar punto de partida y primera salida fija en el mapa inicial
         player.worldX = 2 * TILE_SIZE + TILE_SIZE / 2;
         player.worldY = 2 * TILE_SIZE + TILE_SIZE / 2;
+        relocateExit();
 
         gameLoop();
     </script>
