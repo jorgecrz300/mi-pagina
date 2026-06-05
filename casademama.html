@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plano Interactivo de la Casa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        canvas {
+            background-color: #fff;
+            border: 2px solid #333;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .info-panel {
+            margin-top: 15px;
+            background: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Plano de la Casa Interactivo</h1>
+    <p>Usa las <b>flechas del teclado</b> (▲ ▼ ◀ ▶) para mover a la personita azul por la casa.</p>
+
+    <canvas id="mapaCasa" width="500" height="750"></canvas>
+
+    <div class="info-panel">
+        <h3>Datos del Plano:</h3>
+        <ul>
+            <li>4 Ventanas (Líneas rojas)</li>
+            <li>3 Puertas principales / 2 Puertas de cuartos</li>
+            <li>Corredores laterales</li>
+            <li>Estructura basada en cuadrícula</li>
+        </ul>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mapaCasa');
+        const ctx = canvas.getContext('2d');
+
+        // Tamaño de cada cuadro de la cuadrícula
+        const TILE_SIZE = 25; 
+
+        // Posición inicial de la personita (dentro de una habitación)
+        let player = {
+            x: 200,
+            y: 200,
+            radius: 8,
+            speed: 4
+        };
+
+        // Definición de las paredes del plano (basado en tu dibujo)
+        // Cada objeto es una línea: {x1, y1, x2, y2, tipo}
+        const walls = [
+            // Perímetro exterior e interior principal
+            {x1: 100, y1: 50, x2: 300, y2: 50, type: 'wall'}, // Pared norte arriba
+            {x1: 50, y1: 50, x2: 100, y2: 50, type: 'wall'},  // Baño arriba izquierda
+            {x1: 50, y1: 50, x2: 50, y2: 100, type: 'wall'},
+            {x1: 50, y1: 100, x2: 100, y2: 100, type: 'wall'},
+            
+            // Paredes del lado izquierdo (con ventana y puertas)
+            {x1: 100, y1: 50, x2: 100, y2: 150, type: 'wall'},
+            {x1: 100, y1: 150, x2: 100, y2: 175, type: 'door'}, // Puerta
+            {x1: 100, y1: 175, x2: 100, y2: 225, type: 'wall'},
+            {x1: 100, y1: 225, x2: 100, y2: 275, type: 'window'}, // Ventana izquierda
+            {x1: 100, y1: 275, x2: 100, y2: 350, type: 'wall'},
+
+            // Divisiones de cuartos internas (Horizontales)
+            {x1: 100, y1: 150, x2: 175, y2: 150, type: 'wall'},
+            {x1: 175, y1: 150, x2: 225, y2: 150, type: 'door'}, // Puerta cuarto
+            {x1: 225, y1: 150, x2: 250, y2: 150, type: 'wall'},
+            
+            {x1: 100, y1: 250, x2: 250, y2: 250, type: 'wall'}, // Otra división horizontal
+            {x1: 100, y1: 350, x2: 225, y2: 350, type: 'wall'}, // Pared sur del bloque
+            {x1: 225, y1: 350, x2: 275, y2: 350, type: 'door'}, // Puerta principal sur
+
+            // Paredes verticales internas y derechas
+            {x1: 250, y1: 50, x2: 250, y2: 250, type: 'wall'},
+            {x1: 300, y1: 50, x2: 300, y2: 100, type: 'wall'},
+            {x1: 300, y1: 100, x2: 300, y2: 150, type: 'window'}, // Ventana derecha superior
+            {x1: 300, y1: 150, x2: 300, y2: 175, type: 'wall'},
+            {x1: 300, y1: 175, x2: 300, y2: 225, type: 'door'}, // Puerta derecha grande
+            {x1: 300, y1: 225, x2: 300, y2: 275, type: 'wall'},
+            {x1: 300, y1: 275, x2: 300, y2: 325, type: 'window'}, // Ventana derecha inferior
+            {x1: 300, y1: 325, x2: 300, y2: 350, type: 'wall'},
+            {x1: 275, y1: 350, x2: 300, y2: 350, type: 'wall'},
+
+            // Ventana superior central
+            {x1: 175, y1: 50, x2: 225, y2: 50, type: 'window'},
+
+            // Estructura de abajo (Cerca / Zona de lavado dibujada con puntos)
+            {x1: 150, y1: 400, x2: 150, y2: 550, type: 'fence'},
+            {x1: 150, y1: 550, x2: 300, y2: 550, type: 'fence'},
+            {x1: 300, y1: 550, x2: 300, y2: 400, type: 'fence'},
+            // Cuarto interno de lavado abajo
+            {x1: 200, y1: 475, x2: 200, y2: 550, type: 'wall'},
+            {x1: 200, y1: 475, x2: 275, y2: 475, type: 'wall'}
+        ];
+
+        // Control del teclado
+        let keys = {};
+        window.addEventListener('keydown', e => keys[e.code] = true);
+        window.addEventListener('keyup', e => keys[e.code] = false);
+
+        // Función para dibujar la cuadrícula de fondo (como tu libreta Scribe)
+        function drawGrid() {
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < canvas.width; x += TILE_SIZE) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += TILE_SIZE) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        }
+
+        // Función para dibujar los elementos del plano
+        function drawMap() {
+            walls.forEach(w => {
+                ctx.beginPath();
+                ctx.moveTo(w.x1, w.y1);
+                ctx.lineTo(w.x2, w.y2);
+
+                if (w.type === 'wall') {
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 4;
+                    ctx.setLineDash([]);
+                } else if (w.type === 'window') {
+                    ctx.strokeStyle = 'red'; // Ventanas en rojo como tu dibujo
+                    ctx.lineWidth = 5;
+                    ctx.setLineDash([]);
+                } else if (w.type === 'door') {
+                    ctx.strokeStyle = '#aaa'; // Puertas representadas en gris claro/abiertas
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([4, 4]); 
+                } else if (w.type === 'fence') {
+                    ctx.strokeStyle = '#666'; // Líneas de abajo de la cerca
+                    ctx.lineWidth = 3;
+                    ctx.setLineDash([2, 8]); // Simula los puntos separados
+                }
+                ctx.stroke();
+            });
+
+            // Textos indicadores como en la hoja
+            ctx.fillStyle = '#888';
+            ctx.font = '12px Arial';
+            ctx.fillText('Corredor', 20, 200);
+            ctx.fillText('Corredor', 330, 200);
+            ctx.fillText('Lavado / Cerca', 160, 570);
+        }
+
+        // Dibujar a la personita
+        function drawPlayer() {
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#007bff'; // Azul para la personita
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Lógica de movimiento básica
+        function updateMovement() {
+            let nextX = player.x;
+            let nextY = player.y;
+
+            if (keys['ArrowUp']) nextY -= player.speed;
+            if (keys['ArrowDown']) nextY += player.speed;
+            if (keys['ArrowLeft']) nextX -= player.speed;
+            if (keys['ArrowRight']) nextX += player.speed;
+
+            // Límites de la pantalla para que no se salga del canvas
+            if (nextX - player.radius > 0 && nextX + player.radius < canvas.width) {
+                player.x = nextX;
+            }
+            if (nextY - player.radius > 0 && nextY + player.radius < canvas.height) {
+                player.y = nextY;
+            }
+            
+            // Nota: Para mantener el código simple y jugable, la personita puede pasar 
+            // a través de las puertas y espacios abiertos.
+        }
+
+        // Bucle principal de animación
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            drawGrid();
+            drawMap();
+            updateMovement();
+            drawPlayer();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Iniciar el juego interactivo
+        gameLoop();
+    </script>
+</body>
+</html>
