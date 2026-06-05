@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Backrooms: Infinite Escape</title>
+    <title>The Backrooms: Escape del Nivel 0</title>
     <style>
-        * {
-            box-sizing: border-box;
+        body {
             margin: 0;
             padding: 0;
-        }
-        body {
-            background-color: #12110c;
+            background-color: #111;
             color: #fff;
             font-family: 'Courier New', Courier, monospace;
             display: flex;
@@ -21,281 +18,307 @@
             min-height: 100vh;
             overflow: hidden;
         }
-        .ui-container {
-            display: flex;
-            justify-content: space-between;
-            width: 800px;
+
+        h1 {
+            color: #dbca65;
+            text-shadow: 2px 2px #000;
             margin-bottom: 5px;
         }
-        h1 {
-            font-size: 18px;
-            color: #cbaf5c;
-            text-shadow: 2px 2px #000;
-            letter-spacing: 2px;
+
+        #game-container {
+            position: relative;
+            border: 4px solid #ab9b3c;
+            box-shadow: 0 0 20px rgba(219, 202, 101, 0.3);
         }
-        .score {
-            font-size: 18px;
-            color: #ff5555;
-            font-weight: bold;
-        }
+
         canvas {
-            background-color: #dfca80;
-            border: 5px solid #2d2614;
-            box-shadow: 0px 0px 35px rgba(0, 0, 0, 0.9);
-            cursor: crosshair;
+            background-color: #dbca65; /* Color amarillo Backrooms */
+            display: block;
         }
-        .instructions {
-            margin-top: 12px;
-            font-size: 12px;
-            color: #837a62;
+
+        #ui {
+            width: 600px;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #dbca65;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            max-width: 600px;
-            line-height: 1.4;
+        }
+
+        .screen h2 {
+            color: #ff4d4d;
+            font-size: 32px;
+        }
+        
+        .screen h2.win {
+            color: #4dff4d;
+        }
+
+        button {
+            background-color: #ab9b3c;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            font-family: inherit;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #dbca65;
+        }
+
+        #ambient-hum {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <div class="ui-container">
-        <h1>THE BACKROOMS - LEVEL 0</h1>
-        <div class="score">ZONAS ESCAPADAS: <span id="levelCount">0</span></div>
+    <h1>THE BACKROOMS</h1>
+    <p style="color: #aaa; margin: 0 0 15px 0;">Usa las flechas o WASD para moverte. Encuentra la salida oscura.</p>
+
+    <div id="game-container">
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+        
+        <div id="start-screen" class="screen">
+            <h2 style="color: #dbca65;">Has hecho "Noclip" de la realidad</h2>
+            <p>Estás en el Nivel 0. El zumbido es ensordecedor.<br>Encuentra la anomalía para escapar antes de perder la cordura.</p>
+            <button onclick="startGame()">ENTRAR</button>
+        </div>
+
+        <div id="gameover-screen" class="screen" style="display: none;">
+            <h2>TE HAS PERDIDO EN EL VACÍO</h2>
+            <p>Tu cordura llegó a 0. Te has convertido en parte del lugar.</p>
+            <button onclick="startGame()">INTENTAR DE NUEVO</button>
+        </div>
+
+        <div id="win-screen" class="screen" style="display: none;">
+            <h2 class="win">¡LOGRASTE ESCAPAR!</h2>
+            <p>Atravesaste la pared correcta y regresaste a la realidad... por ahora.</p>
+            <button onclick="startGame()">JUGAR OTRA VEZ</button>
+        </div>
     </div>
-    
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    
-    <div class="instructions">
-        CONTROLES: WASD / FLECHAS.<br>
-        Encuentra la **falla de textura (Noclip)** gris y parpadeante para escapar al siguiente sector.<br>
-        🔊 Haz CLIC para activar el zumbido de las luces.
+
+    <div id="ui">
+        <div id="sanity-display">Cordura: 100%</div>
+        <div id="status-display">Buscando salida...</div>
     </div>
 
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
-        const TILE_SIZE = 110; 
-        const WALL_THICKNESS = 5; 
-        const PLAYER_SPEED = 3.5;
+        // Elementos de la interfaz
+        const startScreen = document.getElementById("start-screen");
+        const gameoverScreen = document.getElementById("gameover-screen");
+        const winScreen = document.getElementById("win-screen");
+        const sanityDisplay = document.getElementById("sanity-display");
 
-        let levelsEscaped = 0;
-        // Cambiamos la semilla del mapa cada vez que el jugador escapa
-        let mapSeedOffset = Math.random() * 1000; 
-
-        const player = {
-            worldX: 0,
-            worldY: 0,
-            radius: 9,
-            screenX: canvas.width / 2,
-            screenY: canvas.height / 2
-        };
-
-        // Coordenadas de la trampilla de salida en el mundo
-        const exitZone = {
-            tileX: 8,
-            tileY: 6,
-            size: 40
-        };
-
-        const keys = {};
+        // Variables del juego
+        let player = { x: 50, y: 50, size: 15, speed: 3 };
+        let exit = { x: 500, y: 320, size: 25 };
+        let sanity = 100;
+        let gameInProgress = false;
+        let keys = {};
         let audioCtx = null;
+        let humOscillator = null;
 
-        function pseudoRandom(x, y) {
-            // Incorporamos el offset para cambiar el laberinto al reiniciar
-            const h = Math.sin((x + mapSeedOffset) * 12.9898 + (y + mapSeedOffset) * 78.233) * 43758.5453123;
-            return h - Math.floor(h);
-        }
+        // Estructura del laberinto (Paredes del Nivel 0)
+        const walls = [
+            // Bordes exteriores
+            { x: 0, y: 0, w: 600, h: 10 },
+            { x: 0, y: 390, w: 600, h: 10 },
+            { x: 0, y: 0, w: 10, h: 400 },
+            { x: 590, y: 0, w: 10, h: 400 },
+            // Paredes internas estilo oficinas
+            { x: 100, y: 10, w: 15, h: 120 },
+            { x: 100, y: 130, w: 120, h: 15 },
+            { x: 220, y: 60, w: 15, h: 150 },
+            { x: 100, y: 240, w: 15, h: 100 },
+            { x: 100, y: 330, w: 150, h: 15 },
+            { x: 320, y: 10, w: 15, h: 180 },
+            { x: 320, y: 190, w: 150, h: 15 },
+            { x: 470, y: 100, w: 15, h: 180 },
+            { x: 320, y: 280, w: 100, h: 15 },
+            { x: 200, y: 280, w: 15, h: 60 }
+        ];
 
-        function getCellWalls(tileX, tileY) {
-            const inRoomX = tileX % 4;
-            const inRoomY = tileY % 4;
+        // Escuchar teclado
+        window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
+        window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
 
-            let top = false, bottom = false, left = false, right = false;
+        // Iniciar el juego y el sonido ambiente
+        function startGame() {
+            // Resetear variables
+            player.x = 40;
+            player.y = 40;
+            sanity = 100;
+            gameInProgress = true;
 
-            if (inRoomY === 0) top = true;
-            if (inRoomY === 3) bottom = true;
-            if (inRoomX === 0) left = true;
-            if (inRoomX === 3) right = true;
-
-            const seed = pseudoRandom(Math.floor(tileX / 4), Math.floor(tileY / 4));
+            // Mover la salida a un lugar aleatorio (lejos del jugador)
+            exit.x = Math.random() * (canvas.width - 60) + 30;
+            exit.y = Math.random() * (canvas.height - 60) + 30;
             
-            if (seed < 0.45 && inRoomX > 0 && inRoomX < 3) top = false;
-            if (seed > 0.55 && inRoomX > 0 && inRoomX < 3) bottom = false;
-            if (seed < 0.50 && inRoomY > 0 && inRoomY < 3) left = false;
-            if (seed > 0.35 && inRoomY > 0 && inRoomY < 3) right = false;
-
-            if (inRoomX === 2 && inRoomY === 2 && pseudoRandom(tileX, ty = tileY) < 0.3) {
-                left = true;
-                top = true;
+            // Asegurar que la salida no aparezca dentro de una pared de forma simple
+            while(checkCollisionWithWalls(exit.x, exit.y, exit.size)) {
+                exit.x = Math.random() * (canvas.width - 60) + 30;
+                exit.y = Math.random() * (canvas.height - 60) + 30;
             }
 
-            return { top, bottom, left, right };
-        }
+            // Ocultar pantallas
+            startScreen.style.display = "none";
+            gameoverScreen.style.display = "none";
+            winScreen.style.display = "none";
 
-        function startFluorescentBuzz() {
-            if (audioCtx) return; 
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.type = 'sawtooth'; 
-            oscillator.frequency.setValueAtTime(55, audioCtx.currentTime); 
-            const filter = audioCtx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(120, audioCtx.currentTime);
-            gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime); 
-            oscillator.connect(filter);
-            filter.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.start();
-        }
-
-        window.addEventListener("keydown", (e) => { keys[e.key.toLowerCase()] = true; });
-        window.addEventListener("keyup", (e) => { keys[e.key.toLowerCase()] = false; });
-        window.addEventListener("click", startFluorescentBuzz);
-
-        function canMoveTo(worldX, worldY) {
-            const buffer = player.radius;
-            const points = [
-                {x: worldX - buffer, y: worldY},
-                {x: worldX + buffer, y: worldY},
-                {x: worldX, y: worldY - buffer},
-                {x: worldX, y: worldY + buffer}
-            ];
-
-            for (let p of points) {
-                const tx = Math.floor(p.x / TILE_SIZE);
-                const ty = Math.floor(p.y / TILE_SIZE);
-                
-                const walls = getCellWalls(tx, ty);
-                const innerX = p.x % TILE_SIZE;
-                const innerY = p.y % TILE_SIZE;
-
-                if (walls.top && innerY < WALL_THICKNESS) return false;
-                if (walls.bottom && innerY > TILE_SIZE - WALL_THICKNESS) return false;
-                if (walls.left && innerX < WALL_THICKNESS) return false;
-                if (walls.right && innerX > TILE_SIZE - WALL_THICKNESS) return false;
-            }
-            return true;
-        }
-
-        // Función para mover la salida a un lugar aleatorio lejano
-        function relocateExit() {
-            // Elige un cuadrante aleatorio lejos del origen (entre -15 y 15 bloques)
-            let tx = Math.floor(Math.random() * 30) - 15;
-            let ty = Math.floor(Math.random() * 30) - 15;
-            
-            // Evitar que aparezca justo encima del jugador al iniciar
-            if (Math.abs(tx) < 3 && Math.abs(ty) < 3) {
-                tx += 5;
-                ty += 5;
-            }
-            
-            exitZone.tileX = tx;
-            exitZone.tileY = ty;
-        }
-
-        function update() {
-            let dx = 0, dy = 0;
-            if (keys["arrowup"] || keys["w"]) dy = -PLAYER_SPEED;
-            if (keys["arrowdown"] || keys["s"]) dy = PLAYER_SPEED;
-            if (keys["arrowleft"] || keys["a"]) dx = -PLAYER_SPEED;
-            if (keys["arrowright"] || keys["d"]) dx = PLAYER_SPEED;
-
-            if (dx !== 0 && canMoveTo(player.worldX + dx, player.worldY)) player.worldX += dx;
-            if (dy !== 0 && canMoveTo(player.worldX, player.worldY + dy)) player.worldY += dy;
-
-            // Comprobar si el jugador pisa la zona de Noclip (Salida)
-            const exitWorldX = exitZone.tileX * TILE_SIZE + (TILE_SIZE / 2);
-            const exitWorldY = exitZone.tileY * TILE_SIZE + (TILE_SIZE / 2);
-            
-            const distance = Math.hypot(player.worldX - exitWorldX, player.worldY - exitWorldY);
-            
-            if (distance < player.radius + exitZone.size / 2) {
-                // ¡Avanza de nivel!
-                levelsEscaped++;
-                document.getElementById("levelCount").innerText = levelsEscaped;
-                
-                // Cambiar el diseño del mapa por completo generando un nuevo offset
-                mapSeedOffset = Math.random() * 1000;
-                
-                // Resetear posición del jugador al centro
-                player.worldX = 2 * TILE_SIZE + TILE_SIZE / 2;
-                player.worldY = 2 * TILE_SIZE + TILE_SIZE / 2;
-                
-                // Mover la salida a otro punto del nuevo laberinto
-                relocateExit();
-            }
-        }
-
-        function draw() {
-            ctx.fillStyle = "#dfca80";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const startTileX = Math.floor((player.worldX - canvas.width / 2) / TILE_SIZE) - 1;
-            const endTileX = Math.ceil((player.worldX + canvas.width / 2) / TILE_SIZE) + 1;
-            const startTileY = Math.floor((player.worldY - canvas.height / 2) / TILE_SIZE) - 1;
-            const endTileY = Math.ceil((player.worldY + canvas.height / 2) / TILE_SIZE) + 1;
-
-            // 1. DIBUJAR LA SALIDA (Si está en el rango de visión)
-            if (exitZone.tileX >= startTileX && exitZone.tileX <= endTileX &&
-                exitZone.tileY >= startTileY && exitZone.tileY <= endTileY) {
-                
-                const exitScreenX = exitZone.tileX * TILE_SIZE - player.worldX + canvas.width / 2 + (TILE_SIZE / 2);
-                const exitScreenY = exitZone.tileY * TILE_SIZE - player.worldY + canvas.height / 2 + (TILE_SIZE / 2);
-                
-                // Efecto visual de glitch/falla de realidad (cuadrado gris parpadeante)
-                ctx.fillStyle = Math.random() > 0.3 ? "#7c7768" : "#4a473e";
-                ctx.fillRect(exitScreenX - exitZone.size/2, exitScreenY - exitZone.size/2, exitZone.size, exitZone.size);
-                
-                // Bordes de error digital
-                ctx.strokeStyle = "rgba(255,255,255,0.4)";
-                ctx.lineWidth = 2;
-                ctx.strokeRect(exitScreenX - exitZone.size/2, exitScreenY - exitZone.size/2, exitZone.size, exitZone.size);
-            }
-
-            // 2. DIBUJAR LAS PAREDES AMARILLAS
-            ctx.fillStyle = "#af9543"; 
-
-            for (let ty = startTileY; ty <= endTileY; ty++) {
-                for (let tx = startTileX; tx <= endTileX; tx++) {
-                    const walls = getCellWalls(tx, ty);
+            // Iniciar audio de zumbido de fondo (Frecuencia molesta típica)
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (!humOscillator) {
+                    humOscillator = audioCtx.createOscillator();
+                    let gainNode = audioCtx.createGain();
+                    humOscillator.type = 'sawtooth';
+                    humOscillator.frequency.setValueAtTime(60, audioCtx.currentTime); // 60Hz hum
+                    gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); // Volumen bajo
                     
-                    const screenX = tx * TILE_SIZE - player.worldX + canvas.width / 2;
-                    const screenY = ty * TILE_SIZE - player.worldY + canvas.height / 2;
+                    // Filtro para hacerlo sonar más ahogado
+                    let filter = audioCtx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(200, audioCtx.currentTime);
 
-                    if (walls.top) ctx.fillRect(screenX, screenY, TILE_SIZE, WALL_THICKNESS);
-                    if (walls.bottom) ctx.fillRect(screenX, screenY + TILE_SIZE - WALL_THICKNESS, TILE_SIZE, WALL_THICKNESS);
-                    if (walls.left) ctx.fillRect(screenX, screenY, WALL_THICKNESS, TILE_SIZE);
-                    if (walls.right) ctx.fillRect(screenX + TILE_SIZE - WALL_THICKNESS, screenY, WALL_THICKNESS, TILE_SIZE);
+                    humOscillator.connect(filter);
+                    filter.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    humOscillator.start();
+                }
+            } catch (e) { console.log("Audio no soportado hasta interacción completa."); }
+
+            // Iniciar bucle principal
+            requestAnimationFrame(update);
+        }
+
+        // Detectar colisiones moleculas
+        function checkCollisionWithWalls(x, y, size) {
+            for (let wall of walls) {
+                if (x < wall.x + wall.w &&
+                    x + size > wall.x &&
+                    y < wall.y + wall.h &&
+                    y + size > wall.y) {
+                    return true;
                 }
             }
-
-            // 3. DIBUJAR JUGADOR
-            ctx.beginPath();
-            ctx.arc(player.screenX, player.screenY, player.radius, 0, Math.PI * 2);
-            ctx.fillStyle = "#3e3725";
-            ctx.fill();
-            ctx.closePath();
-
-            // 4. EFECTO DE LUZ DE LINTERNA / VIÑETA DE OFICINA
-            const shadowGradient = ctx.createRadialGradient(player.screenX, player.screenY, 60, player.screenX, player.screenY, 320);
-            shadowGradient.addColorStop(0, "rgba(0,0,0,0)");
-            shadowGradient.addColorStop(1, "rgba(23, 19, 5, 0.78)"); 
-            ctx.fillStyle = shadowGradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            return false;
         }
 
-        function gameLoop() {
-            update();
+        // Actualizar estado del juego
+        function update() {
+            if (!gameInProgress) return;
+
+            let nextX = player.x;
+            let nextY = player.y;
+
+            // Movimiento (Soporta Flechas y WASD)
+            if (keys["arrowup"] || keys["w"]) nextY -= player.speed;
+            if (keys["arrowdown"] || keys["s"]) nextY += player.speed;
+            if (keys["arrowleft"] || keys["a"]) nextX -= player.speed;
+            if (keys["arrowright"] || keys["d"]) nextX += player.speed;
+
+            // Validar colisión antes de mover en eje X
+            if (!checkCollisionWithWalls(nextX, player.y, player.size)) {
+                player.x = nextX;
+            }
+            // Validar colisión antes de mover en eje Y
+            if (!checkCollisionWithWalls(player.x, nextY, player.size)) {
+                player.y = nextY;
+            }
+
+            // Bajar la cordura con el tiempo
+            sanity -= 0.04;
+            sanityDisplay.innerText = `Cordura: ${Math.max(0, Math.floor(sanity))}%`;
+
+            if (sanity <= 0) {
+                gameInProgress = false;
+                gameoverScreen.style.display = "flex";
+            }
+
+            // Verificar si el jugador encuentra la salida ("Noclip de regreso")
+            if (player.x < exit.x + exit.size &&
+                player.x + player.size > exit.x &&
+                player.y < exit.y + exit.size &&
+                player.y + player.size > exit.y) {
+                gameInProgress = false;
+                winScreen.style.display = "flex";
+            }
+
             draw();
-            requestAnimationFrame(gameLoop);
+
+            if (gameInProgress) {
+                requestAnimationFrame(update);
+            }
         }
 
-        // Configurar punto de partida y primera salida fija en el mapa inicial
-        player.worldX = 2 * TILE_SIZE + TILE_SIZE / 2;
-        player.worldY = 2 * TILE_SIZE + TILE_SIZE / 2;
-        relocateExit();
+        // Dibujar gráficos en el lienzo
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        gameLoop();
+            // 1. Dibujar el fondo alfombrado (Patrón de líneas sutiles)
+            ctx.fillStyle = "#dbca65";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.strokeStyle = "#c4b456";
+            ctx.lineWidth = 1;
+            for(let i=0; i<canvas.width; i+=20) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+            }
+
+            // 2. Dibujar las paredes amarillas/marrones desgastadas
+            ctx.fillStyle = "#8a7b29";
+            for (let wall of walls) {
+                ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
+                // Bordes oscuros para dar profundidad de oficina vieja
+                ctx.strokeStyle = "#5c521a";
+                ctx.strokeRect(wall.x, wall.y, wall.w, wall.h);
+            }
+
+            // 3. Dibujar la salida (Un fallo oscuro pixelado en el suelo)
+            ctx.fillStyle = "#111";
+            ctx.fillRect(exit.x, exit.y, exit.size, exit.size);
+            ctx.fillStyle = "#ff4d4d"; // Un pequeño destello de error
+            ctx.fillRect(exit.x + 10, exit.y + 10, 5, 5);
+
+            // 4. Dibujar al jugador (Representado como una silueta perdida)
+            ctx.fillStyle = "#333";
+            ctx.fillRect(player.x, player.y, player.size, player.size);
+            
+            // Efecto de parpadeo de luces aleatorio (Estilo terror analógico)
+            if (Math.random() > 0.98) {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // Dibujar el estado inicial antes de dar click
+        draw();
     </script>
 </body>
 </html>
