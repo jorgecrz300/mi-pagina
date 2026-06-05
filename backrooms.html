@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Backrooms: Classic Infinite Level 0</title>
+    <title>The Backrooms: Nivel 0 Infinito</title>
     <style>
         * {
             box-sizing: border-box;
@@ -11,9 +11,9 @@
             padding: 0;
         }
         body {
-            background-color: #15140f;
+            background-color: #12110c;
             color: #fff;
-            font-family: sans-serif;
+            font-family: 'Courier New', Courier, monospace;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -22,102 +22,139 @@
             overflow: hidden;
         }
         h1 {
-            margin-bottom: 10px;
-            font-size: 22px;
-            color: #d1b464;
+            margin-bottom: 5px;
+            font-size: 20px;
+            color: #cbaf5c;
             text-shadow: 2px 2px #000;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
         canvas {
-            background-color: #dfca80; /* Color alfombra */
-            border: 4px solid #3a321d;
-            box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.8);
+            background-color: #dfca80; /* Alfombra beige/amarilla vieja */
+            border: 5px solid #2d2614;
+            box-shadow: 0px 0px 35px rgba(0, 0, 0, 0.9);
+            cursor: crosshair;
         }
         .instructions {
-            margin-top: 15px;
-            font-size: 13px;
-            color: #7a725d;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #837a62;
             text-align: center;
+            max-width: 600px;
+            line-height: 1.4;
         }
     </style>
 </head>
 <body>
 
-    <h1>THE BACKROOMS - INF_LEVEL_0</h1>
+    <h1>THE BACKROOMS - LEVEL 0</h1>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <div class="instructions">Usa WASD o las Flechas del teclado para explorar el laberinto infinito.</div>
+    <div class="instructions">
+        CONTROLES: Moverse con WASD o FLECHAS.<br>
+        🔊 Haz CLIC en la pantalla para activar el zumbido de las luces fluorescentes.
+    </div>
 
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
-        // Configuración del tamaño de las habitaciones y grosor de paredes
-        const TILE_SIZE = 100; 
-        const WALL_THICKNESS = 6; // Paredes delgadas
-        const PLAYER_SPEED = 4;
+        // Ajustes de diseño (Paredes delgadas y habitaciones de oficina)
+        const TILE_SIZE = 110; 
+        const WALL_THICKNESS = 5; 
+        const PLAYER_SPEED = 3.5;
 
         const player = {
             worldX: 0,
             worldY: 0,
-            radius: 10,
+            radius: 9,
             screenX: canvas.width / 2,
             screenY: canvas.height / 2
         };
 
         const keys = {};
+        let audioCtx = null;
 
-        // Generador matemático para el mapa infinito
+        // Generador matemático para que el mapa sea infinito y constante
         function pseudoRandom(x, y) {
             const h = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453123;
             return h - Math.floor(h);
         }
 
-        // Determina qué paredes delgadas tiene una celda matemática
+        // Estructura de las habitaciones clásicas del Nivel 0
         function getCellWalls(tileX, tileY) {
+            // Agrupar celdas en cuadrículas de 4x4 para simular cuartos
             const inRoomX = tileX % 4;
             const inRoomY = tileY % 4;
 
             let top = false, bottom = false, left = false, right = false;
 
-            // Crear cuadrícula inicial de habitaciones
+            // Crear las divisiones de las oficinas
             if (inRoomY === 0) top = true;
             if (inRoomY === 3) bottom = true;
             if (inRoomX === 0) left = true;
             if (inRoomX === 3) right = true;
 
-            // Quitar segmentos de pared de forma aleatoria para conectar los cuartos y hacer pasillos
+            // Romper muros al azar para que estén conectados por pasillos y aperturas vacías
             const seed = pseudoRandom(Math.floor(tileX / 4), Math.floor(tileY / 4));
             
-            if (seed < 0.4 && inRoomX > 0 && inRoomX < 3) top = false;
-            if (seed > 0.6 && inRoomX > 0 && inRoomX < 3) bottom = false;
-            if (seed < 0.5 && inRoomY > 0 && inRoomY < 3) left = false;
-            if (seed > 0.3 && inRoomY > 0 && inRoomY < 3) right = false;
+            if (seed < 0.45 && inRoomX > 0 && inRoomX < 3) top = false;
+            if (seed > 0.55 && inRoomX > 0 && inRoomX < 3) bottom = false;
+            if (seed < 0.50 && inRoomY > 0 && inRoomY < 3) left = false;
+            if (seed > 0.35 && inRoomY > 0 && inRoomY < 3) right = false;
 
-            // Columnas sueltas típicas del diseño de los Backrooms
-            if (inRoomX === 2 && inRoomY === 2 && pseudoRandom(tileX, tileY) < 0.35) {
-                top = true;
+            // Columnas o pequeños muros sueltos en medio del cuarto para romper la simetría
+            if (inRoomX === 2 && inRoomY === 2 && pseudoRandom(tileX, tileY) < 0.3) {
                 left = true;
+                top = true;
             }
 
             return { top, bottom, left, right };
         }
 
+        // Activar el zumbido monótono de las luces de fondo (Monotonous Buzz)
+        function startFluorescentBuzz() {
+            if (audioCtx) return; // Ya está activo
+            
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Oscilador principal para la frecuencia eléctrica de las lámparas (60Hz aproximado)
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = 'sawtooth'; 
+            oscillator.frequency.setValueAtTime(55, audioCtx.currentTime); // Tono grave constante
+            
+            // Filtro para apagar los agudos y que suene encerrado
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(120, audioCtx.currentTime);
+
+            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime); // Volumen bajo de fondo
+
+            oscillator.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+        }
+
+        // Capturar controles del teclado
         window.addEventListener("keydown", (e) => { keys[e.key.toLowerCase()] = true; });
         window.addEventListener("keyup", (e) => { keys[e.key.toLowerCase()] = false; });
+        
+        // Iniciar audio al presionar la pantalla
+        window.addEventListener("click", startFluorescentBuzz);
 
-        // Sistema de colisiones preciso para paredes delgadas
+        // Control preciso de colisiones contra las líneas delgadas amarillas
         function canMoveTo(worldX, worldY) {
             const buffer = player.radius;
-            
-            // Revisar puntos alrededor del jugador
-            const checkPoints = [
+            const points = [
                 {x: worldX - buffer, y: worldY},
                 {x: worldX + buffer, y: worldY},
                 {x: worldX, y: worldY - buffer},
                 {x: worldX, y: worldY + buffer}
             ];
 
-            for (let p of checkPoints) {
+            for (let p of points) {
                 const tx = Math.floor(p.x / TILE_SIZE);
                 const ty = Math.floor(p.y / TILE_SIZE);
                 
@@ -125,13 +162,9 @@
                 const innerX = p.x % TILE_SIZE;
                 const innerY = p.y % TILE_SIZE;
 
-                // Colisión con la pared superior delgada
                 if (walls.top && innerY < WALL_THICKNESS) return false;
-                // Colisión con la pared inferior delgada
                 if (walls.bottom && innerY > TILE_SIZE - WALL_THICKNESS) return false;
-                // Colisión con la pared izquierda delgada
                 if (walls.left && innerX < WALL_THICKNESS) return false;
-                // Colisión con la pared derecha delgada
                 if (walls.right && innerX > TILE_SIZE - WALL_THICKNESS) return false;
             }
             return true;
@@ -144,24 +177,24 @@
             if (keys["arrowleft"] || keys["a"]) dx = -PLAYER_SPEED;
             if (keys["arrowright"] || keys["d"]) dx = PLAYER_SPEED;
 
-            // Movimiento independiente en ejes para deslizamiento suave en esquinas
+            // Movimiento fluido e independiente por cada eje
             if (dx !== 0 && canMoveTo(player.worldX + dx, player.worldY)) player.worldX += dx;
             if (dy !== 0 && canMoveTo(player.worldX, player.worldY + dy)) player.worldY += dy;
         }
 
         function draw() {
-            // Suelo: Alfombra vieja de los Backrooms
+            // Dibujar el suelo de la alfombra sucia
             ctx.fillStyle = "#dfca80";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Calcular las celdas visibles en pantalla
+            // Calcular rango de renderizado alrededor del jugador
             const startTileX = Math.floor((player.worldX - canvas.width / 2) / TILE_SIZE) - 1;
             const endTileX = Math.ceil((player.worldX + canvas.width / 2) / TILE_SIZE) + 1;
             const startTileY = Math.floor((player.worldY - canvas.height / 2) / TILE_SIZE) - 1;
             const endTileY = Math.ceil((player.worldY + canvas.height / 2) / TILE_SIZE) + 1;
 
-            // Dibujar paredes delgadas amarillas
-            ctx.fillStyle = "#b59948"; // Amarillo mostaza oscuro para las paredes
+            // Dibujar los paneles de las paredes amarillas opacas
+            ctx.fillStyle = "#af9543"; 
 
             for (let ty = startTileY; ty <= endTileY; ty++) {
                 for (let tx = startTileX; tx <= endTileX; tx++) {
@@ -170,33 +203,25 @@
                     const screenX = tx * TILE_SIZE - player.worldX + canvas.width / 2;
                     const screenY = ty * TILE_SIZE - player.worldY + canvas.height / 2;
 
-                    if (walls.top) {
-                        ctx.fillRect(screenX, screenY, TILE_SIZE, WALL_THICKNESS);
-                    }
-                    if (walls.bottom) {
-                        ctx.fillRect(screenX, screenY + TILE_SIZE - WALL_THICKNESS, TILE_SIZE, WALL_THICKNESS);
-                    }
-                    if (walls.left) {
-                        ctx.fillRect(screenX, screenY, WALL_THICKNESS, TILE_SIZE);
-                    }
-                    if (walls.right) {
-                        ctx.fillRect(screenX + TILE_SIZE - WALL_THICKNESS, screenY, WALL_THICKNESS, TILE_SIZE);
-                    }
+                    if (walls.top) ctx.fillRect(screenX, screenY, TILE_SIZE, WALL_THICKNESS);
+                    if (walls.bottom) ctx.fillRect(screenX, screenY + TILE_SIZE - WALL_THICKNESS, TILE_SIZE, WALL_THICKNESS);
+                    if (walls.left) ctx.fillRect(screenX, screenY, WALL_THICKNESS, TILE_SIZE);
+                    if (walls.right) ctx.fillRect(screenX + TILE_SIZE - WALL_THICKNESS, screenY, WALL_THICKNESS, TILE_SIZE);
                 }
             }
 
-            // Dibujar Jugador
+            // Dibujar al explorador perdido (Silueta oscura)
             ctx.beginPath();
             ctx.arc(player.screenX, player.screenY, player.radius, 0, Math.PI * 2);
-            ctx.fillStyle = "#3a3525"; // Silueta oscura del personaje
+            ctx.fillStyle = "#3e3725";
             ctx.fill();
             ctx.closePath();
 
-            // Iluminación/Efecto de viñeta (La lámpara fluorescente perdiendo fuerza en las esquinas)
-            const gradient = ctx.createRadialGradient(player.screenX, player.screenY, 40, player.screenX, player.screenY, 340);
-            gradient.addColorStop(0, "rgba(0,0,0,0)");
-            gradient.addColorStop(1, "rgba(20, 15, 0, 0.65)"); 
-            ctx.fillStyle = gradient;
+            // Iluminación ambiental restrictiva (Efecto de luz de oficina que cansa la vista)
+            const shadowGradient = ctx.createRadialGradient(player.screenX, player.screenY, 60, player.screenX, player.screenY, 320);
+            shadowGradient.addColorStop(0, "rgba(0,0,0,0)");
+            shadowGradient.addColorStop(1, "rgba(23, 19, 5, 0.75)"); // Tonalidad amarillenta lúgubre en la distancia
+            ctx.fillStyle = shadowGradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
@@ -206,7 +231,7 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // Posición inicial del jugador en un área limpia
+        // Posición de aparición en una zona central limpia
         player.worldX = 2 * TILE_SIZE + TILE_SIZE / 2;
         player.worldY = 2 * TILE_SIZE + TILE_SIZE / 2;
 
