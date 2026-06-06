@@ -1,956 +1,204 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="cyberpunk">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="FinanzasPro">
-    
-    <title>Finanzas Pro v20.1 | Unified Suite</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <style>
-        /* --- ARQUITECTURA DE TEMAS CENTRALIZADA --- */
-        :root[data-theme="cyberpunk"] {
-            --bg-color: #0b0f19;
-            --card-bg: #151f32;
-            --card-gradient: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
-            --text-color: #f8fafc;
-            --primary: #a855f7;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --border-color: rgba(255, 255, 255, 0.05);
-            --glass-blur: none;
-            --panel-bg: rgba(15, 23, 42, 0.95);
-        }
-        
-        :root[data-theme="glass"] {
-            --bg-color: #0f172a;
-            --card-bg: rgba(255, 255, 255, 0.02);
-            --card-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-            --text-color: #f1f5f9;
-            --primary: #38bdf8;
-            --success: #34d399;
-            --danger: #f43f5e;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --glass-blur: blur(16px);
-            --panel-bg: rgba(15, 23, 42, 0.6);
-        }
-
-        :root[data-theme="space"] {
-            --bg-color: #0d1b2a;
-            --card-bg: #1b263b;
-            --card-gradient: linear-gradient(135deg, #1b263b 0%, #0d1b2a 100%);
-            --text-color: #e0e1dd;
-            --primary: #e0a96d;
-            --success: #52b788;
-            --danger: #e63946;
-            --border-color: rgba(224, 169, 109, 0.15);
-            --glass-blur: none;
-            --panel-bg: #152238;
-        }
-
-        :root[data-theme="minimal"] {
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --card-gradient: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-            --text-color: #0f172a;
-            --primary: #334155;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --border-color: rgba(15, 23, 42, 0.08);
-            --glass-blur: none;
-            --panel-bg: #ffffff;
-        }
-
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            -webkit-text-size-adjust: 100%; 
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding-top: env(safe-area-inset-top);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        
-        .glass-panel { 
-            background: var(--panel-bg); 
-            backdrop-filter: var(--glass-blur); 
-            -webkit-backdrop-filter: var(--glass-blur);
-            border-bottom: 1px solid var(--border-color); 
-        }
-        
-        .neo-card { 
-            background: var(--card-gradient); 
-            border: 1px solid var(--border-color); 
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            transition: all 0.3s ease;
-        }
-        
-        .module-view:not(.hidden) {
-            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        .privacy-masked { filter: blur(8px); pointer-events: none; user-select: none; }
-        
-        .cal-day {
-            aspect-ratio: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-            font-size: 11px;
-        }
-        .cal-day.has-data::after {
-            content: '';
-            position: absolute;
-            bottom: 4px;
-            width: 4px;
-            height: 4px;
-            background-color: var(--primary);
-            border-radius: 50%;
-        }
-        
-        .chat-msg.bot-alert {
-            background-color: rgba(239, 68, 68, 0.08);
-            border-left: 3px solid var(--danger);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>WalletFlow • FinanzasPro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .glass { background: rgba(255,255,255,0.1); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2); }
+    .dark .glass { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); }
+    .card-hover:hover { transform: translateY(-4px); transition: all 0.3s ease; }
+  </style>
 </head>
-<body class="min-h-screen w-full overflow-x-hidden selection:bg-cyan-500 selection:text-slate-950 antialiased block">
+<body class="bg-zinc-950 text-white min-h-screen pb-20">
+  <div class="max-w-md mx-auto">
 
-    <div class="w-full max-w-full overflow-x-hidden flex flex-col justify-start items-stretch project-wrapper">
+    <!-- Header -->
+    <header class="flex justify-between items-center p-4 border-b border-zinc-800">
+      <h1 class="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">WalletFlow</h1>
+      <div class="flex gap-3">
+        <button onclick="toggleTheme()" class="p-2"><i class="fas fa-moon text-xl"></i></button>
+        <button onclick="exportData()" class="p-2"><i class="fas fa-download"></i></button>
+        <button onclick="importData()" class="p-2"><i class="fas fa-upload"></i></button>
+      </div>
+    </header>
 
-        <header class="sticky top-0 z-40 glass-panel px-3 py-2.5 shadow-xl w-full box-border">
-            <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-2 w-full">
-                
-                <div class="flex items-center gap-1.5 shrink-0">
-                    <div class="w-8 h-8 bg-gradient-to-br from-cyan-500 via-blue-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg shrink-0">
-                        <span class="text-slate-950 font-extrabold text-sm">FP</span>
-                    </div>
-                    <div class="hidden xs:block">
-                        <h1 class="text-xs font-bold text-white leading-tight" id="lbl-suite-title">Finanzas<span class="text-cyan-400">Pro</span></h1>
-                    </div>
-                </div>
-                
-                <div class="hidden md:flex items-center bg-slate-950/60 p-1 rounded-xl border border-slate-800/80">
-                    <button onclick="switchModule('mod-overview')" id="btn-mod-overview" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md">🎛️ Resumen</button>
-                    <button onclick="switchModule('mod-analytics')" id="btn-mod-analytics" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">📊 Presupuestos</button>
-                    <button onclick="switchModule('mod-calendar')" id="btn-mod-calendar" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">📅 Calendario</button>
-                    <button onclick="switchModule('mod-ai-chat')" id="btn-mod-ai-chat" class="module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200">💬 Asistente IA</button>
-                </div>
-
-                <div class="flex items-center gap-1.5 shrink-0 ml-auto">
-                    <div class="md:hidden">
-                        <select id="mobileModuleSelector" onchange="switchModule(this.value)" class="bg-slate-900 border border-slate-800 text-[11px] font-bold rounded-lg py-1 px-1.5 text-cyan-400 outline-none">
-                            <option value="mod-overview">🎛️ Resumen</option>
-                            <option value="mod-analytics">📊 Mód 2</option>
-                            <option value="mod-calendar">📅 Mód 3</option>
-                            <option value="mod-ai-chat">💬 Mód 4</option>
-                        </select>
-                    </div>
-
-                    <div class="flex items-center bg-slate-900 rounded-lg px-1 py-1 border border-slate-800 text-[11px] font-mono">
-                        <select id="globalCurrency" onchange="changeCurrency()" class="bg-transparent border-0 outline-none text-cyan-400 font-bold text-[11px] cursor-pointer">
-                            <option value="USD">$</option>
-                            <option value="EUR">€</option>
-                            <option value="MXN">N$</option>
-                        </select>
-                    </div>
-
-                    <button onclick="toggleSettingsMenu()" class="w-8 h-8 bg-slate-900 border border-slate-800 text-slate-400 hover:text-white rounded-lg flex items-center justify-center transition-colors cursor-pointer shrink-0" id="btn-settings-toggle">
-                        <i class="fa-solid fa-gear text-xs"></i>
-                    </button>
-                </div>
-
-            </div>
-        </header>
-
-        <div id="settingsDropdown" class="hidden fixed top-14 right-3 z-50 w-72 bg-slate-950/95 backdrop-blur-2xl border border-slate-800 rounded-2xl p-4 shadow-2xl space-y-4 animate-[fadeIn_0.2s_ease-out]">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-                <h4 class="text-xs font-extrabold uppercase tracking-widest text-slate-400" id="lbl-menu-title">⚙️ Ajustes de la Suite</h4>
-                <button onclick="toggleSettingsMenu()" class="text-slate-500 hover:text-slate-300 text-xs"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div class="space-y-1.5">
-                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500" id="lbl-menu-lang">Idioma del Sistema</label>
-                <select id="langSelector" onchange="changeSystemLanguage(this.value)" class="w-full bg-slate-900 border border-slate-800 text-xs font-semibold rounded-xl py-2 px-2.5 text-slate-300 outline-none cursor-pointer">
-                    <option value="es">🇪🇸 Español</option>
-                    <option value="en">🇺🇸 English</option>
-                </select>
-            </div>
-
-            <div class="space-y-1.5">
-                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500" id="lbl-menu-theme">Tema Estético Visual</label>
-                <select id="themeSelector" onchange="changeSystemTheme(this.value)" class="w-full bg-slate-900 border border-slate-800 text-xs font-semibold rounded-xl py-2 px-2.5 text-slate-300 outline-none cursor-pointer">
-                    <option value="cyberpunk">🌃 Cyberpunk Core</option>
-                    <option value="glass">💎 Glassmorphism</option>
-                    <option value="space">🌌 Cosmos Contrast</option>
-                    <option value="minimal">⚪ Minimalist Clean</option>
-                </select>
-            </div>
-
-            <div class="space-y-2 pt-2 border-t border-slate-800/60">
-                <div class="grid grid-cols-2 gap-2">
-                    <button onclick="exportSystemData()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-center text-[11px] font-medium py-2 px-2 rounded-xl transition flex items-center justify-center gap-1.5 text-emerald-400 cursor-pointer">
-                        <i class="fa-solid fa-file-export"></i> <span id="lbl-menu-export">Exportar</span>
-                    </button>
-                    <button onclick="triggerImportSelection()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-center text-[11px] font-medium py-2 px-2 rounded-xl transition flex items-center justify-center gap-1.5 text-cyan-400 cursor-pointer">
-                        <i class="fa-solid fa-file-import"></i> <span id="lbl-menu-import">Importar</span>
-                    </button>
-                </div>
-                
-                <input type="file" id="systemImportFile" class="hidden" accept=".json" onchange="importSystemData(event)">
-
-                <button onclick="triggerAppGuide()" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left text-xs font-medium py-2 px-3 rounded-xl transition flex items-center gap-2 text-slate-300 cursor-pointer">
-                    <i class="fa-solid fa-circle-info text-cyan-400 text-[11px]"></i> <span id="lbl-menu-guide">Ver Guía Interactiva</span>
-                </button>
-                <button onclick="purgeAppCache()" class="w-full bg-rose-950/20 hover:bg-rose-950/40 border border-rose-900/30 text-left text-xs font-bold py-2 px-3 rounded-xl transition flex items-center gap-2 text-rose-400 cursor-pointer">
-                    <i class="fa-solid fa-trash-can text-[11px]"></i> <span id="lbl-menu-clear">Borrar Caché y Datos</span>
-                </button>
-            </div>
+    <!-- Dashboard -->
+    <div class="p-4 space-y-6">
+      <div class="glass rounded-3xl p-6">
+        <div class="flex justify-between">
+          <div>
+            <p class="text-sm text-zinc-400">Patrimonio Neto</p>
+            <p id="net-worth" class="text-4xl font-bold">0.00</p>
+          </div>
+          <div class="text-right">
+            <p class="text-emerald-400 text-sm">+12.4% este mes</p>
+          </div>
         </div>
+      </div>
 
-        <div id="guideModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-4 relative shadow-2xl">
-                <h3 class="font-bold text-base text-white flex items-center gap-2">🚀 Guía de Usuario Unificada</h3>
-                <div class="text-xs text-slate-300 space-y-2 max-h-[300px] overflow-y-auto custom-scroll pr-1">
-                    <p><strong>1. Registro Limpio:</strong> Ingresa tus transacciones usando el formulario manual. Usa el <em>Filtro Psicológico</em> para catalogar necesidades frente a antojos directos.</p>
-                    <p><strong>2. Alertas de Topes:</strong> Ve a la pestaña de Presupuestos para fijar techos financieros. Si gastas de más, el sistema encenderá marcas rojas automáticas.</p>
-                    <p><strong>3. Calendario Sincronizado:</strong> Los puntos debajo de las fechas en el calendario indican que hubo actividad. Toca un día para inspeccionar su historial aislado.</p>
-                    <p><strong>4. Comandos de IA:</strong> En la sección del chat de Inteligencia Artificial puedes usar plantillas rápidas para auditar de inmediato tus balances sin escribir líneas largas.</p>
-                </div>
-                <button onclick="closeAppGuide()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs py-2.5 rounded-xl transition cursor-pointer">Entendido, Cerrar</button>
-            </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="glass rounded-3xl p-5 card-hover">
+          <p class="text-sm text-emerald-400">Ingresos</p>
+          <p id="total-income" class="text-3xl font-semibold">0</p>
         </div>
+        <div class="glass rounded-3xl p-5 card-hover">
+          <p class="text-sm text-red-400">Gastos</p>
+          <p id="total-expenses" class="text-3xl font-semibold">0</p>
+        </div>
+      </div>
 
-        <section class="w-full max-w-full px-4 pt-4 box-border">
-            <div class="relative overflow-hidden rounded-2xl p-5 shadow-2xl w-full box-border neo-card">
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center w-full">
-                    <div class="col-span-12 md:col-span-5 min-w-0">
-                        <div class="flex items-center gap-2">
-                            <h3 class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-0.5" id="lbl-net-wealth">Patrimonio Neto Consolidado</h3>
-                            <button onclick="togglePrivacyMode()" id="privacyToggleBtn" class="text-slate-500 hover:text-cyan-400 text-xs transition-colors cursor-pointer">
-                                <span id="privacyIcon">👁️ Ocultar</span>
-                            </button>
-                        </div>
-                        <div class="text-2xl sm:text-3xl font-black tracking-tight mono money-display truncate break-all text-white" id="netWealthText">$0.00</div>
-                    </div>
-                    <div class="col-span-12 md:col-span-4 bg-slate-950/40 border border-slate-800/60 rounded-xl p-3 flex items-center justify-between shadow-inner min-w-0">
-                        <div class="min-w-0 mr-2">
-                            <div class="flex items-center gap-1.5">
-                                <h4 class="text-[9px] font-bold uppercase text-cyan-400 tracking-wider truncate" id="lbl-survival">⏱️ Supervivencia</h4>
-                            </div>
-                            <p class="text-[10px] text-slate-500 truncate" id="lbl-survival-sub">Soporte sin empleo</p>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <span id="survivalDaysText" class="text-lg font-black mono block leading-none money-display text-white">0 días</span>
-                            <span class="text-[8px] font-bold uppercase text-slate-400" id="survivalStatusLabel">---</span>
-                        </div>
-                    </div>
-                    <div class="col-span-12 md:col-span-3 flex justify-between md:justify-end gap-2 border-t md:border-t-0 md:border-l border-slate-800/80 pt-2 md:pt-0 md:pl-4 min-w-0">
-                        <div class="min-w-0 flex-1">
-                            <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider" id="lbl-income">Ingresos</p>
-                            <p id="totalIncomeText" class="text-xs sm:text-sm font-bold mono money-display truncate text-white">$0.00</p>
-                        </div>
-                        <div class="min-w-0 flex-1 border-l border-slate-850 pl-2 md:border-0 md:pl-0">
-                            <p class="text-[9px] font-bold text-rose-400 uppercase tracking-wider" id="lbl-expense">Gastos</p>
-                            <p id="totalExpenseText" class="text-xs sm:text-sm font-bold mono money-display truncate text-white">$0.00</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+      <!-- Add Button -->
+      <button onclick="showAddModal()" 
+              class="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 py-4 rounded-3xl text-lg font-semibold flex items-center justify-center gap-2 shadow-lg">
+        <i class="fas fa-plus"></i> Nueva Transacción
+      </button>
 
-        <main class="w-full max-w-full p-4 box-border flex-1">
-
-            <div id="mod-overview" class="module-view grid grid-cols-12 gap-4 w-full box-border">
-                <div class="col-span-12 lg:col-span-4 min-w-0 w-full">
-                    <div class="neo-card p-4 rounded-2xl shadow-xl w-full box-border">
-                        <h3 class="text-sm font-bold mb-3 flex items-center gap-1.5" id="lbl-quick-reg">
-                            <span class="text-cyan-400">⚡</span> Registro Rápido Manual
-                        </h3>
-                        <form id="ledgerForm" class="space-y-3 w-full box-border">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" id="lbl-form-desc">Concepto / Descripción</label>
-                                <input type="text" id="txDesc" class="w-full bg-slate-950/40 border border-slate-800 rounded-xl p-2.5 text-xs outline-none focus:ring-1 focus:ring-cyan-500 transition text-white" required />
-                            </div>
-                            <div class="grid grid-cols-2 gap-2 w-full">
-                                <div class="min-w-0">
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" id="lbl-form-cat">Categoría</label>
-                                    <select id="txCategory" onchange="togglePsychSelector(this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-300 outline-none cursor-pointer">
-                                        <option value="Ingreso">💼 Ingresos</option>
-                                        <option value="Comida">🛒 Alimentación</option>
-                                        <option value="Vivienda">🏠 Vivienda</option>
-                                        <option value="Transporte">🚗 Transporte</option>
-                                        <option value="Ocio">🎬 Ocio</option>
-                                        <option value="Otros">📦 Otros</option>
-                                    </select>
-                                </div>
-                                <div class="min-w-0">
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1" id="lbl-form-amount">Importe</label>
-                                    <input type="number" step="0.01" id="txAmount" placeholder="0.00" class="w-full bg-slate-950/40 border border-slate-800 rounded-xl p-2.5 text-xs outline-none font-mono text-white" required />
-                                </div>
-                            </div>
-
-                            <div id="psychologicalBlock" class="hidden bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80 space-y-1.5 w-full">
-                                <label class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider" id="lbl-form-psych">Filtro Psicológico</label>
-                                <div class="grid grid-cols-2 gap-2 w-full">
-                                    <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-[11px] font-bold text-slate-400 has-[:checked]:border-cyan-500 has-[:checked]:text-cyan-400 has-[:checked]:bg-cyan-950/20 transition-all select-none"><input type="radio" name="txIntent" value="necesidad" checked class="hidden"><span id="lbl-rad-need">🛡️ Necesidad</span></label>
-                                    <label class="flex items-center justify-center gap-1 p-2 rounded-lg border border-slate-800 bg-slate-900 cursor-pointer text-[11px] font-bold text-slate-400 has-[:checked]:border-amber-500 has-[:checked]:text-amber-400 has-[:checked]:bg-amber-950/20 transition-all select-none"><input type="radio" name="txIntent" value="deseo" class="hidden"><span id="lbl-rad-want">✨ Antojo</span></label>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2 pt-1 w-full">
-                                <div class="flex items-center gap-1.5 bg-slate-950/40 p-2 rounded-xl border border-slate-800/60 justify-center">
-                                    <input type="checkbox" id="txRecurring" class="w-3.5 h-3.5 accent-cyan-500 rounded cursor-pointer">
-                                    <label for="txRecurring" class="text-[10px] text-slate-400 font-medium cursor-pointer select-none" id="lbl-form-fixed">Gasto Fijo</label>
-                                </div>
-                                <button type="submit" class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold text-xs tracking-wider rounded-xl cursor-pointer py-2.5 shadow-md" id="lbl-btn-submit">REGISTRAR</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="col-span-12 lg:col-span-8 min-w-0 w-full">
-                    <div class="neo-card rounded-2xl shadow-xl overflow-hidden flex flex-col w-full box-border">
-                        <div class="p-4 border-b border-slate-800/80 flex items-center justify-between gap-3 w-full box-border">
-                            <div class="min-w-0"><h3 class="font-bold text-sm truncate text-white" id="lbl-history-title">Historial Contable</h3></div>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <select id="monthFilter" onchange="renderLedgerList()" class="bg-slate-950 border border-slate-800 rounded-xl py-1.5 px-2 text-xs text-slate-400 outline-none cursor-pointer">
-                                    <option value="all">Todo el tiempo</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="h-[380px] overflow-y-auto overflow-x-hidden custom-scroll p-3 bg-slate-950/20 w-full box-border">
-                            <ul id="ledgerContainer" class="space-y-1.5 w-full block max-w-full"></ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="mod-analytics" class="module-view hidden space-y-4 w-full box-border">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 w-full">
-                    <div class="neo-card p-4 rounded-2xl shadow-xl lg:col-span-4 space-y-3 box-border">
-                        <h4 class="font-bold text-xs uppercase tracking-wider text-white" id="lbl-adjust-limits">⚙️ Ajustar Topes Mensuales</h4>
-                        <div class="space-y-2.5 text-xs">
-                            <div>
-                                <label class="text-slate-400 block text-[10px] mb-1">🛒 Alimentación</label>
-                                <input type="number" id="limit-Comida" value="300" oninput="updateBudgetLimits()" class="w-full bg-slate-950 border border-slate-800 p-2 rounded-xl font-mono text-white text-xs outline-none">
-                            </div>
-                            <div>
-                                <label class="text-slate-400 block text-[10px] mb-1">🚗 Transporte</label>
-                                <input type="number" id="limit-Transporte" value="150" oninput="updateBudgetLimits()" class="w-full bg-slate-950 border border-slate-800 p-2 rounded-xl font-mono text-white text-xs outline-none">
-                            </div>
-                            <div>
-                                <label class="text-slate-400 block text-[10px] mb-1">🎬 Ocio / Caprichos</label>
-                                <input type="number" id="limit-Ocio" value="200" oninput="updateBudgetLimits()" class="w-full bg-slate-950 border border-slate-800 p-2 rounded-xl font-mono text-white text-xs outline-none">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="neo-card p-4 rounded-2xl shadow-xl lg:col-span-8 space-y-4 box-border">
-                        <h4 class="font-bold text-xs uppercase tracking-wider text-white" id="lbl-diag-limits">📉 Diagnóstico de Alertas de Presupuestos</h4>
-                        <div id="budgetBarsContainer" class="space-y-4"></div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 w-full">
-                    <div class="neo-card p-4 rounded-2xl shadow-xl md:col-span-5 flex flex-col justify-between w-full min-w-0 box-border">
-                        <div class="h-[200px] w-full flex items-center justify-center relative overflow-hidden box-border">
-                            <canvas id="pieChartCanvas" class="max-w-full max-h-full block"></canvas>
-                        </div>
-                    </div>
-                    <div class="neo-card p-4 rounded-2xl shadow-xl md:col-span-7 flex flex-col justify-between w-full min-w-0 box-border">
-                        <div class="h-[200px] w-full flex items-center justify-center relative overflow-hidden box-border">
-                            <canvas id="barChartCanvas" class="max-w-full max-h-full block"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="mod-calendar" class="module-view hidden grid grid-cols-12 gap-4 w-full box-border">
-                <div class="col-span-12 lg:col-span-7 neo-card p-4 rounded-2xl shadow-xl">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-sm text-white" id="lbl-cal-title">Calendario de Registros</h3>
-                        <button onclick="resetCalendarFocus()" id="btn-reset-cal" class="text-[10px] bg-slate-950 px-2 py-1 border border-slate-800 rounded-lg font-bold text-cyan-400 hidden">Ver mes completo</button>
-                    </div>
-                    <div class="grid grid-cols-7 gap-1.5 text-center text-[10px] uppercase font-bold text-slate-500 mb-2">
-                        <span>D</span><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span>
-                    </div>
-                    <div id="calendarGrid" class="grid grid-cols-7 gap-1.5"></div>
-                </div>
-                <div class="col-span-12 lg:col-span-5 neo-card p-4 rounded-2xl shadow-xl flex flex-col">
-                    <h4 class="font-bold text-xs uppercase tracking-wider mb-2 text-white" id="lbl-cal-focus-title">Flujo del Día Seleccionado</h4>
-                    <div id="dayListContainer" class="flex-1 overflow-y-auto custom-scroll space-y-2 h-[260px] text-xs">
-                        <p class="text-slate-500 italic text-center pt-10">Selecciona un día marcado para auditar sus detalles.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="mod-ai-chat" class="module-view hidden max-w-3xl mx-auto w-full box-border">
-                <div class="neo-card rounded-2xl shadow-xl flex flex-col h-[520px] overflow-hidden">
-                    <div class="p-3 border-b border-slate-800/80 bg-slate-950/40 flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span class="text-xs font-bold text-white" id="lbl-ai-status">Asistente Financiero AI Inteligente</span>
-                        </div>
-                    </div>
-                    
-                    <div id="chatChatroom" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll bg-slate-950/10 text-xs">
-                        <div class="chat-msg bot p-3 rounded-xl max-w-[85%] bg-slate-900 border border-slate-800 mr-auto text-slate-300">
-                            <p id="lbl-ai-welcome">¡Hola! Soy tu asistente unificado. Puedo revisar tus límites de gasto, balances o darte consejos basados en la regla de distribución 50/30/20.</p>
-                        </div>
-                    </div>
-
-                    <div class="relative px-3 pt-2">
-                        <button onclick="toggleMenuComandos(event)" id="btn-comandos" class="text-[10px] bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-cyan-400 font-bold cursor-pointer">
-                            ⚡ Comandos Rápidos
-                        </button>
-                        <div id="menu-comandos" class="hidden absolute bottom-full left-3 mb-1 w-64 bg-slate-900 border border-slate-800 rounded-xl p-2 shadow-2xl z-50 space-y-1">
-                            <button onclick="ejecutarComando('¿Cómo voy con mi regla 50/30/20 este mes?')" class="w-full text-left text-[11px] p-1.5 hover:bg-slate-800 rounded text-slate-300 truncate">📈 Diagnóstico 50/30/20</button>
-                            <button onclick="ejecutarComando('¿He superado algún tope de presupuesto?')" class="w-full text-left text-[11px] p-1.5 hover:bg-slate-800 rounded text-slate-300 truncate">⚠️ Alertas de Presupuesto</button>
-                            <button onclick="ejecutarComando('Dame un consejo rápido para optimizar mis gastos fijos')" class="w-full text-left text-[11px] p-1.5 hover:bg-slate-800 rounded text-slate-300 truncate">💡 Tips de Ahorro</button>
-                        </div>
-                    </div>
-
-                    <div class="p-3 border-t border-slate-800/80 bg-slate-950/30 flex gap-2">
-                        <input type="text" id="ai-chat-input" placeholder="Pregunta sobre tus presupuestos..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white outline-none focus:border-cyan-500">
-                        <button onclick="sendChatMessage()" class="bg-cyan-500 text-slate-950 px-4 font-bold text-xs rounded-xl hover:bg-cyan-400 transition cursor-pointer">Enviar</button>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+      <!-- Recent Transactions -->
+      <div>
+        <div class="flex justify-between mb-3 px-1">
+          <h2 class="font-semibold">Últimas Transacciones</h2>
+          <button onclick="viewAll()" class="text-cyan-400 text-sm">Ver todo</button>
+        </div>
+        <div id="recent-transactions" class="space-y-3"></div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // --- DICCIONARIO MULTI-IDIOMA ---
-        const languageStrings = {
-            es: {
-                suiteTitle: "Finanzas<span class='text-cyan-400'>Pro</span>", netWealth: "Patrimonio Neto Consolidado",
-                survival: "⏱️ Supervivencia", survivalSub: "Soporte sin empleo", income: "Ingresos", expense: "Gastos",
-                quickReg: "⚡ Registro Rápido Manual", formDesc: "Concepto / Descripción", formCat: "Categoría",
-                formAmount: "Importe", formPsych: "Filtro Psicológico", radNeed: "🛡️ Necesidad", radWant: "✨ Antojo",
-                formFixed: "Gasto Fijo", btnSubmit: "REGISTRAR", historyTitle: "Historial Contable",
-                adjustLimits: "⚙️ Ajustar Topes Mensuales", diagLimits: "📉 Diagnóstico de Alertas de Presupuestos",
-                calTitle: "Calendario de Registros", calFocusTitle: "Flujo del Día Seleccionado",
-                aiStatus: "Asistente Financiero AI Inteligente", aiWelcome: "¡Hola! Soy tu asistente unificado. Puedo revisar tus límites de gasto, balances o darte consejos basados en la regla de distribución 50/30/20.",
-                menuTitle: "⚙️ Ajustes de la Suite", menuLang: "Idioma del Sistema", menuTheme: "Tema Estético Visual",
-                menuGuide: "Ver Guía Interactiva", menuClear: "Borrar Caché y Datos",
-                menuExport: "Exportar", menuImport: "Importar"
-            },
-            en: {
-                suiteTitle: "Finance<span class='text-cyan-400'>Pro</span>", netWealth: "Consolidated Net Wealth",
-                survival: "⏱️ Survival Time", survivalSub: "Support without job", income: "Income", expense: "Expenses",
-                quickReg: "⚡ Quick Manual Entry", formDesc: "Concept / Description", formCat: "Category",
-                formAmount: "Amount", formPsych: "Psychological Filter", radNeed: "🛡️ Need", radWant: "✨ Want",
-                formFixed: "Fixed Cost", btnSubmit: "RECORD ENTRY", historyTitle: "Accounting Ledger",
-                adjustLimits: "⚙️ Adjust Monthly Caps", diagLimits: "📉 Budget Alerts Diagnostic",
-                calTitle: "Records Calendar", calFocusTitle: "Selected Day Ledger Flow",
-                aiStatus: "Smart AI Financial Assistant", aiWelcome: "Hello! I am your unified core assistant. I can check your spending limits, net wealth balances, or give you advice based on the 50/30/20 budget rule.",
-                menuTitle: "⚙️ Suite Settings", menuLang: "System Language", menuTheme: "Visual Aesthetic Theme",
-                menuGuide: "View Interactive Guide", menuClear: "Clear Cache & Data",
-                menuExport: "Export", menuImport: "Import"
-            }
+  <!-- Add Transaction Modal -->
+  <div id="add-modal" class="hidden fixed inset-0 bg-black/80 flex items-end">
+    <div class="bg-zinc-900 w-full rounded-t-3xl p-6 space-y-6 max-h-[85vh] overflow-auto">
+      <h2 class="text-xl font-bold">Nueva Transacción</h2>
+      <input id="amount" type="number" placeholder="Monto" class="w-full bg-zinc-800 p-4 rounded-2xl text-2xl">
+      <select id="type" class="w-full bg-zinc-800 p-4 rounded-2xl">
+        <option value="expense">Gasto</option>
+        <option value="income">Ingreso</option>
+      </select>
+      <input id="category" type="text" placeholder="Categoría (ej: Comida, Salario)" class="w-full bg-zinc-800 p-4 rounded-2xl">
+      <textarea id="note" placeholder="Nota (opcional)" class="w-full bg-zinc-800 p-4 rounded-2xl h-20"></textarea>
+      
+      <div class="flex gap-4">
+        <button onclick="hideAddModal()" class="flex-1 py-4 border border-zinc-700 rounded-2xl">Cancelar</button>
+        <button onclick="addTransaction()" class="flex-1 py-4 bg-emerald-500 rounded-2xl font-semibold">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    let currency = 'USD';
+
+    function saveData() {
+      localStorage.setItem('transactions', JSON.stringify(transactions));
+      renderAll();
+    }
+
+    function addTransaction() {
+      const amount = parseFloat(document.getElementById('amount').value);
+      if (!amount) return alert("Ingresa un monto válido");
+
+      transactions.push({
+        id: Date.now(),
+        date: new Date().toISOString().split('T')[0],
+        type: document.getElementById('type').value,
+        amount: amount,
+        category: document.getElementById('category').value || 'Otros',
+        note: document.getElementById('note').value
+      });
+
+      hideAddModal();
+      saveData();
+    }
+
+    function renderRecent() {
+      const container = document.getElementById('recent-transactions');
+      container.innerHTML = '';
+      
+      transactions.slice(0, 5).forEach(t => {
+        const div = document.createElement('div');
+        div.className = `flex justify-between items-center p-4 glass rounded-2xl`;
+        div.innerHTML = `
+          <div>
+            <p class="font-medium">${t.category}</p>
+            <p class="text-xs text-zinc-400">${t.date}</p>
+          </div>
+          <p class="${t.type === 'income' ? 'text-emerald-400' : 'text-red-400'} font-semibold">
+            ${t.type === 'income' ? '+' : '-'}${t.amount.toFixed(2)}
+          </p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function calculateTotals() {
+      const income = transactions.filter(t => t.type === 'income').reduce((a, b) => a + b.amount, 0);
+      const expenses = transactions.filter(t => t.type === 'expense').reduce((a, b) => a + b.amount, 0);
+      
+      document.getElementById('total-income').textContent = income.toFixed(2);
+      document.getElementById('total-expenses').textContent = expenses.toFixed(2);
+      document.getElementById('net-worth').textContent = (income - expenses).toFixed(2);
+    }
+
+    function renderAll() {
+      calculateTotals();
+      renderRecent();
+    }
+
+    function showAddModal() {
+      document.getElementById('add-modal').classList.remove('hidden');
+      document.getElementById('amount').focus();
+    }
+
+    function hideAddModal() {
+      document.getElementById('add-modal').classList.add('hidden');
+    }
+
+    function exportData() {
+      const dataStr = JSON.stringify(transactions, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+      const exportFileDefaultName = `walletflow_backup_${new Date().toISOString().slice(0,10)}.json`;
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+    }
+
+    function importData() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = e => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            transactions = JSON.parse(e.target.result);
+            saveData();
+            alert("Datos importados correctamente");
+          } catch(err) {
+            alert("Error al importar archivo");
+          }
         };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
 
-        const currencySymbols = { USD: '$', EUR: '€', MXN: '$' };
-        let activeCurrency = 'USD';
-        let activeLang = 'es';
-        
-        let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_v20_core')) || [];
-        let budgetLimits = JSON.parse(localStorage.getItem('finanzas_pro_v20_limits')) || { "Comida": 300, "Transporte": 150, "Ocio": 200 };
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+    }
 
-        let systemPrivacyActive = false;
-        let pieChartInstance = null;
-        let barChartInstance = null;
-        let selectedCalendarDay = null;
+    function viewAll() {
+      alert("Próximamente: Pantalla completa de transacciones");
+    }
 
-        const ledgerForm = document.getElementById('ledgerForm');
-        const ledgerContainer = document.getElementById('ledgerContainer');
-        const monthFilter = document.getElementById('monthFilter');
-        const currencySelect = document.getElementById('globalCurrency');
-
-        // --- MENÚ DESPLEGABLE DE CONFIGURACIÓN ---
-        function toggleSettingsMenu() {
-            const menu = document.getElementById('settingsDropdown');
-            menu.classList.toggle('hidden');
-        }
-
-        document.addEventListener('click', function(e) {
-            const menu = document.getElementById('settingsDropdown');
-            const btn = document.getElementById('btn-settings-toggle');
-            if (menu && !menu.classList.contains('hidden') && !menu.contains(e.target) && !btn.contains(e.target)) {
-                menu.classList.add('hidden');
-            }
-        });
-
-        // --- EXPORTAR E IMPORTAR COPIAS DE SEGURIDAD (SOLICITADO) ---
-        function exportSystemData() {
-            const packageData = {
-                version: "20.1",
-                ledger: ledgerDatabase,
-                limits: budgetLimits,
-                currency: activeCurrency,
-                language: activeLang
-            };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(packageData));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "FinanzasPro_Backup.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-        }
-
-        function triggerImportSelection() {
-            document.getElementById('systemImportFile').click();
-        }
-
-        function importSystemData(event) {
-            const fileReader = new FileReader();
-            fileReader.onload = function(e) {
-                try {
-                    const parsedData = JSON.parse(e.target.result);
-                    if (parsedData.ledger && parsedData.limits) {
-                        ledgerDatabase = parsedData.ledger;
-                        budgetLimits = parsedData.limits;
-                        if(parsedData.currency) activeCurrency = parsedData.currency;
-                        
-                        localStorage.setItem('finanzas_pro_v20_core', JSON.stringify(ledgerDatabase));
-                        localStorage.setItem('finanzas_pro_v20_limits', JSON.stringify(budgetLimits));
-                        
-                        document.getElementById('settingsDropdown').classList.add('hidden');
-                        refreshSuiteDashboard();
-                        alert(activeLang === 'es' ? "¡Datos importados con éxito!" : "Data imported successfully!");
-                    } else {
-                        alert("Archivo JSON no compatible.");
-                    }
-                } catch (err) {
-                    alert("Error leyendo el archivo.");
-                }
-            };
-            fileReader.readAsText(event.target.files[0]);
-        }
-
-        // --- GUÍA INTERACTIVA MODAL ---
-        function triggerAppGuide() {
-            document.getElementById('settingsDropdown').classList.add('hidden');
-            document.getElementById('guideModal').classList.remove('hidden');
-        }
-        function closeAppGuide() {
-            document.getElementById('guideModal').classList.add('hidden');
-        }
-
-        // --- BORRAR CACHÉ Y PURGAR DATOS ---
-        function purgeAppCache() {
-            if (confirm(activeLang === 'es' ? "⚠️ ¿Estás completamente seguro de que deseas borrar toda la caché, límites y transacciones?" : "⚠️ Are you sure you want to completely wipe all data?")) {
-                localStorage.clear();
-                ledgerDatabase = [];
-                budgetLimits = { "Comida": 300, "Transporte": 150, "Ocio": 200 };
-                document.getElementById('settingsDropdown').classList.add('hidden');
-                syncStorage();
-                location.reload();
-            }
-        }
-
-        // --- MANEJO MULTI-IDIOMA ---
-        function changeSystemLanguage(lang) {
-            activeLang = lang;
-            const dictionary = languageStrings[lang];
-            
-            document.getElementById('lbl-suite-title').innerHTML = dictionary.suiteTitle;
-            document.getElementById('lbl-net-wealth').innerText = dictionary.netWealth;
-            document.getElementById('lbl-survival').innerText = dictionary.survival;
-            document.getElementById('lbl-survival-sub').innerText = dictionary.survivalSub;
-            document.getElementById('lbl-income').innerText = dictionary.income;
-            document.getElementById('lbl-expense').innerText = dictionary.expense;
-            document.getElementById('lbl-quick-reg').innerHTML = dictionary.quickReg;
-            document.getElementById('lbl-form-desc').innerText = dictionary.formDesc;
-            document.getElementById('lbl-form-cat').innerText = dictionary.formCat;
-            document.getElementById('lbl-form-amount').innerText = dictionary.formAmount;
-            document.getElementById('lbl-form-psych').innerText = dictionary.formPsych;
-            document.getElementById('lbl-rad-need').innerText = dictionary.radNeed;
-            document.getElementById('lbl-rad-want').innerText = dictionary.radWant;
-            document.getElementById('lbl-form-fixed').innerText = dictionary.formFixed;
-            document.getElementById('lbl-btn-submit').innerText = dictionary.btnSubmit;
-            document.getElementById('lbl-history-title').innerText = dictionary.historyTitle;
-            document.getElementById('lbl-adjust-limits').innerText = dictionary.adjustLimits;
-            document.getElementById('lbl-diag-limits').innerText = dictionary.diagLimits;
-            document.getElementById('lbl-cal-title').innerText = dictionary.calTitle;
-            document.getElementById('lbl-cal-focus-title').innerText = dictionary.calFocusTitle;
-            document.getElementById('lbl-ai-status').innerText = dictionary.aiStatus;
-            document.getElementById('lbl-ai-welcome').innerText = dictionary.aiWelcome;
-            document.getElementById('lbl-menu-title').innerText = dictionary.menuTitle;
-            document.getElementById('lbl-menu-lang').innerText = dictionary.menuLang;
-            document.getElementById('lbl-menu-theme').innerText = dictionary.menuTheme;
-            document.getElementById('lbl-menu-guide').innerText = dictionary.menuGuide;
-            document.getElementById('lbl-menu-clear').innerText = dictionary.menuClear;
-            document.getElementById('lbl-menu-export').innerText = dictionary.menuExport;
-            document.getElementById('lbl-menu-import').innerText = dictionary.menuImport;
-
-            refreshSuiteDashboard();
-        }
-
-        // --- INTERRUPTOR DE TEMAS ---
-        function changeSystemTheme(themeName) {
-            document.documentElement.setAttribute('data-theme', themeName);
-            localStorage.setItem('finanzas_pro_v20_theme', themeName);
-            if (!document.getElementById('mod-analytics').classList.contains('hidden')) {
-                refreshAnalyticalCharts();
-            }
-        }
-
-        function formatDisplayAmount(val) {
-            const currentSymbol = currencySymbols[activeCurrency];
-            if (systemPrivacyActive) return '••••••';
-            return `${val < 0 ? '-' : ''}${currentSymbol}${Math.abs(val).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        }
-
-        function togglePrivacyMode() {
-            systemPrivacyActive = !systemPrivacyActive;
-            document.getElementById('privacyIcon').innerText = systemPrivacyActive ? (activeLang === 'es' ? '👁️ Mostrar' : '👁️ Show') : (activeLang === 'es' ? '👁️ Ocultar' : '👁️ Hide');
-            refreshSuiteDashboard();
-        }
-
-        function togglePsychSelector(cat) { 
-            document.getElementById('psychologicalBlock').className = (cat === 'Ingreso') ? 'hidden' : 'block bg-slate-950/40 p-2.5 rounded-xl border border-slate-800/80 space-y-1.5 w-full'; 
-        }
-
-        function switchModule(targetModuleId) {
-            document.querySelectorAll('.module-view').forEach(view => view.classList.add('hidden'));
-            document.getElementById(targetModuleId).classList.remove('hidden');
-            document.getElementById('mobileModuleSelector').value = targetModuleId;
-            
-            document.querySelectorAll('.module-tab-btn').forEach(btn => btn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-slate-200");
-            const activeBtn = document.getElementById(`btn-${targetModuleId}`);
-            if (activeBtn) activeBtn.className = "module-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-cyan-500 text-slate-950 shadow-md";
-            
-            if (targetModuleId === 'mod-analytics') {
-                setTimeout(refreshAnalyticalCharts, 5);
-                setTimeout(renderBudgetLimitsStatus, 5);
-            }
-            if (targetModuleId === 'mod-calendar') {
-                renderCalendarStructure();
-            }
-        }
-
-        // --- REGISTRO DE MOVIMIENTOS ---
-        ledgerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const description = document.getElementById('txDesc').value.trim();
-            const category = document.getElementById('txCategory').value;
-            let amount = parseFloat(document.getElementById('txAmount').value);
-            const isRecurring = document.getElementById('txRecurring').checked;
-            let intent = 'necesidad';
-            
-            if (category !== 'Ingreso') {
-                intent = document.querySelector('input[name="txIntent"]:checked').value;
-            }
-
-            if (category !== 'Ingreso' && amount > 0) amount = -amount;
-
-            const today = new Date();
-            ledgerDatabase.unshift({
-                id: 'TX-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
-                description, category, amount, isRecurring, intent,
-                timestamp: today.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }),
-                dayNum: today.getDate()
-            });
-
-            syncStorage();
-            ledgerForm.reset();
-            document.getElementById('psychologicalBlock').classList.add('hidden');
-        });
-
-        function populateMonthFilter() {
-            monthFilter.innerHTML = activeLang === 'es' ? '<option value="all">Todo el tiempo</option>' : '<option value="all">All-time</option>';
-        }
-
-        document.getElementById('limit-Comida').value = budgetLimits["Comida"] || 300;
-        document.getElementById('limit-Transporte').value = budgetLimits["Transporte"] || 150;
-        document.getElementById('limit-Ocio').value = budgetLimits["Ocio"] || 200;
-
-        function updateBudgetLimits() {
-            budgetLimits["Comida"] = parseFloat(document.getElementById('limit-Comida').value) || 0;
-            budgetLimits["Transporte"] = parseFloat(document.getElementById('limit-Transporte').value) || 0;
-            budgetLimits["Ocio"] = parseFloat(document.getElementById('limit-Ocio').value) || 0;
-            localStorage.setItem('finanzas_pro_v20_limits', JSON.stringify(budgetLimits));
-            renderBudgetLimitsStatus();
-        }
-
-        function renderBudgetLimitsStatus() {
-            const container = document.getElementById('budgetBarsContainer');
-            if(!container) return;
-            container.innerHTML = '';
-            
-            const trackedCategories = ["Comida", "Transporte", "Ocio"];
-            let gastosMap = { "Comida": 0, "Transporte": 0, "Ocio": 0 };
-
-            ledgerDatabase.forEach(item => {
-                if (item.amount < 0 && trackedCategories.includes(item.category)) {
-                    gastosMap[item.category] += Math.abs(item.amount);
-                }
-            });
-
-            trackedCategories.forEach(cat => {
-                const consumido = gastosMap[cat];
-                const maximo = budgetLimits[cat] || 1;
-                let porcentaje = Math.min((consumido / maximo) * 100, 100);
-                let barColor = "bg-cyan-500", textColor = "text-slate-400";
-                let alertLabel = "";
-
-                if (consumido >= maximo) {
-                    barColor = "bg-rose-500"; textColor = "text-rose-400 font-bold";
-                    alertLabel = activeLang === 'es' ? `⚠️ ¡Tope superado!` : `⚠️ Limit Exceeded!`;
-                }
-
-                container.innerHTML += `
-                    <div class="space-y-1">
-                        <div class="flex justify-between text-xs">
-                            <span class="font-semibold text-white">${cat}</span>
-                            <span class="${textColor}">${formatDisplayAmount(consumido)} / ${formatDisplayAmount(maximo)}</span>
-                        </div>
-                        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
-                            <div class="${barColor} h-full transition-all duration-500" style="width: ${porcentaje}%"></div>
-                        </div>
-                        ${alertLabel ? `<p class="text-[9px] ${textColor} tracking-wide text-right">${alertLabel}</p>` : ''}
-                    </div>
-                `;
-            });
-        }
-
-        // --- CALENDARIO CONTABLE ---
-        function renderCalendarStructure() {
-            const grid = document.getElementById('calendarGrid');
-            if (!grid) return;
-            grid.innerHTML = '';
-
-            for (let i = 1; i <= 30; i++) {
-                const dayEl = document.createElement('div');
-                dayEl.className = 'cal-day bg-slate-950/40 hover:bg-slate-800 text-white border border-slate-800/40';
-                dayEl.innerText = i;
-
-                const dayHasData = ledgerDatabase.some(item => item.dayNum === i);
-                if (dayHasData) dayEl.classList.add('has-data');
-
-                if (selectedCalendarDay === i) {
-                    dayEl.classList.add('bg-cyan-950', 'border-cyan-500', 'text-cyan-400');
-                }
-
-                dayEl.onclick = () => focusCalendarDay(i);
-                grid.appendChild(dayEl);
-            }
-        }
-
-        function focusCalendarDay(dayNum) {
-            selectedCalendarDay = dayNum;
-            document.getElementById('btn-reset-cal').classList.remove('hidden');
-            renderCalendarStructure();
-
-            const container = document.getElementById('dayListContainer');
-            container.innerHTML = '';
-            
-            const dayMoves = ledgerDatabase.filter(item => item.dayNum === dayNum);
-            if (!dayMoves.length) {
-                container.innerHTML = `<p class="text-slate-500 italic text-center pt-10">${activeLang === 'es' ? 'Sin transacciones este día.' : 'No transactions on this day.'}</p>`;
-                return;
-            }
-
-            dayMoves.forEach(tx => {
-                container.innerHTML += `
-                    <div class="p-2 bg-slate-900 rounded-lg flex justify-between items-center border border-slate-800">
-                        <div>
-                            <p class="font-bold text-white">${tx.description}</p>
-                            <p class="text-[9px] text-slate-500">${tx.category} • ${tx.intent.toUpperCase()}</p>
-                        </div>
-                        <span class="mono font-bold ${tx.amount > 0 ? 'text-emerald-400' : 'text-rose-400'}">${formatDisplayAmount(tx.amount)}</span>
-                    </div>
-                `;
-            });
-        }
-
-        function resetCalendarFocus() {
-            selectedCalendarDay = null;
-            document.getElementById('btn-reset-cal').classList.add('hidden');
-            renderCalendarStructure();
-            document.getElementById('dayListContainer').innerHTML = `<p class="text-slate-500 italic text-center pt-10">${activeLang === 'es' ? 'Selecciona un día marcado para auditar sus detalles.' : 'Select a marked day to audit its details.'}</p>`;
-        }
-
-        // --- CHAT INTERACTIVO IA ---
-        function toggleMenuComandos(e) {
-            e.stopPropagation();
-            document.getElementById('menu-comandos').classList.toggle('hidden');
-        }
-
-        function ejecutarComando(text) {
-            document.getElementById('ai-chat-input').value = text;
-            document.getElementById('menu-comandos').classList.add('hidden');
-            sendChatMessage();
-        }
-
-        function sendChatMessage() {
-            const input = document.getElementById('ai-chat-input');
-            const chatroom = document.getElementById('chatChatroom');
-            const query = input.value.trim();
-            if(!query) return;
-
-            chatroom.innerHTML += `
-                <div class="chat-msg user p-3 rounded-xl max-w-[85%] bg-cyan-950 text-cyan-100 ml-auto border border-cyan-800/40">
-                    <p>${query}</p>
-                </div>
-            `;
-            input.value = '';
-
-            setTimeout(() => {
-                let reply = activeLang === 'es' ? "He procesado tu consulta. Tu salud financiera se mantiene bajo los parámetros normales." : "I have processed your query. Your financial health remains within standard metrics.";
-                let isAlert = false;
-
-                if (query.toLowerCase().includes('tope') || query.toLowerCase().includes('limit') || query.toLowerCase().includes('regla')) {
-                    isAlert = true;
-                    reply = activeLang === 'es' ? "⚠️ ALERTA DE SISTEMA: Recuerda monitorizar de cerca tus presupuestos fijados en el Panel de Ajustes para evitar desbordar tu plan de distribución." : "⚠️ SYSTEM ALERT: Remember to closely monitor your set limits inside the Settings Panel to avoid breaking your custom layout.";
-                }
-
-                chatroom.innerHTML += `
-                    <div class="chat-msg bot p-3 rounded-xl max-w-[85%] ${isAlert ? 'bot-alert' : 'bg-slate-900 border border-slate-800'} mr-auto text-slate-300">
-                        <p>${reply}</p>
-                    </div>
-                `;
-                chatroom.scrollTop = chatroom.scrollHeight;
-            }, 600);
-        }
-
-        // --- METRICAS Y REFRESH GLOBAL ---
-        function syncStorage() {
-            localStorage.setItem('finanzas_pro_v20_core', JSON.stringify(ledgerDatabase));
-            refreshSuiteDashboard();
-        }
-
-        function refreshSuiteDashboard() {
-            renderLedgerList();
-            evaluateFinancialMetrics();
-            if (!document.getElementById('mod-analytics').classList.contains('hidden')) {
-                refreshAnalyticalCharts();
-                renderBudgetLimitsStatus();
-            }
-            if (!document.getElementById('mod-calendar').classList.contains('hidden')) {
-                renderCalendarStructure();
-            }
-        }
-
-        function renderLedgerList() {
-            ledgerContainer.innerHTML = '';
-            if (ledgerDatabase.length === 0) {
-                ledgerContainer.innerHTML = `<p class="text-slate-500 italic text-center pt-20 text-xs">${activeLang === 'es' ? 'No hay registros contables aún.' : 'No accounting entries yet.'}</p>`;
-                return;
-            }
-            
-            ledgerDatabase.forEach(tx => {
-                const isCredit = tx.amount > 0;
-                const element = document.createElement('li');
-                element.className = "flex items-center justify-between p-2.5 bg-slate-900/60 rounded-xl border border-slate-800/40 text-xs text-white";
-                element.innerHTML = `
-                    <div class="flex flex-col">
-                        <span class="font-bold">${tx.description}</span>
-                        <span class="text-[9px] text-slate-500">${tx.category} • ${tx.timestamp}</span>
-                    </div>
-                    <span class="font-mono font-bold ${isCredit ? 'text-emerald-400' : 'text-rose-400'}">${formatDisplayAmount(tx.amount)}</span>
-                `;
-                ledgerContainer.appendChild(element);
-            });
-        }
-
-        function evaluateFinancialMetrics() {
-            let ingresos = 0, gastos = 0, fijos = 0;
-            ledgerDatabase.forEach(item => {
-                if (item.amount > 0) ingresos += item.amount;
-                else {
-                    gastos += Math.abs(item.amount);
-                    if (item.isRecurring) fijos += Math.abs(item.amount);
-                }
-            });
-
-            const neto = ingresos - gastos;
-            document.getElementById('netWealthText').innerText = formatDisplayAmount(neto);
-            document.getElementById('totalIncomeText').innerText = formatDisplayAmount(ingresos);
-            document.getElementById('totalExpenseText').innerText = formatDisplayAmount(gastos);
-
-            let diasSupervivencia = 0;
-            let baseCost = fijos > 0 ? fijos / 30 : (gastos > 0 ? gastos / 30 : 0);
-            if (baseCost > 0 && neto > 0) diasSupervivencia = Math.round(neto / baseCost);
-            
-            document.getElementById('survivalDaysText').innerText = systemPrivacyActive ? '••••••' : `${diasSupervivencia} ${activeLang === 'es' ? 'días' : 'days'}`;
-            
-            const statusLabel = document.getElementById('survivalStatusLabel');
-            if (diasSupervivencia === 0) { statusLabel.innerText = "---"; statusLabel.style.color = "#64748b"; }
-            else if (diasSupervivencia < 90) { statusLabel.innerText = "VULNERABLE"; statusLabel.style.color = "#fbbf24"; }
-            else { statusLabel.innerText = "ESTABLE"; statusLabel.style.color = "#34d399"; }
-        }
-
-        function refreshAnalyticalCharts() {
-            const ctxPie = document.getElementById('pieChartCanvas').getContext('2d');
-            const ctxBar = document.getElementById('barChartCanvas').getContext('2d');
-            let categoriesMap = {};
-            let ingresosPorMes = 0, gastosPorMes = 0;
-
-            ledgerDatabase.forEach(item => {
-                if (item.amount < 0) {
-                    categoriesMap[item.category] = (categoriesMap[item.category] || 0) + Math.abs(item.amount);
-                    gastosPorMes += Math.abs(item.amount);
-                } else ingresosPorMes += item.amount;
-            });
-
-            const labelColor = '#94a3b8';
-
-            if (pieChartInstance) pieChartInstance.destroy();
-            pieChartInstance = new Chart(ctxPie, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(categoriesMap),
-                    datasets: [{ data: Object.values(categoriesMap), backgroundColor: ['#22d3ee', '#ec4899', '#f59e0b', '#10b981', '#6366f1'], borderWidth: 0 }]
-                },
-                options: { plugins: { legend: { position: 'bottom', labels: { color: labelColor, font: { size: 9 } } } }, responsive: true, maintainAspectRatio: false }
-            });
-
-            if (barChartInstance) barChartInstance.destroy();
-            barChartInstance = new Chart(ctxBar, {
-                type: 'bar',
-                data: {
-                    labels: activeLang === 'es' ? ['Ingresos', 'Gastos'] : ['Income', 'Expenses'],
-                    datasets: [{ data: [ingresosPorMes, gastosPorMes], backgroundColor: ['rgba(16, 185, 129, 0.2)', 'rgba(244, 63, 94, 0.2)'], borderColor: ['#10b981', '#f43f5e'], borderWidth: 2, borderRadius: 8 }]
-                },
-                options: { scales: { y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: labelColor, font: { size: 9 } } }, x: { ticks: { color: labelColor, font: { size: 10 } } } }, plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false }
-            });
-        }
-
-        function changeCurrency() { activeCurrency = currencySelect.value; refreshSuiteDashboard(); }
-
-        window.onload = function() { 
-            populateMonthFilter();
-            const savedTheme = localStorage.getItem('finanzas_pro_v20_theme') || 'cyberpunk';
-            document.getElementById('themeSelector').value = savedTheme;
-            changeSystemTheme(savedTheme);
-            changeSystemLanguage('es');
-        };
-    </script>
+    // Inicializar
+    renderAll();
+  </script>
 </body>
 </html>
