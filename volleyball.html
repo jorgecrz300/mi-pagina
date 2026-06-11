@@ -3,62 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrenador de Voleibol - Pantalla Principal</title>
+    <title>Entrenador de Voleibol - Servidor PC</title>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qr-creator/dist/qr-creator.min.js"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #1a1a1a;
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            overflow: hidden;
+            background-color: #1a1a1a; color: white; font-family: Arial, sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; overflow: hidden;
         }
-        h1 {
-            margin-bottom: 10px;
-            font-size: 24px;
-        }
-        /* Contenedor del área de juego */
         #game-container {
-            position: relative;
-            width: 800px;
-            height: 600px;
-            border: 4px solid #333;
-            background: linear-gradient(to bottom, #111 60%, #2c3e50 100%); /* Simula perspectiva */
+            position: relative; width: 800px; height: 600px;
+            border: 4px solid #333; background: linear-gradient(to bottom, #111 60%, #2c3e50 100%);
             border-radius: 8px;
         }
-        canvas {
-            display: block;
+        canvas { display: block; }
+        /* Pantalla de emparejamiento (QR) */
+        #lobby {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(20, 20, 20, 0.95); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 10;
         }
-        /* Panel de conexión temporal */
-        #connection-panel {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        .status-disconnected { color: #ff4757; }
-        .status-connected { color: #2ed573; }
+        #qrcode { background: white; padding: 15px; border-radius: 10px; margin-top: 15px; }
     </style>
 </head>
 <body>
 
-    <h1>Simulador de Recepción de Voleibol</h1>
+    <h1 style="margin-bottom: 10px;">Simulador de Recepción de Voleibol</h1>
     
     <div id="game-container">
-        <div id="connection-panel">
-            <p>Estado: <span id="status" class="status-disconnected">Esperando Teléfono...</span></p>
-            <small>Abre "phone.html" en tu celular (Pronto vinculación por QR)</small>
+        <div id="lobby">
+            <h2>Escanea con tu teléfono para conectar</h2>
+            <div id="qrcode"></div>
+            <p style="margin-top: 15px; color: #aaa;" id="peer-id-text">Generando código de conexión...</p>
         </div>
 
         <canvas id="gameCanvas" width="800" height="600"></canvas>
@@ -67,24 +45,53 @@
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        const lobby = document.getElementById('lobby');
 
-        // Variables del balón (posición X, Y y Radio para simular cercanía)
         let ball = { x: 400, y: 150, radius: 10, speedY: 2, speedRadius: 0.3 };
-        // Variables de las manos virtuales
         let hands = { x: 400, y: 500 };
 
+        // --- CONEXIÓN CON PEERJS ---
+        // Creamos una ID aleatoria para la computadora
+        const peer = new Peer('voley-pc-' + Math.floor(Math.random() * 9999));
+
+        peer.on('open', (id) => {
+            document.getElementById('peer-id-text').innerText = "ID de sala: " + id;
+            
+            // Generamos la URL que debe abrir el teléfono. 
+            // IMPORTANTE: Cuando lo subas a GitHub, cambiaremos esta URL local por la tuya de GitHub Pages.
+            const urlParaCelular = window.location.href.replace('index.html', '') + 'phone.html?sala=' + id;
+            
+            // Dibujar el código QR
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            QrCreator.render({ text: urlParaCelular, radius: 0.5, size: 200 }, qrContainer);
+        });
+
+        // Esperar a que el teléfono se conecte
+        peer.on('connection', (conn) => {
+            lobby.style.display = 'none'; // Escondemos el QR porque ya se conectó
+            
+            // Escuchar los datos que envía el teléfono
+            conn.on('data', (data) => {
+                if (data.tipo === 'movimiento') {
+                    // Modificamos la posición X de las manos según lo que mande el celular
+                    hands.x = data.x;
+                }
+            });
+        });
+
+        // --- BUCLE DEL JUEGO ---
         function draw() {
-            // Limpiar pantalla
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 1. Dibujar las manos del jugador
+            // Manos
             ctx.beginPath();
-            ctx.arc(hands.x, hands.y, 30, 0, Math.PI * 2);
-            ctx.fillStyle = "#eccc68"; // Color simulando manos/antebrazos
+            ctx.arc(hands.x, hands.y, 35, 0, Math.PI * 2);
+            ctx.fillStyle = "#eccc68";
             ctx.fill();
             ctx.closePath();
 
-            // 2. Dibujar el Balón de Voleibol
+            // Balón
             ctx.beginPath();
             ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
             ctx.fillStyle = "#ffffff";
@@ -94,26 +101,16 @@
             ctx.stroke();
             ctx.closePath();
 
-            // 3. Animación simple del balón viniendo hacia ti (aumenta de tamaño)
             ball.y += ball.speedY;
             ball.radius += ball.speedRadius;
 
-            // Reiniciar balón si pasa la pantalla (bucle de práctica)
             if (ball.y > canvas.height + 50) {
                 ball = { x: Math.random() * (600 - 200) + 200, y: 150, radius: 10, speedY: 2, speedRadius: 0.3 };
             }
 
             requestAnimationFrame(draw);
         }
-
-        // Iniciar la animación
         draw();
-
-        // ESCUCHA TEMPORAL: Para probar el movimiento con las flechas del teclado de la PC antes de conectar el teléfono
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') hands.x -= 20;
-            if (e.key === 'ArrowRight') hands.x += 20;
-        });
     </script>
 </body>
 </html>
