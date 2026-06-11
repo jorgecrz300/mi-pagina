@@ -3,89 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controlador de Voleibol - Teléfono</title>
+    <title>Controlador de Voleibol - Cliente Móvil</title>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100vh;
-            overflow: hidden;
+            margin: 0; padding: 20px; background-color: #000; color: white;
+            font-family: Arial, sans-serif; text-align: center;
+            display: flex; flex-direction: column; justify-content: space-between; height: 100vh;
         }
-        header {
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        /* Contenedor del video de la cámara */
-        #video-container {
-            position: relative;
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        video {
-            width: 90%;
-            max-height: 70vh;
-            border-radius: 10px;
-            transform: scaleX(-1); /* Efecto espejo para que sea natural moverse */
-            background-color: #222;
-        }
-        footer {
-            padding: 20px;
-        }
-        button {
-            background-color: #2ed573;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        .status { padding: 10px; border-radius: 5px; font-weight: bold; }
+        .disconnected { background-color: #ff4757; }
+        .connected { background-color: #2ed573; }
+        input[type=range] { width: 100%; height: 50px; margin: 20px 0; }
     </style>
 </head>
 <body>
 
     <header>
-        <h2>Controlador Activo</h2>
-        <p>Coloca el teléfono frente a ti y ponte en posición de recepción.</p>
+        <h2>Controlador de Voleibol</h2>
+        <div id="status-box" class="status disconnected">Conectando con la PC...</div>
     </header>
 
-    <div id="video-container">
-        <video id="webcam" autoplay playsinline></video>
+    <div>
+        <p>Prueba mover este control para ver si las manos se mueven en la PC:</p>
+        <input type="range" id="test-slider" min="50" max="750" value="400 disabled">
     </div>
 
     <footer>
-        <button id="start-camera">Activar Cámara</button>
+        <p>Próximo paso: Activar seguimiento de manos por cámara.</p>
     </footer>
 
     <script>
-        const video = document.getElementById('webcam');
-        const btnCamera = document.getElementById('start-camera');
+        const statusBox = document.getElementById('status-box');
+        const slider = document.getElementById('test-slider');
+        
+        // Obtener la ID de la computadora desde la URL (?sala=voley-pc-XXXX)
+        const urlParams = new URLSearchParams(window.location.search);
+        const salaId = urlParams.get('sala');
 
-        // Función para encender la cámara del celular
-        async function initCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: "user" }, // "user" usa la cámara frontal (selfie)
-                    audio: false
+        if (!salaId) {
+            statusBox.innerText = "Error: Falta el código de la sala.";
+        } else {
+            // Inicializar PeerJS para el teléfono
+            const peer = new Peer();
+
+            peer.on('open', () => {
+                // Conectarse a la computadora usando su ID
+                const conn = peer.connect(salaId);
+
+                conn.on('open', () => {
+                    statusBox.innerText = "¡CONECTADO A LA PC!";
+                    statusBox.className = "status connected";
+                    slider.disabled = false; // Habilitar slider
+
+                    // Cada vez que muevas el slider del teléfono, enviamos la posición X a la PC
+                    slider.addEventListener('input', (e) => {
+                        conn.send({
+                            tipo: 'movimiento',
+                            x: parseInt(e.target.value)
+                        });
+                    });
                 });
-                video.srcObject = stream;
-                btnCamera.style.display = 'none'; // Esconde el botón tras activar
-            } catch (error) {
-                alert("Error al acceder a la cámara: " + error.message);
-            }
-        }
 
-        btnCamera.addEventListener('click', initCamera);
+                conn.on('close', () => {
+                    statusBox.innerText = "Conexión perdida.";
+                    statusBox.className = "status disconnected";
+                });
+            });
+        }
     </script>
 </body>
 </html>
