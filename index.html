@@ -20,7 +20,6 @@
             border-radius: 8px;
         }
         canvas { display: block; }
-        /* Pantalla de espera con el QR */
         #lobby {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(20, 20, 20, 0.95); display: flex; flex-direction: column;
@@ -39,7 +38,6 @@
             <div id="qrcode"></div>
             <p style="margin-top: 15px; color: #aaa;" id="peer-id-text">Generando código de conexión...</p>
         </div>
-
         <canvas id="gameCanvas" width="800" height="600"></canvas>
     </div>
 
@@ -48,49 +46,43 @@
         const ctx = canvas.getContext('2d');
         const lobby = document.getElementById('lobby');
 
-        // Balón (X, Y, Radio inicial, Velocidad vertical, Velocidad de crecimiento)
         let ball = { x: 400, y: 150, radius: 10, speedY: 2.5, speedRadius: 0.35 };
-        // Manos del jugador
         let hands = { x: 400, y: 500 };
 
-        // --- CONEXIÓN CON PEERJS ---
+        // CONEXIÓN
         const peer = new Peer('voley-pc-' + Math.floor(Math.random() * 9999));
 
         peer.on('open', (id) => {
             document.getElementById('peer-id-text').innerText = "ID de sala: " + id;
             
-            // URL fija apuntando a tu teléfono en GitHub Pages con la ID de la sala
+            // Al usar index.html, GitHub Pages ya no se confunde con la ruta de phone.html
             const urlParaCelular = 'https://jorgecrz300.github.io/phone.html?sala=' + id;
             
-            // Crear el código QR en pantalla
             const qrContainer = document.getElementById('qrcode');
             qrContainer.innerHTML = '';
             QrCreator.render({ text: urlParaCelular, radius: 0.5, size: 200 }, qrContainer);
         });
 
-        // Cuando el celular se conecta exitosamente
         peer.on('connection', (conn) => {
-            lobby.style.display = 'none'; // Desaparece el QR y empieza el juego
-            
+            lobby.style.display = 'none';
             conn.on('data', (data) => {
                 if (data.tipo === 'movimiento') {
-                    hands.x = data.x; // Mueve las manos según el slider del celular
+                    hands.x = data.x;
                 }
             });
         });
 
-        // --- BUCLE DE ANIMACIÓN ---
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Dibujar Manos
+            // Manos
             ctx.beginPath();
             ctx.arc(hands.x, hands.y, 35, 0, Math.PI * 2);
             ctx.fillStyle = "#eccc68";
             ctx.fill();
             ctx.closePath();
 
-            // Dibujar Balón
+            // Balón
             ctx.beginPath();
             ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
             ctx.fillStyle = "#ffffff";
@@ -100,11 +92,9 @@
             ctx.stroke();
             ctx.closePath();
 
-            // Simular trayectoria hacia adelante
             ball.y += ball.speedY;
             ball.radius += ball.speedRadius;
 
-            // Reiniciar balón cuando cae
             if (ball.y > canvas.height + 50) {
                 ball = { x: Math.random() * (600 - 200) + 200, y: 150, radius: 10, speedY: 2.5, speedRadius: 0.35 };
             }
