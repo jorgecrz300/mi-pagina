@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controlador de Voleibol - Cliente Móvil</title>
+    <title>Controlador de Voleibol - Celular</title>
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <style>
         body {
@@ -11,52 +11,55 @@
             font-family: Arial, sans-serif; text-align: center;
             display: flex; flex-direction: column; justify-content: space-between; height: 100vh;
         }
-        .status { padding: 10px; border-radius: 5px; font-weight: bold; }
+        .status { padding: 12px; border-radius: 8px; font-weight: bold; font-size: 16px; }
         .disconnected { background-color: #ff4757; }
         .connected { background-color: #2ed573; }
-        input[type=range] { width: 100%; height: 50px; margin: 20px 0; }
+        input[type=range] { 
+            width: 100%; height: 60px; margin: 30px 0; 
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h2>Controlador de Voleibol</h2>
+        <h2>Controlador Activo</h2>
         <div id="status-box" class="status disconnected">Conectando con la PC...</div>
     </header>
 
     <div>
-        <p>Prueba mover este control para ver si las manos se mueven en la PC:</p>
-        <input type="range" id="test-slider" min="50" max="750" value="400 disabled">
+        <p style="font-size: 18px; margin-bottom: 10px;">Desliza para mover las manos en la computadora:</p>
+        <input type="range" id="test-slider" min="50" max="750" value="400" disabled>
     </div>
 
     <footer>
-        <p>Próximo paso: Activar seguimiento de manos por cámara.</p>
+        <p style="color: #666;">Paso actual: Prueba de conexión remota</p>
     </footer>
 
     <script>
         const statusBox = document.getElementById('status-box');
         const slider = document.getElementById('test-slider');
         
-        // Obtener la ID de la computadora desde la URL (?sala=voley-pc-XXXX)
+        // Obtener automáticamente el código de la sala que manda el QR
         const urlParams = new URLSearchParams(window.location.search);
         const salaId = urlParams.get('sala');
 
         if (!salaId) {
-            statusBox.innerText = "Error: Falta el código de la sala.";
+            statusBox.innerText = "Error: No se detectó ninguna sala en el QR.";
         } else {
-            // Inicializar PeerJS para el teléfono
+            // Conectar con el servidor PeerJS
             const peer = new Peer();
 
             peer.on('open', () => {
-                // Conectarse a la computadora usando su ID
+                // Enlazarse a la PC
                 const conn = peer.connect(salaId);
 
                 conn.on('open', () => {
-                    statusBox.innerText = "¡CONECTADO A LA PC!";
+                    statusBox.innerText = "¡CONECTADO CON ÉXITO!";
                     statusBox.className = "status connected";
-                    slider.disabled = false; // Habilitar slider
+                    slider.disabled = false; // Activamos el slider
 
-                    // Cada vez que muevas el slider del teléfono, enviamos la posición X a la PC
+                    // Enviar los datos cada vez que el usuario mueva el slider
                     slider.addEventListener('input', (e) => {
                         conn.send({
                             tipo: 'movimiento',
@@ -66,8 +69,9 @@
                 });
 
                 conn.on('close', () => {
-                    statusBox.innerText = "Conexión perdida.";
+                    statusBox.innerText = "Conexión terminada.";
                     statusBox.className = "status disconnected";
+                    slider.disabled = true;
                 });
             });
         }
