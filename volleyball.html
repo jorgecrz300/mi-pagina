@@ -13,13 +13,14 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             min-height: 100vh; overflow: hidden;
         }
+        h1 { margin-bottom: 10px; font-size: 24px; }
         #game-container {
             position: relative; width: 800px; height: 600px;
             border: 4px solid #333; background: linear-gradient(to bottom, #111 60%, #2c3e50 100%);
             border-radius: 8px;
         }
         canvas { display: block; }
-        /* Pantalla de emparejamiento (QR) */
+        /* Pantalla de espera con el QR */
         #lobby {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(20, 20, 20, 0.95); display: flex; flex-direction: column;
@@ -30,7 +31,7 @@
 </head>
 <body>
 
-    <h1 style="margin-bottom: 10px;">Simulador de Recepción de Voleibol</h1>
+    <h1>Simulador de Recepción de Voleibol</h1>
     
     <div id="game-container">
         <div id="lobby">
@@ -47,51 +48,49 @@
         const ctx = canvas.getContext('2d');
         const lobby = document.getElementById('lobby');
 
-        let ball = { x: 400, y: 150, radius: 10, speedY: 2, speedRadius: 0.3 };
+        // Balón (X, Y, Radio inicial, Velocidad vertical, Velocidad de crecimiento)
+        let ball = { x: 400, y: 150, radius: 10, speedY: 2.5, speedRadius: 0.35 };
+        // Manos del jugador
         let hands = { x: 400, y: 500 };
 
         // --- CONEXIÓN CON PEERJS ---
-        // Creamos una ID aleatoria para la computadora
         const peer = new Peer('voley-pc-' + Math.floor(Math.random() * 9999));
 
         peer.on('open', (id) => {
             document.getElementById('peer-id-text').innerText = "ID de sala: " + id;
             
-            // Generamos la URL que debe abrir el teléfono. 
-            // IMPORTANTE: Cuando lo subas a GitHub, cambiaremos esta URL local por la tuya de GitHub Pages.
-            const urlParaCelular = window.location.href.replace('index.html', '') + 'phone.html?sala=' + id;
+            // URL fija apuntando a tu teléfono en GitHub Pages con la ID de la sala
+            const urlParaCelular = 'https://jorgecrz300.github.io/phone.html?sala=' + id;
             
-            // Dibujar el código QR
+            // Crear el código QR en pantalla
             const qrContainer = document.getElementById('qrcode');
             qrContainer.innerHTML = '';
             QrCreator.render({ text: urlParaCelular, radius: 0.5, size: 200 }, qrContainer);
         });
 
-        // Esperar a que el teléfono se conecte
+        // Cuando el celular se conecta exitosamente
         peer.on('connection', (conn) => {
-            lobby.style.display = 'none'; // Escondemos el QR porque ya se conectó
+            lobby.style.display = 'none'; // Desaparece el QR y empieza el juego
             
-            // Escuchar los datos que envía el teléfono
             conn.on('data', (data) => {
                 if (data.tipo === 'movimiento') {
-                    // Modificamos la posición X de las manos según lo que mande el celular
-                    hands.x = data.x;
+                    hands.x = data.x; // Mueve las manos según el slider del celular
                 }
             });
         });
 
-        // --- BUCLE DEL JUEGO ---
+        // --- BUCLE DE ANIMACIÓN ---
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Manos
+            // Dibujar Manos
             ctx.beginPath();
             ctx.arc(hands.x, hands.y, 35, 0, Math.PI * 2);
             ctx.fillStyle = "#eccc68";
             ctx.fill();
             ctx.closePath();
 
-            // Balón
+            // Dibujar Balón
             ctx.beginPath();
             ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
             ctx.fillStyle = "#ffffff";
@@ -101,11 +100,13 @@
             ctx.stroke();
             ctx.closePath();
 
+            // Simular trayectoria hacia adelante
             ball.y += ball.speedY;
             ball.radius += ball.speedRadius;
 
+            // Reiniciar balón cuando cae
             if (ball.y > canvas.height + 50) {
-                ball = { x: Math.random() * (600 - 200) + 200, y: 150, radius: 10, speedY: 2, speedRadius: 0.3 };
+                ball = { x: Math.random() * (600 - 200) + 200, y: 150, radius: 10, speedY: 2.5, speedRadius: 0.35 };
             }
 
             requestAnimationFrame(draw);
