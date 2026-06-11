@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controlador de Voleibol - Teléfono</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            overflow: hidden;
+        }
+        header {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        /* Contenedor del video de la cámara */
+        #video-container {
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        video {
+            width: 90%;
+            max-height: 70vh;
+            border-radius: 10px;
+            transform: scaleX(-1); /* Efecto espejo para que sea natural moverse */
+            background-color: #222;
+        }
+        footer {
+            padding: 20px;
+        }
+        button {
+            background-color: #2ed573;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>Controlador Activo</h2>
+        <p>Coloca el teléfono frente a ti y ponte en posición de recepción.</p>
+    </header>
+
+    <div id="video-container">
+        <video id="webcam" autoplay playsinline></video>
+    </div>
+
+    <footer>
+        <button id="start-camera">Activar Cámara</button>
+    </footer>
+
+    <script>
+        const video = document.getElementById('webcam');
+        const btnCamera = document.getElementById('start-camera');
+
+        // Función para encender la cámara del celular
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "user" }, // "user" usa la cámara frontal (selfie)
+                    audio: false
+                });
+                video.srcObject = stream;
+                btnCamera.style.display = 'none'; // Esconde el botón tras activar
+            } catch (error) {
+                alert("Error al acceder a la cámara: " + error.message);
+            }
+        }
+
+        btnCamera.addEventListener('click', initCamera);
+    </script>
+</body>
+</html>
