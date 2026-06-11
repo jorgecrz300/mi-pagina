@@ -3,192 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VolleyJS - Fixed Edition</title>
+    <title>Entrenador de Voleibol - Pantalla Principal</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body {
             background-color: #1a1a1a;
             color: white;
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            justify-content: center;
+            min-height: 100vh;
             overflow: hidden;
         }
-        #ui {
-            display: flex;
-            gap: 40px;
+        h1 {
             margin-bottom: 10px;
             font-size: 24px;
-            font-weight: bold;
+        }
+        /* Contenedor del área de juego */
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border: 4px solid #333;
+            background: linear-gradient(to bottom, #111 60%, #2c3e50 100%); /* Simula perspectiva */
+            border-radius: 8px;
         }
         canvas {
-            background: linear-gradient(#87CEEB, #B0E0E6);
-            border: 4px solid #fff;
-            border-bottom: 10px solid #5d4037;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            display: block;
         }
-        .info {
-            margin-top: 10px;
-            color: #aaa;
+        /* Panel de conexión temporal */
+        #connection-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 5px;
             font-size: 14px;
         }
+        .status-disconnected { color: #ff4757; }
+        .status-connected { color: #2ed573; }
     </style>
 </head>
 <body>
 
-    <div id="ui">
-        <div>Jugador: <span id="p1-score">0</span></div>
-        <div>IA: <span id="p2-score">0</span></div>
+    <h1>Simulador de Recepción de Voleibol</h1>
+    
+    <div id="game-container">
+        <div id="connection-panel">
+            <p>Estado: <span id="status" class="status-disconnected">Esperando Teléfono...</span></p>
+            <small>Abre "phone.html" en tu celular (Pronto vinculación por QR)</small>
+        </div>
+
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
     </div>
-
-    <canvas id="gameCanvas" width="800" height="400"></canvas>
-
-    <div class="info">Flechas para mover/saltar | <b>ESPACIO</b> para reiniciar el punto</div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        let p1Score = 0;
-        let p2Score = 0;
-        const gravity = 0.5;
-
-        let player = { x: 100, y: 350, w: 30, h: 50, dy: 0, speed: 6, jumping: false, color: '#ff4444' };
-        let enemy = { x: 670, y: 350, w: 30, h: 50, dy: 0, speed: 4, jumping: false, color: '#44ff44' };
-        let ball = { x: 400, y: 100, radius: 10, dx: 3, dy: 0 };
-        const net = { x: 395, y: 250, w: 10, h: 150 };
-
-        function resetBall() {
-            ball.x = 400;
-            ball.y = 100;
-            ball.dx = (Math.random() > 0.5 ? 3 : -3);
-            ball.dy = 0;
-        }
-
-        // Función para evitar que el balón se quede pegado
-        function checkCollision(p) {
-            if (ball.x + ball.radius > p.x && 
-                ball.x - ball.radius < p.x + p.w && 
-                ball.y + ball.radius > p.y && 
-                ball.y - ball.radius < p.y + p.h) {
-                
-                // Si golpea desde arriba, rebota fuerte
-                ball.dy = -10;
-                
-                // Dirección horizontal basada en qué lado del jugador golpea
-                let diff = ball.x - (p.x + p.w/2);
-                ball.dx = diff * 0.5;
-
-                // Empujar el balón fuera del jugador para que no se trabe
-                ball.y = p.y - ball.radius - 1;
-            }
-        }
-
-        function update() {
-            // Jugador
-            player.dy += gravity;
-            player.y += player.dy;
-            if (player.y > 350) {
-                player.y = 350;
-                player.dy = 0;
-                player.jumping = false;
-            }
-
-            // IA
-            enemy.dy += gravity;
-            enemy.y += enemy.dy;
-            if (enemy.y > 350) {
-                enemy.y = 350;
-                enemy.dy = 0;
-                enemy.jumping = false;
-            }
-
-            // Lógica simple IA
-            if (ball.x > 400) {
-                if (enemy.x + enemy.w/2 < ball.x) enemy.x += enemy.speed;
-                else enemy.x -= enemy.speed;
-                if (ball.y < 250 && !enemy.jumping) {
-                    enemy.dy = -10;
-                    enemy.jumping = true;
-                }
-            }
-
-            // Balón
-            ball.dy += 0.25; // Gravedad balón
-            ball.x += ball.dx;
-            ball.y += ball.dy;
-
-            // Paredes
-            if (ball.x < 0 || ball.x > canvas.width) ball.dx *= -1;
-
-            // Suelo (Puntos)
-            if (ball.y > canvas.height) {
-                if (ball.x < 400) p2Score++; else p1Score++;
-                document.getElementById('p1-score').innerText = p1Score;
-                document.getElementById('p2-score').innerText = p2Score;
-                resetBall();
-            }
-
-            // Colisión Red
-            if (ball.x + ball.radius > net.x && ball.x - ball.radius < net.x + net.w && ball.y > net.y) {
-                ball.dx *= -1;
-                // Reposicionar para evitar bucle de colisión
-                ball.x = (ball.x < 400) ? net.x - ball.radius : net.x + net.w + ball.radius;
-            }
-
-            checkCollision(player);
-            checkCollision(enemy);
-        }
+        // Variables del balón (posición X, Y y Radio para simular cercanía)
+        let ball = { x: 400, y: 150, radius: 10, speedY: 2, speedRadius: 0.3 };
+        // Variables de las manos virtuales
+        let hands = { x: 400, y: 500 };
 
         function draw() {
+            // Limpiar pantalla
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Red
-            ctx.fillStyle = "white";
-            ctx.fillRect(net.x, net.y, net.w, net.h);
-
-            // Jugadores
-            ctx.fillStyle = player.color;
-            ctx.fillRect(player.x, player.y, player.w, player.h);
-            ctx.fillStyle = enemy.color;
-            ctx.fillRect(enemy.x, enemy.y, enemy.w, enemy.h);
-
-            // Balón
+            // 1. Dibujar las manos del jugador
             ctx.beginPath();
-            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-            ctx.fillStyle = "yellow";
+            ctx.arc(hands.x, hands.y, 30, 0, Math.PI * 2);
+            ctx.fillStyle = "#eccc68"; // Color simulando manos/antebrazos
             ctx.fill();
             ctx.closePath();
 
-            handleInput();
-            update();
+            // 2. Dibujar el Balón de Voleibol
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "#333";
+            ctx.stroke();
+            ctx.closePath();
+
+            // 3. Animación simple del balón viniendo hacia ti (aumenta de tamaño)
+            ball.y += ball.speedY;
+            ball.radius += ball.speedRadius;
+
+            // Reiniciar balón si pasa la pantalla (bucle de práctica)
+            if (ball.y > canvas.height + 50) {
+                ball = { x: Math.random() * (600 - 200) + 200, y: 150, radius: 10, speedY: 2, speedRadius: 0.3 };
+            }
+
             requestAnimationFrame(draw);
         }
 
-        const keys = {};
-        window.addEventListener('keydown', (e) => {
-            keys[e.code] = true;
-            // Corregido el botón de espacio
-            if (e.code === 'Space') {
-                e.preventDefault(); // Evita que la página baje
-                resetBall();
-            }
-        });
-        window.addEventListener('keyup', (e) => keys[e.code] = false);
-
-        function handleInput() {
-            if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
-            if (keys['ArrowRight'] && player.x < net.x - player.w) player.x += player.speed;
-            if (keys['ArrowUp'] && !player.jumping) {
-                player.dy = -12;
-                player.jumping = true;
-            }
-        }
-
+        // Iniciar la animación
         draw();
+
+        // ESCUCHA TEMPORAL: Para probar el movimiento con las flechas del teclado de la PC antes de conectar el teléfono
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') hands.x -= 20;
+            if (e.key === 'ArrowRight') hands.x += 20;
+        });
     </script>
 </body>
 </html>
