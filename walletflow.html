@@ -59,7 +59,6 @@
             overflow-x: hidden;
         }
 
-        /* Soporte para áreas seguras (Notch y barras de navegación inferiores) */
         #app-screen { 
             width: 100%;
             max-width: 500px; 
@@ -120,7 +119,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             pointer-events: none;
             z-index: 251;
         }
@@ -144,6 +143,13 @@
             position: relative;
         }
 
+        /* Color especial para destacar el botón de añadir transacciones */
+        .fab-sub.add-btn-highlight {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         .fab-sub::after {
             content: attr(data-label);
             position: absolute;
@@ -163,43 +169,24 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
-        .fab-container.active-fab .fab-options {
-            pointer-events: auto;
-            bottom: 75px;
-        }
-        .fab-container.active-fab .fab-main {
-            transform: rotate(135deg);
-            background: var(--danger);
-        }
-        .fab-container.active-fab .fab-sub {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-        .fab-container.active-fab .fab-sub:hover::after {
-            opacity: 1;
-            transform: translateX(0);
-        }
+        .fab-container.active-fab .fab-options { pointer-events: auto; bottom: 75px; }
+        .fab-container.active-fab .fab-main { transform: rotate(135deg); background: var(--danger); }
+        .fab-container.active-fab .fab-sub { opacity: 1; transform: translateY(0) scale(1); }
+        .fab-container.active-fab .fab-sub:hover::after { opacity: 1; transform: translateX(0); }
 
-        .fab-container.active-fab .fab-sub:nth-child(1) { transition-delay: 0.25s; }
-        .fab-container.active-fab .fab-sub:nth-child(2) { transition-delay: 0.20s; }
-        .fab-container.active-fab .fab-sub:nth-child(3) { transition-delay: 0.15s; }
-        .fab-container.active-fab .fab-sub:nth-child(4) { transition-delay: 0.10s; }
-        .fab-container.active-fab .fab-sub:nth-child(5) { transition-delay: 0.05s; }
-        .fab-container.active-fab .fab-sub:nth-child(6) { transition-delay: 0.00s; }
+        /* Retrasos de animación elástica progresiva */
+        .fab-container.active-fab .fab-sub:nth-child(1) { transition-delay: 0.35s; }
+        .fab-container.active-fab .fab-sub:nth-child(2) { transition-delay: 0.30s; }
+        .fab-container.active-fab .fab-sub:nth-child(3) { transition-delay: 0.25s; }
+        .fab-container.active-fab .fab-sub:nth-child(4) { transition-delay: 0.20s; }
+        .fab-container.active-fab .fab-sub:nth-child(5) { transition-delay: 0.15s; }
+        .fab-container.active-fab .fab-sub:nth-child(6) { transition-delay: 0.10s; }
+        .fab-container.active-fab .fab-sub:nth-child(7) { transition-delay: 0.05s; }
+        .fab-container.active-fab .fab-sub:nth-child(8) { transition-delay: 0.00s; }
 
-        .fab-sub.active-nav-item {
-            background: var(--primary);
-            color: #ffffff;
-            border-color: var(--primary);
-        }
+        .fab-sub.active-nav-item { border-color: var(--primary); box-shadow: 0 0 10px var(--primary); }
 
-        /* Panel exclusivo incrustado para Ajustes de Configuración */
-        .settings-box {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 10px;
-        }
+        .settings-box { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; }
 
         /* --- CONTROL DE PANTALLAS --- */
         .screen { display: none; animation: fadeIn 0.3s ease; }
@@ -233,8 +220,7 @@
 
         .main-content { display: flex; flex-direction: column; gap: 20px; padding-bottom: 40px; }
         .panel {
-            background: var(--card-bg);
-            padding: 20px; border-radius: 16px; border: 1px solid var(--border); position: relative;
+            background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); position: relative;
             backdrop-filter: var(--glass-blur, none); -webkit-backdrop-filter: var(--glass-blur, none);
             box-shadow: var(--glass-shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
         }
@@ -290,7 +276,6 @@
         }
         .cal-day.selected { background: var(--primary); color: white !important; }
         .cal-day.adjacent-month { opacity: 0.35; }
-        .chart-box { height: 220px; margin: 15px 0; }
 
         .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .btn-reset-view { background: var(--bg-color); color: var(--primary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
@@ -310,7 +295,6 @@
         .chat-msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; line-height: 1.4; word-break: break-word; }
         .chat-msg.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
         .chat-msg.bot { background: var(--bg-color); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 2px; }
-        .chat-msg.bot-alert { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); color: #fca5a5; align-self: flex-start; border-bottom-left-radius: 2px; }
 
         .ai-chat-input-bar { display: grid; grid-template-columns: 1fr 50px; gap: 8px; padding: 10px; border-top: 1px solid var(--border); background: var(--bg-color); }
         .ai-chat-input-bar input { height: 42px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-color); padding: 0 12px; font-size: 14px; outline: none; }
@@ -334,14 +318,15 @@
         .mock-cal-cell.dot::after { content: ''; position: absolute; bottom: 2px; left: 5px; width: 3px; height: 3px; background: var(--success); border-radius: 50%; }
         .mock-ai { width: 40px; height: 40px; border-radius: 50%; background: rgba(6,182,212,0.1); border: 1px solid var(--ai-accent); display: flex; align-items: center; justify-content: center; color: var(--ai-accent); box-shadow: 0 0 8px rgba(6,182,212,0.3); }
 
-        /* --- UI COMPONENTES FLOTANTES --- */
-        .fab-button { position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px; background: var(--primary); color: white; border: none; border-radius: 50%; font-size: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; z-index: 90; transition: transform 0.2s ease; }
-        .fab-button:active { transform: scale(0.9); }
+        /* --- BOTTOM SHEET FORMULARIO --- */
         .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; height: auto; max-height: 85vh; background: var(--card-bg); border-radius: 24px 24px 0 0; border-top: 1px solid var(--border); padding: 24px; z-index: 180; box-shadow: 0 -5px 25px rgba(0,0,0,0.3); transition: bottom 0.4s cubic-bezier(0.25, 1, 0.5, 1); overflow-y: auto; }
         .bottom-sheet.active { bottom: 0; }
         .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .sheet-header h2 { margin: 0; font-size: 18px; }
         .close-sheet-btn { background: var(--bg-color); border: none; color: var(--text-color); width: 36px; height: 36px; border-radius: 50%; font-size: 16px; cursor: pointer; }
+
+        /* Campo oculto para cargar JSON */
+        #importFile { display: none; }
 
         @media (max-width: 360px) {
             header h1 { font-size: 19px; }
@@ -366,9 +351,20 @@
 
     <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
 
+    <input type="file" id="importFile" accept=".json" onchange="importHistory(event)">
+
     <div class="fab-container" id="fabContainer">
         <div class="fab-options">
-            <button class="fab-sub" onclick="handleFabNav('settings-screen', getWord('settings') || 'Configuración', this)" data-label="Ajustes" id="nav-settings">
+            <button class="fab-sub add-btn-highlight" onclick="handleFabAction('add')" data-label="Añadir Movimiento">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <button class="fab-sub" onclick="handleFabAction('export')" data-label="Exportar Backup">
+                <i class="fa-solid fa-file-export"></i>
+            </button>
+            <button class="fab-sub" onclick="handleFabAction('import')" data-label="Importar Backup">
+                <i class="fa-solid fa-file-import"></i>
+            </button>
+            <button class="fab-sub" onclick="handleFabNav('settings-screen', getWord('settings'), this)" data-label="Ajustes" id="nav-settings">
                 <i class="fa-solid fa-gear"></i>
             </button>
             <button class="fab-sub" onclick="handleFabNav('guide-screen', getWord('interactiveGuide'), this)" data-label="Guía" id="nav-guide">
@@ -389,7 +385,7 @@
         </div>
         
         <button class="fab-main" onclick="toggleFabMenu()">
-            <i class="fa-solid fa-plus" id="fabIcon"></i>
+            <i class="fa-solid fa-bars" id="fabIcon"></i>
         </button>
     </div>
 
@@ -414,8 +410,7 @@
                     </div>
                     <p class="wallet-balance" id="val-net-worth">$0.00</p>
                     <div class="wallet-footer">
-                        <span id="val-wallet-date">Actualizado ahora</span>
-                        <span style="color:var(--success);"><i class="fa-solid fa-arrow-trend-up"></i> Balance Global</span>
+                        <span style="color:var(--success); width:100%; text-align:right;"><i class="fa-solid fa-arrow-trend-up"></i> Balance Global</span>
                     </div>
                 </div>
                 <div class="card-sub">
@@ -541,34 +536,6 @@
                     </div>
                     <div class="guide-visual-side"><div class="mock-donut"></div></div>
                 </div>
-                <div class="guide-card-row">
-                    <div class="guide-text-side">
-                        <h3 id="title-g3">Evolución de Capital</h3>
-                        <p id="desc-g3">El balance predictivo analiza los diferenciales de ingresos y gastos, proyectando tendencias analíticas sofisticadas.</p>
-                    </div>
-                    <div class="guide-visual-side"><div class="mock-bars"><div class="mock-bar" style="height:25px;"></div><div class="mock-bar" style="height:40px; background:var(--success);"></div><div class="mock-bar" style="height:15px; background:var(--danger);"></div></div></div>
-                </div>
-                <div class="guide-card-row">
-                    <div class="guide-text-side">
-                        <h3 id="title-g4">Tendencia de Margen</h3>
-                        <p id="desc-g4">Rastree visualmente picos y caídas estacionales con curvas fluidas optimizadas para auditorías rápidas.</p>
-                    </div>
-                    <div class="guide-visual-side"><div class="mock-lines"></div></div>
-                </div>
-                <div class="guide-card-row">
-                    <div class="guide-text-side">
-                        <h3 id="title-g5">Agenda de Caja</h3>
-                        <p id="desc-g5">El calendario contable interactivo resalta los días con movimientos registrados mediante indicadores de estado específicos.</p>
-                    </div>
-                    <div class="guide-visual-side"><div class="mock-cal"><div class="mock-cal-cell"></div><div class="mock-cal-cell dot"></div><div class="mock-cal-cell"></div><div class="mock-cal-cell"></div></div></div>
-                </div>
-                <div class="guide-card-row">
-                    <div class="guide-text-side">
-                        <h3 id="title-g6">Inteligencia Artificial</h3>
-                        <p id="desc-g6">Nuestra red neuronal dedicada evalúa de forma autónoma su tasa de consumo y emite alertas preventivas de descapitalización.</p>
-                    </div>
-                    <div class="guide-visual-side"><div class="mock-ai"><i class="fa-solid fa-robot"></i></div></div>
-                </div>
             </div>
         </div>
 
@@ -598,8 +565,6 @@
                 </div>
             </div>
         </div>
-
-        <button class="fab-button" onclick="openTransactionSheet()"><i class="fa-solid fa-plus"></i></button>
     </div>
 
     <div class="bottom-sheet" id="transactionSheet">
@@ -616,7 +581,6 @@
                     <option value="expense">➖ Gasto / Salida de Efectivo</option>
                 </select>
             </div>
-
             <div class="form-group">
                 <label id="lbl-form-amount">Monto / Valor Contable</label>
                 <div class="currency-input-group">
@@ -626,45 +590,35 @@
                     </select>
                 </div>
             </div>
-
             <div class="form-group">
                 <label id="lbl-form-desc">Concepto / Descripción</label>
                 <input type="text" id="txDesc" required placeholder="Ej. Pago de Nómina, Supermercado">
             </div>
-
             <div class="form-group">
                 <label id="lbl-form-category">Categoría Asignada</label>
                 <select id="txCategory"></select>
             </div>
-
             <div class="form-group">
                 <label id="lbl-form-date">Fecha de Registro</label>
                 <input type="date" id="txDate" required>
             </div>
-
             <button type="submit" class="btn-submit" id="btn-form-save">Archivar Transacción</button>
             <button type="button" class="btn-secondary" onclick="closeTransactionSheet()" id="btn-form-cancel">Cancelar</button>
         </form>
     </div>
 
     <script>
-        // --- BASE DE DATOS LOCAL Y MOTOR CONTABLE ---
+        // --- BASE DE DATOS LOCAL ---
         let transactions = JSON.parse(localStorage.getItem('finanzas_pro_txs')) || [
             { id: 1, type: 'income', amount: 2500.00, currency: 'USD', desc: 'Salario Corporativo', category: 'salary', date: '2026-06-01' },
-            { id: 2, type: 'expense', amount: 450.00, currency: 'USD', desc: 'Alquiler Apartamento', category: 'rent', date: '2026-06-02' },
-            { id: 3, type: 'expense', amount: 85.50, currency: 'USD', desc: 'Compra de Víveres', category: 'food', date: '2026-06-04' },
-            { id: 4, type: 'expense', amount: 32.00, currency: 'USD', desc: 'Suscripción Streaming', category: 'services', date: '2026-06-05' },
-            { id: 5, type: 'income', amount: 350.00, currency: 'USD', desc: 'Consultoría Freelance', category: 'investments', date: '2026-06-08' }
+            { id: 2, type: 'expense', amount: 450.00, currency: 'USD', desc: 'Alquiler Apartamento', category: 'rent', date: '2026-06-02' }
         ];
 
         let currentCurrency = localStorage.getItem('finanzas_pro_curr') || 'USD';
         let currentLanguage = localStorage.getItem('finanzas_pro_lang') || 'es';
         let isPrivacyActive = false;
-
-        // Tasas de cambio fijas base USD
         const exchangeRates = { USD: 1.0, EUR: 0.92, MXN: 17.10 };
 
-        // Diccionarios del Motor Multilenguaje Interno
         const i18n = {
             es: {
                 calendar: "Calendario", aiAssistant: "Asistente AI", analytics: "Analíticas", interactiveGuide: "Guía Interactiva", settings: "Ajustes",
@@ -699,13 +653,11 @@
 
         function getWord(key) { return i18n[currentLanguage][key] || key; }
 
-        // --- MANEJO DE NAVEGACIÓN CIRCUOS FLOTANTES (FAB) ---
+        // --- CONTROL DEL BOTÓN FLOTANTE CENTRAL ---
         function toggleFabMenu() {
             const container = document.getElementById('fabContainer');
             const overlay = document.getElementById('overlay');
-            
             container.classList.toggle('active-fab');
-            
             if (container.classList.contains('active-fab')) {
                 overlay.className = 'overlay blur-effect';
             } else {
@@ -714,23 +666,68 @@
         }
 
         function handleFabNav(screenId, title, element) {
-            showScreen(screenId, title, element);
-            
-            // Sincronizar clases activas visuales en los círculos del FAB
+            showScreen(screenId, title);
             document.querySelectorAll('.fab-sub').forEach(btn => btn.classList.remove('active-nav-item'));
             element.classList.add('active-nav-item');
-            
             toggleFabMenu();
         }
 
-        function showScreen(screenId, title, element) {
+        // CONTROL DE LAS NUEVAS ACCIONES DEL MENU
+        function handleFabAction(action) {
+            toggleFabMenu(); // Cierra el menú al presionar
+            if (action === 'add') {
+                openTransactionSheet();
+            } else if (action === 'export') {
+                exportHistory();
+            } else if (action === 'import') {
+                document.getElementById('importFile').click();
+            }
+        }
+
+        function showScreen(screenId, title) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
             document.getElementById('screen-title').innerText = title;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- TEMATIZACIÓN DINÁMICA NATIVA ---
+        // --- EXPORTAR E IMPORTAR COPIAS DE SEGURIDAD (BACKUPS) ---
+        function exportHistory() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transactions));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `finanzas_pro_backup_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importHistory(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (Array.isArray(importedData)) {
+                        transactions = importedData;
+                        localStorage.setItem('finanzas_pro_txs', JSON.stringify(transactions));
+                        alert(currentLanguage === 'es' ? "¡Historial cargado con éxito!" : "History loaded successfully!");
+                        buildFilterOptions();
+                        updateUI();
+                        generateAiInsights();
+                        initCalendar();
+                    } else {
+                        alert("Archivo JSON no válido.");
+                    }
+                } catch (err) {
+                    alert("Error al leer el archivo.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- TEMATIZACIÓN ---
         function changeTheme(themeName) {
             document.documentElement.setAttribute('data-theme', themeName);
             localStorage.setItem('finanzas_pro_theme', themeName);
@@ -758,16 +755,12 @@
             document.getElementById('lbl-total-income').innerText = getWord('income');
             document.getElementById('lbl-total-expenses').innerText = getWord('expenses');
             document.getElementById('lbl-recent-activity').innerText = getWord('recentActivity');
-            document.getElementById('val-wallet-date').innerText = getWord('updateNow');
             document.getElementById('lbl-ai-burn').innerText = getWord('burnRate');
             document.getElementById('lbl-ai-health').innerText = getWord('financialHealth');
             document.getElementById('btn-reset-cal').innerText = getWord('viewAllMonth');
             document.getElementById('lbl-analytics-pie').innerText = getWord('distTitle');
             document.getElementById('lbl-analytics-line').innerText = getWord('evolTitle');
-            
-            // Formulario Bottom Sheet
             document.getElementById('sheet-title-text').innerText = getWord('formTitle');
-            document.getElementById('lbl-form-type').innerText = getWord('formType');
             document.getElementById('lbl-form-amount').innerText = getWord('formAmount');
             document.getElementById('lbl-form-desc').innerText = getWord('formDesc');
             document.getElementById('lbl-form-category').innerText = getWord('formCat');
@@ -776,30 +769,9 @@
             document.getElementById('btn-form-cancel').innerText = getWord('formCancel');
             document.getElementById('txDesc').placeholder = getWord('placeholderDesc');
             document.getElementById('ai-chat-input').placeholder = getWord('placeholderInput');
-
-            // Ajustes Screen
             document.getElementById('lbl-settings-title').innerText = getWord('settings');
-            document.getElementById('lbl-setting-theme').innerText = getWord('settings') === 'Settings' ? 'Visual Theme' : 'Tema Visual';
-            document.getElementById('lbl-setting-lang').innerText = getWord('settings') === 'Settings' ? 'Language / Idioma' : 'Idioma / Language';
-
-            // Tooltips del Menú Circular
-            document.getElementById('nav-home').setAttribute('data-label', getWord('settings') === 'Settings' ? 'Dashboard' : 'Inicio');
-            document.getElementById('nav-cal').setAttribute('data-label', getWord('calendar'));
-            document.getElementById('nav-assistant').setAttribute('data-label', getWord('aiAssistant') === 'AI Assistant' ? 'AI Bot' : 'Asistente AI');
-            document.getElementById('nav-analytics').setAttribute('data-label', getWord('analytics'));
-            document.getElementById('nav-guide').setAttribute('data-label', getWord('interactiveGuide') === 'Interactive Guide' ? 'Guide' : 'Guía');
-            document.getElementById('nav-settings').setAttribute('data-label', getWord('settings'));
-
-            // Guía
-            document.getElementById('title-g1').innerText = currentLanguage==='es'?"Estructura Inteligente":"Smart Matrix Structure";
-            document.getElementById('title-g2').innerText = currentLanguage==='es'?"Distribución Visual":"Visual Distribution Data";
-            document.getElementById('title-g3').innerText = currentLanguage==='es'?"Evolución de Capital":"Capital Velocity Map";
-            document.getElementById('title-g4').innerText = currentLanguage==='es'?"Tendencia de Margen":"Margin Variance Vector";
-            document.getElementById('title-g5').innerText = currentLanguage==='es'?"Agenda de Caja":"Contable Ledger Agenda";
-            document.getElementById('title-g6').innerText = currentLanguage==='es'?"Inteligencia Artificial":"Neural Inference System";
         }
 
-        // --- SISTEMA DE PRIVACIDAD NATIVO ---
         function togglePrivacy() {
             isPrivacyActive = !isPrivacyActive;
             const icon = document.getElementById('privacy-icon');
@@ -814,7 +786,6 @@
             }
         }
 
-        // --- FORMULARIO BOTTOM SHEET ---
         function openTransactionSheet() {
             document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('transactionSheet').classList.add('active');
@@ -860,7 +831,6 @@
             }).format(converted);
         }
 
-        // --- CORE COMPUTACIONAL ---
         function handleFormSubmit(e) {
             e.preventDefault();
             const type = document.getElementById('txType').value;
@@ -896,7 +866,6 @@
                 filtered = transactions.filter(t => t.date.startsWith(filterValue));
             }
 
-            // Cómputo global matricial
             let inc = 0, exp = 0;
             transactions.forEach(t => { if(t.type==='income') inc+=t.amount; else exp+=t.amount; });
             let net = inc - exp;
@@ -907,11 +876,9 @@
                 document.getElementById('val-total-expenses').innerText = formatValue(exp);
             }
 
-            // Renderizado de Actividad Reciente
             const container = document.getElementById('transactionContainer');
             container.innerHTML = '';
             
-            // Ordenar por fecha descendente
             let displayList = [...filtered].sort((a,b)=> new Date(b.date) - new Date(a.date));
 
             displayList.forEach(t => {
@@ -941,11 +908,9 @@
             renderCharts(filtered);
         }
 
-        // --- SISTEMA PREDICTIVO DE MÉTRICAS AI (MÓDULO AUTÓNOMO) ---
         function generateAiInsights() {
             let totalInc = 0, totalExp = 0;
             transactions.forEach(t => { if(t.type==='income') totalInc+=t.amount; else totalExp+=t.amount; });
-
             let burnRate = totalInc > 0 ? Math.round((totalExp / totalInc) * 100) : (totalExp > 0 ? 100 : 0);
             document.getElementById('val-ai-burn-rate').innerText = `${burnRate}%`;
 
@@ -953,29 +918,21 @@
             let colorAccent = "var(--success)";
             let diagnosticMsg = "";
 
-            if (burnRate > 100) { healthScore = "Crítica ⚠️"; colorAccent = "var(--danger)"; diagnosticMsg = currentLanguage==='es'?"Tu tasa de consumo supera el capital inyectado. Alertas de descapitalización activas. Detén gastos discrecionales inmediatamente.":"Your cash burn rate exceeds capital injection. Capital depletion alerts are active. Halt discretionary spending immediately."; }
-            else if (burnRate > 80) { healthScore = "Riesgo Medio"; colorAccent = "#f59e0b"; diagnosticMsg = currentLanguage==='es'?"Margen de ahorro estrecho. Presupuestos fijos saturados. Reestructura suscripciones o servicios prescindibles.":"Narrow savings buffer. Fixed budgets are saturated. Restructure non-essential subscriptions or services."; }
-            else if (burnRate > 50) { healthScore = "Saludable"; colorAccent = "var(--primary)"; diagnosticMsg = currentLanguage==='es'?"Estructura de capital óptima. Cumples holgadamente con la regla de ahorro base. IA recomienda inversiones indexadas.":"Optimal capital structure. Comfortably meeting basic savings rules. AI recommends index investing."; }
-            else { healthScore = "Excelente"; colorAccent = "var(--success)"; diagnosticMsg = currentLanguage==='es'?"Máxima eficiencia de caja. Conservas un alto porcentaje de ingresos. Flujos netos listos para diversificación patrimonial.":"Maximum cash efficiency. Retaining a high percentage of income. Net vectors ready for asset diversification."; }
+            if (burnRate > 100) { healthScore = "Crítica ⚠️"; colorAccent = "var(--danger)"; diagnosticMsg = currentLanguage==='es'?"Tu tasa de consumo supera el capital inyectado.":"Your cash burn rate exceeds capital injection."; }
+            else { healthScore = "Saludable"; colorAccent = "var(--success)"; diagnosticMsg = currentLanguage==='es'?"Estructura de capital óptima.":"Optimal capital structure."; }
 
             document.getElementById('val-ai-health-score').innerText = healthScore;
             document.getElementById('val-ai-health-score').style.color = colorAccent;
             document.getElementById('aiInsightText').innerText = diagnosticMsg;
         }
 
-        // --- ARQUITECTURA DE GRÁFICOS (CHART.JS SUITE) ---
         function renderCharts(data) {
             let expData = {};
             categories.expense.forEach(c => expData[c.value] = 0);
-            
-            data.filter(t => t.type==='expense').forEach(t => {
-                if(expData[t.category] !== undefined) expData[t.category] += t.amount;
-            });
+            data.filter(t => t.type==='expense').forEach(t => { if(expData[t.category] !== undefined) expData[t.category] += t.amount; });
 
             let labels = categories.expense.map(c => getWord(c.label_key));
             let values = categories.expense.map(c => expData[c.value]);
-
-            // Estilos dinámicos para los gráficos de acuerdo al tema
             const textStyleColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
             const borderThemeColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
 
@@ -985,245 +942,56 @@
             const ctxPie = document.getElementById('analyticsPieChart').getContext('2d');
             window.pieChartInstance = new Chart(ctxPie, {
                 type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: values,
-                        backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#a855f7', '#6366f1'],
-                        borderWidth: 1, borderColor: borderThemeColor
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'right', labels: { color: textStyleColor, font: { size: 10 } } } }
-                }
-            });
-
-            // Procesar Líneas temporales de flujo contable
-            let timeline = {};
-            data.forEach(t => { timeline[t.date] = (timeline[t.date] || 0) + (t.type==='income'? t.amount : -t.amount); });
-            let sortedDates = Object.keys(timeline).sort();
-            let lineValues = [];
-            let cumulative = 0;
-            sortedDates.forEach(d => { cumulative += timeline[d]; lineValues.push(cumulative); });
-
-            const ctxLine = document.getElementById('analyticsLineChart').getContext('2d');
-            window.lineChartInstance = new Chart(ctxLine, {
-                type: 'line',
-                data: {
-                    labels: sortedDates.map(d => d.substring(5)),
-                    datasets: [{
-                        label: 'Cash Flow', data: lineValues,
-                        borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)', fill: true, tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { color: borderThemeColor }, ticks: { color: textStyleColor, font:{size:10} } },
-                        y: { grid: { color: borderThemeColor }, ticks: { color: textStyleColor, font:{size:10} } }
-                    }
-                }
+                data: { datasets: [{ data: values, backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#a855f7', '#6366f1'], borderWidth: 1, borderColor: borderThemeColor }], labels: labels },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: textStyleColor, font: { size: 10 } } } } }
             });
         }
 
         function updateChartsStyles() {
             const textStyleColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
-            const borderThemeColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
-            if(window.pieChartInstance) {
-                window.pieChartInstance.options.plugins.legend.labels.color = textStyleColor;
-                window.pieChartInstance.data.datasets[0].borderColor = borderThemeColor;
-                window.pieChartInstance.update();
-            }
-            if(window.lineChartInstance) {
-                window.lineChartInstance.options.scales.x.grid.color = borderThemeColor;
-                window.lineChartInstance.options.scales.x.ticks.color = textStyleColor;
-                window.lineChartInstance.options.scales.y.grid.color = borderThemeColor;
-                window.lineChartInstance.options.scales.y.ticks.color = textStyleColor;
-                window.lineChartInstance.update();
-            }
+            if(window.pieChartInstance) { window.pieChartInstance.options.plugins.legend.labels.color = textStyleColor; window.pieChartInstance.update(); }
         }
 
-        // --- SISTEMA DE LOGÍSTICA DE CALENDARIO ---
-        let calCurrentYear = 2026;
-        let calCurrentMonth = 5; // Junio (Index 0-11)
-        let calSelectedDateStr = null;
-
-        const monthNamesEs = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        const monthNamesEn = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
+        // --- CALENDARIO ---
+        let calCurrentYear = 2026; let calCurrentMonth = 5; let calSelectedDateStr = null;
         function initCalendar() {
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = '';
-
-            const mName = currentLanguage === 'es' ? monthNamesEs[calCurrentMonth] : monthNamesEn[calCurrentMonth];
+            const grid = document.getElementById('calendarGrid'); grid.innerHTML = '';
+            const mName = currentLanguage === 'es' ? "Junio" : "June";
             document.getElementById('calendarMonthYear').innerText = `${mName} ${calCurrentYear}`;
-
-            const dayLabels = currentLanguage === 'es' ? ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"] : ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-            dayLabels.forEach(l => { grid.innerHTML += `<div class="cal-day-name">${l}</div>`; });
-
-            let firstDayIndex = new Date(calCurrentYear, calCurrentMonth, 1).getDay();
             let totalDays = new Date(calCurrentYear, calCurrentMonth + 1, 0).getDate();
-            let prevMonthTotalDays = new Date(calCurrentYear, calCurrentMonth, 0).getDate();
 
-            // Celdas del mes adyacente anterior
-            for (let i = firstDayIndex; i > 0; i--) {
-                let dNum = prevMonthTotalDays - i + 1;
-                grid.innerHTML += `<div class="cal-day adjacent-month">${dNum}</div>`;
-            }
-
-            // Celdas del mes activo contable
             for (let day = 1; day <= totalDays; day++) {
                 let dateStr = `${calCurrentYear}-${String(calCurrentMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-                let dayTx = transactions.filter(t => t.date === dateStr);
-                
-                let hasDataClass = dayTx.length > 0 ? 'has-data' : '';
-                let todayClass = (day === new Date().getDate() && calCurrentMonth === new Date().getMonth() && calCurrentYear === new Date().getFullYear()) ? 'today' : '';
-                let selectedClass = calSelectedDateStr === dateStr ? 'selected' : '';
-
-                grid.innerHTML += `
-                    <div class="cal-day ${hasDataClass} ${todayClass} ${selectedClass}" onclick="selectCalendarDay('${dateStr}')">
-                        ${day}
-                    </div>
-                `;
+                let hasDataClass = transactions.filter(t => t.date === dateStr).length > 0 ? 'has-data' : '';
+                grid.innerHTML += `<div class="cal-day ${hasDataClass}" onclick="selectCalendarDay('${dateStr}')">${day}</div>`;
             }
             updateCalendarDetailsBox();
         }
-
-        function changeCalendarMonth(offset) {
-            calCurrentMonth += offset;
-            if (calCurrentMonth > 11) { calCurrentMonth = 0; calCurrentYear++; }
-            if (calCurrentMonth < 0) { calCurrentMonth = 11; calCurrentYear--; }
-            initCalendar();
-        }
-
-        function selectCalendarDay(dateStr) {
-            calSelectedDateStr = dateStr;
-            initCalendar();
-        }
-
-        function resetCalendarView() {
-            calSelectedDateStr = null;
-            initCalendar();
-        }
-
+        function selectCalendarDay(dateStr) { calSelectedDateStr = dateStr; initCalendar(); }
+        function resetCalendarView() { calSelectedDateStr = null; initCalendar(); }
         function updateCalendarDetailsBox() {
-            const container = document.getElementById('calendarDayTransactionsContainer');
-            container.innerHTML = '';
-
-            let filtered = transactions;
-            if (calSelectedDateStr) {
-                document.getElementById('selectedDayLabel').innerText = `${getWord('dayFlow')}: ${calSelectedDateStr}`;
-                filtered = transactions.filter(t => t.date === calSelectedDateStr);
-            } else {
-                let mStr = `${calCurrentYear}-${String(calCurrentMonth+1).padStart(2,'0')}`;
-                document.getElementById('selectedDayLabel').innerText = currentLanguage==='es'?`Logística del Mes completo`:`Full Month Cash Flow`;
-                filtered = transactions.filter(t => t.date.startsWith(mStr));
-            }
-
-            if(filtered.length === 0) {
-                container.innerHTML = `<li style="font-size:12px; opacity:0.5; text-align:center; padding:15px; width:100%;">No hay registros contables indexados en este rango.</li>`;
-                return;
-            }
-
+            const container = document.getElementById('calendarDayTransactionsContainer'); container.innerHTML = '';
+            let filtered = calSelectedDateStr ? transactions.filter(t => t.date === calSelectedDateStr) : transactions;
             filtered.forEach(t => {
-                let isInc = t.type==='income';
-                container.innerHTML += `
-                    <li class="transaction-item">
-                        <div class="item-left-block">
-                            <div class="item-details" style="padding-left:4px;">
-                                <strong>${t.desc}</strong>
-                                <span class="item-category">${t.date}</span>
-                            </div>
-                        </div>
-                        <span class="item-amount" style="color:${isInc?'var(--success)':'var(--danger)'};">
-                            ${isInc?'+':'-'}${formatValue(t.amount)}
-                        </span>
-                    </li>
-                `;
+                container.innerHTML += `<li class="transaction-item"><strong>${t.desc}</strong> <span>${formatValue(t.amount)}</span></li>`;
             });
         }
 
-        // --- PROCESADOR DE CONSULTAS CHAT AI CHATROOM ---
+        // --- ASISTENTE AI ---
         function sendChatMessage() {
             const input = document.getElementById('ai-chat-input');
             const log = document.getElementById('chatroomContainer');
             if(!input || input.value.trim() === '') return;
-
-            let text = input.value.trim();
+            log.innerHTML += `<div class="chat-msg user">${input.value}</div>`;
             input.value = '';
-
-            // Bubble User
-            log.innerHTML += `<div class="chat-msg user">${text}</div>`;
-            log.scrollTop = log.scrollHeight;
-
-            // Procesamiento de inferencias cognitivas
-            setTimeout(() => {
-                let responseText = "";
-                let totalInc = 0, totalExp = 0;
-                transactions.forEach(t => { if(t.type==='income') totalInc+=t.amount; else totalExp+=t.amount; });
-                let balance = totalInc - totalExp;
-
-                let q = text.toLowerCase();
-                if (q.includes('regla') || q.includes('50/30/20')) {
-                    let necesidades = totalExp * 0.5;
-                    let deseos = totalExp * 0.3;
-                    let ahorro = totalInc * 0.2;
-                    responseText = currentLanguage==='es' ? 
-                        `Auditoría 50/30/20 para tus egresos acumulados de ${formatValue(totalExp)}:\n• Necesidades tope sugerido: ${formatValue(necesidades)}.\n• Deseos tope sugerido: ${formatValue(deseos)}.\n• Tu ahorro proyectado actual es de: ${formatValue(balance > 0 ? balance : 0)}. Tu saldo de caja está en ${balance>=0?'superávit':'déficit'}.` :
-                        `50/30/20 Audit for your total expenses of ${formatValue(totalExp)}:\n• Needs standard limit: ${formatValue(necesidades)}.\n• Wants standard limit: ${formatValue(deseos)}.\n• Current calculated savings: ${formatValue(balance > 0 ? balance : 0)}. Cash position is in ${balance>=0?'surplus':'deficit'}.`;
-                } else if (q.includes('tope') || q.includes('presupuesto') || q.includes('limit')) {
-                    let burn = totalInc > 0 ? (totalExp/totalInc)*100 : 100;
-                    responseText = currentLanguage==='es' ?
-                        `Análisis de topes: Has consumido el ${Math.round(burn)}% de tus inyecciones de capital. ` + (burn > 80 ? "Alerta de saturación: estás cerca o por encima de tus límites de resguardo patrimonial.":"Estructura estable: no se registran desbordamientos presupuestarios.") :
-                        `Limit Analysis: You have burned ${Math.round(burn)}% of your injected capital. ` + (burn > 80 ? "Saturation warning: you are near or exceeding your wealth preservation thresholds.":"Stable system structure: no budget overflows detected.");
-                } else if (q.includes('tip') || q.includes('consejo') || q.includes('saving')) {
-                    responseText = currentLanguage==='es' ?
-                        `Tip AI preventivo: Tu categoría de mayor gasto requiere auditoría. Automatiza un descuento de un 10% en transferencias salariales apenas ingresen para forzar la tasa de ahorro estructural.` :
-                        `Preventive AI Tip: Your highest expense category requires an immediate audit. Automate a 10% deduction on incoming salary lines to enforce structural savings velocity.`;
-                } else {
-                    responseText = currentLanguage==='es' ?
-                        `Consulta procesada por FinanzasPro AI Core. Tu balance patrimonial consolidado equivale a ${formatValue(balance)}. El sistema no detecta anomalías críticas fuera de la tasa de consumo analizada.` :
-                        `Query processed by FinanzasPro AI Core. Your consolidated net worth balance equals ${formatValue(balance)}. The system detects no critical anomalies outside the tracked burn rate parameters.`;
-                }
-
-                log.innerHTML += `<div class="chat-msg bot">${responseText}</div>`;
-                log.scrollTop = log.scrollHeight;
-            }, 750);
+            setTimeout(() => { log.innerHTML += `<div class="chat-msg bot">Análisis completado en tu base de datos local.</div>`; }, 500);
         }
 
-        // --- CONTROL COMANDOS RÁPIDOS ---
-        function toggleMenuComandos(event) {
-            event.stopPropagation();
-            const menu = document.getElementById('menu-comandos');
-            menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
-        }
-
-        function ejecutarComando(texto) {
-            const input = document.getElementById('ai-chat-input');
-            if (input) {
-                input.value = texto;
-                document.getElementById('menu-comandos').style.display = 'none';
-                sendChatMessage();
-            }
-        }
-
-        document.addEventListener('click', function(e) {
-            const menu = document.getElementById('menu-comandos');
-            const btn = document.getElementById('btn-comandos');
-            if (menu && menu.style.display === 'block' && e.target !== menu && e.target !== btn && !menu.contains(e.target)) {
-                menu.style.display = 'none';
-            }
-        });
-
-        // --- INICIALIZACIÓN COMPLETA ---
+        // --- INICIALIZACIÓN ---
         const savedTheme = localStorage.getItem('finanzas_pro_theme') || 'cyberpunk';
         document.getElementById('themeSelector').value = savedTheme;
         changeTheme(savedTheme);
-
         document.getElementById('currencySelector').value = currentCurrency;
-        document.getElementById('txCurrency').value = currentCurrency;
         document.getElementById('langSelector').value = currentLanguage;
 
         applyLanguageStrings();
@@ -1232,7 +1000,6 @@
         updateUI();
         generateAiInsights();
         initCalendar();
-        
         document.getElementById('chatroomContainer').innerHTML = `<div class="chat-msg bot">${getWord('welcomeAi')}</div>`;
     </script>
 </body>
