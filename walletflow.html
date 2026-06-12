@@ -28,21 +28,24 @@
         }
         :root[data-theme="glass"] {
             --bg-color: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #2e1065 100%);
-            --card-bg: rgba(255, 255, 255, 0.05); --text-color: #f8fafc; --primary: #38bdf8; --success: #34d399; --danger: #f87171; --border: rgba(255, 255, 255, 0.1); --input-bg: rgba(0, 0, 0, 0.2);
+            --card-bg: rgba(255, 255, 255, 0.05); --text-color: #f8fafc; --primary: #38bdf8;
+            --success: #34d399; --danger: #f87171; --border: rgba(255, 255, 255, 0.1); --input-bg: rgba(0, 0, 0, 0.2);
             --glass-blur: blur(12px); --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
         :root[data-theme="space"] {
-            --bg-color: #030712; --card-bg: #111827; --text-color: #f3f4f6; --primary: #818cf8; --success: #10b981; --danger: #ef4444; --border: #1f2937; --input-bg: #1f2937;
+            --bg-color: #030712; --card-bg: #111827; --text-color: #f3f4f6; --primary: #818cf8;
+            --success: #10b981; --danger: #ef4444; --border: #1f2937; --input-bg: #1f2937;
             --glass-blur: none; --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
         :root[data-theme="minimal"] {
-            --bg-color: #f8fafc; --card-bg: #ffffff; --text-color: #0f172a; --primary: #0f172a; --success: #16a34a; --danger: #dc2626; --border: #e2e8f0; --input-bg: #f1f5f9;
+            --bg-color: #f8fafc; --card-bg: #ffffff; --text-color: #0f172a; --primary: #0f172a;
+            --success: #16a34a; --danger: #dc2626; --border: #e2e8f0; --input-bg: #f1f5f9;
             --glass-blur: none; --glass-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
 
         /* Optimización táctil global para Celulares */
         * { 
-            box-sizing: border-box; 
+            box-sizing: border-box;
             -webkit-tap-highlight-color: transparent; 
             -webkit-touch-callout: none;
         }
@@ -58,39 +61,145 @@
 
         /* Soporte para áreas seguras (Notch y barras de navegación inferiores) */
         #app-screen { 
-            width: 100%; 
+            width: 100%;
             max-width: 500px; 
-            padding: env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 85px) 16px; 
-            position: relative; 
+            padding: env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 95px) 16px; 
+            position: relative;
         }
 
         header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
         header h1 { margin: 0; font-size: 22px; color: var(--primary); font-weight: 800; }
 
-        .menu-btn {
-            background: var(--card-bg); border: 1px solid var(--border); color: var(--primary);
-            font-size: 20px; width: 40px; height: 40px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; cursor: pointer; outline: none;
-        }
-
-        /* --- SIDEBAR --- */
-        .sidebar {
-            position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
-            background: var(--card-bg); z-index: 200; box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-            padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; transition: left 0.3s ease;
-        }
-        .sidebar.active { left: 0; }
-        .sidebar-item {
-            padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px;
-            text-decoration: none; color: var(--text-color); font-weight: 600; cursor: pointer;
-        }
-        .sidebar-item:hover { background: var(--bg-color); color: var(--primary); }
-        .sidebar-item.active-nav { background: var(--bg-color); color: var(--primary); border-left: 4px solid var(--primary); }
         .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); display: none; z-index: 150;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0); display: none; z-index: 150;
+            transition: background 0.3s ease;
         }
         .overlay.active { display: block; }
+        .overlay.blur-effect {
+            display: block;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- NUEVA ARQUITECTURA FAB MENU --- */
+        .fab-container {
+            position: fixed;
+            bottom: calc(env(safe-area-inset-bottom) + 20px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 250;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .fab-main {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            z-index: 252;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s;
+        }
+        .fab-main:active { transform: scale(0.9); }
+
+        .fab-options {
+            position: absolute;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            pointer-events: none;
+            z-index: 251;
+        }
+
+        .fab-sub {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-color);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(40px) scale(0.5);
+            transition: transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .fab-sub::after {
+            content: attr(data-label);
+            position: absolute;
+            right: 60px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-color);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateX(10px);
+            transition: opacity 0.2s, transform 0.2s;
+            pointer-events: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .fab-container.active-fab .fab-options {
+            pointer-events: auto;
+            bottom: 75px;
+        }
+        .fab-container.active-fab .fab-main {
+            transform: rotate(135deg);
+            background: var(--danger);
+        }
+        .fab-container.active-fab .fab-sub {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .fab-container.active-fab .fab-sub:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .fab-container.active-fab .fab-sub:nth-child(1) { transition-delay: 0.25s; }
+        .fab-container.active-fab .fab-sub:nth-child(2) { transition-delay: 0.20s; }
+        .fab-container.active-fab .fab-sub:nth-child(3) { transition-delay: 0.15s; }
+        .fab-container.active-fab .fab-sub:nth-child(4) { transition-delay: 0.10s; }
+        .fab-container.active-fab .fab-sub:nth-child(5) { transition-delay: 0.05s; }
+        .fab-container.active-fab .fab-sub:nth-child(6) { transition-delay: 0.00s; }
+
+        .fab-sub.active-nav-item {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        /* Panel exclusivo incrustado para Ajustes de Configuración */
+        .settings-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 10px;
+        }
 
         /* --- CONTROL DE PANTALLAS --- */
         .screen { display: none; animation: fadeIn 0.3s ease; }
@@ -101,12 +210,14 @@
         .dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 25px; }
 
         .glass-card-wallet {
-            grid-column: span 2; background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            grid-column: span 2;
+            background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border); border-radius: 20px; padding: 22px; position: relative; overflow: hidden;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); background-image: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
         }
         .glass-card-wallet::before {
-            content: ''; position: absolute; top: -50%; right: -20%; width: 130px; height: 130px;
+            content: '';
+            position: absolute; top: -50%; right: -20%; width: 130px; height: 130px;
             background: var(--primary); opacity: 0.15; filter: blur(30px); border-radius: 50%; pointer-events: none;
         }
         .wallet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -122,7 +233,8 @@
 
         .main-content { display: flex; flex-direction: column; gap: 20px; padding-bottom: 40px; }
         .panel {
-            background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); position: relative;
+            background: var(--card-bg);
+            padding: 20px; border-radius: 16px; border: 1px solid var(--border); position: relative;
             backdrop-filter: var(--glass-blur, none); -webkit-backdrop-filter: var(--glass-blur, none);
             box-shadow: var(--glass-shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
         }
@@ -133,17 +245,8 @@
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
         
-        /* 16px Mínimo para evitar zoom automático molesto en iPhone (iOS) */
         .form-group input, .form-group select { 
-            width: 100%; 
-            height: 48px; 
-            padding: 0 12px; 
-            border: 1px solid var(--border); 
-            border-radius: 10px; 
-            font-size: 16px; 
-            background-color: var(--input-bg); 
-            color: var(--text-color); 
-            outline: none;
+            width: 100%; height: 48px; padding: 0 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; background-color: var(--input-bg); color: var(--text-color); outline: none;
         }
 
         .currency-input-group { display: grid; grid-template-columns: 1fr 90px; gap: 8px; }
@@ -158,7 +261,7 @@
         .category-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
 
         .item-details { display: flex; flex-direction: column; min-width: 0; }
-        .item-details strong { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .item-details strong { font-size: 15px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
         .item-category { font-size: 11px; color: #868e96; margin-top: 2px; }
         .item-amount { font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
@@ -166,7 +269,7 @@
         .chart-container { position: relative; height: 200px; width: 100%; }
         .line-chart-box { height: 240px; margin-bottom: 25px; position: relative; width: 100%; }
 
-        /* --- CALENDARIO ADAPTABLE (MOBILE FIRST) --- */
+        /* --- CALENDARIO ADAPTABLE --- */
         .calendar-nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-title-wrapper { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: background 0.2s; }
         .calendar-title-wrapper:hover { background: var(--border); }
@@ -178,30 +281,12 @@
         .cal-day-name { text-align: center; font-size: 11px; font-weight: bold; color: var(--primary); padding-bottom: 8px; }
         
         .cal-day { 
-            aspect-ratio: 1; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            border-radius: 8px; 
-            font-size: 13px; 
-            position: relative; 
-            cursor: pointer; 
-            color: var(--text-color); 
-            padding-bottom: 2px;
+            aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; font-size: 13px; position: relative; cursor: pointer; color: var(--text-color); padding-bottom: 2px;
         }
         .cal-day:hover { background: var(--border); }
         .cal-day.today { border: 2px solid var(--primary); font-weight: bold; }
-        
-        /* Ajuste de indicador de datos para no pisar el número en móvil */
         .cal-day.has-data::after { 
-            content: ''; 
-            position: absolute; 
-            bottom: 3px; 
-            width: 5px; 
-            height: 5px; 
-            background: var(--success); 
-            border-radius: 50%; 
+            content: ''; position: absolute; bottom: 3px; width: 5px; height: 5px; background: var(--success); border-radius: 50%;
         }
         .cal-day.selected { background: var(--primary); color: white !important; }
         .cal-day.adjacent-month { opacity: 0.35; }
@@ -210,7 +295,7 @@
         .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .btn-reset-view { background: var(--bg-color); color: var(--primary); border: 1px solid var(--border); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-        /* --- ASISTENTE PREMIUM Y COMPONENTE DE CHAT --- */
+        /* --- ASISTENTE PREMIUM --- */
         .ai-header-card { background: linear-gradient(135deg, var(--card-bg) 0%, rgba(6,182,212,0.1) 100%); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
         .ai-avatar-glow { width: 50px; height: 50px; border-radius: 50%; background: rgba(6,182,212,0.2); border: 2px solid var(--ai-accent); display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--ai-accent); box-shadow: 0 0 15px rgba(6,182,212,0.4); }
         .ai-insight-card { background: var(--card-bg); border: 1px solid var(--border); border-left: 4px solid var(--ai-accent); border-radius: 12px; padding: 16px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
@@ -258,7 +343,6 @@
         .sheet-header h2 { margin: 0; font-size: 18px; }
         .close-sheet-btn { background: var(--bg-color); border: none; color: var(--text-color); width: 36px; height: 36px; border-radius: 50%; font-size: 16px; cursor: pointer; }
 
-        /* Ajustes específicos para pantallas pequeñas (móviles antiguos/compactos) */
         @media (max-width: 360px) {
             header h1 { font-size: 19px; }
             .wallet-balance { font-size: 22px; }
@@ -266,14 +350,13 @@
             .item-details strong { font-size: 13px; }
         }
 
-        /* Responsive para Tablets y Escritorios */
         @media (min-width: 769px) {
             body { align-items: flex-start; padding-top: 40px; }
             #app-screen { max-width: 900px; }
             .card-sub p { font-size: 20px; }
             .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding-bottom: 40px; }
             .guide-screen-content { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-            #calendar-screen .main-content, #analytics-screen .main-content, #assistant-screen .main-content, #guide-screen .main-content { display: flex; flex-direction: column; }
+            #calendar-screen .main-content, #analytics-screen .main-content, #assistant-screen .main-content, #guide-screen .main-content, #settings-screen .main-content { display: flex; flex-direction: column; }
             .bottom-sheet { left: 50%; transform: translateX(-50%); max-width: 500px; border-radius: 24px; bottom: -100%; }
             .bottom-sheet.active { bottom: 40px; }
         }
@@ -283,39 +366,36 @@
 
     <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
 
-    <div class="sidebar" id="sidebar">
-        <h2 style="color:var(--primary); margin-bottom: 15px; padding-left: 15px;">FinanzasPro</h2>
-        <div class="sidebar-item active-nav" id="nav-home" onclick="showScreen('home-screen', 'FinanzasPro', this)"><i class="fa-solid fa-house"></i> Home</div>
-        <div class="sidebar-item" id="nav-cal" onclick="showScreen('calendar-screen', getWord('calendar'), this)"><i class="fa-solid fa-calendar"></i> Calendario</div>
-        <div class="sidebar-item" id="nav-assistant" onclick="showScreen('assistant-screen', getWord('aiAssistant'), this)"><i class="fa-solid fa-robot"></i> Asistente AI</div>
-        <div class="sidebar-item" id="nav-analytics" onclick="showScreen('analytics-screen', getWord('analytics'), this)"><i class="fa-solid fa-chart-pie"></i> Analíticas</div>
-        <div class="sidebar-item" id="nav-guide" onclick="showScreen('guide-screen', getWord('interactiveGuide'), this)"><i class="fa-solid fa-book-open"></i> Guía Interactiva</div>
-        
-        <div style="margin-top:auto; padding: 15px; display:flex; flex-direction:column; gap:10px;">
-            <div class="form-group" style="margin:0;">
-                <label style="font-size:11px; text-transform:uppercase; color:#868e96;">Tema Visual</label>
-                <select id="themeSelector" onchange="changeTheme(this.value)" class="select-filter" style="width:100%; height:38px;">
-                    <option value="cyberpunk">🌃 Cyberpunk</option>
-                    <option value="light">☀️ Light mode</option>
-                    <option value="glass">💎 Glassmorphism</option>
-                    <option value="space">🌌 Cosmos</option>
-                    <option value="minimal">⚪ Minimalist</option>
-                </select>
-            </div>
-            <div class="form-group" style="margin:0;">
-                <label style="font-size:11px; text-transform:uppercase; color:#868e96;">Idioma / Language</label>
-                <select id="langSelector" onchange="changeLanguage(this.value)" class="select-filter" style="width:100%; height:38px;">
-                    <option value="es">Español</option>
-                    <option value="en">English</option>
-                </select>
-            </div>
+    <div class="fab-container" id="fabContainer">
+        <div class="fab-options">
+            <button class="fab-sub" onclick="handleFabNav('settings-screen', getWord('settings') || 'Configuración', this)" data-label="Ajustes" id="nav-settings">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+            <button class="fab-sub" onclick="handleFabNav('guide-screen', getWord('interactiveGuide'), this)" data-label="Guía" id="nav-guide">
+                <i class="fa-solid fa-book-open"></i>
+            </button>
+            <button class="fab-sub" onclick="handleFabNav('analytics-screen', getWord('analytics'), this)" data-label="Analíticas" id="nav-analytics">
+                <i class="fa-solid fa-chart-pie"></i>
+            </button>
+            <button class="fab-sub" onclick="handleFabNav('assistant-screen', getWord('aiAssistant'), this)" data-label="Asistente AI" id="nav-assistant">
+                <i class="fa-solid fa-robot"></i>
+            </button>
+            <button class="fab-sub" onclick="handleFabNav('calendar-screen', getWord('calendar'), this)" data-label="Calendario" id="nav-cal">
+                <i class="fa-solid fa-calendar"></i>
+            </button>
+            <button class="fab-sub active-nav-item" onclick="handleFabNav('home-screen', 'FinanzasPro', this)" data-label="Inicio" id="nav-home">
+                <i class="fa-solid fa-house"></i>
+            </button>
         </div>
+        
+        <button class="fab-main" onclick="toggleFabMenu()">
+            <i class="fa-solid fa-plus" id="fabIcon"></i>
+        </button>
     </div>
 
     <div id="app-screen">
         <header>
             <div style="display:flex; align-items:center; gap:12px;">
-                <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
                 <h1 id="screen-title">FinanzasPro</h1>
             </div>
             <select id="currencySelector" class="select-filter" onchange="changeCurrency(this.value)">
@@ -412,11 +492,8 @@
             <div class="ai-chat-wrapper">
                 <div class="ai-chat-header"><i class="fa-solid fa-comments"></i> AI Financial Chat Suite</div>
                 <div class="ai-chat-log" id="chatroomContainer"></div>
-                
                 <div style="position: relative; margin: 0 10px 8px 10px;">
-                    <button id="btn-comandos" onclick="toggleMenuComandos(event)" style="background: var(--border); color: var(--text-color); border: none; padding: 6px 12px; font-size: 11px; font-weight: bold; border-radius: 6px; cursor: pointer;">
-                        ⚡ Comandos Rápidos
-                    </button>
+                    <button id="btn-comandos" onclick="toggleMenuComandos(event)" style="background: var(--border); color: var(--text-color); border: none; padding: 6px 12px; font-size: 11px; font-weight: bold; border-radius: 6px; cursor: pointer;"> ⚡ Comandos Rápidos </button>
                     <div id="menu-comandos" style="display: none; position: absolute; bottom: 100%; left: 0; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; width: 240px; padding: 6px; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); z-index: 10;">
                         <button onclick="ejecutarComando('¿Cómo voy con mi regla 50/30/20 este mes?')" style="width: 100%; text-align: left; padding: 6px; background: none; border: none; color: var(--text-color); font-size: 11px; cursor: pointer; border-radius: 4px;">📈 Diagnóstico 50/30/20</button>
                         <button onclick="ejecutarComando('¿He superado algún tope de presupuesto?')" style="width: 100%; text-align: left; padding: 6px; background: none; border: none; color: var(--text-color); font-size: 11px; cursor: pointer; border-radius: 4px;">⚠️ Alertas de Presupuesto</button>
@@ -460,187 +537,219 @@
                 <div class="guide-card-row">
                     <div class="guide-text-side">
                         <h3 id="title-g2">Distribución Visual</h3>
-                        <p id="desc-g2">Asigna categorías dinámicamente y observa en tiempo récord la dispersión de flujos mediante el gráfico de dona incorporado.</p>
+                        <p id="desc-g2">Filtros dinámicos integrados y gráficos de última generación que mapean cada flujo y categoría de capital en tiempo real.</p>
                     </div>
                     <div class="guide-visual-side"><div class="mock-donut"></div></div>
                 </div>
                 <div class="guide-card-row">
                     <div class="guide-text-side">
-                        <h3 id="title-g3">Calendario de Control</h3>
-                        <p id="desc-g3">Audita las fechas exactas en que suceden tus consumos para identificar anomalías temporales y picos de gasto indeseados.</p>
+                        <h3 id="title-g3">Evolución de Capital</h3>
+                        <p id="desc-g3">El balance predictivo analiza los diferenciales de ingresos y gastos, proyectando tendencias analíticas sofisticadas.</p>
                     </div>
-                    <div class="guide-visual-side">
-                        <div class="mock-cal">
-                            <div class="mock-cal-cell"></div><div class="mock-cal-cell dot"></div><div class="mock-cal-cell"></div><div class="mock-cal-cell"></div>
-                            <div class="mock-cal-cell"></div><div class="mock-cal-cell"></div><div class="mock-cal-cell dot"></div><div class="mock-cal-cell"></div>
-                        </div>
-                    </div>
+                    <div class="guide-visual-side"><div class="mock-bars"><div class="mock-bar" style="height:25px;"></div><div class="mock-bar" style="height:40px; background:var(--success);"></div><div class="mock-bar" style="height:15px; background:var(--danger);"></div></div></div>
                 </div>
                 <div class="guide-card-row">
                     <div class="guide-text-side">
-                        <h3 id="title-g4">Asistente Conversacional</h3>
-                        <p id="desc-g4">Interactúa directamente con nuestro modelo analítico integrado para recibir asesoramiento financiero a demanda.</p>
+                        <h3 id="title-g4">Tendencia de Margen</h3>
+                        <p id="desc-g4">Rastree visualmente picos y caídas estacionales con curvas fluidas optimizadas para auditorías rápidas.</p>
                     </div>
-                    <div class="guide-visual-side"><div class="mock-ai"><i class="fa-solid fa-brain"></i></div></div>
+                    <div class="guide-visual-side"><div class="mock-lines"></div></div>
+                </div>
+                <div class="guide-card-row">
+                    <div class="guide-text-side">
+                        <h3 id="title-g5">Agenda de Caja</h3>
+                        <p id="desc-g5">El calendario contable interactivo resalta los días con movimientos registrados mediante indicadores de estado específicos.</p>
+                    </div>
+                    <div class="guide-visual-side"><div class="mock-cal"><div class="mock-cal-cell"></div><div class="mock-cal-cell dot"></div><div class="mock-cal-cell"></div><div class="mock-cal-cell"></div></div></div>
+                </div>
+                <div class="guide-card-row">
+                    <div class="guide-text-side">
+                        <h3 id="title-g6">Inteligencia Artificial</h3>
+                        <p id="desc-g6">Nuestra red neuronal dedicada evalúa de forma autónoma su tasa de consumo y emite alertas preventivas de descapitalización.</p>
+                    </div>
+                    <div class="guide-visual-side"><div class="mock-ai"><i class="fa-solid fa-robot"></i></div></div>
                 </div>
             </div>
         </div>
 
-        <button class="fab-button" onclick="openBottomSheet()"><i class="fa-solid fa-plus"></i></button>
+        <div id="settings-screen" class="screen">
+            <div class="main-content">
+                <div class="panel">
+                    <h2 id="lbl-settings-title">Configuración del Sistema</h2>
+                    <div class="settings-box">
+                        <div class="form-group" style="margin:0;">
+                            <label style="font-size:12px; text-transform:uppercase; color:#868e96; font-weight:700;" id="lbl-setting-theme">Tema Visual</label>
+                            <select id="themeSelector" onchange="changeTheme(this.value)" class="select-filter" style="width:100%; height:44px; margin-top:5px; border-radius:10px;">
+                                <option value="cyberpunk">🌃 Cyberpunk</option>
+                                <option value="light">☀️ Light mode</option>
+                                <option value="glass">💎 Glassmorphism</option>
+                                <option value="space">🌌 Cosmos</option>
+                                <option value="minimal">⚪ Minimalist</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin:0; margin-top:10px;">
+                            <label style="font-size:12px; text-transform:uppercase; color:#868e96; font-weight:700;" id="lbl-setting-lang">Idioma / Language</label>
+                            <select id="langSelector" onchange="changeLanguage(this.value)" class="select-filter" style="width:100%; height:44px; margin-top:5px; border-radius:10px;">
+                                <option value="es">Español</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="fab-button" onclick="openTransactionSheet()"><i class="fa-solid fa-plus"></i></button>
     </div>
 
-    <div class="bottom-sheet" id="entrySheet">
+    <div class="bottom-sheet" id="transactionSheet">
         <div class="sheet-header">
-            <h2 id="lbl-sheet-title">Añadir Registro Comercial</h2>
-            <button class="close-sheet-btn" onclick="closeBottomSheet()"><i class="fa-solid fa-xmark"></i></button>
+            <h2 id="sheet-title-text">Nueva Transacción</h2>
+            <button class="close-sheet-btn" onclick="closeTransactionSheet()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <form id="ledgerEntryForm" onsubmit="processLedgerSubmit(event)">
+        
+        <form id="transactionForm" onsubmit="handleFormSubmit(event)">
             <div class="form-group">
-                <label id="lbl-form-desc">Descripción del movimiento</label>
-                <input type="text" id="entryDesc" placeholder="Ej. Suscripción Mensual, Venta Consultoría" required>
+                <label id="lbl-form-type">Tipo de Movimiento</label>
+                <select id="txType" onchange="updateCategoriesOptions()">
+                    <option value="income">➕ Ingreso / Capital Inyectado</option>
+                    <option value="expense">➖ Gasto / Salida de Efectivo</option>
+                </select>
             </div>
+
             <div class="form-group">
-                <label id="lbl-form-amount">Monto Financiero</label>
+                <label id="lbl-form-amount">Monto / Valor Contable</label>
                 <div class="currency-input-group">
-                    <input type="number" step="0.01" id="entryAmount" placeholder="0.00" required>
-                    <select id="entryType" class="select-filter" style="height:46px; font-size:15px;">
-                        <option value="expense" id="opt-expense">Gasto</option>
-                        <option value="income" id="opt-income">Ingreso</option>
+                    <input type="number" id="txAmount" step="0.01" required placeholder="0.00">
+                    <select id="txCurrency" disabled style="background:#22314d; font-weight:bold; text-align:center;">
+                        <option value="USD">USD</option>
                     </select>
                 </div>
             </div>
+
             <div class="form-group">
-                <label id="lbl-form-cat">Categoría de Flujo</label>
-                <select id="entryCategory"></select>
+                <label id="lbl-form-desc">Concepto / Descripción</label>
+                <input type="text" id="txDesc" required placeholder="Ej. Pago de Nómina, Supermercado">
             </div>
+
             <div class="form-group">
-                <label id="lbl-form-date">Fecha de Operación</label>
-                <input type="date" id="entryDate" required>
+                <label id="lbl-form-category">Categoría Asignada</label>
+                <select id="txCategory"></select>
             </div>
-            <button type="submit" class="btn-submit" id="btn-form-submit">Inyectar en Historial</button>
-            <button type="button" class="btn-secondary" id="btn-form-cancel" onclick="closeBottomSheet()">Cancelar</button>
+
+            <div class="form-group">
+                <label id="lbl-form-date">Fecha de Registro</label>
+                <input type="date" id="txDate" required>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btn-form-save">Archivar Transacción</button>
+            <button type="button" class="btn-secondary" onclick="closeTransactionSheet()" id="btn-form-cancel">Cancelar</button>
         </form>
     </div>
 
     <script>
-        // DATASTORE CENTRALIZADA EN MEMORIA CON RESPALDO CACHÉ
-        let ledgerDatabase = JSON.parse(localStorage.getItem('finanzas_pro_ledger')) || [
-            { id: 1, desc: 'Salario Corporativo', amount: 3500.00, type: 'income', category: 'Salario', date: '2026-06-01' },
-            { id: 2, desc: 'Arriendo Oficina', amount: 850.00, type: 'expense', category: 'Alquiler', date: '2026-06-02' },
-            { id: 3, desc: 'Suscripción Servidores cloud', amount: 120.00, type: 'expense', category: 'Servicios', date: '2026-06-03' },
-            { id: 4, desc: 'Distribución Dividendos', amount: 450.00, type: 'income', category: 'Inversiones', date: '2026-06-04' },
-            { id: 5, desc: 'Cena de Negocios Team', amount: 185.50, type: 'expense', category: 'Alimentación', date: '2026-06-04' }
+        // --- BASE DE DATOS LOCAL Y MOTOR CONTABLE ---
+        let transactions = JSON.parse(localStorage.getItem('finanzas_pro_txs')) || [
+            { id: 1, type: 'income', amount: 2500.00, currency: 'USD', desc: 'Salario Corporativo', category: 'salary', date: '2026-06-01' },
+            { id: 2, type: 'expense', amount: 450.00, currency: 'USD', desc: 'Alquiler Apartamento', category: 'rent', date: '2026-06-02' },
+            { id: 3, type: 'expense', amount: 85.50, currency: 'USD', desc: 'Compra de Víveres', category: 'food', date: '2026-06-04' },
+            { id: 4, type: 'expense', amount: 32.00, currency: 'USD', desc: 'Suscripción Streaming', category: 'services', date: '2026-06-05' },
+            { id: 5, type: 'income', amount: 350.00, currency: 'USD', desc: 'Consultoría Freelance', category: 'investments', date: '2026-06-08' }
         ];
 
-        const expenseCategories = {
-            es: ['Alimentación', 'Alquiler', 'Servicios', 'Transporte', 'Entretenimiento', 'Otros'],
-            en: ['Food', 'Rent', 'Utilities', 'Transport', 'Entertainment', 'Others']
-        };
-        const incomeCategories = {
-            es: ['Salario', 'Inversiones', 'Freelance', 'Otros'],
-            en: ['Salary', 'Investments', 'Freelance', 'Others']
-        };
+        let currentCurrency = localStorage.getItem('finanzas_pro_curr') || 'USD';
+        let currentLanguage = localStorage.getItem('finanzas_pro_lang') || 'es';
+        let isPrivacyActive = false;
 
-        let activeCurrency = 'USD';
-        let isPrivateMode = false;
-        let activeLanguage = 'es';
-        let calendarSelectedDate = new Date(2026, 5, 5); // Junio 2026 por defecto
-        let focusedCalendarDay = null;
+        // Tasas de cambio fijas base USD
+        const exchangeRates = { USD: 1.0, EUR: 0.92, MXN: 17.10 };
 
-        // INSTANCIAS GLOBALES PARA GRÁFICOS CHART.JS
-        let pieChartInstance = null;
-        let lineChartInstance = null;
-
-        const dictionary = {
+        // Diccionarios del Motor Multilenguaje Interno
+        const i18n = {
             es: {
-                calendar: "Calendario", aiAssistant: "Asistente AI", analytics: "Analíticas", interactiveGuide: "Guía Interactiva",
-                income: "Ingresos", expenses: "Gastos", recentActivity: "Actividad Reciente", netWorth: "Patrimonio Neto",
-                allMonths: "Todos los meses", burnRate: "Tasa de Consumo", healthScore: "Salud Financiera",
-                statusText: "Auditor de capital en tiempo real", welcomeAi: "Hola, soy tu asistente analítico avanzado. ¿En qué puedo auditar tus balances hoy?",
-                burnLabel: "Tasa de Consumo", healthLabel: "Salud Financiera", pieLabel: "Distribución Mensual", lineLabel: "Evolución de Flujo",
-                sheetTitle: "Añadir Registro Comercial", fDesc: "Descripción del movimiento", fAmount: "Monto Financiero", fCat: "Categoría de Flujo",
-                fDate: "Fecha de Operación", fSubmit: "Inyectar en Historial", fCancel: "Cancelar", optExp: "Gasto", optInc: "Ingreso",
-                months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-                daysShort: ["D", "L", "M", "M", "J", "V", "S"], viewAllMonth: "Ver Todo el Mes"
+                calendar: "Calendario", aiAssistant: "Asistente AI", analytics: "Analíticas", interactiveGuide: "Guía Interactiva", settings: "Ajustes",
+                netWorth: "Patrimonio Neto", income: "Ingresos", expenses: "Gastos", recentActivity: "Actividad Reciente", updateNow: "Actualizado ahora",
+                globalBalance: "Balance Global", burnRate: "Tasa de Consumo", financialHealth: "Salud Financiera", chatHeader: "AI Financial Chat Suite",
+                welcomeAi: "Hola, soy tu auditor de capital AI. Analizaré tu tasa de consumo presupuestario en tiempo real. ¿Qué deseas auditar hoy?",
+                formTitle: "Nueva Transacción", formIncome: "Ingreso / Capital Inyectado", formExpense: "Gasto / Salida de Efectivo",
+                formAmount: "Monto / Valor Contable", formDesc: "Concepto / Descripción", formCat: "Categoría Asignada", formDate: "Fecha de Registro",
+                formSave: "Archivar Transacción", formCancel: "Cancelar", placeholderDesc: "Ej. Pago de Nómina, Supermercado", placeholderInput: "Pregunta algo sobre tu dinero...",
+                dayFlow: "Flujo del Día", viewAllMonth: "Ver Todo el Mes", allMonths: "Todos los Meses", distTitle: "Distribución Mensual", evolTitle: "Evolución de Flujo",
+                cat_salary: "Salarios", cat_investments: "Inversiones", cat_freelance: "Freelance", cat_food: "Alimentación", cat_rent: "Vivienda / Alquiler",
+                cat_services: "Servicios / Suscripciones", cat_leisure: "Ocio / Entretenimiento", cat_transport: "Transporte", cat_others: "Otros Gastos"
             },
             en: {
-                calendar: "Calendar", aiAssistant: "AI Assistant", analytics: "Analytics", interactiveGuide: "Interactive Guide",
-                income: "Income", expenses: "Expenses", recentActivity: "Recent Activity", netWorth: "Net Worth",
-                allMonths: "All months", burnRate: "Burn Rate", healthScore: "Financial Health",
-                statusText: "Real-time capital auditor", welcomeAi: "Hello, I am your advanced analytical assistant. How can I audit your balances today?",
-                burnLabel: "Burn Rate", healthLabel: "Financial Health", pieLabel: "Monthly Distribution", lineLabel: "Flow Evolution",
-                sheetTitle: "Add Business Entry", fDesc: "Transaction Description", fAmount: "Financial Amount", fCat: "Flow Category",
-                fDate: "Operation Date", fSubmit: "Inject into Ledger", fCancel: "Cancel", optExp: "Expense", optInc: "Income",
-                months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-                daysShort: ["S", "M", "T", "W", "T", "F", "S"], viewAllMonth: "View Full Month"
+                calendar: "Calendar", aiAssistant: "AI Assistant", analytics: "Analytics", interactiveGuide: "Interactive Guide", settings: "Settings",
+                netWorth: "Net Worth", income: "Total Income", expenses: "Total Expenses", recentActivity: "Recent Activity", updateNow: "Updated just now",
+                globalBalance: "Global Balance", burnRate: "Burn Rate", financialHealth: "Financial Health", chatHeader: "AI Financial Chat Suite",
+                welcomeAi: "Hello, I am your AI capital auditor. I will analyze your budget burn rate in real time. What would you like to audit today?",
+                formTitle: "New Transaction", formIncome: "Income / Injected Capital", formExpense: "Expense / Cash Outflow",
+                formAmount: "Amount / Book Value", formDesc: "Concept / Description", formCat: "Assigned Category", formDate: "Record Date",
+                formSave: "Archive Transaction", formCancel: "Cancel", placeholderDesc: "e.g., Corporate Salary, Groceries", placeholderInput: "Ask something about your money...",
+                dayFlow: "Day Flow Logistics", viewAllMonth: "View Full Month", allMonths: "All Months Available", distTitle: "Monthly Breakdown", evolTitle: "Cash Flow Evolution",
+                cat_salary: "Salaries & Payroll", cat_investments: "Investments", cat_freelance: "Freelance Work", cat_food: "Food & Groceries", cat_rent: "Housing / Rent",
+                cat_services: "Services & Subs", cat_leisure: "Leisure & Fun", cat_transport: "Transportation", cat_others: "Other Expenses"
             }
         };
 
-        function getWord(key) { return dictionary[activeLanguage][key]; }
+        const categories = {
+            income: [ { value: 'salary', label_key: 'cat_salary', icon: '💸' }, { value: 'investments', label_key: 'cat_investments', icon: '📈' }, { value: 'freelance', label_key: 'cat_freelance', icon: '💻' } ],
+            expense: [ { value: 'food', label_key: 'cat_food', icon: '🛒' }, { value: 'rent', label_key: 'cat_rent', icon: '🏠' }, { value: 'services', label_key: 'cat_services', icon: '⚡' }, { value: 'leisure', label_key: 'cat_leisure', icon: '🍿' }, { value: 'transport', label_key: 'cat_transport', icon: '🚗' }, { value: 'others', label_key: 'cat_others', icon: '📦' } ]
+        };
 
-        // MANIPULACIÓN DEL MENU DESPLEGABLE SIDEBAR
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        }
-        function closeAllModals() {
-            document.getElementById('sidebar').classList.remove('active');
-            document.getElementById('entrySheet').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
+        function getWord(key) { return i18n[currentLanguage][key] || key; }
 
-        // CONTROL INTEGRAL DE PANTALLAS (SPA MULTIPANTALLA)
-        function showScreen(screenId, title, navElement) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active-nav'));
+        // --- MANEJO DE NAVEGACIÓN CIRCUOS FLOTANTES (FAB) ---
+        function toggleFabMenu() {
+            const container = document.getElementById('fabContainer');
+            const overlay = document.getElementById('overlay');
             
+            container.classList.toggle('active-fab');
+            
+            if (container.classList.contains('active-fab')) {
+                overlay.className = 'overlay blur-effect';
+            } else {
+                overlay.className = 'overlay';
+            }
+        }
+
+        function handleFabNav(screenId, title, element) {
+            showScreen(screenId, title, element);
+            
+            // Sincronizar clases activas visuales en los círculos del FAB
+            document.querySelectorAll('.fab-sub').forEach(btn => btn.classList.remove('active-nav-item'));
+            element.classList.add('active-nav-item');
+            
+            toggleFabMenu();
+        }
+
+        function showScreen(screenId, title, element) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
             document.getElementById('screen-title').innerText = title;
-            if(navElement) navElement.classList.add('active-nav');
-            
-            closeAllModals();
-
-            if (screenId === 'calendar-screen') {
-                renderInteractiveCalendar();
-            } else if (screenId === 'analytics-screen') {
-                setTimeout(initializeAnalyticsCharts, 80);
-            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // CONTROL DE FORMATO Y MONEDAS DISPONIBLES
-        function formatFinancialNumber(value) {
-            if (isPrivateMode) return "•••••";
-            const currencySigns = { 'USD': '$', 'EUR': '€', 'MXN': '$' };
-            const rates = { 'USD': 1.0, 'EUR': 0.92, 'MXN': 17.5 };
-            const converted = value * (rates[activeCurrency] / rates['USD']);
-            return `${currencySigns[activeCurrency]}${converted.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${activeCurrency}`;
-        }
-
-        function togglePrivacy() {
-            isPrivateMode = !isPrivateMode;
-            document.getElementById('privacy-icon').className = isPrivateMode ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
-            updateUI();
-        }
-
-        function changeCurrency(newCurrency) {
-            activeCurrency = newCurrency;
-            updateUI();
-            if(document.getElementById('analytics-screen').classList.contains('active')) {
-                initializeAnalyticsCharts();
-            }
-        }
-
+        // --- TEMATIZACIÓN DINÁMICA NATIVA ---
         function changeTheme(themeName) {
             document.documentElement.setAttribute('data-theme', themeName);
             localStorage.setItem('finanzas_pro_theme', themeName);
-            if(document.getElementById('analytics-screen').classList.contains('active')) {
-                initializeAnalyticsCharts();
-            }
+            if(window.pieChartInstance) { updateChartsStyles(); }
         }
 
         function changeLanguage(langCode) {
-            activeLanguage = langCode;
+            currentLanguage = langCode;
+            localStorage.setItem('finanzas_pro_lang', langCode);
             applyLanguageStrings();
+            buildFilterOptions();
+            updateCategoriesOptions();
+            updateUI();
+        }
+
+        function changeCurrency(currencyCode) {
+            currentCurrency = currencyCode;
+            localStorage.setItem('finanzas_pro_curr', currencyCode);
+            document.getElementById('txCurrency').value = currencyCode;
             updateUI();
         }
 
@@ -649,442 +758,439 @@
             document.getElementById('lbl-total-income').innerText = getWord('income');
             document.getElementById('lbl-total-expenses').innerText = getWord('expenses');
             document.getElementById('lbl-recent-activity').innerText = getWord('recentActivity');
-            document.getElementById('lbl-ai-status').innerText = getWord('statusText');
-            document.getElementById('lbl-ai-burn').innerText = getWord('burnLabel');
-            document.getElementById('lbl-ai-health').innerText = getWord('healthLabel');
-            document.getElementById('lbl-analytics-pie').innerText = getWord('pieLabel');
-            document.getElementById('lbl-analytics-line').innerText = getWord('lineLabel');
-            document.getElementById('lbl-sheet-title').innerText = getWord('sheetTitle');
-            document.getElementById('lbl-form-desc').innerText = getWord('fDesc');
-            document.getElementById('lbl-form-amount').innerText = getWord('fAmount');
-            document.getElementById('lbl-form-cat').innerText = getWord('fCat');
-            document.getElementById('lbl-form-date').innerText = getWord('fDate');
-            document.getElementById('btn-form-submit').innerText = getWord('fSubmit');
-            document.getElementById('btn-form-cancel').innerText = getWord('fCancel');
-            document.getElementById('opt-expense').innerText = getWord('optExp');
-            document.getElementById('opt-income').innerText = getWord('optInc');
+            document.getElementById('val-wallet-date').innerText = getWord('updateNow');
+            document.getElementById('lbl-ai-burn').innerText = getWord('burnRate');
+            document.getElementById('lbl-ai-health').innerText = getWord('financialHealth');
             document.getElementById('btn-reset-cal').innerText = getWord('viewAllMonth');
+            document.getElementById('lbl-analytics-pie').innerText = getWord('distTitle');
+            document.getElementById('lbl-analytics-line').innerText = getWord('evolTitle');
             
-            document.getElementById('nav-cal').innerHTML = `<i class="fa-solid fa-calendar"></i> ${getWord('calendar')}`;
-            document.getElementById('nav-assistant').innerHTML = `<i class="fa-solid fa-robot"></i> ${getWord('aiAssistant')}`;
-            document.getElementById('nav-analytics').innerHTML = `<i class="fa-solid fa-chart-pie"></i> ${getWord('analytics')}`;
-            document.getElementById('nav-guide').innerHTML = `<i class="fa-solid fa-book-open"></i> ${getWord('interactiveGuide')}`;
+            // Formulario Bottom Sheet
+            document.getElementById('sheet-title-text').innerText = getWord('formTitle');
+            document.getElementById('lbl-form-type').innerText = getWord('formType');
+            document.getElementById('lbl-form-amount').innerText = getWord('formAmount');
+            document.getElementById('lbl-form-desc').innerText = getWord('formDesc');
+            document.getElementById('lbl-form-category').innerText = getWord('formCat');
+            document.getElementById('lbl-form-date').innerText = getWord('formDate');
+            document.getElementById('btn-form-save').innerText = getWord('formSave');
+            document.getElementById('btn-form-cancel').innerText = getWord('formCancel');
+            document.getElementById('txDesc').placeholder = getWord('placeholderDesc');
+            document.getElementById('ai-chat-input').placeholder = getWord('placeholderInput');
 
-            buildFilterOptions();
-            rebuildCategoryDropdown();
+            // Ajustes Screen
+            document.getElementById('lbl-settings-title').innerText = getWord('settings');
+            document.getElementById('lbl-setting-theme').innerText = getWord('settings') === 'Settings' ? 'Visual Theme' : 'Tema Visual';
+            document.getElementById('lbl-setting-lang').innerText = getWord('settings') === 'Settings' ? 'Language / Idioma' : 'Idioma / Language';
+
+            // Tooltips del Menú Circular
+            document.getElementById('nav-home').setAttribute('data-label', getWord('settings') === 'Settings' ? 'Dashboard' : 'Inicio');
+            document.getElementById('nav-cal').setAttribute('data-label', getWord('calendar'));
+            document.getElementById('nav-assistant').setAttribute('data-label', getWord('aiAssistant') === 'AI Assistant' ? 'AI Bot' : 'Asistente AI');
+            document.getElementById('nav-analytics').setAttribute('data-label', getWord('analytics'));
+            document.getElementById('nav-guide').setAttribute('data-label', getWord('interactiveGuide') === 'Interactive Guide' ? 'Guide' : 'Guía');
+            document.getElementById('nav-settings').setAttribute('data-label', getWord('settings'));
+
+            // Guía
+            document.getElementById('title-g1').innerText = currentLanguage==='es'?"Estructura Inteligente":"Smart Matrix Structure";
+            document.getElementById('title-g2').innerText = currentLanguage==='es'?"Distribución Visual":"Visual Distribution Data";
+            document.getElementById('title-g3').innerText = currentLanguage==='es'?"Evolución de Capital":"Capital Velocity Map";
+            document.getElementById('title-g4').innerText = currentLanguage==='es'?"Tendencia de Margen":"Margin Variance Vector";
+            document.getElementById('title-g5').innerText = currentLanguage==='es'?"Agenda de Caja":"Contable Ledger Agenda";
+            document.getElementById('title-g6').innerText = currentLanguage==='es'?"Inteligencia Artificial":"Neural Inference System";
+        }
+
+        // --- SISTEMA DE PRIVACIDAD NATIVO ---
+        function togglePrivacy() {
+            isPrivacyActive = !isPrivacyActive;
+            const icon = document.getElementById('privacy-icon');
+            if (isPrivacyActive) {
+                icon.className = 'fa-solid fa-eye-slash';
+                document.getElementById('val-net-worth').innerText = '••••••';
+                document.getElementById('val-total-income').innerText = '••••••';
+                document.getElementById('val-total-expenses').innerText = '••••••';
+            } else {
+                icon.className = 'fa-solid fa-eye';
+                updateUI();
+            }
+        }
+
+        // --- FORMULARIO BOTTOM SHEET ---
+        function openTransactionSheet() {
+            document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('transactionSheet').classList.add('active');
+            document.getElementById('overlay').className = 'overlay active';
+        }
+        function closeTransactionSheet() {
+            document.getElementById('transactionSheet').classList.remove('active');
+            document.getElementById('overlay').className = 'overlay';
+            document.getElementById('transactionForm').reset();
+            updateCategoriesOptions();
+        }
+        function closeAllModals() {
+            closeTransactionSheet();
+            const container = document.getElementById('fabContainer');
+            if (container && container.classList.contains('active-fab')) {
+                container.classList.remove('active-fab');
+                document.getElementById('overlay').className = 'overlay';
+            }
+        }
+
+        function updateCategoriesOptions() {
+            const type = document.getElementById('txType').value;
+            const select = document.getElementById('txCategory');
+            select.innerHTML = '';
+            categories[type].forEach(cat => {
+                select.innerHTML += `<option value="${cat.value}">${cat.icon} ${getWord(cat.label_key)}</option>`;
+            });
         }
 
         function buildFilterOptions() {
             const filter = document.getElementById('monthFilter');
-            const previousValue = filter.value;
             filter.innerHTML = `<option value="all">${getWord('allMonths')}</option>`;
-            
-            const uniqueMonths = [];
-            ledgerDatabase.forEach(item => {
-                const parts = item.date.split('-');
-                if(parts.length >= 2) {
-                    const key = `${parts[0]}-${parts[1]}`;
-                    if(!uniqueMonths.includes(key)) uniqueMonths.push(key);
-                }
+            const months = [...new Set(transactions.map(t => t.date.substring(0, 7)))].sort().reverse();
+            months.forEach(m => {
+                filter.innerHTML += `<option value="${m}">${m}</option>`;
             });
+        }
+
+        function formatValue(amountInUSD) {
+            const converted = amountInUSD * exchangeRates[currentCurrency];
+            return new Intl.NumberFormat(currentLanguage === 'es' ? 'es-MX' : 'en-US', {
+                style: 'currency', currency: currentCurrency
+            }).format(converted);
+        }
+
+        // --- CORE COMPUTACIONAL ---
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const type = document.getElementById('txType').value;
+            const amount = parseFloat(document.getElementById('txAmount').value);
+            const desc = document.getElementById('txDesc').value;
+            const category = document.getElementById('txCategory').value;
+            const date = document.getElementById('txDate').value;
+
+            const newTx = { id: Date.now(), type, amount, currency: 'USD', desc, category, date };
+            transactions.push(newTx);
+            localStorage.setItem('finanzas_pro_txs', JSON.stringify(transactions));
             
-            uniqueMonths.sort().forEach(m => {
-                const year = m.split('-')[0];
-                const monthIndex = parseInt(m.split('-')[1]) - 1;
-                filter.innerHTML += `<option value="${m}">${getWord('months')[monthIndex]} ${year}</option>`;
-            });
-
-            if(previousValue) filter.value = previousValue;
-        }
-
-        function rebuildCategoryDropdown() {
-            const type = document.getElementById('entryType').value;
-            const select = document.getElementById('entryCategory');
-            select.innerHTML = '';
-            const list = (type === 'income') ? incomeCategories[activeLanguage] : expenseCategories[activeLanguage];
-            list.forEach(c => { select.innerHTML += `<option value="${c}">${c}</option>`; });
-        }
-        document.getElementById('entryType').addEventListener('change', rebuildCategoryDropdown);
-
-        // CAPTURA INTERACTIVA (BOTTOM SHEET)
-        function openBottomSheet() {
-            document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
-            rebuildCategoryDropdown();
-            document.getElementById('entrySheet').classList.add('active');
-            document.getElementById('overlay').classList.add('active');
-        }
-        function closeBottomSheet() {
-            document.getElementById('entrySheet').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-            document.getElementById('ledgerEntryForm').reset();
-        }
-
-        function processLedgerSubmit(event) {
-            event.preventDefault();
-            const desc = document.getElementById('entryDesc').value;
-            const amount = parseFloat(document.getElementById('entryAmount').value);
-            const type = document.getElementById('entryType').value;
-            const category = document.getElementById('entryCategory').value;
-            const date = document.getElementById('entryDate').value;
-
-            const newEntry = { id: Date.now(), desc, amount, type, category, date };
-            ledgerDatabase.unshift(newEntry);
-            localStorage.setItem('finanzas_pro_ledger', JSON.stringify(ledgerDatabase));
-            
-            closeBottomSheet();
+            closeTransactionSheet();
             buildFilterOptions();
             updateUI();
-            
-            if(document.getElementById('calendar-screen').classList.contains('active')) {
-                renderInteractiveCalendar();
-            }
             generateAiInsights();
+            initCalendar();
         }
 
-        function deleteEntry(id) {
-            ledgerDatabase = ledgerDatabase.filter(item => item.id !== id);
-            localStorage.setItem('finanzas_pro_ledger', JSON.stringify(ledgerDatabase));
-            buildFilterOptions();
+        function deleteTransaction(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            localStorage.setItem('finanzas_pro_txs', JSON.stringify(transactions));
             updateUI();
-            if(document.getElementById('calendar-screen').classList.contains('active')) {
-                renderInteractiveCalendar();
-            }
+            buildFilterOptions();
             generateAiInsights();
+            initCalendar();
         }
 
-        // RENDERIZADO DEL DASHBOARD Y FLUJOS HOGAR
         function updateUI() {
-            let totalIncome = 0;
-            let totalExpenses = 0;
-            const filterValue = document.getElementById('monthFilter').value || 'all';
+            const filterValue = document.getElementById('monthFilter').value;
+            let filtered = transactions;
+            if (filterValue !== 'all') {
+                filtered = transactions.filter(t => t.date.startsWith(filterValue));
+            }
+
+            // Cómputo global matricial
+            let inc = 0, exp = 0;
+            transactions.forEach(t => { if(t.type==='income') inc+=t.amount; else exp+=t.amount; });
+            let net = inc - exp;
+
+            if (!isPrivacyActive) {
+                document.getElementById('val-net-worth').innerText = formatValue(net);
+                document.getElementById('val-total-income').innerText = formatValue(inc);
+                document.getElementById('val-total-expenses').innerText = formatValue(exp);
+            }
+
+            // Renderizado de Actividad Reciente
             const container = document.getElementById('transactionContainer');
             container.innerHTML = '';
+            
+            // Ordenar por fecha descendente
+            let displayList = [...filtered].sort((a,b)=> new Date(b.date) - new Date(a.date));
 
-            ledgerDatabase.forEach(item => {
-                if(item.type === 'income') totalIncome += item.amount;
-                else totalExpenses += item.amount;
-
-                const parts = item.date.split('-');
-                const itemMonth = `${parts[0]}-${parts[1]}`;
-                if(filterValue !== 'all' && filterValue !== itemMonth) return;
-
-                const isInc = item.type === 'income';
-                const li = document.createElement('li');
-                li.className = 'transaction-item';
-                li.innerHTML = `
-                    <div class="item-left-block">
-                        <div class="category-avatar" style="background:${isInc?'rgba(34,197,94,0.1)':'rgba(239,68,68,0.1)'}; color:${isInc?'var(--success)':'var(--danger)'};">
-                            <i class="fa-solid ${getCategoryIcon(item.category)}"></i>
+            displayList.forEach(t => {
+                let catObj = [...categories.income, ...categories.expense].find(c => c.value === t.category) || { icon: '📦', label_key: 'cat_others' };
+                let isInc = t.type === 'income';
+                container.innerHTML += `
+                    <li class="transaction-item">
+                        <div class="item-left-block">
+                            <div class="category-avatar" style="background:${isInc?'rgba(34,197,94,0.15)':'rgba(239,68,68,0.15)'}; color:${isInc?'var(--success)':'var(--danger)'};">
+                                ${catObj.icon}
+                            </div>
+                            <div class="item-details">
+                                <strong>${t.desc}</strong>
+                                <span class="item-category">${getWord(catObj.label_key)} • ${t.date}</span>
+                            </div>
                         </div>
-                        <div class="item-details">
-                            <strong>${item.desc}</strong>
-                            <span class="item-category">${item.category} • ${item.date}</span>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <span class="item-amount" style="color:${isInc?'var(--success)':'var(--danger)'};">
+                                ${isInc?'+':'-'}${formatValue(t.amount)}
+                            </span>
+                            <button class="btn-delete" onclick="deleteTransaction(${t.id})"><i class="fa-solid fa-trash"></i></button>
                         </div>
-                    </div>
-                    <div class="item-amount" style="color:${isInc?'var(--success)':'var(--danger)'};">
-                        ${isInc?'+':'-'}${formatFinancialNumber(item.amount)}
-                        <button class="btn-delete" onclick="deleteEntry(${item.id})"><i class="fa-solid fa-trash"></i></button>
-                    </div>
+                    </li>
                 `;
-                container.appendChild(li);
             });
 
-            document.getElementById('val-net-worth').innerText = formatFinancialNumber(totalIncome - totalExpenses);
-            document.getElementById('val-total-income').innerText = formatFinancialNumber(totalIncome);
-            document.getElementById('val-total-expenses').innerText = formatFinancialNumber(totalExpenses);
+            renderCharts(filtered);
         }
 
-        function getCategoryIcon(cat) {
-            const icons = {
-                'Salario': 'fa-wallet', 'Salary': 'fa-wallet', 'Inversiones': 'fa-chart-line', 'Investments': 'fa-chart-line',
-                'Freelance': 'fa-laptop-code', 'Alimentación': 'fa-utensils', 'Food': 'fa-utensils', 'Alquiler': 'fa-house',
-                'Rent': 'fa-house', 'Servicios': 'fa-bolt', 'Utilities': 'fa-bolt', 'Transporte': 'fa-car',
-                'Transport': 'fa-car', 'Entretenimiento': 'fa-gamepad', 'Entertainment': 'fa-gamepad'
-            };
-            return icons[cat] || 'fa-dollar-sign';
+        // --- SISTEMA PREDICTIVO DE MÉTRICAS AI (MÓDULO AUTÓNOMO) ---
+        function generateAiInsights() {
+            let totalInc = 0, totalExp = 0;
+            transactions.forEach(t => { if(t.type==='income') totalInc+=t.amount; else totalExp+=t.amount; });
+
+            let burnRate = totalInc > 0 ? Math.round((totalExp / totalInc) * 100) : (totalExp > 0 ? 100 : 0);
+            document.getElementById('val-ai-burn-rate').innerText = `${burnRate}%`;
+
+            let healthScore = "Excelente";
+            let colorAccent = "var(--success)";
+            let diagnosticMsg = "";
+
+            if (burnRate > 100) { healthScore = "Crítica ⚠️"; colorAccent = "var(--danger)"; diagnosticMsg = currentLanguage==='es'?"Tu tasa de consumo supera el capital inyectado. Alertas de descapitalización activas. Detén gastos discrecionales inmediatamente.":"Your cash burn rate exceeds capital injection. Capital depletion alerts are active. Halt discretionary spending immediately."; }
+            else if (burnRate > 80) { healthScore = "Riesgo Medio"; colorAccent = "#f59e0b"; diagnosticMsg = currentLanguage==='es'?"Margen de ahorro estrecho. Presupuestos fijos saturados. Reestructura suscripciones o servicios prescindibles.":"Narrow savings buffer. Fixed budgets are saturated. Restructure non-essential subscriptions or services."; }
+            else if (burnRate > 50) { healthScore = "Saludable"; colorAccent = "var(--primary)"; diagnosticMsg = currentLanguage==='es'?"Estructura de capital óptima. Cumples holgadamente con la regla de ahorro base. IA recomienda inversiones indexadas.":"Optimal capital structure. Comfortably meeting basic savings rules. AI recommends index investing."; }
+            else { healthScore = "Excelente"; colorAccent = "var(--success)"; diagnosticMsg = currentLanguage==='es'?"Máxima eficiencia de caja. Conservas un alto porcentaje de ingresos. Flujos netos listos para diversificación patrimonial.":"Maximum cash efficiency. Retaining a high percentage of income. Net vectors ready for asset diversification."; }
+
+            document.getElementById('val-ai-health-score').innerText = healthScore;
+            document.getElementById('val-ai-health-score').style.color = colorAccent;
+            document.getElementById('aiInsightText').innerText = diagnosticMsg;
         }
 
-        // --- SISTEMA DEL CALENDARIO REPARADO ---
-        function renderInteractiveCalendar() {
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = '';
-
-            const year = calendarSelectedDate.getFullYear();
-            const month = calendarSelectedDate.getMonth();
-
-            document.getElementById('calendarMonthYear').innerText = `${getWord('months')[month]} ${year}`;
-
-            // Cabeceras de días semanales
-            getWord('daysShort').forEach(day => {
-                const cell = document.createElement('div');
-                cell.className = 'cal-day-name';
-                cell.innerText = day;
-                grid.appendChild(cell);
+        // --- ARQUITECTURA DE GRÁFICOS (CHART.JS SUITE) ---
+        function renderCharts(data) {
+            let expData = {};
+            categories.expense.forEach(c => expData[c.value] = 0);
+            
+            data.filter(t => t.type==='expense').forEach(t => {
+                if(expData[t.category] !== undefined) expData[t.category] += t.amount;
             });
 
-            const firstDayIndex = new Date(year, month, 1).getDay(); 
-            const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
-            const totalDaysPrevMonth = new Date(year, month, 0).getDate();
+            let labels = categories.expense.map(c => getWord(c.label_key));
+            let values = categories.expense.map(c => expData[c.value]);
 
-            // Días adyacentes del mes anterior
-            for (let i = firstDayIndex - 1; i >= 0; i--) {
-                const dayNum = totalDaysPrevMonth - i;
-                const cell = document.createElement('div');
-                cell.className = 'cal-day adjacent-month';
-                cell.innerText = dayNum;
-                grid.appendChild(cell);
-            }
+            // Estilos dinámicos para los gráficos de acuerdo al tema
+            const textStyleColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
+            const borderThemeColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
 
-            // Días del mes activo
-            for (let day = 1; day <= totalDaysInMonth; day++) {
-                const cell = document.createElement('div');
-                cell.className = 'cal-day';
-                cell.innerText = day;
+            if (window.pieChartInstance) window.pieChartInstance.destroy();
+            if (window.lineChartInstance) window.lineChartInstance.destroy();
 
-                const dayString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                
-                const hasTransactions = ledgerDatabase.some(t => t.date === dayString);
-                if (hasTransactions) {
-                    cell.classList.add('has-data');
-                }
-
-                const rightNow = new Date();
-                if (rightNow.getFullYear() === year && rightNow.getMonth() === month && rightNow.getDate() === day) {
-                    cell.classList.add('today');
-                }
-
-                if (focusedCalendarDay === day) {
-                    cell.classList.add('selected');
-                }
-
-                cell.onclick = () => filterTimelineByCalendarDay(day, cell);
-                grid.appendChild(cell);
-            }
-
-            // Días adyacentes del mes siguiente para encajar la cuadrícula
-            const currentCells = firstDayIndex + totalDaysInMonth;
-            const nextMonthCellsNeeded = (currentCells % 7 === 0) ? 0 : 7 - (currentCells % 7);
-            for (let day = 1; day <= nextMonthCellsNeeded; day++) {
-                const cell = document.createElement('div');
-                cell.className = 'cal-day adjacent-month';
-                cell.innerText = day;
-                grid.appendChild(cell);
-            }
-
-            if (focusedCalendarDay === null) {
-                resetCalendarView();
-            }
-        }
-
-        function changeCalendarMonth(direction) {
-            calendarSelectedDate.setMonth(calendarSelectedDate.getMonth() + direction);
-            focusedCalendarDay = null;
-            renderInteractiveCalendar();
-        }
-
-        function filterTimelineByCalendarDay(day, cellElement) {
-            focusedCalendarDay = day;
-            document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
-            if(cellElement) cellElement.classList.add('selected');
-
-            const year = calendarSelectedDate.getFullYear();
-            const month = calendarSelectedDate.getMonth() + 1;
-            const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-
-            document.getElementById('selectedDayLabel').innerText = `${day} ${getWord('months')[month-1]} ${year}`;
-            document.getElementById('btn-reset-cal').style.display = 'block';
-
-            const dayContainer = document.getElementById('calendarDayTransactionsContainer');
-            dayContainer.innerHTML = '';
-
-            const filtered = ledgerDatabase.filter(t => t.date === formattedDate);
-            if(filtered.length === 0) {
-                dayContainer.innerHTML = `<li class="transaction-item" style="font-size:12px; opacity:0.6; padding-left:10px;">No hay movimientos comerciales.</li>`;
-                return;
-            }
-
-            filtered.forEach(item => {
-                const isInc = item.type === 'income';
-                const li = document.createElement('li');
-                li.className = 'transaction-item';
-                li.innerHTML = `
-                    <div class="item-left-block">
-                        <div class="category-avatar" style="background:${isInc?'rgba(34,197,94,0.1)':'rgba(239,68,68,0.1)'}; color:${isInc?'var(--success)':'var(--danger)'};">
-                            <i class="fa-solid ${getCategoryIcon(item.category)}"></i>
-                        </div>
-                        <div class="item-details">
-                            <strong>${item.desc}</strong>
-                            <span class="item-category">${item.category}</span>
-                        </div>
-                    </div>
-                    <div class="item-amount" style="color:${isInc?'var(--success)':'var(--danger)'}; padding-right:10px;">
-                        ${isInc?'+':'-'}${formatFinancialNumber(item.amount)}
-                    </div>
-                `;
-                dayContainer.appendChild(li);
-            });
-        }
-
-        function resetCalendarView() {
-            focusedCalendarDay = null;
-            document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
-            document.getElementById('btn-reset-cal').style.display = 'none';
-
-            const year = calendarSelectedDate.getFullYear();
-            const month = calendarSelectedDate.getMonth() + 1;
-            document.getElementById('selectedDayLabel').innerText = `${getWord('months')[month-1]} ${year} (Total)`;
-
-            const dayContainer = document.getElementById('calendarDayTransactionsContainer');
-            dayContainer.innerHTML = '';
-
-            const prefix = `${year}-${String(month).padStart(2, '0')}`;
-            const filtered = ledgerDatabase.filter(t => t.date.startsWith(prefix));
-
-            if(filtered.length === 0) {
-                dayContainer.innerHTML = `<li class="transaction-item" style="font-size:12px; opacity:0.6; padding-left:10px;">No hay movimientos este mes.</li>`;
-                return;
-            }
-
-            filtered.forEach(item => {
-                const isInc = item.type === 'income';
-                const li = document.createElement('li');
-                li.className = 'transaction-item';
-                li.innerHTML = `
-                    <div class="item-left-block">
-                        <div class="category-avatar" style="background:${isInc?'rgba(34,197,94,0.1)':'rgba(239,68,68,0.1)'}; color:${isInc?'var(--success)':'var(--danger)'};">
-                            <i class="fa-solid ${getCategoryIcon(item.category)}"></i>
-                        </div>
-                        <div class="item-details">
-                            <strong>${item.desc}</strong>
-                            <span class="item-category">${item.category} • ${item.date}</span>
-                        </div>
-                    </div>
-                    <div class="item-amount" style="color:${isInc?'var(--success)':'var(--danger)'}; padding-right:10px;">
-                        ${isInc?'+':'-'}${formatFinancialNumber(item.amount)}
-                    </div>
-                `;
-                dayContainer.appendChild(li);
-            });
-        }
-
-        // --- GRÁFICOS ANALÍTICOS (CHART.JS) ---
-        function initializeAnalyticsCharts() {
-            const textChartColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#f8fafc';
-            const borderLineColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || '#22314d';
-
-            const pieCtx = document.getElementById('analyticsPieChart').getContext('2d');
-            const categoriesMap = {};
-            ledgerDatabase.filter(t => t.type === 'expense').forEach(t => {
-                categoriesMap[t.category] = (categoriesMap[t.category] || 0) + t.amount;
-            });
-
-            const pieLabels = Object.keys(categoriesMap);
-            const pieDataValues = Object.values(categoriesMap);
-
-            if (pieChartInstance) pieChartInstance.destroy();
-            pieChartInstance = new Chart(pieCtx, {
+            const ctxPie = document.getElementById('analyticsPieChart').getContext('2d');
+            window.pieChartInstance = new Chart(ctxPie, {
                 type: 'doughnut',
                 data: {
-                    labels: pieLabels,
+                    labels: labels,
                     datasets: [{
-                        data: pieDataValues,
-                        backgroundColor: ['#a855f7', '#38bdf8', '#34d399', '#fb7185', '#fbbf24', '#a7f3d0'],
-                        borderWidth: 2,
-                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--card-bg').trim()
+                        data: values,
+                        backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#a855f7', '#6366f1'],
+                        borderWidth: 1, borderColor: borderThemeColor
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 }, color: textChartColor } } }
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: textStyleColor, font: { size: 10 } } } }
                 }
             });
 
-            const lineCtx = document.getElementById('analyticsLineChart').getContext('2d');
-            const temporalMap = {};
-            [...ledgerDatabase].reverse().forEach(t => {
-                if(!temporalMap[t.date]) temporalMap[t.date] = { inc: 0, exp: 0 };
-                if(t.type === 'income') temporalMap[t.date].inc += t.amount;
-                else temporalMap[t.date].exp += t.amount;
-            });
+            // Procesar Líneas temporales de flujo contable
+            let timeline = {};
+            data.forEach(t => { timeline[t.date] = (timeline[t.date] || 0) + (t.type==='income'? t.amount : -t.amount); });
+            let sortedDates = Object.keys(timeline).sort();
+            let lineValues = [];
+            let cumulative = 0;
+            sortedDates.forEach(d => { cumulative += timeline[d]; lineValues.push(cumulative); });
 
-            const lineLabels = Object.keys(temporalMap).slice ? Object.keys(temporalMap).slice(-7) : Object.keys(temporalMap); 
-            const incomeTimeline = lineLabels.map(d => temporalMap[d].inc);
-            const expenseTimeline = lineLabels.map(d => temporalMap[d].exp);
-
-            if (lineChartInstance) lineChartInstance.destroy();
-            lineChartInstance = new Chart(lineCtx, {
+            const ctxLine = document.getElementById('analyticsLineChart').getContext('2d');
+            window.lineChartInstance = new Chart(ctxLine, {
                 type: 'line',
                 data: {
-                    labels: lineLabels,
-                    datasets: [
-                        { label: getWord('income'), data: incomeTimeline, borderColor: '#22c55e', tension: 0.3, fill: false },
-                        { label: getWord('expenses'), data: expenseTimeline, borderColor: '#ef4444', tension: 0.3, fill: false }
-                    ]
+                    labels: sortedDates.map(d => d.substring(5)),
+                    datasets: [{
+                        label: 'Cash Flow', data: lineValues,
+                        borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)', fill: true, tension: 0.3
+                    }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
                     scales: {
-                        x: { grid: { color: borderLineColor }, ticks: { color: textChartColor, font: { size: 10 } } },
-                        y: { grid: { color: borderLineColor }, ticks: { color: textChartColor, font: { size: 10 } } }
-                    },
-                    plugins: { legend: { labels: { color: textChartColor, boxWidth: 12 } } }
+                        x: { grid: { color: borderThemeColor }, ticks: { color: textStyleColor, font:{size:10} } },
+                        y: { grid: { color: borderThemeColor }, ticks: { color: textStyleColor, font:{size:10} } }
+                    }
                 }
             });
         }
 
-        // --- DIAGNÓSTICOS PREDICTIVOS AI ---
-        function generateAiInsights() {
-            let totalInc = 0; let totalExp = 0;
-            ledgerDatabase.forEach(t => { if(t.type === 'income') totalInc += t.amount; else totalExp += t.amount; });
-
-            const burnRatePct = totalInc > 0 ? Math.min((totalExp / totalInc) * 100, 100) : 100;
-            document.getElementById('val-ai-burn-rate').innerText = `${burnRatePct.toFixed(0)}%`;
-
-            const insightBox = document.getElementById('aiInsightText');
-            const scoreBox = document.getElementById('val-ai-health-score');
-
-            if(burnRatePct > 85) {
-                scoreBox.innerText = activeLanguage==='es'?"Crítica / Riesgo":"Critical Risk";
-                scoreBox.style.color = "var(--danger)";
-                insightBox.innerText = activeLanguage==='es' 
-                    ? "Alerta de Liquidez: El volumen de egresos consume más del 85% del capital entrante. Paralice costes de entretenimiento de forma inmediata."
-                    : "Liquidity Alert: Expenses absorb more than 85% of inflows. Halt non-essential expenditures immediately.";
-            } else if(burnRatePct > 50) {
-                scoreBox.innerText = activeLanguage==='es'?"Aceptable":"Healthy";
-                scoreBox.style.color = "var(--primary)";
-                insightBox.innerText = activeLanguage==='es'
-                    ? "Comportamiento estable. Dispone de margen de acumulación neta, pero optimizar las facturas recurrentes elevará su rentabilidad anual."
-                    : "Stable performance. Net surplus available, though optimizing recurrent bills will amplify your annual yield.";
-            } else {
-                scoreBox.innerText = activeLanguage==='es'?"Excelente / Premium":"Premium Rank";
-                scoreBox.style.color = "var(--success)";
-                insightBox.innerText = activeLanguage==='es'
-                    ? "Estructura óptima de capital. Su tasa de ahorro supera las métricas promedio. Se aconseja colocar el excedente en portafolios de inversión."
-                    : "Optimal capital footprint. Your savings margin is above standard benchmarks. Allocating capital to investment vehicles is advised.";
+        function updateChartsStyles() {
+            const textStyleColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
+            const borderThemeColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
+            if(window.pieChartInstance) {
+                window.pieChartInstance.options.plugins.legend.labels.color = textStyleColor;
+                window.pieChartInstance.data.datasets[0].borderColor = borderThemeColor;
+                window.pieChartInstance.update();
+            }
+            if(window.lineChartInstance) {
+                window.lineChartInstance.options.scales.x.grid.color = borderThemeColor;
+                window.lineChartInstance.options.scales.x.ticks.color = textStyleColor;
+                window.lineChartInstance.options.scales.y.grid.color = borderThemeColor;
+                window.lineChartInstance.options.scales.y.ticks.color = textStyleColor;
+                window.lineChartInstance.update();
             }
         }
 
-        // --- CONVERSACIÓN CON EL CHATBOT ---
+        // --- SISTEMA DE LOGÍSTICA DE CALENDARIO ---
+        let calCurrentYear = 2026;
+        let calCurrentMonth = 5; // Junio (Index 0-11)
+        let calSelectedDateStr = null;
+
+        const monthNamesEs = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        const monthNamesEn = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        function initCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            const mName = currentLanguage === 'es' ? monthNamesEs[calCurrentMonth] : monthNamesEn[calCurrentMonth];
+            document.getElementById('calendarMonthYear').innerText = `${mName} ${calCurrentYear}`;
+
+            const dayLabels = currentLanguage === 'es' ? ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"] : ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+            dayLabels.forEach(l => { grid.innerHTML += `<div class="cal-day-name">${l}</div>`; });
+
+            let firstDayIndex = new Date(calCurrentYear, calCurrentMonth, 1).getDay();
+            let totalDays = new Date(calCurrentYear, calCurrentMonth + 1, 0).getDate();
+            let prevMonthTotalDays = new Date(calCurrentYear, calCurrentMonth, 0).getDate();
+
+            // Celdas del mes adyacente anterior
+            for (let i = firstDayIndex; i > 0; i--) {
+                let dNum = prevMonthTotalDays - i + 1;
+                grid.innerHTML += `<div class="cal-day adjacent-month">${dNum}</div>`;
+            }
+
+            // Celdas del mes activo contable
+            for (let day = 1; day <= totalDays; day++) {
+                let dateStr = `${calCurrentYear}-${String(calCurrentMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                let dayTx = transactions.filter(t => t.date === dateStr);
+                
+                let hasDataClass = dayTx.length > 0 ? 'has-data' : '';
+                let todayClass = (day === new Date().getDate() && calCurrentMonth === new Date().getMonth() && calCurrentYear === new Date().getFullYear()) ? 'today' : '';
+                let selectedClass = calSelectedDateStr === dateStr ? 'selected' : '';
+
+                grid.innerHTML += `
+                    <div class="cal-day ${hasDataClass} ${todayClass} ${selectedClass}" onclick="selectCalendarDay('${dateStr}')">
+                        ${day}
+                    </div>
+                `;
+            }
+            updateCalendarDetailsBox();
+        }
+
+        function changeCalendarMonth(offset) {
+            calCurrentMonth += offset;
+            if (calCurrentMonth > 11) { calCurrentMonth = 0; calCurrentYear++; }
+            if (calCurrentMonth < 0) { calCurrentMonth = 11; calCurrentYear--; }
+            initCalendar();
+        }
+
+        function selectCalendarDay(dateStr) {
+            calSelectedDateStr = dateStr;
+            initCalendar();
+        }
+
+        function resetCalendarView() {
+            calSelectedDateStr = null;
+            initCalendar();
+        }
+
+        function updateCalendarDetailsBox() {
+            const container = document.getElementById('calendarDayTransactionsContainer');
+            container.innerHTML = '';
+
+            let filtered = transactions;
+            if (calSelectedDateStr) {
+                document.getElementById('selectedDayLabel').innerText = `${getWord('dayFlow')}: ${calSelectedDateStr}`;
+                filtered = transactions.filter(t => t.date === calSelectedDateStr);
+            } else {
+                let mStr = `${calCurrentYear}-${String(calCurrentMonth+1).padStart(2,'0')}`;
+                document.getElementById('selectedDayLabel').innerText = currentLanguage==='es'?`Logística del Mes completo`:`Full Month Cash Flow`;
+                filtered = transactions.filter(t => t.date.startsWith(mStr));
+            }
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<li style="font-size:12px; opacity:0.5; text-align:center; padding:15px; width:100%;">No hay registros contables indexados en este rango.</li>`;
+                return;
+            }
+
+            filtered.forEach(t => {
+                let isInc = t.type==='income';
+                container.innerHTML += `
+                    <li class="transaction-item">
+                        <div class="item-left-block">
+                            <div class="item-details" style="padding-left:4px;">
+                                <strong>${t.desc}</strong>
+                                <span class="item-category">${t.date}</span>
+                            </div>
+                        </div>
+                        <span class="item-amount" style="color:${isInc?'var(--success)':'var(--danger)'};">
+                            ${isInc?'+':'-'}${formatValue(t.amount)}
+                        </span>
+                    </li>
+                `;
+            });
+        }
+
+        // --- PROCESADOR DE CONSULTAS CHAT AI CHATROOM ---
         function sendChatMessage() {
             const input = document.getElementById('ai-chat-input');
-            const chatroom = document.getElementById('chatroomContainer');
-            const userText = input.value.trim();
-            if(!userText) return;
+            const log = document.getElementById('chatroomContainer');
+            if(!input || input.value.trim() === '') return;
 
-            chatroom.innerHTML += `<div class="msg user">${userText}</div>`;
+            let text = input.value.trim();
             input.value = '';
-            chatroom.scrollTop = chatroom.scrollHeight;
 
+            // Bubble User
+            log.innerHTML += `<div class="chat-msg user">${text}</div>`;
+            log.scrollTop = log.scrollHeight;
+
+            // Procesamiento de inferencias cognitivas
             setTimeout(() => {
-                let reply = "He analizado los flujos de tus módulos de gasto. Los balances se mantienen alineados con la persistencia en caché.";
-                if(userText.includes('50/30/20')) reply = "Análisis: Tu categoría de Necesidades y Antojos está calculada en base a las categorías registradas. Reduce tus gastos en Ocio para optimizar el ratio.";
-                if(userText.includes('tope') || userText.includes('presupuesto')) reply = "Alerta: Revisa el módulo de analíticas. Si has excedido las barras en rojo, disminuye los consumos variables de inmediato.";
-                
-                chatroom.innerHTML += `<div class="msg bot">${reply}</div>`;
-                chatroom.scrollTop = chatroom.scrollHeight;
-            }, 500);
+                let responseText = "";
+                let totalInc = 0, totalExp = 0;
+                transactions.forEach(t => { if(t.type==='income') totalInc+=t.amount; else totalExp+=t.amount; });
+                let balance = totalInc - totalExp;
+
+                let q = text.toLowerCase();
+                if (q.includes('regla') || q.includes('50/30/20')) {
+                    let necesidades = totalExp * 0.5;
+                    let deseos = totalExp * 0.3;
+                    let ahorro = totalInc * 0.2;
+                    responseText = currentLanguage==='es' ? 
+                        `Auditoría 50/30/20 para tus egresos acumulados de ${formatValue(totalExp)}:\n• Necesidades tope sugerido: ${formatValue(necesidades)}.\n• Deseos tope sugerido: ${formatValue(deseos)}.\n• Tu ahorro proyectado actual es de: ${formatValue(balance > 0 ? balance : 0)}. Tu saldo de caja está en ${balance>=0?'superávit':'déficit'}.` :
+                        `50/30/20 Audit for your total expenses of ${formatValue(totalExp)}:\n• Needs standard limit: ${formatValue(necesidades)}.\n• Wants standard limit: ${formatValue(deseos)}.\n• Current calculated savings: ${formatValue(balance > 0 ? balance : 0)}. Cash position is in ${balance>=0?'surplus':'deficit'}.`;
+                } else if (q.includes('tope') || q.includes('presupuesto') || q.includes('limit')) {
+                    let burn = totalInc > 0 ? (totalExp/totalInc)*100 : 100;
+                    responseText = currentLanguage==='es' ?
+                        `Análisis de topes: Has consumido el ${Math.round(burn)}% de tus inyecciones de capital. ` + (burn > 80 ? "Alerta de saturación: estás cerca o por encima de tus límites de resguardo patrimonial.":"Estructura estable: no se registran desbordamientos presupuestarios.") :
+                        `Limit Analysis: You have burned ${Math.round(burn)}% of your injected capital. ` + (burn > 80 ? "Saturation warning: you are near or exceeding your wealth preservation thresholds.":"Stable system structure: no budget overflows detected.");
+                } else if (q.includes('tip') || q.includes('consejo') || q.includes('saving')) {
+                    responseText = currentLanguage==='es' ?
+                        `Tip AI preventivo: Tu categoría de mayor gasto requiere auditoría. Automatiza un descuento de un 10% en transferencias salariales apenas ingresen para forzar la tasa de ahorro estructural.` :
+                        `Preventive AI Tip: Your highest expense category requires an immediate audit. Automate a 10% deduction on incoming salary lines to enforce structural savings velocity.`;
+                } else {
+                    responseText = currentLanguage==='es' ?
+                        `Consulta procesada por FinanzasPro AI Core. Tu balance patrimonial consolidado equivale a ${formatValue(balance)}. El sistema no detecta anomalías críticas fuera de la tasa de consumo analizada.` :
+                        `Query processed by FinanzasPro AI Core. Your consolidated net worth balance equals ${formatValue(balance)}. The system detects no critical anomalies outside the tracked burn rate parameters.`;
+                }
+
+                log.innerHTML += `<div class="chat-msg bot">${responseText}</div>`;
+                log.scrollTop = log.scrollHeight;
+            }, 750);
         }
 
         // --- CONTROL COMANDOS RÁPIDOS ---
@@ -1111,15 +1217,21 @@
             }
         });
 
-        // --- INICIALIZACIÓN ---
+        // --- INICIALIZACIÓN COMPLETA ---
         const savedTheme = localStorage.getItem('finanzas_pro_theme') || 'cyberpunk';
         document.getElementById('themeSelector').value = savedTheme;
         changeTheme(savedTheme);
 
+        document.getElementById('currencySelector').value = currentCurrency;
+        document.getElementById('txCurrency').value = currentCurrency;
+        document.getElementById('langSelector').value = currentLanguage;
+
         applyLanguageStrings();
         buildFilterOptions();
+        updateCategoriesOptions();
         updateUI();
         generateAiInsights();
+        initCalendar();
         
         document.getElementById('chatroomContainer').innerHTML = `<div class="chat-msg bot">${getWord('welcomeAi')}</div>`;
     </script>
