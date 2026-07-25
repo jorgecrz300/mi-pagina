@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Batalla Algebraica: Campo de Batalla Dinámico</title>
+    <title>Graphwar Clone - Batalla Algebraica</title>
+    <script src="https://cdnjs.cloudflare.com/mathjs/11.8.0/math.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -16,46 +17,88 @@
             padding: 20px;
         }
 
+        h1 { margin-bottom: 5px; color: #38bdf8; }
+        p { margin-top: 0; color: #94a3b8; }
+
         #canvas-container {
             position: relative;
-            box-shadow: 0 0 20px rgba(0, 255, 200, 0.2);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
             border-radius: 8px;
             overflow: hidden;
+            border: 2px solid #334155;
         }
 
         canvas {
-            background-color: #0d1117;
+            background-color: #020617;
             display: block;
         }
+
+        #controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            width: 800px;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px 15px;
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            color: #f8fafc;
+            font-size: 16px;
+            font-family: monospace;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover { background-color: #0369a1; }
 
         #log {
             margin-top: 15px;
             width: 800px;
-            height: 140px;
-            background-color: #161b22;
-            border: 1px solid #30363d;
+            height: 100px;
+            background-color: #0f172a;
+            border: 1px solid #334155;
             border-radius: 6px;
             padding: 10px;
             overflow-y: auto;
             font-family: monospace;
-            font-size: 14px;
+            font-size: 13px;
+            box-sizing: border-box;
         }
 
         .log-entry { margin-bottom: 4px; }
-        .bot-0 { color: #ff5555; }
-        .bot-1 { color: #55ff55; }
-        .bot-2 { color: #5588ff; }
-        .type-tag { font-weight: bold; color: #e3b341; }
-        .move-tag { font-weight: bold; color: #38bdf8; }
-        .warn-tag { font-weight: bold; color: #ff3333; }
+        .bot-0 { color: #f87171; }
+        .bot-1 { color: #4ade80; }
+        .bot-2 { color: #60a5fa; }
     </style>
 </head>
 <body>
 
-    <h1>Batalla Algebraica: Campo de Batalla Dinámico</h1>
+    <h1>Graphwar JS</h1>
+    <p>Escribe tu función en términos de <code>x</code>. ¡Usa <code>sin(x)</code>, <code>abs(x)</code>, <code>x^2</code>, etc.!</p>
+
     <div id="canvas-container">
         <canvas id="gameCanvas" width="800" height="500"></canvas>
     </div>
+
+    <div id="controls">
+        <input type="text" id="mathInput" placeholder="Ejemplo: -0.1*(x-2)^2 + 5  o  sin(x)*2" value="-0.05*x^2 + 4">
+        <button onclick="playerFire()">Disparar</button>
+    </div>
+
     <div id="log"></div>
 
     <script>
@@ -69,20 +112,17 @@
         const ORIGIN_Y = HEIGHT / 2;
         const SCALE = 20;
 
-        // Estado de los Bots
-        const bots = [
-            { id: 0, name: "Bot Rojo", color: "#ff5555", x: -16, y: -4, hp: 100 },
-            { id: 1, name: "Bot Verde", color: "#55ff55", x: 0, y: 7, hp: 100 },
-            { id: 2, name: "Bot Azul", color: "#5588ff", x: 15, y: -2, hp: 100 }
+        // Jugador (rojo) y 2 Bots (verde y azul)
+        const players = [
+            { id: 0, name: "Tú (Rojo)", color: "#f87171", x: -16, y: -4, hp: 100, isHuman: true },
+            { id: 1, name: "Bot Verde", color: "#4ade80", x: 0, y: 7, hp: 100, isHuman: false },
+            { id: 2, name: "Bot Azul", color: "#60a5fa", x: 15, y: -2, hp: 100, isHuman: false }
         ];
 
-        // Múltiples Obstáculos tipo "Campo de Batalla"
         const obstacles = [
-            { xMin: -12, xMax: -10, yMin: -8, yMax: 1, name: "Muro Izquierdo", color: '#d97706' },
-            { xMin: -5, xMax: -3, yMin: -8, yMax: -2, name: "Búnker Bajo 1", color: '#78350f' },
-            { xMin: -1, xMax: 1, yMin: -8, yMax: 3, name: "Torre Central", color: '#9f1239' },
-            { xMin: 3, xMax: 5, yMin: -8, yMax: -2, name: "Búnker Bajo 2", color: '#78350f' },
-            { xMin: 10, xMax: 12, yMin: -8, yMax: 2, name: "Muro Derecho", color: '#d97706' }
+            { xMin: -10, xMax: -8, yMin: -8, yMax: 2 },
+            { xMin: -2, xMax: 2, yMin: -8, yMax: 4 },
+            { xMin: 8, xMax: 10, yMin: -8, yMax: 1 }
         ];
 
         let turn = 0;
@@ -91,16 +131,16 @@
         function toScreenX(mathX) { return ORIGIN_X + mathX * SCALE; }
         function toScreenY(mathY) { return ORIGIN_Y - mathY * SCALE; }
 
-        function addLog(text, botClass) {
+        function addLog(text, cssClass = "") {
             const entry = document.createElement('div');
-            entry.className = `log-entry ${botClass}`;
+            entry.className = `log-entry ${cssClass}`;
             entry.innerHTML = text;
             logContainer.appendChild(entry);
             logContainer.scrollTop = logContainer.scrollHeight;
         }
 
         function drawGrid() {
-            ctx.strokeStyle = '#21262d';
+            ctx.strokeStyle = '#1e293b';
             ctx.lineWidth = 1;
 
             for (let x = 0; x < WIDTH; x += SCALE) {
@@ -110,7 +150,7 @@
                 ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(WIDTH, y); ctx.stroke();
             }
 
-            ctx.strokeStyle = '#8b949e';
+            ctx.strokeStyle = '#475569';
             ctx.lineWidth = 2;
             ctx.beginPath(); ctx.moveTo(ORIGIN_X, 0); ctx.lineTo(ORIGIN_X, HEIGHT); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(0, ORIGIN_Y); ctx.lineTo(WIDTH, ORIGIN_Y); ctx.stroke();
@@ -123,128 +163,81 @@
                 let w = (obs.xMax - obs.xMin) * SCALE;
                 let h = (obs.yMax - obs.yMin) * SCALE;
 
-                ctx.fillStyle = obs.color;
+                ctx.fillStyle = '#b45309';
                 ctx.fillRect(sx, sy, w, h);
                 ctx.strokeStyle = '#f59e0b';
-                ctx.lineWidth = 1.5;
+                ctx.lineWidth = 1;
                 ctx.strokeRect(sx, sy, w, h);
             });
         }
 
-        function drawBots() {
-            bots.forEach(bot => {
-                if (bot.hp <= 0) return;
-                ctx.fillStyle = bot.color;
+        function drawPlayers() {
+            players.forEach(p => {
+                if (p.hp <= 0) return;
+                ctx.fillStyle = p.color;
                 ctx.beginPath();
-                ctx.arc(toScreenX(bot.x), toScreenY(bot.y), 12, 0, Math.PI * 2);
+                ctx.arc(toScreenX(p.x), toScreenY(p.y), 10, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Barra de vida
-                ctx.fillStyle = "#333";
-                ctx.fillRect(toScreenX(bot.x) - 15, toScreenY(bot.y) - 22, 30, 5);
-                ctx.fillStyle = bot.color;
-                ctx.fillRect(toScreenX(bot.x) - 15, toScreenY(bot.y) - 22, (bot.hp / 100) * 30, 5);
+                // Salud
+                ctx.fillStyle = "#334155";
+                ctx.fillRect(toScreenX(p.x) - 15, toScreenY(p.y) - 20, 30, 4);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(toScreenX(p.x) - 15, toScreenY(p.y) - 20, (p.hp / 100) * 30, 4);
             });
         }
 
-        function isInsideObstacle(x, y) {
-            return obstacles.some(obs => x >= obs.xMin && x <= obs.xMax && y >= obs.yMin && y <= obs.yMax);
-        }
+        function fireFunction(exprString, shooter) {
+            try {
+                // Compilamos la función ingresada con math.js
+                const compiledExpr = math.compile(exprString);
+                
+                // Ajustamos offset de la función para que nazca desde la posición del tirador
+                const startY = compiledExpr.evaluate({ x: shooter.x });
+                const offsetY = shooter.y - startY;
 
-        // Mover al bot a una nueva posición válida antes de su tiro
-        function moveBot(bot) {
-            let moveDistance = (Math.random() - 0.5) * 6; // Se mueve entre -3 y +3 unidades
-            let newX = Math.min(Math.max(bot.x + moveDistance, -19), 19);
+                addLog(`<strong>${shooter.name}</strong> disparó: <code>y = ${exprString}</code>`, `bot-${shooter.id}`);
 
-            // Validar que no quede incrustado dentro de un obstáculo
-            if (!isInsideObstacle(newX, bot.y)) {
-                let oldX = bot.x.toFixed(1);
-                bot.x = parseFloat(newX.toFixed(1));
-                addLog(`<span class="move-tag">[MOVIMIENTO]</span> ${bot.name} se movió de X: ${oldX} a X: ${bot.x}`, `bot-${bot.id}`);
+                currentProjectile = {
+                    evaluate: (x) => compiledExpr.evaluate({ x: x }) + offsetY,
+                    currentX: shooter.x,
+                    step: 0.2,
+                    color: shooter.color,
+                    shooterId: shooter.id
+                };
+            } catch (err) {
+                addLog(`Error en la fórmula matemática: ${err.message}`, "bot-0");
+                setTimeout(nextTurn, 1000);
             }
         }
 
-        function checkObstacleInLine(x1, y1, x2, y2) {
-            let m = (y2 - y1) / (x2 - x1);
-            let b = y1 - m * x1;
-
-            for (let obs of obstacles) {
-                let minX = Math.min(x1, x2);
-                let maxX = Math.max(x1, x2);
-
-                if (obs.xMax >= minX && obs.xMin <= maxX) {
-                    let checkX = (obs.xMin + obs.xMax) / 2;
-                    let checkY = m * checkX + b;
-                    if (checkY >= obs.yMin && checkY <= obs.yMax) {
-                        return true;
-                    }
-                }
-            }
-            return false;
+        function playerFire() {
+            if (turn !== 0 || currentProjectile) return;
+            const input = document.getElementById('mathInput').value;
+            fireFunction(input, players[0]);
         }
 
         function botTurn() {
-            const attacker = bots[turn];
-            if (attacker.hp <= 0) { nextTurn(); return; }
+            const bot = players[turn];
+            if (bot.hp <= 0) { nextTurn(); return; }
 
-            let targets = bots.filter(b => b.id !== attacker.id && b.hp > 0);
+            let targets = players.filter(p => p.id !== bot.id && p.hp > 0);
             if (targets.length === 0) {
-                addLog(`<strong>¡${attacker.name} ha ganado la guerra algebraia!</strong>`, `bot-${attacker.id}`);
+                addLog(`<strong>¡${bot.name} gana la partida!</strong>`);
                 return;
             }
 
-            // 1. Fase de Movimiento
-            moveBot(attacker);
-
-            // 2. Selección de objetivo y tiro
             let target = targets[Math.floor(Math.random() * targets.length)];
-            let x1 = attacker.x, y1 = attacker.y;
-            let x2 = target.x, y2 = target.y;
+            
+            // Los bots generan ecuaciones adaptadas a Math.js
+            let formulas = [
+                `-0.1 * (x - ${((bot.x + target.x)/2).toFixed(1)})^2 + 5`,
+                `sin(x) + ${(target.y - bot.y).toFixed(1)}`,
+                `0.05 * (x - ${bot.x.toFixed(1)}) * (x - ${target.x.toFixed(1)})`
+            ];
 
-            let hasObstacle = checkObstacleInLine(x1, y1, x2, y2);
-            let mathType = hasObstacle ? (Math.random() > 0.5 ? 1 : 2) : 0;
-
-            let f, eqStr, typeName;
-
-            if (mathType === 0) {
-                typeName = "LINEAL";
-                let m = (y2 - y1) / (x2 - x1) + (Math.random() - 0.5) * 0.04;
-                let b = y1 - m * x1;
-                f = (x) => m * x + b;
-                eqStr = `y = ${m.toFixed(2)}x ${b >= 0 ? '+' : ''}${b.toFixed(2)}`;
-
-            } else if (mathType === 1) {
-                typeName = "CUADRÁTICA";
-                let a = -0.15 - Math.random() * 0.08; 
-                let y1_prime = y1 - a * x1 * x1;
-                let y2_prime = y2 - a * x2 * x2;
-                let b = (y2_prime - y1_prime) / (x2 - x1);
-                let c = y1_prime - b * x1;
-
-                f = (x) => a * x * x + b * x + c;
-                eqStr = `y = ${a.toFixed(2)}x² ${b >= 0 ? '+' : ''}${b.toFixed(2)}x ${c >= 0 ? '+' : ''}${c.toFixed(2)}`;
-
-            } else {
-                typeName = "CÚBICA";
-                let a = (x2 > x1 ? 0.01 : -0.01);
-                let x3 = (x1 + x2) / 2;
-                let m = (y2 - y1) / (x2 - x1);
-                let b = y1 - m * x1;
-
-                f = (x) => a * (x - x1) * (x - x2) * (x - x3) + (m * x + b);
-                eqStr = `y = ${a.toFixed(3)}(x - ${x3.toFixed(1)})³ + line`;
-            }
-
-            addLog(`<span class="type-tag">[${typeName}]</span> ${attacker.name} dispara: <code>${eqStr}</code>`, `bot-${attacker.id}`);
-
-            currentProjectile = {
-                f: f,
-                startX: x1,
-                currentX: x1,
-                step: (x2 > x1) ? 0.25 : -0.25,
-                color: attacker.color,
-                attackerId: attacker.id
-            };
+            let chosen = formulas[Math.floor(Math.random() * formulas.length)];
+            fireFunction(chosen, bot);
         }
 
         function updateProjectile() {
@@ -252,61 +245,75 @@
 
             let p = currentProjectile;
             p.currentX += p.step;
-            let currentY = p.f(p.currentX);
 
-            // Dibujar proyectil
+            let currentY;
+            try {
+                currentY = p.evaluate(p.currentX);
+            } catch (e) {
+                currentProjectile = null;
+                nextTurn();
+                return;
+            }
+
+            // Dibujar punto
             ctx.fillStyle = p.color;
             ctx.beginPath();
-            ctx.arc(toScreenX(p.currentX), toScreenY(currentY), 5, 0, Math.PI * 2);
+            ctx.arc(toScreenX(p.currentX), toScreenY(currentY), 4, 0, Math.PI * 2);
             ctx.fill();
 
-            // Colisión con Obstáculos
+            // Colisión con obstáculos
             for (let obs of obstacles) {
                 if (p.currentX >= obs.xMin && p.currentX <= obs.xMax &&
                     currentY >= obs.yMin && currentY <= obs.yMax) {
-                    addLog(`<span class="warn-tag">¡IMPACTO EN OBSTÁCULO!</span> El tiro pegó en ${obs.name}`, "");
+                    addLog(`Impacto en obstáculo en (${p.currentX.toFixed(1)}, ${currentY.toFixed(1)})`);
                     currentProjectile = null;
-                    setTimeout(nextTurn, 1000);
+                    setTimeout(nextTurn, 800);
                     return;
                 }
             }
 
-            // Colisión con Bots
-            bots.forEach(bot => {
-                if (bot.id !== p.attackerId && bot.hp > 0) {
-                    let dist = Math.hypot(bot.x - p.currentX, bot.y - currentY);
+            // Colisión con jugadores
+            players.forEach(player => {
+                if (player.id !== p.shooterId && player.hp > 0) {
+                    let dist = Math.hypot(player.x - p.currentX, player.y - currentY);
                     if (dist < 1.0) {
-                        bot.hp = Math.max(0, bot.hp - 35);
-                        addLog(`¡Impacto directo en ${bot.name}! Vida: ${bot.hp}`, `bot-${bot.id}`);
+                        player.hp = Math.max(0, player.hp - 40);
+                        addLog(`¡Impacto en ${player.name}! Vida: ${player.hp}`, `bot-${player.id}`);
                         currentProjectile = null;
-                        setTimeout(nextTurn, 1000);
+                        setTimeout(nextTurn, 800);
                     }
                 }
             });
 
+            // Salida de mapa
             if (p.currentX < -25 || p.currentX > 25 || Math.abs(currentY) > 20) {
                 currentProjectile = null;
-                setTimeout(nextTurn, 1000);
+                setTimeout(nextTurn, 800);
             }
         }
 
         function nextTurn() {
-            turn = (turn + 1) % bots.length;
-            botTurn();
+            turn = (turn + 1) % players.length;
+            if (!players[turn].isHuman && players[turn].hp > 0) {
+                setTimeout(botTurn, 1000);
+            } else if (players[turn].hp <= 0) {
+                nextTurn();
+            } else {
+                addLog("<strong>Es tu turno.</strong> Escribe una ecuación y presiona Disparar.", "bot-0");
+            }
         }
 
         function gameLoop() {
             ctx.clearRect(0, 0, WIDTH, HEIGHT);
             drawGrid();
             drawObstacles();
-            drawBots();
+            drawPlayers();
             updateProjectile();
             requestAnimationFrame(gameLoop);
         }
 
-        addLog("¡Iniciando simulación en el campo de batalla!", "");
+        addLog("¡Bienvenido a Graphwar JS! Tu turno.", "bot-0");
         gameLoop();
-        setTimeout(botTurn, 1000);
     </script>
 </body>
 </html>
