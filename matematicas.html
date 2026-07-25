@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Bots - Batalla Algebraica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 { margin-bottom: 10px; }
+
+        #canvas-container {
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 255, 200, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        canvas {
+            background-color: #0d1117;
+            display: block;
+        }
+
+        #log {
+            margin-top: 15px;
+            width: 800px;
+            height: 120px;
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 10px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .log-entry { margin-bottom: 4px; }
+        .bot-0 { color: #ff5555; }
+        .bot-1 { color: #55ff55; }
+        .bot-2 { color: #5588ff; }
+    </style>
+</head>
+<body>
+
+    <h1>Batalla Algebraica: 3 Bots</h1>
+    <div id="canvas-container">
+        <canvas id="gameCanvas" width="800" height="500"></canvas>
+    </div>
+    <div id="log"></div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const logContainer = document.getElementById('log');
+
+        // Configuración del plano cartesiano (Origen 0,0 al centro)
+        const WIDTH = canvas.width;
+        const HEIGHT = canvas.height;
+        const ORIGIN_X = WIDTH / 2;
+        const ORIGIN_Y = HEIGHT / 2;
+        const SCALE = 20; // 20px = 1 unidad matemática
+
+        // Estado de los Bots
+        const bots = [
+            { id: 0, name: "Bot Rojo", color: "#ff5555", x: -12, y: -6, hp: 100 },
+            { id: 1, name: "Bot Verde", color: "#55ff55", x: 0, y: 8, hp: 100 },
+            { id: 2, name: "Bot Azul", color: "#5588ff", x: 12, y: -4, hp: 100 }
+        ];
+
+        let turn = 0;
+        let currentProjectile = null;
+
+        function toScreenX(mathX) { return ORIGIN_X + mathX * SCALE; }
+        function toScreenY(mathY) { return ORIGIN_Y - mathY * SCALE; }
+
+        function addLog(text, botClass) {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${botClass}`;
+            entry.innerText = text;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function drawGrid() {
+            ctx.strokeStyle = '#21262d';
+            ctx.lineWidth = 1;
+
+            // Cuadrícula
+            for (let x = 0; x < WIDTH; x += SCALE) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, HEIGHT); ctx.stroke();
+            }
+            for (let y = 0; y < HEIGHT; y += SCALE) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(WIDTH, y); ctx.stroke();
+            }
+
+            // Ejes X e Y
+            ctx.strokeStyle = '#8b949e';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(ORIGIN_X, 0); ctx.lineTo(ORIGIN_X, HEIGHT); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0, ORIGIN_Y); ctx.lineTo(WIDTH, ORIGIN_Y); ctx.stroke();
+        }
+
+        function drawBots() {
+            bots.forEach(bot => {
+                if (bot.hp <= 0) return;
+                ctx.fillStyle = bot.color;
+                ctx.beginPath();
+                ctx.arc(toScreenX(bot.x), toScreenY(bot.y), 12, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Barra de Vida
+                ctx.fillStyle = "#333";
+                ctx.fillRect(toScreenX(bot.x) - 15, toScreenY(bot.y) - 25, 30, 5);
+                ctx.fillStyle = bot.color;
+                ctx.fillRect(toScreenX(bot.x) - 15, toScreenY(bot.y) - 25, (bot.hp / 100) * 30, 5);
+            });
+        }
+
+        // El Bot calcula la ecuación según la ubicación de su objetivo
+        function botTurn() {
+            const attacker = bots[turn];
+            if (attacker.hp <= 0) { nextTurn(); return; }
+
+            // Buscar un objetivo vivo
+            let targets = bots.filter(b => b.id !== attacker.id && b.hp > 0);
+            if (targets.length === 0) {
+                addLog(`¡${attacker.name} ha ganado la partida!`, `bot-${attacker.id}`);
+                return;
+            }
+
+            let target = targets[Math.floor(Math.random() * targets.length)];
+
+            // Calcular Ecuación Lineal: y = m*x + b pasando por el atacante y el objetivo
+            let dx = target.x - attacker.x;
+            let dy = target.y - attacker.y;
+            let m = dy / dx;
+            let b = attacker.y - m * attacker.x;
+
+            // Agregar un poco de imprecisión (error aleatorio)
+            m += (Math.random() - 0.5) * 0.1;
+            b += (Math.random() - 0.5) * 0.5;
+
+            let eqStr = `y = ${m.toFixed(2)}x ${b >= 0 ? '+' : ''}${b.toFixed(2)}`;
+            addLog(`${attacker.name} dispara con la ecuación: ${eqStr}`, `bot-${attacker.id}`);
+
+            // Crear animación del proyectil
+            currentProjectile = {
+                f: (x) => m * x + b,
+                startX: attacker.x,
+                endX: target.x,
+                currentX: attacker.x,
+                step: (target.x > attacker.x) ? 0.3 : -0.3,
+                color: attacker.color,
+                attackerId: attacker.id
+            };
+        }
+
+        function updateProjectile() {
+            if (!currentProjectile) return;
+
+            let p = currentProjectile;
+            p.currentX += p.step;
+            let currentY = p.f(p.currentX);
+
+            // Dibujar punto del proyectil
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(toScreenX(p.currentX), toScreenY(currentY), 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Detectar impacto con algún bot
+            bots.forEach(bot => {
+                if (bot.id !== p.attackerId && bot.hp > 0) {
+                    let dist = Math.hypot(bot.x - p.currentX, bot.y - currentY);
+                    if (dist < 1.0) { // Radio de colisión
+                        bot.hp = Math.max(0, bot.hp - 35);
+                        addLog(`¡Impacto en ${bot.name}! Vida restante: ${bot.hp}`, `bot-${bot.id}`);
+                        currentProjectile = null;
+                        setTimeout(nextTurn, 1000);
+                    }
+                }
+            });
+
+            // Si se sale del rango de la pantalla
+            if (p.currentX < -20 || p.currentX > 20 || Math.abs(currentY) > 15) {
+                currentProjectile = null;
+                setTimeout(nextTurn, 1000);
+            }
+        }
+
+        function nextTurn() {
+            turn = (turn + 1) % bots.length;
+            botTurn();
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, WIDTH, HEIGHT);
+            drawGrid();
+            drawBots();
+            updateProjectile();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Iniciar la simulación
+        addLog("¡Iniciando simulación de Bots!", "");
+        gameLoop();
+        setTimeout(botTurn, 1000);
+    </script>
+</body>
+</html>
