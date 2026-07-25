@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulación de Bots - Batalla Algebraica</title>
+    <title>Batalla Algebraica: Obstáculos y Curvas</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,8 +15,6 @@
             margin: 0;
             padding: 20px;
         }
-
-        h1 { margin-bottom: 10px; }
 
         #canvas-container {
             position: relative;
@@ -33,7 +31,7 @@
         #log {
             margin-top: 15px;
             width: 800px;
-            height: 120px;
+            height: 140px;
             background-color: #161b22;
             border: 1px solid #30363d;
             border-radius: 6px;
@@ -47,11 +45,13 @@
         .bot-0 { color: #ff5555; }
         .bot-1 { color: #55ff55; }
         .bot-2 { color: #5588ff; }
+        .type-tag { font-weight: bold; color: #e3b341; }
+        .warn-tag { font-weight: bold; color: #ff3333; }
     </style>
 </head>
 <body>
 
-    <h1>Batalla Algebraica: 3 Bots</h1>
+    <h1>Batalla Algebraica: Obstáculos y Selección Táctica</h1>
     <div id="canvas-container">
         <canvas id="gameCanvas" width="800" height="500"></canvas>
     </div>
@@ -62,18 +62,23 @@
         const ctx = canvas.getContext('2d');
         const logContainer = document.getElementById('log');
 
-        // Configuración del plano cartesiano (Origen 0,0 al centro)
         const WIDTH = canvas.width;
         const HEIGHT = canvas.height;
         const ORIGIN_X = WIDTH / 2;
         const ORIGIN_Y = HEIGHT / 2;
-        const SCALE = 20; // 20px = 1 unidad matemática
+        const SCALE = 20; // 20px = 1 unidad
 
-        // Estado de los Bots
+        // Posiciones de los Bots
         const bots = [
-            { id: 0, name: "Bot Rojo", color: "#ff5555", x: -12, y: -6, hp: 100 },
+            { id: 0, name: "Bot Rojo", color: "#ff5555", x: -15, y: -4, hp: 100 },
             { id: 1, name: "Bot Verde", color: "#55ff55", x: 0, y: 8, hp: 100 },
-            { id: 2, name: "Bot Azul", color: "#5588ff", x: 12, y: -4, hp: 100 }
+            { id: 2, name: "Bot Azul", color: "#5588ff", x: 14, y: -2, hp: 100 }
+        ];
+
+        // Definición de Muros/Obstáculos en el plano (xMin, xMax, yMin, yMax)
+        const obstacles = [
+            { xMin: -8, xMax: -6, yMin: -8, yMax: 3, color: '#d97706' }, // Muro Izquierdo
+            { xMin: 6, xMax: 8, yMin: -8, yMax: 4, color: '#d97706' }    // Muro Derecho
         ];
 
         let turn = 0;
@@ -85,7 +90,7 @@
         function addLog(text, botClass) {
             const entry = document.createElement('div');
             entry.className = `log-entry ${botClass}`;
-            entry.innerText = text;
+            entry.innerHTML = text;
             logContainer.appendChild(entry);
             logContainer.scrollTop = logContainer.scrollHeight;
         }
@@ -94,7 +99,6 @@
             ctx.strokeStyle = '#21262d';
             ctx.lineWidth = 1;
 
-            // Cuadrícula
             for (let x = 0; x < WIDTH; x += SCALE) {
                 ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, HEIGHT); ctx.stroke();
             }
@@ -102,11 +106,25 @@
                 ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(WIDTH, y); ctx.stroke();
             }
 
-            // Ejes X e Y
             ctx.strokeStyle = '#8b949e';
             ctx.lineWidth = 2;
             ctx.beginPath(); ctx.moveTo(ORIGIN_X, 0); ctx.lineTo(ORIGIN_X, HEIGHT); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(0, ORIGIN_Y); ctx.lineTo(WIDTH, ORIGIN_Y); ctx.stroke();
+        }
+
+        function drawObstacles() {
+            obstacles.forEach(obs => {
+                let sx = toScreenX(obs.xMin);
+                let sy = toScreenY(obs.yMax);
+                let w = (obs.xMax - obs.xMin) * SCALE;
+                let h = (obs.yMax - obs.yMin) * SCALE;
+
+                ctx.fillStyle = obs.color;
+                ctx.fillRect(sx, sy, w, h);
+                ctx.strokeStyle = '#b45309';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(sx, sy, w, h);
+            });
         }
 
         function drawBots() {
@@ -117,7 +135,6 @@
                 ctx.arc(toScreenX(bot.x), toScreenY(bot.y), 12, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Barra de Vida
                 ctx.fillStyle = "#333";
                 ctx.fillRect(toScreenX(bot.x) - 15, toScreenY(bot.y) - 25, 30, 5);
                 ctx.fillStyle = bot.color;
@@ -125,40 +142,89 @@
             });
         }
 
-        // El Bot calcula la ecuación según la ubicación de su objetivo
+        // Verifica si una línea recta entre Atacante y Objetivo atraviesa algún muro
+        function checkObstacleInLine(x1, y1, x2, y2) {
+            let m = (y2 - y1) / (x2 - x1);
+            let b = y1 - m * x1;
+
+            for (let obs of obstacles) {
+                let minX = Math.min(x1, x2);
+                let maxX = Math.max(x1, x2);
+
+                if (obs.xMax >= minX && obs.xMin <= maxX) {
+                    let checkX = (obs.xMin + obs.xMax) / 2;
+                    let checkY = m * checkX + b;
+                    if (checkY >= obs.yMin && checkY <= obs.yMax) {
+                        return true; // Hay muro estorbando
+                    }
+                }
+            }
+            return false;
+        }
+
         function botTurn() {
             const attacker = bots[turn];
             if (attacker.hp <= 0) { nextTurn(); return; }
 
-            // Buscar un objetivo vivo
             let targets = bots.filter(b => b.id !== attacker.id && b.hp > 0);
             if (targets.length === 0) {
-                addLog(`¡${attacker.name} ha ganado la partida!`, `bot-${attacker.id}`);
+                addLog(`<strong>¡${attacker.name} ha ganado la batalla!</strong>`, `bot-${attacker.id}`);
                 return;
             }
 
             let target = targets[Math.floor(Math.random() * targets.length)];
+            let x1 = attacker.x, y1 = attacker.y;
+            let x2 = target.x, y2 = target.y;
 
-            // Calcular Ecuación Lineal: y = m*x + b pasando por el atacante y el objetivo
-            let dx = target.x - attacker.x;
-            let dy = target.y - attacker.y;
-            let m = dy / dx;
-            let b = attacker.y - m * attacker.x;
+            let hasObstacle = checkObstacleInLine(x1, y1, x2, y2);
+            let mathType;
 
-            // Agregar un poco de imprecisión (error aleatorio)
-            m += (Math.random() - 0.5) * 0.1;
-            b += (Math.random() - 0.5) * 0.5;
+            // Decisión inteligente: Si hay obstáculo, forzar Cuadrática (parábola sobre el muro) o Cúbica
+            if (hasObstacle) {
+                mathType = Math.random() > 0.5 ? 1 : 2;
+            } else {
+                mathType = 0; // Si no hay obstáculo, tiro directo lineal
+            }
 
-            let eqStr = `y = ${m.toFixed(2)}x ${b >= 0 ? '+' : ''}${b.toFixed(2)}`;
-            addLog(`${attacker.name} dispara con la ecuación: ${eqStr}`, `bot-${attacker.id}`);
+            let f, eqStr, typeName;
 
-            // Crear animación del proyectil
+            if (mathType === 0) {
+                typeName = "LINEAL";
+                let m = (y2 - y1) / (x2 - x1) + (Math.random() - 0.5) * 0.05;
+                let b = y1 - m * x1;
+                f = (x) => m * x + b;
+                eqStr = `y = ${m.toFixed(2)}x ${b >= 0 ? '+' : ''}${b.toFixed(2)}`;
+
+            } else if (mathType === 1) {
+                typeName = "CUADRÁTICA (ARCO)";
+                // Ajustar 'a' para saltar por encima del muro
+                let a = -0.12 - Math.random() * 0.05; 
+                let y1_prime = y1 - a * x1 * x1;
+                let y2_prime = y2 - a * x2 * x2;
+                let b = (y2_prime - y1_prime) / (x2 - x1);
+                let c = y1_prime - b * x1;
+
+                f = (x) => a * x * x + b * x + c;
+                eqStr = `y = ${a.toFixed(2)}x² ${b >= 0 ? '+' : ''}${b.toFixed(2)}x ${c >= 0 ? '+' : ''}${c.toFixed(2)}`;
+
+            } else {
+                typeName = "CÚBICA (S-CURVA)";
+                let a = (x2 > x1 ? 0.008 : -0.008);
+                let x3 = (x1 + x2) / 2;
+                let m = (y2 - y1) / (x2 - x1);
+                let b = y1 - m * x1;
+
+                f = (x) => a * (x - x1) * (x - x2) * (x - x3) + (m * x + b);
+                eqStr = `y = ${a.toFixed(3)}(x - ${x3.toFixed(1)})³ + line`;
+            }
+
+            addLog(`<span class="type-tag">[${typeName}]</span> ${attacker.name} usa: <code>${eqStr}</code> ${hasObstacle ? '(¡Esquivando muro!)' : ''}`, `bot-${attacker.id}`);
+
             currentProjectile = {
-                f: (x) => m * x + b,
-                startX: attacker.x,
-                endX: target.x,
-                currentX: attacker.x,
-                step: (target.x > attacker.x) ? 0.3 : -0.3,
+                f: f,
+                startX: x1,
+                currentX: x1,
+                step: (x2 > x1) ? 0.25 : -0.25,
                 color: attacker.color,
                 attackerId: attacker.id
             };
@@ -171,17 +237,28 @@
             p.currentX += p.step;
             let currentY = p.f(p.currentX);
 
-            // Dibujar punto del proyectil
+            // Dibujar el proyectil
             ctx.fillStyle = p.color;
             ctx.beginPath();
             ctx.arc(toScreenX(p.currentX), toScreenY(currentY), 5, 0, Math.PI * 2);
             ctx.fill();
 
-            // Detectar impacto con algún bot
+            // Colisión con Obstáculos/Muros
+            for (let obs of obstacles) {
+                if (p.currentX >= obs.xMin && p.currentX <= obs.xMax &&
+                    currentY >= obs.yMin && currentY <= obs.yMax) {
+                    addLog(`<span class="warn-tag">¡BOOM!</span> El disparo chocó contra el muro en (${p.currentX.toFixed(1)}, ${currentY.toFixed(1)})`, "");
+                    currentProjectile = null;
+                    setTimeout(nextTurn, 1000);
+                    return;
+                }
+            }
+
+            // Colisión con Bots
             bots.forEach(bot => {
                 if (bot.id !== p.attackerId && bot.hp > 0) {
                     let dist = Math.hypot(bot.x - p.currentX, bot.y - currentY);
-                    if (dist < 1.0) { // Radio de colisión
+                    if (dist < 1.0) {
                         bot.hp = Math.max(0, bot.hp - 35);
                         addLog(`¡Impacto en ${bot.name}! Vida restante: ${bot.hp}`, `bot-${bot.id}`);
                         currentProjectile = null;
@@ -190,8 +267,8 @@
                 }
             });
 
-            // Si se sale del rango de la pantalla
-            if (p.currentX < -20 || p.currentX > 20 || Math.abs(currentY) > 15) {
+            // Si se sale del plano
+            if (p.currentX < -25 || p.currentX > 25 || Math.abs(currentY) > 20) {
                 currentProjectile = null;
                 setTimeout(nextTurn, 1000);
             }
@@ -205,13 +282,13 @@
         function gameLoop() {
             ctx.clearRect(0, 0, WIDTH, HEIGHT);
             drawGrid();
+            drawObstacles();
             drawBots();
             updateProjectile();
             requestAnimationFrame(gameLoop);
         }
 
-        // Iniciar la simulación
-        addLog("¡Iniciando simulación de Bots!", "");
+        addLog("¡Iniciando simulación con obstáculos!", "");
         gameLoop();
         setTimeout(botTurn, 1000);
     </script>
