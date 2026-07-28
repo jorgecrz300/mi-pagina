@@ -3,9 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistema Solar & Enciclopedia Astronómica</title>
+  <title>Sistema Solar Interactivo & Enciclopedia Astronómica</title>
   <style>
-    /* Estilos Generales */
+    :root {
+      --bg-color: #030308;
+      --panel-bg: rgba(10, 14, 26, 0.85);
+      --accent-color: #00d2ff;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border-color: rgba(0, 210, 255, 0.2);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -13,55 +21,146 @@
     }
 
     body {
-      background-color: #05050d;
-      color: #e0e0ff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       display: flex;
       height: 100vh;
       overflow: hidden;
     }
 
-    /* Panel Lateral de Astronomía */
+    /* Panel Lateral Profesional */
     #sidebar {
-      width: 350px;
-      background: rgba(15, 15, 30, 0.9);
-      border-right: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 20px;
+      width: 380px;
+      background: var(--panel-bg);
+      border-right: 1px solid var(--border-color);
+      padding: 25px;
       overflow-y: auto;
       z-index: 10;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 5px 0 25px rgba(0,0,0,0.5);
     }
 
-    #sidebar h1 {
+    .header-title {
+      font-size: 1.4rem;
+      color: var(--accent-color);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* Tarjeta de Información */
+    .info-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 18px;
+      margin-top: 10px;
+    }
+
+    .info-card h2 {
       font-size: 1.5rem;
-      color: #ffd700;
-      margin-bottom: 10px;
+      color: #fff;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .planet-type {
+      font-size: 0.8rem;
+      color: var(--accent-color);
       text-transform: uppercase;
       letter-spacing: 1px;
+      margin-bottom: 12px;
+      font-weight: 600;
     }
 
-    #sidebar h2 {
-      font-size: 1.1rem;
-      color: #00d2ff;
-      margin-top: 20px;
-      margin-bottom: 8px;
-      border-bottom: 1px solid rgba(0, 210, 255, 0.3);
-      padding-bottom: 4px;
+    .description {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--text-main);
+      margin-bottom: 15px;
     }
 
-    #sidebar p, #sidebar li {
-      font-size: 0.88rem;
-      line-height: 1.4;
-      color: #cccccc;
-      margin-bottom: 8px;
+    /* Especificaciones Técnicas */
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
     }
 
-    #sidebar ul {
-      list-style-type: square;
-      padding-left: 18px;
+    .data-item {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 10px;
+      border-radius: 4px;
+      border-left: 2px solid var(--accent-color);
     }
 
-    /* Espacio Visual del Sistema Solar */
+    .data-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .data-value {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .composition-box {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .composition-box h4 {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .composition-box p {
+      font-size: 0.85rem;
+      color: #e2e8f0;
+    }
+
+    /* Botón de Control */
+    .controls {
+      margin-top: auto;
+      padding-top: 15px;
+    }
+
+    .btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background: var(--accent-color);
+      color: #000;
+    }
+
+    /* Espacio Visual */
     #space {
       flex: 1;
       position: relative;
@@ -69,139 +168,315 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
-      background: radial-gradient(ellipse at center, #111122 0%, #000000 100%);
+      background: radial-gradient(ellipse at center, #0d1117 0%, #030308 100%);
     }
 
     /* El Sol */
     .sun {
       position: absolute;
-      width: 60px;
-      height: 60px;
+      width: 55px;
+      height: 55px;
       background: radial-gradient(circle, #fff700 0%, #ff8c00 100%);
       border-radius: 50%;
-      box-shadow: 0 0 40px #ff8c00, 0 0 80px #ff4500;
+      box-shadow: 0 0 35px #ff8c00, 0 0 70px rgba(255, 140, 0, 0.4);
       z-index: 5;
+      cursor: pointer;
+      transition: transform 0.3s ease;
     }
 
-    /* Órbitas */
+    .sun:hover {
+      transform: scale(1.15);
+    }
+
+    /* Órbitas y Planetas */
     .orbit {
       position: absolute;
-      border: 1px dashed rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 50%;
       animation: spin linear infinite;
     }
 
-    /* Planetas */
+    .orbit.active {
+      border-color: rgba(0, 210, 255, 0.5);
+      box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+    }
+
     .planet {
       position: absolute;
       top: 50%;
       left: 0;
       transform: translate(-50%, -50%);
       border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.2s ease;
     }
 
-    /* Definición de Órbitas y Planetas */
-    .mercury-orbit { width: 100px; height: 100px; animation-duration: 4s; }
+    .planet:hover {
+      transform: translate(-50%, -50%) scale(1.4);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+    }
+
+    /* Tamaños y Órbitas */
+    .mercury-orbit { width: 90px; height: 90px; animation-duration: 6s; }
     .mercury { width: 8px; height: 8px; background: #a6a6a6; }
 
-    .venus-orbit { width: 140px; height: 140px; animation-duration: 7s; }
+    .venus-orbit { width: 130px; height: 130px; animation-duration: 10s; }
     .venus { width: 12px; height: 12px; background: #e3bb76; }
 
-    .earth-orbit { width: 190px; height: 190px; animation-duration: 10s; }
+    .earth-orbit { width: 180px; height: 180px; animation-duration: 14s; }
     .earth { width: 14px; height: 14px; background: #2b82c9; }
 
-    .mars-orbit { width: 240px; height: 240px; animation-duration: 14s; }
+    .mars-orbit { width: 230px; height: 230px; animation-duration: 18s; }
     .mars { width: 10px; height: 10px; background: #c1440e; }
 
-    .jupiter-orbit { width: 310px; height: 310px; animation-duration: 22s; }
+    .jupiter-orbit { width: 300px; height: 300px; animation-duration: 28s; }
     .jupiter { width: 26px; height: 26px; background: #b07f35; }
 
-    .saturn-orbit { width: 390px; height: 390px; animation-duration: 30s; }
+    .saturn-orbit { width: 380px; height: 380px; animation-duration: 36s; }
     .saturn { width: 22px; height: 22px; background: #e2bf7d; }
-    /* Anillo de Saturno */
     .saturn::after {
       content: '';
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 34px;
+      width: 32px;
       height: 8px;
-      border: 2px solid rgba(226, 191, 125, 0.6);
+      border: 2px solid rgba(226, 191, 125, 0.7);
       border-radius: 50%;
       transform: translate(-50%, -50%) rotate(-20deg);
     }
 
-    .uranus-orbit { width: 460px; height: 460px; animation-duration: 40s; }
+    .uranus-orbit { width: 450px; height: 450px; animation-duration: 48s; }
     .uranus { width: 18px; height: 18px; background: #4b70dd; }
 
-    .neptune-orbit { width: 520px; height: 520px; animation-duration: 50s; }
+    .neptune-orbit { width: 510px; height: 510px; animation-duration: 60s; }
     .neptune { width: 16px; height: 16px; background: #274687; }
 
-    /* Animación de Rotación Orbital */
     @keyframes spin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
 
-    /* Scrollbar personalizada para el panel */
-    #sidebar::-webkit-scrollbar {
-      width: 6px;
+    .paused {
+      animation-play-state: paused !important;
     }
-    #sidebar::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 3px;
-    }
+
+    /* Scrollbar */
+    #sidebar::-webkit-scrollbar { width: 4px; }
+    #sidebar::-webkit-scrollbar-thumb { background: var(--border-color); }
   </style>
 </head>
 <body>
 
   <aside id="sidebar">
-    <h1>🌌 Astronomía</h1>
-    <p>Estudio de los cuerpos celestes, el espacio y el universo en su totalidad.</p>
+    <div>
+      <h1 class="header-title">Observatorio</h1>
+      <p class="subtitle">Haz clic en un cuerpo celeste para inspeccionarlo</p>
+    </div>
 
-    <h2>☀️ El Sistema Solar</h2>
-    <p>Nuestro sistema planetario se ubica en el brazo de Orión dentro de la galaxia <strong>Vía Láctea</strong>. Se formó hace aproximadamente 4.600 millones de años a partir del colapso de una nube molecular gigante.</p>
+    <div id="planet-info" class="info-card">
+      <h2 id="p-name">Selecciona un Objeto</h2>
+      <div id="p-type" class="planet-type">Sistema Solar</div>
+      <p id="p-desc" class="description">
+        Haz clic en cualquier planeta o en el Sol para ver sus propiedades astronómicas, composición química y características físicas.
+      </p>
 
-    <h2>🪐 Planetas Terrestres</h2>
-    <ul>
-      <li><strong>Mercurio:</strong> El planeta más cercano al Sol y el más pequeño.</li>
-      <li><strong>Venus:</strong> De tamaño similar a la Tierra, con una atmósfera densa y sofocante.</li>
-      <li><strong>Tierra:</strong> Nuestro hogar, el único mundo conocido con vida activa.</li>
-      <li><strong>Marte:</strong> El planeta rojo, conocido por sus desiertos y hielo en los polos.</li>
-    </ul>
+      <div class="data-grid">
+        <div class="data-item">
+          <div class="data-label">Distancia al Sol</div>
+          <div id="p-distance" class="data-value">-</div>
+        </div>
+        <div class="data-item">
+          <div class="data-label">Temperatura Med.</div>
+          <div id="p-temp" class="data-value">-</div>
+        </div>
+        <div class="data-item">
+          <div class="data-label">Satélites (Lunas)</div>
+          <div id="p-moons" class="data-value">-</div>
+        </div>
+        <div class="data-item">
+          <div class="data-label">Masa (vs Tierra)</div>
+          <div id="p-mass" class="data-value">-</div>
+        </div>
+      </div>
 
-    <h2>🌌 Gigantes Gaseosos y Helados</h2>
-    <ul>
-      <li><strong>Júpiter:</strong> El planeta más masivo del sistema solar.</li>
-      <li><strong>Saturno:</strong> Famoso por su complejo y brillante sistema de anillos.</li>
-      <li><strong>Urano:</strong> Gigante helado que gira inclinado casi sobre su costado.</li>
-      <li><strong>Neptuno:</strong> El planeta más distante, conocido por sus intensos vientos.</li>
-    </ul>
+      <div class="composition-box">
+        <h4>Composición Química Principal</h4>
+        <p id="p-comp">-</p>
+      </div>
+    </div>
 
-    <h2>📜 Leyes Fundamentales</h2>
-    <p><strong>Leyes de Kepler:</strong> Describen el movimiento de los planetas en órbitas elípticas alrededor del Sol.</p>
-    <p><strong>Gravedad (Newton):</strong> La fuerza que mantiene a los planetas atrapados en la órbita solar.</p>
-
-    <h2>✨ Otros Objetos Celestes</h2>
-    <ul>
-      <li><strong>Cinturón de Asteroides:</strong> Zona entre Marte y Júpiter llena de rocas espaciales.</li>
-      <li><strong>Cometas:</strong> Cuerpos de hielo y polvo que forman colas al acercarse al Sol.</li>
-      <li><strong>Cinturón de Kuiper:</strong> Región más allá de Neptuno donde se encuentra Plutón.</li>
-    </ul>
+    <div class="controls">
+      <button id="toggle-anim" class="btn">Pausar Movimiento</button>
+    </div>
   </aside>
 
   <main id="space">
-    <div class="sun" title="Sol"></div>
+    <div class="sun" data-planet="sol"></div>
 
-    <div class="orbit mercury-orbit"><div class="planet mercury" title="Mercurio"></div></div>
-    <div class="orbit venus-orbit"><div class="planet venus" title="Venus"></div></div>
-    <div class="orbit earth-orbit"><div class="planet earth" title="Tierra"></div></div>
-    <div class="orbit mars-orbit"><div class="planet mars" title="Marte"></div></div>
-    <div class="orbit jupiter-orbit"><div class="planet jupiter" title="Júpiter"></div></div>
-    <div class="orbit saturn-orbit"><div class="planet saturn" title="Saturno"></div></div>
-    <div class="orbit uranus-orbit"><div class="planet uranus" title="Urano"></div></div>
-    <div class="orbit neptune-orbit"><div class="planet neptune" title="Neptuno"></div></div>
+    <div class="orbit mercury-orbit"><div class="planet mercury" data-planet="mercurio"></div></div>
+    <div class="orbit venus-orbit"><div class="planet venus" data-planet="venus"></div></div>
+    <div class="orbit earth-orbit"><div class="planet earth" data-planet="tierra"></div></div>
+    <div class="orbit mars-orbit"><div class="planet mars" data-planet="marte"></div></div>
+    <div class="orbit jupiter-orbit"><div class="planet jupiter" data-planet="jupiter"></div></div>
+    <div class="orbit saturn-orbit"><div class="planet saturn" data-planet="saturno"></div></div>
+    <div class="orbit uranus-orbit"><div class="planet uranus" data-planet="urano"></div></div>
+    <div class="orbit neptune-orbit"><div class="planet neptune" data-planet="neptuno"></div></div>
   </main>
 
+  <script>
+    // BASE DE DATOS ASTRONÓMICA
+    const celestialData = {
+      sol: {
+        name: "El Sol",
+        type: "Estrella (Enana Amarilla)",
+        desc: "El Sol es la estrella centro de nuestro sistema. Su gravedad mantiene unidos a todos los planetas y cuerpos del sistema solar.",
+        distance: "0 U.A.",
+        temp: "5,500 °C (Superficie)",
+        moons: "N/A",
+        mass: "333,000",
+        composition: "73% Hidrógeno, 25% Helio, trazas de Oxígeno, Carbono y Hierro."
+      },
+      mercurio: {
+        name: "Mercurio",
+        type: "Planeta Rocoso",
+        desc: "El planeta más pequeño del sistema solar y el más cercano al Sol. Posee una superficie rocosa repleta de cráteres similar a la Luna.",
+        distance: "0.39 U.A.",
+        temp: "167 °C (Extremos -180 a 430°C)",
+        moons: "0",
+        mass: "0.055",
+        composition: "Núcleo metálico grande (70% Hierro), manto de silicatos y corteza fina."
+      },
+      venus: {
+        name: "Venus",
+        type: "Planeta Rocoso",
+        desc: "Tiene un tamaño similar al de la Tierra pero su densa atmósfera atrapa el calor en un efecto invernadero desbocado, haciéndolo el más caliente.",
+        distance: "0.72 U.A.",
+        temp: "464 °C",
+        moons: "0",
+        mass: "0.815",
+        composition: "Atmósfera de 96.5% Dióxido de Carbono. Núcleo de hierro y manto rocoso."
+      },
+      tierra: {
+        name: "Tierra",
+        type: "Planeta Rocoso",
+        desc: "Nuestro hogar. Es el único planeta conocido con agua líquida en la superficie y vida activa.",
+        distance: "1.00 U.A.",
+        temp: "15 °C",
+        moons: "1 (La Luna)",
+        mass: "1.00",
+        composition: "32% Hierro, 30% Oxígeno, 15% Silicio, 14% Magnesio (en todo el planeta)."
+      },
+      marte: {
+        name: "Marte",
+        type: "Planeta Rocoso",
+        desc: "Conocido como el planeta rojo debido al óxido de hierro en su superficie. Cuenta con valles, desiertos y casquetes polares.",
+        distance: "1.52 U.A.",
+        temp: "-65 °C",
+        moons: "2 (Fobos y Deimos)",
+        mass: "0.107",
+        composition: "Rocas basálticas cubiertas por polvo de óxido de hierro (herrumbre)."
+      },
+      jupiter: {
+        name: "Júpiter",
+        type: "Gigante Gaseoso",
+        desc: "El planeta más grande del sistema solar. Posee una famosa Tormenta conocida como la 'Gran Mancha Roja' activa desde hace siglos.",
+        distance: "5.20 U.A.",
+        temp: "-110 °C",
+        moons: "95 confirmadas",
+        mass: "317.8",
+        composition: "90% Hidrógeno, 10% Helio, rastros de Metano y Amoníaco."
+      },
+      saturno: {
+        name: "Saturno",
+        type: "Gigante Gaseoso",
+        desc: "Famoso por su espectacular e intrincado sistema de anillos compuestos por miles de millones de fragmentos de hielo y roca.",
+        distance: "9.58 U.A.",
+        temp: "-140 °C",
+        moons: "146 confirmadas",
+        mass: "95.2",
+        composition: "96% Hidrógeno, 3% Helio, hielo de agua, metano y amoníaco."
+      },
+      urano: {
+        name: "Urano",
+        type: "Gigante Helado",
+        desc: "Tiene la atmósfera más fría del sistema solar. Su característica única es que gira inclinado casi completamente sobre su costado.",
+        distance: "19.22 U.A.",
+        temp: "-195 °C",
+        moons: "28 confirmadas",
+        mass: "14.5",
+        composition: "Fluidos densos de 'hielos': Agua, Metano y Amoníaco sobre núcleo rocoso."
+      },
+      neptuno: {
+        name: "Neptuno",
+        type: "Gigante Helado",
+        desc: "El planeta más distante de nuestro sistema. Alberga los vientos más potentes del sistema solar, alcanzando más de 2,000 km/h.",
+        distance: "30.05 U.A.",
+        temp: "-200 °C",
+        moons: "16 confirmadas",
+        mass: "17.1",
+        composition: "Agua, Metano y Amoníaco congelados sobre un núcleo sólido del tamaño terrestre."
+      }
+    };
+
+    // LÓGICA DE INTERACCIÓN
+    const pName = document.getElementById('p-name');
+    const pType = document.getElementById('p-type');
+    const pDesc = document.getElementById('p-desc');
+    const pDist = document.getElementById('p-distance');
+    const pTemp = document.getElementById('p-temp');
+    const pMoons = document.getElementById('p-moons');
+    const pMass = document.getElementById('p-mass');
+    const pComp = document.getElementById('p-comp');
+
+    const planets = document.querySelectorAll('.planet, .sun');
+    const orbits = document.querySelectorAll('.orbit');
+
+    planetasEvents();
+
+    function planetasEvents() {
+      planets.forEach(planet => {
+        planet.addEventListener('click', (e) => {
+          const planetKey = e.target.getAttribute('data-planet');
+          const data = celestialData[planetKey];
+
+          if (data) {
+            // Actualizar información
+            pName.textContent = data.name;
+            pType.textContent = data.type;
+            pDesc.textContent = data.desc;
+            pDist.textContent = data.distance;
+            pTemp.textContent = data.temp;
+            pMoons.textContent = data.moons;
+            pMass.textContent = data.mass;
+            pComp.textContent = data.composition;
+
+            // Resaltar órbita activa
+            orbits.forEach(o => o.classList.remove('active'));
+            if(e.target.parentElement.classList.contains('orbit')) {
+              e.target.parentElement.classList.add('active');
+            }
+          }
+        });
+      });
+    }
+
+    // CONTROL DE ANIMACIÓN
+    const btnAnim = document.getElementById('toggle-anim');
+    let isPaused = false;
+
+    btnAnim.addEventListener('click', () => {
+      isPaused = !isPaused;
+      orbits.forEach(orbit => {
+        if (isPaused) {
+          orbit.classList.add('paused');
+          btnAnim.textContent = "Reanudar Movimiento";
+        } else {
+          orbit.classList.remove('paused');
+          btnAnim.textContent = "Pausar Movimiento";
+        }
+      });
+    });
+  </script>
 </body>
 </html>
